@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="ObjectScene" name="objectScene" native="true"/>
+     <widget class="GraphEditorForm" name="objectScene" native="true"/>
     </item>
    </layout>
   </widget>
@@ -34,9 +34,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>ObjectScene</class>
+   <class>GraphEditorForm</class>
    <extends>QWidget</extends>
-   <header>src/GUI/ObjectScene/objectscene.h</header>
+   <header>src/GUI/grapheditorform.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

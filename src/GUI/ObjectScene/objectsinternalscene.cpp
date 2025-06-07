@@ -3,6 +3,8 @@
 #include <QGraphicsItem>
 #include <QGraphicsRectItem>
 
+#include "objectsceneconstants.h"
+
 #include "logging.h"
 
 ObjectsInternalScene::ObjectsInternalScene(QObject *parent) :
@@ -46,6 +48,12 @@ void ObjectsInternalScene::init()
 uint ObjectsInternalScene::addObject(QGraphicsItem *pItem)
 {
     auto nextId = m_idGenerator();
+
+    // На всякий случай
+    if (m_objectsMap.contains(nextId)) {
+        throw std::runtime_error("ObjectScene-internal: ID, got from generator, already exists! Check generator functor");
+    }
+
     m_objectsMap[nextId] = pItem;
     pItem->setParentItem(m_pNullItem);
     addItem(pItem);

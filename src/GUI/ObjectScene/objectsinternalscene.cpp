@@ -3,14 +3,10 @@
 #include <QGraphicsItem>
 #include <QGraphicsRectItem>
 
-#include "objectsceneconstants.h"
-
-#include "logging.h"
-
 ObjectsInternalScene::ObjectsInternalScene(QObject *parent) :
     QGraphicsScene(parent)
 {
-    uint currentId {0};
+    uint currentId {1};
     m_idGenerator = [currentId]() mutable {
         return currentId++;
     };
@@ -24,10 +20,15 @@ ObjectsInternalScene::~ObjectsInternalScene()
 void ObjectsInternalScene::setIdGenerator(const std::function<uint ()> fGen)
 {
     if (!fGen) {
-        throw std::invalid_argument("ObjectScene: invalid id generator passed into setIdGenerator");
+        throw std::invalid_argument("ObjectScene-internal: invalid id generator passed into setIdGenerator");
     }
 
     m_idGenerator = fGen;
+}
+
+std::function<uint ()> ObjectsInternalScene::getIdGenerator() const
+{
+    return m_idGenerator;
 }
 
 void ObjectsInternalScene::init()
@@ -47,6 +48,9 @@ void ObjectsInternalScene::init()
 
 uint ObjectsInternalScene::addObject(QGraphicsItem *pItem)
 {
+    if (pItem == nullptr) {
+        throw std::invalid_argument("ObjectsScene-internal: invalid (nullptr) item");
+    }
     auto nextId = m_idGenerator();
 
     // На всякий случай
@@ -56,7 +60,6 @@ uint ObjectsInternalScene::addObject(QGraphicsItem *pItem)
 
     m_objectsMap[nextId] = pItem;
     pItem->setParentItem(m_pNullItem);
-    addItem(pItem);
     return nextId;
 }
 

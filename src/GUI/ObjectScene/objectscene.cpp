@@ -21,6 +21,11 @@ void ObjectScene::setIdGenerator(const std::function<uint ()> fGen)
     m_pScene->setIdGenerator(fGen);
 }
 
+std::function<uint ()> ObjectScene::getIdGenerator() const
+{
+    return m_pScene->getIdGenerator();
+}
+
 void ObjectScene::init()
 {
     m_pScene = new ObjectsInternalScene(this);

@@ -8,32 +8,52 @@
 namespace Graph
 {
 
+
 /**
  * @brief The GVertex class Вершина графа
  */
 struct GVertex
 {
-    uint        id                  {0};
-    QPixmap     pxmap               {};
-    QString     shortName           {};
-    QString     name                {};
-    QString     description         {};
-    QJsonObject customProperties    {};
-    QColor      borderColor         {Qt::black};
-    QColor      backgroundColor     {Qt::transparent};
+    uint        id                  {0};                //! ID вершины
+    uint        posX                {0};                //! При наличии, положение на графе. Записывается после первой отрисовки
+    uint        posY                {0};                //! При наличии, положение на графе. Записывается после первой отрисовки
+
+    // Основные поля
+    QString     shortName           {};                 //! Краткое имя врешины (отображаемое)
+    QString     name                {};                 //! Полное имя вершины
+    QString     description         {};                 //! Описание вершины
+    QJsonObject customProperties    {};                 //! JSON с пользовательскими свойствами
+
+    // Отрисовка
+    QColor      borderColor         {Qt::black};        //! Цвет границы
+    QColor      backgroundColor     {Qt::transparent};  //! Цвет фона
+    QPixmap     pxmap               {};                 //! Изображение, которое будет отображаться вместо вершины
+
+    bool isShortnameValid() const {
+        return shortName.size() < 10;
+    }
+
+    bool isValid() const {
+        return isShortnameValid() && (id != 0) && ((borderColor.isValid() && backgroundColor.isValid()) || !pxmap.isNull());
+    }
 };
+
 
 /**
  * @brief The GConnection class Соединение между вершинами графа
  */
 struct GConnection
 {
-    uint    idFrom              {0};
-    uint    idTo                {0};
-    double  connectionWeight    {0};
-    QString name                {};
-    QColor  lineColor           {Qt::black};
-    bool    isDirected          {false};
+    uint    idFrom              {0};            //! ID из которого исходит ребро
+    uint    idTo                {0};            //! ID в которое входит ребро
+    double  connectionWeight    {0};            //! Вес ребра
+    QString name                {};             //! Название ребра
+    QColor  lineColor           {Qt::black};    //! Цвет ребра
+    bool    isDirected          {false};        //! Флаг наличия направления у ребра
+
+    bool isValid() const {
+        return (idFrom != idTo) && (idFrom != 0) && (idTo != 0) && lineColor.isValid();
+    }
 };
 
 
@@ -45,6 +65,10 @@ class GraphObject
 public:
     GraphObject();
 
+    /**
+     * @brief setIdGenerator Установить генератор ID для вершин
+     * @param fGen функтор генератора ID
+     */
     void setIdGenerator(const std::function<uint()>& fGen);
 
     /**
@@ -172,6 +196,11 @@ private:
     QString     m_description               {"Empty description of a graph"};
     QDateTime   m_createTime;
     QDateTime   m_editTime;
+
+    static const uint m_mainRectLayer       = 1;
+    static const uint m_connectionLineLayer = 2;
+    static const uint m_vertexLayer         = 3;
+    static const uint m_vertexDataLayer     = 4;
 };
 
 }

@@ -27,6 +27,12 @@ public:
     void setIdGenerator(const std::function<uint()> fGen);
 
     /**
+     * @brief getIdGenerator Функция получения функтора-генератора ID
+     * @return Функтор-генератор ID
+     */
+    std::function<uint()> getIdGenerator() const;
+
+    /**
      * @brief init Создание и настройка внутренних компонент. Вынесена для вызовов при необходимости
      */
     void init();

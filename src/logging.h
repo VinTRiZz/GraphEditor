@@ -5,8 +5,6 @@
 
 #include <functional>
 
-#include  <fstream>
-
 #include <thread>
 #include <condition_variable>
 #include <mutex>
@@ -22,6 +20,12 @@
 
 #include <QPoint>
 #endif // QT_CORE_LIB
+
+#ifndef QT_CORE_LIB
+#include  <iostream>
+#include <fstream>
+#endif // ! QT_CORE_LIB
+
 
 namespace Logging
 {
@@ -68,14 +72,15 @@ template <LoggingType LogType> constexpr const char* logTypeString()
 
 const std::string LOGFILE_NAME {"app.log"};
 
-#ifdef QT_CORE_LIB
-static QFile logfile (LOGFILE_NAME.c_str());
-#else
-static std::fstream logfile;
-#endif // QT_CORE_LIB
-
 class LoggingMaster : boost::noncopyable
 {
+#ifdef QT_CORE_LIB
+    QFile logfile {LOGFILE_NAME.c_str()};
+    QTextStream logfileStream {&logfile};
+#else
+    std::fstream logfile;
+#endif // QT_CORE_LIB
+
     class LoggingHelper
     {
 #ifdef QT_CORE_LIB
@@ -85,11 +90,7 @@ class LoggingMaster : boost::noncopyable
     public:
         template <typename T>
         void fileWriteOnly(T val) {
-#ifdef QT_CORE_LIB
-            logfile << val << " ";
-#else
-            logfile << val << " ";
-#endif // QT_CORE_LIB
+            LoggingMaster::getInstance().logfile << val << " ";
         }
 
         template <typename T>
@@ -103,8 +104,8 @@ class LoggingMaster : boost::noncopyable
 
         template <typename T>
         void operator()(T val) {
-            ostreamWriteOnly(val);
             fileWriteOnly(val);
+            ostreamWriteOnly(val);
         }
     };
 
@@ -183,24 +184,29 @@ public:
         auto task = [=](){
 #ifdef QT_CORE_LIB
             logfile.open(QIODevice::WriteOnly | QIODevice::Append);
+            if (!logfile.isOpen()) {
+                throw std::runtime_error("Error opening logfile");
+            }
 #else
-            logfile.open(LOGFILE_NAME, std::ios_base::out | std::iosios_base::app);
+            logfile.open(LOGFILE_NAME, std::ios_base::out | std::ios_base::app);
+            if (!logfile.is_open()) {
+                throw std::runtime_error("Error opening logfile");
+            }
 #endif // QT_CORE_LIB
 
             LoggingHelper logger;
             logger.ostreamWriteOnly(timestamp + " [" + logTypeStringColored<lt>() + "] ");
             logger.fileWriteOnly(timestamp + " [" + logTypeString<lt>() + "] ");
-            {
-                boost::fusion::for_each(boost::fusion::make_tuple(args...), logger);
-            }
+            boost::fusion::for_each(boost::fusion::make_tuple(args...), logger);
 
 #ifdef QT_CORE_LIB
-            logfile.write("\n");
-            logfile.flush();
-            logfile.close();
+            logfileStream << Qt::endl;
 #else
+            std::cout << std::endl;
             logfile << std::endl;
 #endif // QT_CORE_LIB
+            logfile.flush();
+            logfile.close();
         };
 
         if constexpr (isSync) {
@@ -215,7 +221,6 @@ public:
     }
 };
 
-
 // ============================================================================== //
 // ============================================================================== //
 // =================================== FOR QT TYPES ============================= //
@@ -223,49 +228,6 @@ public:
 // ============================================================================== //
 
 #ifdef QT_CORE_LIB
-template <>
-inline void LoggingMaster::LoggingHelper::fileWriteOnly(const char* val) {
-    qDebug() << "\nWRITING:" << val << "   \n";
-    logfile.write(val);
-    logfile.write(" ");
-}
-
-template <>
-inline void LoggingMaster::LoggingHelper::fileWriteOnly(std::string val) {
-    logfile.write(val.c_str());
-    logfile.write(" ");
-}
-
-template <>
-inline void LoggingMaster::LoggingHelper::fileWriteOnly(QString val) {
-    logfile.write(val.toUtf8().data());
-    logfile.write(" ");
-}
-
-template <>
-inline void LoggingMaster::LoggingHelper::fileWriteOnly(double val) {
-    logfile.write(QString::number(val).toUtf8().data());
-    logfile.write(" ");
-}
-
-template <>
-inline void LoggingMaster::LoggingHelper::fileWriteOnly(QPoint val) {
-    logfile.write("[POINT ");
-    logfile.write(QString::number(val.x()).toUtf8().data());
-    logfile.write(QString::number(val.y()).toUtf8().data());
-    logfile.write("] ");
-}
-
-template <>
-inline void LoggingMaster::LoggingHelper::fileWriteOnly(QPointF val) {
-    logfile.write("[POINT ");
-    logfile.write(QString::number(val.x()).toUtf8().data());
-    logfile.write(QString::number(val.y()).toUtf8().data());
-    logfile.write("] ");
-}
-
-// ============================================================================== //
-
 template <>
 inline void LoggingMaster::LoggingHelper::ostreamWriteOnly(std::string val) {
     m_dbgStream << val.c_str();
@@ -286,6 +248,46 @@ inline void LoggingMaster::LoggingHelper::ostreamWriteOnly(QPointF val) {
     m_dbgStream << val;
 }
 
+template <>
+inline void LoggingMaster::LoggingHelper::fileWriteOnly(std::string val) {
+    LoggingMaster::getInstance().logfileStream << val.c_str() << " ";
+}
+
+template <>
+inline void LoggingMaster::LoggingHelper::fileWriteOnly(const char* val) {
+    LoggingMaster::getInstance().logfileStream << QByteArray(val) << " ";
+}
+
+template <>
+inline void LoggingMaster::LoggingHelper::fileWriteOnly(QString val) {
+    LoggingMaster::getInstance().logfileStream << val.toUtf8().data() << " ";
+}
+
+template <>
+inline void LoggingMaster::LoggingHelper::fileWriteOnly(QPoint val) {
+    LoggingMaster::getInstance().logfileStream << "{P "
+                                               << QString::number(val.x()).toUtf8().data() << "; "
+                                               << QString::number(val.y()).toUtf8().data()
+                                               << "} ";
+}
+
+template <>
+inline void LoggingMaster::LoggingHelper::fileWriteOnly(QPointF val) {
+    LoggingMaster::getInstance().logfileStream << "{P "
+                                               << QString::number(val.x()).replace(",", ".").toUtf8().data() << "; "
+                                               << QString::number(val.y()).replace(",", ".").toUtf8().data()
+                                               << "} ";
+}
+
+template <>
+inline void LoggingMaster::LoggingHelper::fileWriteOnly(double val) {
+
+    // Принудительная замена с игнором локали
+    auto resv = QString::number(val);
+    resv = resv.replace(",", ".");
+
+    LoggingMaster::getInstance().logfileStream << resv.toUtf8().data() << " ";
+}
 #endif // QT_CORE_LIB
 
 

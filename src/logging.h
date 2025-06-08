@@ -17,6 +17,11 @@ namespace stdfs = std::filesystem;
 namespace stdfs = std::experimental::filesystem;
 #endif // C++ 14 problems
 
+// Qt classes
+#ifdef QT_CORE_LIB
+#include <QString>
+#endif // QT_CORE_LIB
+
 #include <boost/fusion/include/for_each.hpp>
 #include <boost/fusion/include/make_tuple.hpp>
 
@@ -95,6 +100,14 @@ inline void Logger::operator ()(std::string val) {
     std::cout << (val.empty() ? "[EMPTY_STRING]" : val) << " ";
     logfile << (val.empty() ? "[EMPTY_STRING]" : val) << " ";
 }
+
+#ifdef QT_CORE_LIB
+template <>
+inline void Logger::operator ()(QString val) {
+    std::cout << (val.isEmpty() ? "[EMPTY_Q_STRING]" : val.toStdString()) << " ";
+    logfile << (val.isEmpty() ? "[EMPTY_Q_STRING]" : val.toStdString()) << " ";
+}
+#endif // QT_CORE_LIB
 
 // Print and save message
 template <MessageType LogType, typename...Args> void log(Args&&... args)

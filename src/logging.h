@@ -183,7 +183,7 @@ public:
 
         auto task = [=](){
 #ifdef QT_CORE_LIB
-            logfile.open(QIODevice::WriteOnly | QIODevice::Append);
+            logfile.open(QIODevice::Append);
             if (!logfile.isOpen()) {
                 throw std::runtime_error("Error opening logfile");
             }

@@ -3,9 +3,10 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsEllipseItem>
 #include <QGraphicsLineItem>
-#include <QGraphicsTextItem>
+#include <QGraphicsSimpleTextItem>
 #include <QGraphicsPixmapItem>
 
+#include <QFont>
 #include <QBrush>
 #include <QPen>
 
@@ -63,15 +64,15 @@ QGraphicsItem *GraphObject::toItem() const
             static_cast<QGraphicsPixmapItem*>(pVertexItem)->setPixmap(scaledPxmap);
         }
         pVertexItem->setParentItem(pResItem);
-        pVertexItem->setFlag(QGraphicsItem::ItemIgnoresTransformations, true); // Чтобы размер не менялся от скейла
 
-        auto pVertexLabel = new QGraphicsTextItem;
+        auto pVertexLabel = new QGraphicsSimpleTextItem;
         pVertexLabel->setParentItem(pVertexItem);
-        pVertexLabel->setDefaultTextColor(vert.borderColor);
-        pVertexLabel->setPlainText(vert.shortName);
+        pVertexLabel->setPen(vert.borderColor);
+        pVertexLabel->setBrush(Qt::white);
+        pVertexLabel->setText(vert.shortName);
 
         // TODO: Найти способ задать центральной позицию получше
-        pVertexLabel->setX(vertexRect.center().x() / 2 - pVertexLabel->textWidth() * vert.shortName.size() / 2);
+        pVertexLabel->setX(vertexRect.center().x() / 2 - pVertexLabel->font().pixelSize() * vert.shortName.size() / 2);
         pVertexLabel->setY(vertexRect.center().y() - 10);
         pVertexLabel->setZValue(m_vertexDataLayer);
 
@@ -118,17 +119,38 @@ QGraphicsItem *GraphObject::toItem() const
         pConnection->setZValue(m_connectionLineLayer);
         pConnection->setParentItem(pResItem);
 
-        auto pConnectionLabel = new QGraphicsTextItem;
+        auto pConnectionLabel = new QGraphicsSimpleTextItem;
         pConnectionLabel->setParentItem(pConnection);
-        pConnectionLabel->setDefaultTextColor(con.lineColor);
-        pConnectionLabel->setPlainText(con.name);
 
-        pConnectionLabel->setRotation(connectionLine.angle());
+        pConnectionLabel->setPen(con.lineColor);
+        pConnectionLabel->setText(con.name);
+
+        auto rotationAngle = -connectionLine.angle();
+
+        LOG_DEBUG_SYNC("Connection:", con.name, "Angle:", rotationAngle);
+
+        pConnectionLabel->setRotation(rotationAngle);
 
         // TODO: Найти способ задать центральной позицию получше
-        pConnectionLabel->setX(connectionLine.center().x() + pConnectionLabel->textWidth() * con.name.size() * cos(connectionLine.angle() * M_PI / 180.0));
-        pConnectionLabel->setY(connectionLine.center().y() + pConnectionLabel->textWidth() * con.name.size() * sin(connectionLine.angle() * M_PI / 180.0));
-        pConnectionLabel->setZValue(m_vertexDataLayer);
+        auto textCos = cos(rotationAngle * M_PI / 180.0);
+        auto textSin = sin(rotationAngle * M_PI / 180.0);
+        auto textWidth = pConnectionLabel->font().pixelSize() * con.name.size();
+        pConnectionLabel->setX(connectionLine.center().x() + textWidth * textSin);
+        pConnectionLabel->setY(connectionLine.center().y() + textWidth * textCos);
+        pConnectionLabel->setZValue(m_connectionTextLayer);
+
+        auto pConnectionLabelRect = new QGraphicsRectItem;
+        pConnectionLabelRect->setParentItem(pConnection);
+        pConnectionLabelRect->setBrush(Qt::white);
+        pConnectionLabelRect->setRotation(rotationAngle);
+
+        auto labelRect = pConnectionLabel->boundingRect();
+        labelRect.setX(labelRect.x() - 10);
+        labelRect.setWidth(labelRect.width() + 20);
+        pConnectionLabelRect->setRect(labelRect);
+        pConnectionLabelRect->setX(pConnectionLabel->x());
+        pConnectionLabelRect->setY(pConnectionLabel->y());
+        pConnectionLabelRect->setZValue(m_connectionRectLayer);
     }
 
     return pResItem;

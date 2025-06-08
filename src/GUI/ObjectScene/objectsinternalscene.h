@@ -17,6 +17,12 @@ public:
     ~ObjectsInternalScene();
 
     /**
+     * @brief resizeScene Принудительно изменить размеры полотна сцены
+     * @param iSize Новый размер сцены
+     */
+    void resizeScene(const QSize& iSize);
+
+    /**
      * @brief setIdGenerator Установить генератор ID объекта (должен возвращать уникальный ID объектов)
      * @param fGen Функтор-генератор
      */

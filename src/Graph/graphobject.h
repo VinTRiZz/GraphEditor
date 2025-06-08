@@ -198,9 +198,13 @@ private:
     QDateTime   m_editTime;
 
     static const uint m_mainRectLayer       = 1;
-    static const uint m_connectionLineLayer = 2;
-    static const uint m_vertexLayer         = 3;
-    static const uint m_vertexDataLayer     = 4;
+
+    static const uint m_connectionLineLayer = 10;
+    static const uint m_connectionRectLayer = 11;
+    static const uint m_connectionTextLayer = 12;
+
+    static const uint m_vertexLayer         = 30;
+    static const uint m_vertexDataLayer     = 31;
 };
 
 }

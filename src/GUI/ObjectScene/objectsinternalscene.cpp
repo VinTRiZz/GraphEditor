@@ -17,6 +17,11 @@ ObjectsInternalScene::~ObjectsInternalScene()
 
 }
 
+void ObjectsInternalScene::resizeScene(const QSize &iSize)
+{
+    static_cast<QGraphicsRectItem*>(m_pNullItem)->setRect(0, 0, iSize.width(), iSize.height());
+}
+
 void ObjectsInternalScene::setIdGenerator(const std::function<uint ()> fGen)
 {
     if (!fGen) {

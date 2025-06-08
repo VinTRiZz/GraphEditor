@@ -2,6 +2,8 @@
 #include "ui_objectscene.h"
 #include "objectsinternalscene.h"
 
+#include <QWheelEvent>
+
 #include "logging.h"
 
 ObjectScene::ObjectScene(QWidget *parent) :
@@ -14,6 +16,11 @@ ObjectScene::ObjectScene(QWidget *parent) :
 ObjectScene::~ObjectScene()
 {
     delete ui;
+}
+
+void ObjectScene::resizeScene(const QSize &iSize)
+{
+    m_pScene->resizeScene(iSize);
 }
 
 void ObjectScene::setIdGenerator(const std::function<uint ()> fGen)
@@ -46,4 +53,21 @@ QList<uint> ObjectScene::getAlObjectIds() const
 void ObjectScene::removeObject(uint itemId)
 {
     return m_pScene->removeObject(itemId);
+}
+
+void ObjectScene::wheelEvent(QWheelEvent *e)
+{
+    if (e->angleDelta().ry() > 0) {
+        scale(0.8, 0.8);
+    } else {
+        scale(1.2, 1.2);
+    }
+}
+
+void ObjectScene::mousePressEvent(QMouseEvent *e)
+{
+    if (e->button() == Qt::MiddleButton) {
+        prevPos = mapToScene(e->pos());
+        LOG_DEBUG("Pos:", prevPos);
+    }
 }

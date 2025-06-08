@@ -21,6 +21,12 @@ public:
     ~ObjectScene();
 
     /**
+     * @brief resizeScene Принудительно изменить размеры полотна сцены
+     * @param iSize Новый размер сцены
+     */
+    void resizeScene(const QSize& iSize);
+
+    /**
      * @brief setIdGenerator Установить генератор ID объекта (должен возвращать уникальный ID объектов)
      * @param fGen Функтор-генератор
      */
@@ -59,6 +65,10 @@ public:
 private:
     Ui::ObjectScene *ui;
     ObjectsInternalScene*       m_pScene            {nullptr};  //! Сцена для отображения объектов (внутренний класс)
+
+    QPointF prevPos;    //! Позиция для перемещения по графу
+    void wheelEvent(QWheelEvent* e) override;
+    void mousePressEvent(QMouseEvent* e) override;
 };
 
 #endif // OBJECTSCENE_H

@@ -29,10 +29,18 @@ struct GVertex
     QColor      backgroundColor     {Qt::transparent};  //! Цвет фона
     QPixmap     pxmap               {};                 //! Изображение, которое будет отображаться вместо вершины
 
+    /**
+     * @brief isShortnameValid Проверка корректности длины краткого наименования вершины
+     * @return false если длина больше разрешённой
+     */
     bool isShortnameValid() const {
         return shortName.size() < 10;
     }
 
+    /**
+     * @brief isValid Проверка на корректность данных структуры
+     * @return false если объект не может использоваться в графе
+     */
     bool isValid() const {
         return isShortnameValid() && (id != 0) && ((borderColor.isValid() && backgroundColor.isValid()) || !pxmap.isNull());
     }
@@ -51,6 +59,10 @@ struct GConnection
     QColor  lineColor           {Qt::black};    //! Цвет ребра
     bool    isDirected          {false};        //! Флаг наличия направления у ребра
 
+    /**
+     * @brief isValid Проверка на корректность данных структуры
+     * @return false если объект не может быть использован в графе
+     */
     bool isValid() const {
         return (idFrom != idTo) && (idFrom != 0) && (idTo != 0) && lineColor.isValid();
     }
@@ -225,14 +237,15 @@ private:
 
     std::map<QString, QVariant> m_customDataValues; //! Пользовательские данные
 
-    static const uint m_mainRectLayer       = 1;
+    // Уровни расположения объектов на сцене по их типу
+    static const uint m_mainRectLayer       = 1;    //! Уровень главного объекта ("полотна" графа)
 
-    static const uint m_connectionLineLayer = 10;
-    static const uint m_connectionRectLayer = 11;
-    static const uint m_connectionTextLayer = 12;
+    static const uint m_connectionLineLayer = 10;   //! Уровень линий соединения вершин
+    static const uint m_connectionRectLayer = 11;   //! Уровень прямоугольников с названиями вершин (для контраста)
+    static const uint m_connectionTextLayer = 12;   //! Уровень текста названий вершин
 
-    static const uint m_vertexLayer         = 30;
-    static const uint m_vertexDataLayer     = 31;
+    static const uint m_vertexLayer         = 30;   //! Уровень вершин
+    static const uint m_vertexDataLayer     = 31;   //! Уровень текста названий вершин
 };
 
 }

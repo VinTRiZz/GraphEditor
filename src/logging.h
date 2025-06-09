@@ -30,6 +30,9 @@
 namespace Logging
 {
 
+/**
+ * @brief The LoggingType enum Тип данных для вывода
+ */
 enum class LoggingType
 {
     Empty,
@@ -40,6 +43,10 @@ enum class LoggingType
     Ok
 };
 
+/**
+ * @brief logTypeStringColored Получение выделенного цветом текста для логов
+ * @return Строка с управляющими символами
+ */
 template <LoggingType LogType> constexpr const char* logTypeStringColored()
 {
     switch (LogType)
@@ -55,6 +62,10 @@ template <LoggingType LogType> constexpr const char* logTypeStringColored()
     return "";
 }
 
+/**
+ * @brief logTypeString Получение не выделенного цветом текста для логов
+ * @return Строка без управляющих последовательностей
+ */
 template <LoggingType LogType> constexpr const char* logTypeString()
 {
     switch (LogType)
@@ -70,29 +81,44 @@ template <LoggingType LogType> constexpr const char* logTypeString()
     return "";
 }
 
-const std::string LOGFILE_NAME {"app.log"};
+const std::string LOGFILE_NAME {"app.log"}; //! Путь или название для лог-файла
 
+/**
+ * @brief The LoggingMaster class Мастер вывода информации (логов). Синглетон
+ */
 class LoggingMaster : boost::noncopyable
 {
 #ifdef QT_CORE_LIB
-    QFile logfile {LOGFILE_NAME.c_str()};
-    QTextStream logfileStream {&logfile};
+    QFile       logfile         {LOGFILE_NAME.c_str()}; //! Логфайл
+    QTextStream logfileStream   {&logfile};             //! Поток ввода в файл данных
 #else
-    std::fstream logfile;
+    std::fstream logfile; //! Логфайл
 #endif // QT_CORE_LIB
 
+    /**
+     * @brief The LoggingHelper class Помощник вывода данных в логфайл
+     */
     class LoggingHelper
     {
 #ifdef QT_CORE_LIB
-        QDebug m_dbgStream {qDebug()};
+        QDebug m_dbgStream {qDebug()}; //! Поток вывод (для Qt)
 #endif // QT_CORE_LIB
 
     public:
+
+        /**
+         * @brief fileWriteOnly Запись данных в файл
+         * @param val данные
+         */
         template <typename T>
         void fileWriteOnly(T val) {
             LoggingMaster::getInstance().logfile << val << " ";
         }
 
+        /**
+         * @brief ostreamWriteOnly Вывод данных в терминал
+         * @param val данные
+         */
         template <typename T>
         void ostreamWriteOnly(T val) {
 #ifdef QT_CORE_LIB
@@ -102,6 +128,10 @@ class LoggingMaster : boost::noncopyable
 #endif // QT_CORE_LIB
         }
 
+        /**
+         * @brief operator () Оператор для вывода данных в терминал и записи в файл
+         * @param val данные
+         */
         template <typename T>
         void operator()(T val) {
             fileWriteOnly(val);
@@ -109,19 +139,25 @@ class LoggingMaster : boost::noncopyable
         }
     };
 
-    bool isWorking {false};
-    bool isThreadExited {true};
-    std::thread logThread;
-    std::list< std::function<void()> > taskList;
-    std::mutex taskListMx;
+    bool                                isWorking       {false}; //! Флаг для определения, обязан ли логгер работать дальше
+    bool                                isThreadExited  {true};  //! Флаг для определения, закончил ли выполнение поток вывода логов
+    std::thread                         logThread;               //! Поток вывода логов
+    std::list< std::function<void()> >  taskList;                //! Список задач по выводу данных в поток логов
+    std::mutex                          taskListMx;              //! Мьютекс для получения данных из списка задач по выводу данных
+    std::condition_variable             addTaskCV;               //! Переменная для ожидания добавления данных на вывод в поток логов
+    std::mutex                          addTaskMx;               //! Мьютекс для ожидания добавления данных на вывод в поток логов
 
-    std::condition_variable addTaskCV;
-    std::mutex addTaskMx;
+    /**
+     * @brief waitForTasks Ожидать сигнала о добавлении задачи на вывод
+     */
     void waitForTasks() {
         std::unique_lock<std::mutex> lock(addTaskMx);
         addTaskCV.wait(lock);
     }
 
+    /**
+     * @brief taskAdded Уведомить о получении задачи на вывод
+     */
     void taskAdded() {
         std::unique_lock<std::mutex> lock(addTaskMx);
         addTaskCV.notify_one();
@@ -160,11 +196,20 @@ class LoggingMaster : boost::noncopyable
     }
 
 public:
+
+    /**
+     * @brief getInstance Получить объект сигнлетона мастера логгирования
+     * @return
+     */
     static LoggingMaster& getInstance() {
         static LoggingMaster inst;
         return inst;
     }
 
+    /**
+     * @brief log Вывести данные в потоке логгирования. Для синхронного вывода укажите isSync как true
+     * @param args Данные на вывод
+     */
     template <LoggingType lt, bool isSync, typename...Args>
     void log(Args...args) {
 
@@ -294,7 +339,7 @@ inline void LoggingMaster::LoggingHelper::fileWriteOnly(double val) {
 } // namespace Logging
 
 
-// Параллельный логгер
+// Параллельный логгер (макросы вывода данных через другой поток)
 #define LOG_EMPTY(...)      Logging::LoggingMaster::getInstance().log<Logging::LoggingType::Empty, false>(__VA_ARGS__)
 #define LOG_DEBUG(...)      Logging::LoggingMaster::getInstance().log<Logging::LoggingType::Debug, false>(__VA_ARGS__)
 #define LOG_INFO(...)       Logging::LoggingMaster::getInstance().log<Logging::LoggingType::Info, false>(__VA_ARGS__)
@@ -303,7 +348,7 @@ inline void LoggingMaster::LoggingHelper::fileWriteOnly(double val) {
 #define LOG_OK(...)         Logging::LoggingMaster::getInstance().log<Logging::LoggingType::Ok, false>(__VA_ARGS__)
 
 
-// Синхронная версия логгера
+// Синхронная версия логгера (макросы вывода данных через текущий поток)
 #define LOG_EMPTY_SYNC(...)     Logging::LoggingMaster::getInstance().log<Logging::LoggingType::Empty, true>(__VA_ARGS__)
 #define LOG_DEBUG_SYNC(...)     Logging::LoggingMaster::getInstance().log<Logging::LoggingType::Debug, true>(__VA_ARGS__)
 #define LOG_INFO_SYNC(...)      Logging::LoggingMaster::getInstance().log<Logging::LoggingType::Info, true>(__VA_ARGS__)

@@ -94,6 +94,7 @@ class LoggingMaster : boost::noncopyable
 #else
     std::fstream logfile; //! Логфайл
 #endif // QT_CORE_LIB
+    std::mutex  logfileMx; //! Мьютекс для единоличной записи данных в файл
 
     /**
      * @brief The LoggingHelper class Помощник вывода данных в логфайл
@@ -112,7 +113,7 @@ class LoggingMaster : boost::noncopyable
          */
         template <typename T>
         void fileWriteOnly(T val) {
-            LoggingMaster::getInstance().logfile << val << " ";
+            LoggingMaster::getInstance().logfileStream << val << " ";
         }
 
         /**
@@ -227,6 +228,7 @@ public:
         };
 
         auto task = [=](){
+            logfileMx.lock();
 #ifdef QT_CORE_LIB
             logfile.open(QIODevice::Append);
             if (!logfile.isOpen()) {
@@ -252,6 +254,7 @@ public:
 #endif // QT_CORE_LIB
             logfile.flush();
             logfile.close();
+            unlock();
         };
 
         if constexpr (isSync) {

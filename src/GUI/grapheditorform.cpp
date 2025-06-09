@@ -111,7 +111,7 @@ void GraphEditorForm::saveGraph()
     // TODO: Save data
     m_currentGraph->setEditTime(QDateTime::currentDateTime());
 
-    if (QFileInfo(m_currentGraphFilePath).suffix() != ".gse") {
+    if (QFileInfo(m_currentGraphFilePath).suffix() != "gse") {
         m_currentGraphFilePath += ".gse";
     }
 

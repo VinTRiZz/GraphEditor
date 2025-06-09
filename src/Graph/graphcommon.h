@@ -42,6 +42,45 @@ void showWarning(const QString& text);
  */
 void showError(const QString& text);
 
+template <typename InputValueType, typename OutputArrayType>
+bool convertEncode(InputValueType inv, uint8_t maxDigit, std::list<OutputArrayType>& olist)
+{
+    olist.clear();
+    while (inv > 0) {
+        olist.push_front(inv % maxDigit);
+        inv -= olist.front();
+        inv /= maxDigit;
+    }
+    return inv == 0;
+}
+
+template <typename InputArrayType, typename OutputValueType>
+void convertDecode(const std::list<InputArrayType>& ilist, uint8_t maxDigit, OutputValueType& oval)
+{
+    oval = 0;
+    uint64_t curDigit = 1;
+    for (auto ival = --(ilist.end()); ival != ilist.begin();) {
+        oval += curDigit * (*ival);
+        curDigit *= maxDigit;
+        std::advance(ival, -1);
+    }
+    oval += curDigit * ilist.front();
+}
+
+template <typename InputValueType>
+void convertEncodeChar(InputValueType inv, uint8_t maxDigit, std::string& ostr)
+{
+    ostr.clear();
+    char bufc[2] = { '0', '\0'};
+    while (inv > 0) {
+        auto nextV = inv % maxDigit;
+        bufc[0] = nextV > 9 ? nextV - 10 + 'a' : nextV + '0';
+        ostr = std::string(bufc) + ostr;
+        inv -= nextV;
+        inv /= maxDigit;
+    }
+}
+
 }
 
 #endif // GRAPHCOMMON_H

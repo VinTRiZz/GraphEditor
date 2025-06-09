@@ -4,8 +4,13 @@
 #include <QSqlQuery>
 #include <QSqlError>
 
+#include <QBuffer>
 #include <QFileInfo>
 #include <QDir>
+
+#include <QJsonDocument>
+
+#include <boost/algorithm/hex.hpp>
 
 #include "graphcommon.h"
 
@@ -27,6 +32,105 @@ bool SaveMaster::save(const QString &oFilePath, const Graph::GraphObject &iGraph
     if (!db.open()) {
         LOG_ERROR("Error opening savefile:", db.lastError().text());
         return false;
+    }
+
+    // Настройка таблиц
+    QSqlQuery q(db);
+
+    LOG_INFO("Setting up tables...");
+    QString propTableQuery = R"(
+CREATE TABLE IF NOT EXISTS graph_properties (
+    id INTEGER PRIMARY KEY,
+    prop_name TEXT UNIQUE NOT NULL,
+    prop_value TEXT
+);
+)";
+    if (!executeQuery(q, propTableQuery)) { return false; }
+
+    QString vertexTableQuery = R"(
+CREATE TABLE IF NOT EXISTS vertices (
+    id              INTEGER PRIMARY KEY,
+    posx            INTEGER NOT NULL,
+    posy            INTEGER NOT NULL,
+    short_name      TEXT NOT NULL,
+    name            TEXT,
+    description     TEXT,
+    custom_props    TEXT,
+    color_rgba      TEXT, -- R-G-B-A in hex, example: 255 003 166 130 -> ff 03 a6 82
+    bgr_color_rgba  TEXT, -- R-G-B-A in hex, example: 255 003 166 130 -> ff 03 a6 82
+    pxmap           TEXT  -- Pixmap as PNG
+);
+)";
+    if (!executeQuery(q, vertexTableQuery)) { return false; }
+
+    QString connectionTableQuery = R"(
+CREATE TABLE IF NOT EXISTS connections (
+    id          INTEGER PRIMARY KEY,
+    idFrom      INTEGER NOT NULL,
+    idTo        INTEGER NOT NULL,
+    weight      FLOAT DEFAULT 0,
+    name        TEXT,
+    color_rgba  TEXT, -- R-G-B-A in hex, example: 255 003 166 130 -> ff 03 a6 82
+    is_directed BOOLEAN DEFAULT FALSE,
+
+    FOREIGN KEY (idFrom) REFERENCES vertices(id) ON DELETE CASCADE,
+    FOREIGN KEY (idTo) REFERENCES vertices(id) ON DELETE CASCADE
+);
+)";
+    if (!executeQuery(q, connectionTableQuery)) { return false; }
+
+    // Загрузка информации о графе
+    LOG_INFO("Inserting common data as properties...");
+    auto queryText = QString("INSERT INTO graph_properties(prop_name, prop_value) VALUES ('%1', '%2')");
+
+    if (!executeQuery(q, queryText.arg("name",          iGraphObject.getName()))) { return false; }
+    if (!executeQuery(q, queryText.arg("description",   iGraphObject.getDescription()))) { return false; }
+    if (!executeQuery(q, queryText.arg("create date",   iGraphObject.getCreateTime().toString(GraphCommon::DATE_CONVERSION_FORMAT)))) { return false; }
+    if (!executeQuery(q, queryText.arg("edit time",     iGraphObject.getEditTime().toString(GraphCommon::DATE_CONVERSION_FORMAT)))) { return false; }
+
+    LOG_INFO("Inserting user data as properties...");
+    for (auto& userProp : iGraphObject.getCustomValueMap()) {
+        if (!executeQuery(q, queryText.arg(userProp.first, userProp.second.toString()))) {
+            return false;
+        }
+    }
+
+    // Загрузка вершин в таблицу
+    LOG_INFO("Inserting vertices info...");
+    auto queryTextBase = QString("INSERT INTO vertices VALUES (");
+    for (auto& vert : iGraphObject.getAllVertices()) {
+        queryText = queryTextBase;
+
+        queryText += QString::number(vert.id) + ",";
+        queryText += QString::number(vert.posX) + ",";
+        queryText += QString::number(vert.posY) + ",";
+        queryText += "'" + vert.shortName + "',";
+        queryText += "'" + vert.name + "',";
+        queryText += "'" + vert.description + "',";
+        queryText += "'" + QJsonDocument(vert.customProperties).toJson().toBase64() + "',";
+        queryText += "'" + getEncoded(vert.borderColor) + "',";
+        queryText += "'" + getEncoded(vert.backgroundColor) + "',";
+        queryText += "'" + getEncoded(vert.pxmap) + "'";
+
+        queryText += ")";
+        if (!executeQuery(q, queryText)) { return false; }
+    }
+
+    LOG_INFO("Inserting connections info...");
+    queryTextBase = QString("INSERT INTO connections VALUES (");
+    for (auto& con : iGraphObject.getAllConnections()) {
+        queryText = queryTextBase;
+
+        queryText += "NULL,";
+        queryText += QString::number(con.idFrom) + ",";
+        queryText += QString::number(con.idTo) + ",";
+        queryText += QString::number(con.connectionWeight) + ",";
+        queryText += "'" + con.name + "',";
+        queryText += "'" + getEncoded(con.lineColor) + "',";
+        queryText += QString(con.isDirected ? "true" : "false");
+
+        queryText += ")";
+        if (!executeQuery(q, queryText)) { return false; }
     }
 
     db.close();
@@ -52,4 +156,72 @@ bool SaveMaster::load(const QString &iFilePath, Graph::GraphObject &oGraphObject
 
     db.close();
     return true;
+}
+
+bool SaveMaster::executeQuery(QSqlQuery &q, const QString &queryText)
+{
+    if (!q.exec(queryText)) {
+        LOG_ERROR("Error executing query with text:");
+        LOG_ERROR(q.lastError().text());
+        return false;
+    }
+    return true;
+}
+
+QByteArray SaveMaster::getEncoded(const QByteArray &iStr)
+{
+    return iStr.toBase64();
+}
+
+QByteArray SaveMaster::getEncoded(const QColor &iCol)
+{
+    auto encodedString = QString("%1%2%3%4");
+
+    auto toHex = [](int val) -> QString {
+        std::string tmpStr;
+        GraphCommon::convertEncodeChar(val, 16, tmpStr);
+        auto res = QString::fromStdString(tmpStr);
+        if (res.isEmpty()) {
+            return "00";
+        }
+        return res;
+    };
+
+    return encodedString.arg(
+        toHex(iCol.red()),
+        toHex(iCol.green()),
+        toHex(iCol.blue()),
+        toHex(iCol.alpha())
+    ).toUtf8();
+}
+
+QByteArray SaveMaster::getEncoded(const QPixmap &iPxmap)
+{
+    QByteArray bytes;
+    QBuffer byteBuff(&bytes);
+    if (iPxmap.save(&byteBuff, "PNG")) {
+        return bytes.toBase64();
+    }
+    return {};
+}
+
+QByteArray SaveMaster::getDecoded(const QByteArray &iBytes)
+{
+    return QByteArray::fromBase64(iBytes);
+}
+
+QPixmap SaveMaster::getDecodedPixmap(const QByteArray &iBytes)
+{
+    QPixmap pxmap;
+    pxmap.loadFromData(QByteArray::fromBase64(iBytes), "PNG");
+    return pxmap;
+}
+
+QColor SaveMaster::getDecodedColor(const QByteArray &iBytes)
+{
+    auto redComponent = std::stoi(std::string({iBytes.at(0), iBytes.at(1)}), 0, 16);
+    auto greenComponent = std::stoi(std::string({iBytes.at(2), iBytes.at(3)}), 0, 16);
+    auto blueComponent = std::stoi(std::string({iBytes.at(4), iBytes.at(5)}), 0, 16);
+    auto alphaComponent = std::stoi(std::string({iBytes.at(6), iBytes.at(7)}), 0, 16);
+    return QColor(redComponent, greenComponent, blueComponent, alphaComponent);
 }

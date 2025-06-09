@@ -254,7 +254,7 @@ public:
 #endif // QT_CORE_LIB
             logfile.flush();
             logfile.close();
-            unlock();
+            logfileMx.unlock();
         };
 
         if constexpr (isSync) {

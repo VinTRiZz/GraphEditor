@@ -185,6 +185,32 @@ public:
      */
     QDateTime   getEditTime() const;
 
+    /**
+     * @brief setCustomValue Задание значения пользовательским данным
+     * @param key Ключ (уникальный)
+     * @param value Значение (любое, желательно без указателей)
+     */
+    void setCustomValue(const QString& key, const QVariant& value);
+
+    /**
+     * @brief removeCustomValue Удалить пользовательские данные по ключу
+     * @param key Ключ (уникальный)
+     */
+    void removeCustomValue(const QString& key);
+
+    /**
+     * @brief getCustomValue Получение пользовательского значения
+     * @param key Ключ (уникаьный)
+     * @return Значение или NULL QVariant при отсутствии такого ключа
+     */
+    QVariant getCustomValue(const QString& key) const;
+
+    /**
+     * @brief getCustomValueMap Получение всех пользовательских данных
+     * @return Словарь ключ-значение пользовательских данных
+     */
+    std::map<QString, QVariant> getCustomValueMap() const;
+
 private:
     std::function<uint()>   m_idGenerator; //! Генератор ID для вершин
 
@@ -196,6 +222,8 @@ private:
     QString     m_description               {"Empty description of a graph"};
     QDateTime   m_createTime;
     QDateTime   m_editTime;
+
+    std::map<QString, QVariant> m_customDataValues; //! Пользовательские данные
 
     static const uint m_mainRectLayer       = 1;
 

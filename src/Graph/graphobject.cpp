@@ -129,7 +129,7 @@ QGraphicsItem *GraphObject::toItem() const
 
         LOG_DEBUG_SYNC("Connection:", con.name, "Angle:", rotationAngle);
 
-        pConnectionLabel->setRotation(rotationAngle);
+//        pConnectionLabel->setRotation(rotationAngle);
 
         // TODO: Найти способ задать центральной позицию получше
         auto textCos = cos(rotationAngle * M_PI / 180.0);
@@ -142,11 +142,11 @@ QGraphicsItem *GraphObject::toItem() const
         auto pConnectionLabelRect = new QGraphicsRectItem;
         pConnectionLabelRect->setParentItem(pConnection);
         pConnectionLabelRect->setBrush(Qt::white);
-        pConnectionLabelRect->setRotation(rotationAngle);
 
         auto labelRect = pConnectionLabel->boundingRect();
-        labelRect.setX(labelRect.x() - 10);
-        labelRect.setWidth(labelRect.width() + 20);
+        labelRect.setX(labelRect.x() - 10 * textCos);
+        labelRect.setY(labelRect.y() - 10 * textSin);
+        labelRect.setWidth(labelRect.width() + 10);
         pConnectionLabelRect->setRect(labelRect);
         pConnectionLabelRect->setX(pConnectionLabel->x());
         pConnectionLabelRect->setY(pConnectionLabel->y());
@@ -277,6 +277,34 @@ void GraphObject::setEditTime(const QDateTime &iDateTime)
 QDateTime GraphObject::getEditTime() const
 {
     return m_editTime;
+}
+
+void GraphObject::setCustomValue(const QString &key, const QVariant &value)
+{
+    m_customDataValues[key] = value;
+}
+
+void GraphObject::removeCustomValue(const QString &key)
+{
+    auto targetValIt = m_customDataValues.find(key);
+    if (targetValIt == m_customDataValues.end()) {
+        return;
+    }
+    m_customDataValues.erase(targetValIt);
+}
+
+QVariant GraphObject::getCustomValue(const QString &key) const
+{
+    auto targetValIt = m_customDataValues.find(key);
+    if (targetValIt == m_customDataValues.end()) {
+        return {};
+    }
+    return targetValIt->second;
+}
+
+std::map<QString, QVariant> GraphObject::getCustomValueMap() const
+{
+    return m_customDataValues;
 }
 
 

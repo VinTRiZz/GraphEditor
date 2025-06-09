@@ -5,8 +5,9 @@
 
 class SaveMaster
 {
-    static void save(const QString& oFilePath, const Graph::GraphObject& iGraphObject);
-    static void load(const QString& iFilePath, Graph::GraphObject& oGraphObject);
+public:
+    static bool save(const QString& oFilePath, const Graph::GraphObject& iGraphObject);
+    static bool load(const QString& iFilePath, Graph::GraphObject& oGraphObject);
 };
 
 #endif // SAVEMASTER_H

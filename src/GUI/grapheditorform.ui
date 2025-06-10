@@ -148,7 +148,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="propertyCancel_pushButton">
+              <widget class="QPushButton" name="propertyLoad_pushButton">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                  <horstretch>1</horstretch>
@@ -156,7 +156,14 @@
                 </sizepolicy>
                </property>
                <property name="text">
-                <string>Отмена изменений</string>
+                <string>Откатить</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="propertyLoadAs_pushButton">
+               <property name="text">
+                <string>Открыть граф...</string>
                </property>
               </widget>
              </item>

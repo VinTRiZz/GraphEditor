@@ -27,30 +27,35 @@ public:
     ~GraphEditorForm();
 
     /**
-     * @brief setCurrentGraph Выбрать граф в качестве текущего
-     * @param pGraph Указатель на граф, с которым будет проводиться работа
-     */
-    void setCurrentGraph(Graph::GraphObject* pGraph);
-
-    /**
      * @brief getCurrentGraph Получить текущий граф
-     * @return Указатель на текущий граф. nullptr если не задан
+     * @return Указатель на текущий граф (объект графа существует вместе с формой)
      */
     Graph::GraphObject* getCurrentGraph();
 
 private:
     Ui::GraphEditorForm *ui;
 
-    Graph::GraphObject* m_currentGraph              {nullptr}; //! Указатель на текущий граф во избежание множественного копирования данных
+    Graph::GraphObject  m_currentGraph;                        //! Текущий граф
     QString             m_currentGraphFilePath;                //! Путь для сохранения графа в файл
 
     QStandardItemModel* m_pCommonGraphInfoModel     {nullptr}; //! Модель с общими данными по графу
     QStandardItemModel* m_pUserGraphInfoModel       {nullptr}; //! Модель с пользовательскими данными по графу
 
     /**
-     * @brief saveGraph Сохранение текущего графа в файл
+     * @brief isGraphPathSet Проверить, задан ли путь для сохранения/загрузки графа. Вызовет диалог и задаст путь, если он пуст или не валидный
+     * @return true если путь корректен после ввода пользователем
+     */
+    bool isGraphPathSet();
+
+    /**
+     * @brief saveGraph Сохранение текущего графа в файл m_currentGraphFilePath
      */
     void saveGraph();
+
+    /**
+     * @brief loadGraph Выгрузить граф из выбранного в m_currentGraphFilePath пути
+     */
+    void loadGraph();
 
     /**
      * @brief setupSignals Настройка сигналов виджета

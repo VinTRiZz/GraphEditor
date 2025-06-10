@@ -38,50 +38,19 @@ bool SaveMaster::save(const QString &oFilePath, const Graph::GraphObject &iGraph
     QSqlQuery q(db);
 
     LOG_INFO("Setting up tables...");
-    QString propTableQuery = R"(
-CREATE TABLE IF NOT EXISTS graph_properties (
-    id INTEGER PRIMARY KEY,
-    prop_name TEXT UNIQUE NOT NULL,
-    prop_value TEXT
-);
-)";
-    if (!executeQuery(q, propTableQuery)) { return false; }
+    auto queryText = QString("DELETE FROM %0");
+    if (!executeQuery(q, GraphCommon::DB_GRAPH_PROPS_CREATEQUERY))                      { return false; }
+    if (!executeQuery(q, queryText.arg(GraphCommon::DB_GRAPH_PROPS_TABLENAME)))         { return false; }
 
-    QString vertexTableQuery = R"(
-CREATE TABLE IF NOT EXISTS vertices (
-    id              INTEGER PRIMARY KEY,
-    posx            INTEGER NOT NULL,
-    posy            INTEGER NOT NULL,
-    short_name      TEXT NOT NULL,
-    name            TEXT,
-    description     TEXT,
-    custom_props    TEXT,
-    color_rgba      TEXT, -- R-G-B-A in hex, example: 255 003 166 130 -> ff 03 a6 82
-    bgr_color_rgba  TEXT, -- R-G-B-A in hex, example: 255 003 166 130 -> ff 03 a6 82
-    pxmap           TEXT  -- Pixmap as PNG
-);
-)";
-    if (!executeQuery(q, vertexTableQuery)) { return false; }
+    if (!executeQuery(q, GraphCommon::DB_GRAPH_VERTICES_CREATEQUERY))                   { return false; }
+    if (!executeQuery(q, queryText.arg(GraphCommon::DB_GRAPH_VERTICES_TABLENAME)))      { return false; }
 
-    QString connectionTableQuery = R"(
-CREATE TABLE IF NOT EXISTS connections (
-    id          INTEGER PRIMARY KEY,
-    idFrom      INTEGER NOT NULL,
-    idTo        INTEGER NOT NULL,
-    weight      FLOAT DEFAULT 0,
-    name        TEXT,
-    color_rgba  TEXT, -- R-G-B-A in hex, example: 255 003 166 130 -> ff 03 a6 82
-    is_directed BOOLEAN DEFAULT FALSE,
-
-    FOREIGN KEY (idFrom) REFERENCES vertices(id) ON DELETE CASCADE,
-    FOREIGN KEY (idTo) REFERENCES vertices(id) ON DELETE CASCADE
-);
-)";
-    if (!executeQuery(q, connectionTableQuery)) { return false; }
+    if (!executeQuery(q, GraphCommon::DB_GRAPH_CONNECTIONS_CREATEQUERY))                { return false; }
+    if (!executeQuery(q, queryText.arg(GraphCommon::DB_GRAPH_CONNECTIONS_TABLENAME)))   { return false; }
 
     // Загрузка информации о графе
     LOG_INFO("Inserting common data as properties...");
-    auto queryText = QString("INSERT INTO graph_properties(prop_name, prop_value) VALUES ('%1', '%2')");
+    queryText = QString("INSERT INTO graph_properties(prop_name, prop_value) VALUES ('%1', '%2')");
 
     if (!executeQuery(q, queryText.arg("name",          iGraphObject.getName()))) { return false; }
     if (!executeQuery(q, queryText.arg("description",   iGraphObject.getDescription()))) { return false; }
@@ -134,6 +103,7 @@ CREATE TABLE IF NOT EXISTS connections (
     }
 
     db.close();
+    LOG_OK("Graph saved");
     return true;
 }
 
@@ -154,7 +124,34 @@ bool SaveMaster::load(const QString &iFilePath, Graph::GraphObject &oGraphObject
         return false;
     }
 
+    QSqlQuery q(db);
+
+    // Проверка, все ли таблицы на месте
+    LOG_INFO("Checking required tables...");
+    if (!executeQuery(q, "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name ASC")) { return false; }
+
+    bool containProps {false};
+    bool containVertices {false};
+    bool containConnections {false};
+    while (q.next()) {
+        auto tableName = q.value(0).toString();
+        containProps |= tableName == GraphCommon::DB_GRAPH_PROPS_TABLENAME;
+        containVertices |= tableName == GraphCommon::DB_GRAPH_VERTICES_TABLENAME;
+        containConnections |= tableName == GraphCommon::DB_GRAPH_CONNECTIONS_TABLENAME;
+
+        if (containProps && containVertices && containConnections) {
+            break;
+        }
+    }
+
+    if (!containProps || !containVertices || !containConnections) {
+        LOG_ERROR("Did not found one of required tables in savefile");
+        return false;
+    }
+
+
     db.close();
+    LOG_OK("Graph loaded");
     return true;
 }
 

@@ -2,14 +2,13 @@
 #include "ui_grapheditorform.h"
 
 #include <QFileDialog>
+#include <QFileInfo>
 
 #include "graphobject.h"
 #include "savemaster.h"
 #include "graphcommon.h"
 
 #include "logging.h"
-
-Graph::GraphObject tmpGraph;
 
 GraphEditorForm::GraphEditorForm(QWidget *parent) :
     QWidget(parent),
@@ -24,66 +23,67 @@ GraphEditorForm::GraphEditorForm(QWidget *parent) :
     setupSignals();
     setupModels();
 
-    tmpGraph.setIdGenerator(ui->graphScene->getIdGenerator());
 
-    tmpGraph.setName("Мой тестовый граф");
-    tmpGraph.setDescription("Описание для теста");
-    tmpGraph.setCreateTime(QDateTime::currentDateTime());
-    tmpGraph.setEditTime(QDateTime::currentDateTime());
+    m_currentGraph.setName("Мой тестовый граф");
+    m_currentGraph.setDescription("Описание для теста");
+    m_currentGraph.setCreateTime(QDateTime::currentDateTime());
+    m_currentGraph.setEditTime(QDateTime::currentDateTime());
 
     Graph::GVertex vert;
     vert.shortName = "Vertex 1";
     vert.backgroundColor = Qt::red;
     vert.posX = 100;
     vert.posY = 100;
-    tmpGraph.addVertex(vert);
+    m_currentGraph.addVertex(vert);
 
     vert.shortName = "Vertex 2";
     vert.borderColor = Qt::magenta;
     vert.backgroundColor = Qt::green;
     vert.posX = 100;
     vert.posY = 300;
-    tmpGraph.addVertex(vert);
+    m_currentGraph.addVertex(vert);
 
     vert.shortName = "Vertex 3";
     vert.backgroundColor = Qt::red;
     vert.posX = 300;
     vert.posY = 100;
-    tmpGraph.addVertex(vert);
+    m_currentGraph.addVertex(vert);
 
     vert.shortName = "Vertex 4";
     vert.borderColor = Qt::magenta;
     vert.backgroundColor = Qt::green;
     vert.posX = 300;
     vert.posY = 300;
-    tmpGraph.addVertex(vert);
+    m_currentGraph.addVertex(vert);
 
     Graph::GConnection con;
     con.name = "Connection 1";
     con.idFrom = 1;
     con.idTo = 2;
-    tmpGraph.addConnection(con);
+    m_currentGraph.addConnection(con);
 
     con.name = "Connection 2";
     con.idFrom = 2;
     con.idTo = 3;
-    tmpGraph.addConnection(con);
+    m_currentGraph.addConnection(con);
 
     con.name = "Connection 3";
     con.idFrom = 1;
     con.idTo = 3;
-    tmpGraph.addConnection(con);
+    m_currentGraph.addConnection(con);
 
     con.name = "Connection 4";
     con.idFrom = 1;
     con.idTo = 4;
-    tmpGraph.addConnection(con);
+    m_currentGraph.addConnection(con);
 
     con.name = "Connection 5";
     con.idFrom = 3;
     con.idTo = 1;
-    tmpGraph.addConnection(con);
-    setCurrentGraph(&tmpGraph);
+    m_currentGraph.addConnection(con);
+    m_currentGraph.setIdGenerator(ui->graphScene->getIdGenerator());
+    ui->graphScene->addObject(m_currentGraph.toItem());
+    updateGraphInfo();
 }
 
 GraphEditorForm::~GraphEditorForm()
@@ -91,19 +91,20 @@ GraphEditorForm::~GraphEditorForm()
     delete ui;
 }
 
-void GraphEditorForm::setCurrentGraph(Graph::GraphObject *pGraph)
-{
-    m_currentGraph = pGraph;
-
-    if (pGraph != nullptr) {
-        ui->graphScene->addObject(m_currentGraph->toItem());
-        updateGraphInfo();
-    }
-}
-
 Graph::GraphObject *GraphEditorForm::getCurrentGraph()
 {
-    return m_currentGraph;
+    return &m_currentGraph;
+}
+
+bool GraphEditorForm::isGraphPathSet()
+{
+    // .gse --> Graph Save Extension
+    m_currentGraphFilePath = QFileDialog::getSaveFileName(this, "Файл для сохранения графа", QDir::homePath(), "Файл графа (*.gse)");
+
+    if (m_currentGraphFilePath.isEmpty()) {
+        return false;
+    }
+    return true;
 }
 
 void GraphEditorForm::saveGraph()
@@ -112,20 +113,33 @@ void GraphEditorForm::saveGraph()
     const int userPropNameCol = 0;
     const int userPropDataCol = 1;
     for (int row = 0; row < m_pUserGraphInfoModel->rowCount(); ++row) {
-        m_currentGraph->setCustomValue(m_pUserGraphInfoModel->index(row, userPropNameCol).data().toString(),
+        m_currentGraph.setCustomValue(m_pUserGraphInfoModel->index(row, userPropNameCol).data().toString(),
                                         m_pUserGraphInfoModel->index(row, userPropDataCol).data());
     }
 
-    m_currentGraph->setEditTime(QDateTime::currentDateTime());
+    m_currentGraph.setEditTime(QDateTime::currentDateTime());
 
     if (QFileInfo(m_currentGraphFilePath).suffix() != "gse") {
         m_currentGraphFilePath += ".gse";
     }
 
-    auto saveSucceed = SaveMaster::save(m_currentGraphFilePath, *m_currentGraph);
+    auto saveSucceed = SaveMaster::save(m_currentGraphFilePath, m_currentGraph);
     if (!saveSucceed) {
         GraphCommon::showError("Ошибка сохранения графа");
+        return;
     }
+}
+
+void GraphEditorForm::loadGraph()
+{
+    auto loadSucceed = SaveMaster::load(m_currentGraphFilePath, m_currentGraph);
+    if (!loadSucceed) {
+        GraphCommon::showError("Ошибка загрузки графа");
+        return;
+    }
+    m_currentGraph.setIdGenerator(ui->graphScene->getIdGenerator());
+    ui->graphScene->addObject(m_currentGraph.toItem());
+    updateGraphInfo();
 }
 
 void GraphEditorForm::setupSignals()
@@ -153,13 +167,7 @@ void GraphEditorForm::setupSignals()
 
     connect(ui->propertySave_pushButton, &QPushButton::clicked,
             this, [this]() {
-        if (m_currentGraphFilePath.isEmpty()) {
-            // .gse --> Graph Save Extension
-            m_currentGraphFilePath = QFileDialog::getSaveFileName(this, "Файл для сохранения графа", QDir::homePath(), "Файл графа (*.gse)");
-        }
-
-        if (m_currentGraphFilePath.isEmpty()) {
-            GraphCommon::showWarning("Вы не выбрали путь.\nГраф не был сохранён");
+        if (!isGraphPathSet()) {
             return;
         }
         saveGraph();
@@ -168,15 +176,30 @@ void GraphEditorForm::setupSignals()
 
     connect(ui->propertySaveAs_pushButton, &QPushButton::clicked,
             this, [this](){
-        // .gse --> Graph Save Extension
         m_currentGraphFilePath = QFileDialog::getSaveFileName(this, "Файл для сохранения графа", QDir::homePath(), "Файл графа (*.gse)");
-
         if (m_currentGraphFilePath.isEmpty()) {
-            GraphCommon::showWarning("Вы не выбрали путь.\nГраф не был сохранён");
             return;
         }
         saveGraph();
         updateGraphInfo();
+    });
+
+    connect(ui->propertyLoad_pushButton, &QPushButton::clicked,
+            this, [this]() {
+        if (!isGraphPathSet()) {
+            return;
+        }
+        loadGraph();
+    });
+    ui->propertyLoad_pushButton->setEnabled(false); // Нечего загружать на старте
+
+    connect(ui->propertyLoadAs_pushButton, &QPushButton::clicked,
+            this, [this]() {
+        m_currentGraphFilePath = QFileDialog::getOpenFileName(this, "Файл сохранённого графа", QDir::homePath(), "Файл графа (*.gse)");
+        if (m_currentGraphFilePath.isEmpty()) {
+            return;
+        }
+        loadGraph();
     });
 }
 
@@ -213,32 +236,28 @@ void GraphEditorForm::updateGraphInfo()
     m_pCommonGraphInfoModel->removeRows(0, m_pCommonGraphInfoModel->rowCount());
     m_pUserGraphInfoModel->removeRows(0, m_pUserGraphInfoModel->rowCount());
 
-    if (m_currentGraph == nullptr) {
-        return;
-    }
-
     // Полу-хардкод
     auto pItem = new QStandardItem("Название");
-    auto pProperyItem = new QStandardItem(m_currentGraph->getName());
+    auto pProperyItem = new QStandardItem(m_currentGraph.getName());
     pItem->setEditable(false);
     m_pCommonGraphInfoModel->appendRow({pItem, pProperyItem});
 
     pItem = new QStandardItem("Описание");
-    pProperyItem = new QStandardItem(m_currentGraph->getDescription());
+    pProperyItem = new QStandardItem(m_currentGraph.getDescription());
     pItem->setEditable(false);
     m_pCommonGraphInfoModel->appendRow({pItem, pProperyItem});
 
     pItem = new QStandardItem("Создан");
-    pProperyItem = new QStandardItem(m_currentGraph->getCreateTime().toString(GraphCommon::DATE_DISPLAY_CONVERSION_FORMAT));
+    pProperyItem = new QStandardItem(m_currentGraph.getCreateTime().toString(GraphCommon::DATE_DISPLAY_CONVERSION_FORMAT));
     pItem->setEditable(false);
     m_pCommonGraphInfoModel->appendRow({pItem, pProperyItem});
 
     pItem = new QStandardItem("Изменён");
-    pProperyItem = new QStandardItem(m_currentGraph->getEditTime().toString(GraphCommon::DATE_DISPLAY_CONVERSION_FORMAT));
+    pProperyItem = new QStandardItem(m_currentGraph.getEditTime().toString(GraphCommon::DATE_DISPLAY_CONVERSION_FORMAT));
     pItem->setEditable(false);
     m_pCommonGraphInfoModel->appendRow({pItem, pProperyItem});
 
-    for (auto& [key, value] : m_currentGraph->getCustomValueMap()) {
+    for (auto& [key, value] : m_currentGraph.getCustomValueMap()) {
         pItem = new QStandardItem;
         pItem->setData(key, Qt::DisplayRole);
         pItem->setColumnCount(2);

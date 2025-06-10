@@ -108,7 +108,14 @@ Graph::GraphObject *GraphEditorForm::getCurrentGraph()
 
 void GraphEditorForm::saveGraph()
 {
-    // TODO: Save data
+    // Обновить данные по пользовательским данным
+    const int userPropNameCol = 0;
+    const int userPropDataCol = 1;
+    for (int row = 0; row < m_pUserGraphInfoModel->rowCount(); ++row) {
+        m_currentGraph->setCustomValue(m_pUserGraphInfoModel->index(row, userPropNameCol).data().toString(),
+                                        m_pUserGraphInfoModel->index(row, userPropDataCol).data());
+    }
+
     m_currentGraph->setEditTime(QDateTime::currentDateTime());
 
     if (QFileInfo(m_currentGraphFilePath).suffix() != "gse") {

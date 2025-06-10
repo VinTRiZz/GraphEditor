@@ -23,67 +23,66 @@ GraphEditorForm::GraphEditorForm(QWidget *parent) :
     setupSignals();
     setupModels();
 
+//    m_currentGraph.setName("Мой тестовый граф");
+//    m_currentGraph.setDescription("Описание для теста");
+//    m_currentGraph.setCreateTime(QDateTime::currentDateTime());
+//    m_currentGraph.setEditTime(QDateTime::currentDateTime());
 
-    m_currentGraph.setName("Мой тестовый граф");
-    m_currentGraph.setDescription("Описание для теста");
-    m_currentGraph.setCreateTime(QDateTime::currentDateTime());
-    m_currentGraph.setEditTime(QDateTime::currentDateTime());
+//    Graph::GVertex vert;
+//    vert.shortName = "Vertex 1";
+//    vert.backgroundColor = Qt::red;
+//    vert.posX = 100;
+//    vert.posY = 100;
+//    m_currentGraph.addVertex(vert);
 
-    Graph::GVertex vert;
-    vert.shortName = "Vertex 1";
-    vert.backgroundColor = Qt::red;
-    vert.posX = 100;
-    vert.posY = 100;
-    m_currentGraph.addVertex(vert);
+//    vert.shortName = "Vertex 2";
+//    vert.borderColor = Qt::magenta;
+//    vert.backgroundColor = Qt::green;
+//    vert.posX = 100;
+//    vert.posY = 300;
+//    m_currentGraph.addVertex(vert);
 
-    vert.shortName = "Vertex 2";
-    vert.borderColor = Qt::magenta;
-    vert.backgroundColor = Qt::green;
-    vert.posX = 100;
-    vert.posY = 300;
-    m_currentGraph.addVertex(vert);
+//    vert.shortName = "Vertex 3";
+//    vert.backgroundColor = Qt::red;
+//    vert.posX = 300;
+//    vert.posY = 100;
+//    m_currentGraph.addVertex(vert);
 
-    vert.shortName = "Vertex 3";
-    vert.backgroundColor = Qt::red;
-    vert.posX = 300;
-    vert.posY = 100;
-    m_currentGraph.addVertex(vert);
+//    vert.shortName = "Vertex 4";
+//    vert.borderColor = Qt::magenta;
+//    vert.backgroundColor = Qt::green;
+//    vert.posX = 300;
+//    vert.posY = 300;
+//    m_currentGraph.addVertex(vert);
 
-    vert.shortName = "Vertex 4";
-    vert.borderColor = Qt::magenta;
-    vert.backgroundColor = Qt::green;
-    vert.posX = 300;
-    vert.posY = 300;
-    m_currentGraph.addVertex(vert);
+//    Graph::GConnection con;
+//    con.name = "Connection 1";
+//    con.idFrom = 1;
+//    con.idTo = 2;
+//    m_currentGraph.addConnection(con);
 
-    Graph::GConnection con;
-    con.name = "Connection 1";
-    con.idFrom = 1;
-    con.idTo = 2;
-    m_currentGraph.addConnection(con);
+//    con.name = "Connection 2";
+//    con.idFrom = 2;
+//    con.idTo = 3;
+//    m_currentGraph.addConnection(con);
 
-    con.name = "Connection 2";
-    con.idFrom = 2;
-    con.idTo = 3;
-    m_currentGraph.addConnection(con);
+//    con.name = "Connection 3";
+//    con.idFrom = 1;
+//    con.idTo = 3;
+//    m_currentGraph.addConnection(con);
 
-    con.name = "Connection 3";
-    con.idFrom = 1;
-    con.idTo = 3;
-    m_currentGraph.addConnection(con);
+//    con.name = "Connection 4";
+//    con.idFrom = 1;
+//    con.idTo = 4;
+//    m_currentGraph.addConnection(con);
 
-    con.name = "Connection 4";
-    con.idFrom = 1;
-    con.idTo = 4;
-    m_currentGraph.addConnection(con);
-
-    con.name = "Connection 5";
-    con.idFrom = 3;
-    con.idTo = 1;
-    m_currentGraph.addConnection(con);
-    m_currentGraph.setIdGenerator(ui->graphScene->getIdGenerator());
-    ui->graphScene->addObject(m_currentGraph.toItem());
-    updateGraphInfo();
+//    con.name = "Connection 5";
+//    con.idFrom = 3;
+//    con.idTo = 1;
+//    m_currentGraph.addConnection(con);
+//    m_currentGraph.setIdGenerator(ui->graphScene->getIdGenerator());
+//    ui->graphScene->addObject(m_currentGraph.toItem());
+//    updateGraphInfo();
 }
 
 GraphEditorForm::~GraphEditorForm()
@@ -98,6 +97,10 @@ Graph::GraphObject *GraphEditorForm::getCurrentGraph()
 
 bool GraphEditorForm::isGraphPathSet()
 {
+    if (!m_currentGraphFilePath.isEmpty() && QFileInfo(m_currentGraphFilePath).exists()) {
+        return true;
+    }
+
     // .gse --> Graph Save Extension
     m_currentGraphFilePath = QFileDialog::getSaveFileName(this, "Файл для сохранения графа", QDir::homePath(), "Файл графа (*.gse)");
 
@@ -128,6 +131,7 @@ void GraphEditorForm::saveGraph()
         GraphCommon::showError("Ошибка сохранения графа");
         return;
     }
+    ui->propertyLoad_pushButton->setEnabled(true);
 }
 
 void GraphEditorForm::loadGraph()
@@ -258,11 +262,9 @@ void GraphEditorForm::updateGraphInfo()
     m_pCommonGraphInfoModel->appendRow({pItem, pProperyItem});
 
     for (auto& [key, value] : m_currentGraph.getCustomValueMap()) {
-        pItem = new QStandardItem;
-        pItem->setData(key, Qt::DisplayRole);
-        pItem->setColumnCount(2);
-        pItem->setChild(1, new QStandardItem(value.toString()));
-        m_pUserGraphInfoModel->appendRow(pItem);
+        pItem = new QStandardItem(key);
+        pProperyItem = new QStandardItem(value.toString());
+        m_pUserGraphInfoModel->appendRow({pItem, pProperyItem});
     }
 
     LOG_INFO("Current graph data update");

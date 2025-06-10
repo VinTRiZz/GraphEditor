@@ -2,6 +2,7 @@
 
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <QSqlRecord>
 #include <QSqlError>
 
 #include <QBuffer>
@@ -50,11 +51,11 @@ bool SaveMaster::save(const QString &oFilePath, const Graph::GraphObject &iGraph
 
     // Загрузка информации о графе
     LOG_INFO("Inserting common data as properties...");
-    queryText = QString("INSERT INTO graph_properties(prop_name, prop_value) VALUES ('%1', '%2')");
+    queryText = QString("INSERT INTO %0%1").arg(GraphCommon::DB_GRAPH_PROPS_TABLENAME, QString("(prop_name, prop_value) VALUES ('%1', '%2')"));
 
     if (!executeQuery(q, queryText.arg("name",          iGraphObject.getName()))) { return false; }
     if (!executeQuery(q, queryText.arg("description",   iGraphObject.getDescription()))) { return false; }
-    if (!executeQuery(q, queryText.arg("create date",   iGraphObject.getCreateTime().toString(GraphCommon::DATE_CONVERSION_FORMAT)))) { return false; }
+    if (!executeQuery(q, queryText.arg("create time",   iGraphObject.getCreateTime().toString(GraphCommon::DATE_CONVERSION_FORMAT)))) { return false; }
     if (!executeQuery(q, queryText.arg("edit time",     iGraphObject.getEditTime().toString(GraphCommon::DATE_CONVERSION_FORMAT)))) { return false; }
 
     LOG_INFO("Inserting user data as properties...");
@@ -66,7 +67,7 @@ bool SaveMaster::save(const QString &oFilePath, const Graph::GraphObject &iGraph
 
     // Загрузка вершин в таблицу
     LOG_INFO("Inserting vertices info...");
-    auto queryTextBase = QString("INSERT INTO vertices VALUES (");
+    auto queryTextBase = QString("INSERT INTO %0 VALUES (").arg(GraphCommon::DB_GRAPH_VERTICES_TABLENAME);
     for (auto& vert : iGraphObject.getAllVertices()) {
         queryText = queryTextBase;
 
@@ -86,7 +87,7 @@ bool SaveMaster::save(const QString &oFilePath, const Graph::GraphObject &iGraph
     }
 
     LOG_INFO("Inserting connections info...");
-    queryTextBase = QString("INSERT INTO connections VALUES (");
+    queryTextBase = QString("INSERT INTO %0 VALUES (").arg(GraphCommon::DB_GRAPH_CONNECTIONS_TABLENAME);
     for (auto& con : iGraphObject.getAllConnections()) {
         queryText = queryTextBase;
 
@@ -109,6 +110,8 @@ bool SaveMaster::save(const QString &oFilePath, const Graph::GraphObject &iGraph
 
 bool SaveMaster::load(const QString &iFilePath, Graph::GraphObject &oGraphObject)
 {
+    oGraphObject = Graph::GraphObject(); // Обнулить перед записью, чтобы не было артефактов
+
     auto targetFileInfo = QFileInfo(iFilePath);
     if (!targetFileInfo.exists() || !targetFileInfo.isFile()) {
         LOG_ERROR("SaveMaster::load: Invalid path to object file (file not exist or target is not a file)");
@@ -135,9 +138,9 @@ bool SaveMaster::load(const QString &iFilePath, Graph::GraphObject &oGraphObject
     bool containConnections {false};
     while (q.next()) {
         auto tableName = q.value(0).toString();
-        containProps |= tableName == GraphCommon::DB_GRAPH_PROPS_TABLENAME;
-        containVertices |= tableName == GraphCommon::DB_GRAPH_VERTICES_TABLENAME;
-        containConnections |= tableName == GraphCommon::DB_GRAPH_CONNECTIONS_TABLENAME;
+        containProps        |= tableName == GraphCommon::DB_GRAPH_PROPS_TABLENAME;
+        containVertices     |= tableName == GraphCommon::DB_GRAPH_VERTICES_TABLENAME;
+        containConnections  |= tableName == GraphCommon::DB_GRAPH_CONNECTIONS_TABLENAME;
 
         if (containProps && containVertices && containConnections) {
             break;
@@ -149,6 +152,74 @@ bool SaveMaster::load(const QString &iFilePath, Graph::GraphObject &oGraphObject
         return false;
     }
 
+    // Загрузка информации о графе
+    LOG_INFO("Loading common data as properties...");
+    auto queryText = QString("SELECT prop_name, prop_value FROM %0 WHERE prop_name IN ('name', 'description', 'create time', 'edit time') ORDER BY id ASC").arg(GraphCommon::DB_GRAPH_PROPS_TABLENAME);
+    if (!executeQuery(q, queryText)) { return false; }
+
+    std::map<QString, QVariant> commonValues;
+    while (q.next()) {
+        commonValues[q.value(0).toString()] = q.value(1);
+    }
+    bool containName        = (commonValues.find("name") != commonValues.end());
+    bool containDescription = (commonValues.find("description") != commonValues.end());
+    bool containCreateDate  = (commonValues.find("create time") != commonValues.end());
+    bool containEditDate    = (commonValues.find("edit time") != commonValues.end());
+    if (!containName || !containDescription || !containCreateDate || !containEditDate) {
+        LOG_ERROR("Did not found some of common values in savefile");
+        return false;
+    }
+
+    oGraphObject.setName(commonValues["name"].toString());
+    oGraphObject.setDescription(commonValues["description"].toString());
+    oGraphObject.setCreateTime(QDateTime::fromString(commonValues["create time"].toString(), GraphCommon::DATE_CONVERSION_FORMAT));
+    oGraphObject.setEditTime(QDateTime::fromString(commonValues["edit time"].toString(), GraphCommon::DATE_CONVERSION_FORMAT));
+
+    LOG_INFO("Loading user data as properties...");
+    queryText = QString("SELECT prop_name, prop_value FROM %0 WHERE prop_name NOT IN ('name', 'description', 'create time', 'edit time') ORDER BY prop_name ASC").arg(GraphCommon::DB_GRAPH_PROPS_TABLENAME);
+    if (!executeQuery(q, queryText)) { return false; }
+    while (q.next()) {
+        oGraphObject.setCustomValue(q.value(0).toString(), q.value(1));
+    }
+
+    // Загрузка вершин
+    LOG_INFO("Loading vertices info...");
+    queryText = QString("SELECT * FROM %0").arg(GraphCommon::DB_GRAPH_VERTICES_TABLENAME);
+    if (!executeQuery(q, queryText)) { return false; }
+    while (q.next()) {
+        Graph::GVertex vert;
+        int valPos {0};
+
+        vert.id                 = q.value(valPos++).toUInt();
+        vert.posX               = q.value(valPos++).toUInt();
+        vert.posY               = q.value(valPos++).toUInt();
+        vert.shortName          = q.value(valPos++).toString();
+        vert.name               = q.value(valPos++).toString();
+        vert.description        = q.value(valPos++).toString();
+        vert.customProperties   = QJsonDocument::fromJson(getDecoded(q.value(valPos++).toByteArray())).object();
+        vert.borderColor        = getDecodedColor(q.value(valPos++).toByteArray());
+        vert.backgroundColor    = getDecodedColor(q.value(valPos++).toByteArray());
+        vert.pxmap              = getDecodedPixmap(q.value(valPos++).toByteArray());
+        oGraphObject.addVertex(vert);
+    }
+
+    LOG_INFO("Inserting connections info...");
+    queryText = QString("SELECT * FROM %0").arg(GraphCommon::DB_GRAPH_CONNECTIONS_TABLENAME);
+    if (!executeQuery(q, queryText)) { return false; }
+    while (q.next()) {
+        Graph::GConnection con;
+        int valPos {0};
+        valPos++; // Skip ID
+
+        con.idFrom              = q.value(valPos++).toUInt();
+        con.idTo                = q.value(valPos++).toUInt();
+        con.connectionWeight    = q.value(valPos++).toDouble();
+        con.name                = q.value(valPos++).toString();
+        con.lineColor           = getDecodedColor(q.value(valPos++).toByteArray());
+        con.isDirected          = q.value(valPos++).toBool();
+
+        oGraphObject.addConnection(con);
+    }
 
     db.close();
     LOG_OK("Graph loaded");

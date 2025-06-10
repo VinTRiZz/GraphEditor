@@ -51,7 +51,7 @@ template <LoggingType LogType> constexpr const char* logTypeStringColored()
 {
     switch (LogType)
     {
-    case LoggingType::Info: return "\033[0m INFO \033[0m";
+    case LoggingType::Info: return "\033[37m INFO \033[0m";
     case LoggingType::Warning: return "\033[33m WARN \033[0m";
 
     case LoggingType::Ok: return "\033[32m  OK  \033[0m";

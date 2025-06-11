@@ -175,7 +175,7 @@ void OverlayButtonList::showButtons()
             positionRect.moveTo(targetX, targetY);
             anim->setEndValue(positionRect);
 
-            anim->setDuration(std::max(deltaX / separatorLength, deltaY / separatorLength) * 300 * m_animationMultiplier);
+            anim->setDuration(std::max(deltaX / separatorLength, deltaY / separatorLength) * 300 / m_animationMultiplier);
             connect(anim, &QPropertyAnimation::finished,
                     this, [anim]() {
                 delete anim;
@@ -234,7 +234,7 @@ void OverlayButtonList::hideButtons()
             positionRect.moveTo(targetX, targetY);
             anim->setStartValue(positionRect);
 
-            anim->setDuration(std::max(deltaX / separatorLength, deltaY / separatorLength) * 300 * m_animationMultiplier);
+            anim->setDuration(std::max(deltaX / separatorLength, deltaY / separatorLength) * 300 / m_animationMultiplier);
             connect(anim, &QPropertyAnimation::finished,
                     this, [anim, pButton]() {
                 delete anim;
@@ -333,8 +333,8 @@ void OverlayButtonList::paintEvent(QPaintEvent *e)
     }
 
     bool isRightPosition =
-            (positionX == m_offsets[ButtonOpenDirection::Left]) &&
-            (positionY == m_offsets[ButtonOpenDirection::Up]) &&
+            ((parentMaxX - positionX) == m_offsets[ButtonOpenDirection::Left]) &&
+            ((parentMaxY - positionX) == m_offsets[ButtonOpenDirection::Up]) &&
             (positionX < parentMaxX) &&
             (positionY < parentMaxY)
     ;
@@ -344,10 +344,12 @@ void OverlayButtonList::paintEvent(QPaintEvent *e)
     }
 
     positionX = m_offsets[ButtonOpenDirection::Left] > -1 ? m_offsets[ButtonOpenDirection::Left] : positionX;
-    positionY = m_offsets[ButtonOpenDirection::Up] > -1 ? m_offsets[ButtonOpenDirection::Up] : positionY;
-
     positionX = positionX < parentMaxX ? positionX : parentMaxX;
+    positionX = positionX < 0 ? 0 : positionX;
+
+    positionY = m_offsets[ButtonOpenDirection::Up] > -1 ? m_offsets[ButtonOpenDirection::Up] : positionY;
     positionY = positionY < parentMaxY ? positionY : parentMaxY;
+    positionY = positionY < 0 ? 0 : positionY;
 
     if (!m_isButtonsHidden) {
         auto deltaX = positionX - x();

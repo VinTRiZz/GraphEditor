@@ -72,8 +72,10 @@ uint OverlayButtonList::addButton(const ButtonInfo &button_)
     m_buttons.push_back(new QPushButton(parentWidget()));
     setupButton(m_buttons.back(), button_);
 
-    hideButtons();
-    showButtons();
+    if (!m_isButtonsHidden) {
+        hideButtons();
+        showButtons();
+    }
 
     return m_buttons.size();
 }
@@ -149,7 +151,7 @@ void OverlayButtonList::showButtons()
 
     auto moveDirected = [&](ButtonOpenDirection moveDir, bool inverseMovement = false) {
         uint currentOffset {1};
-        while ((directionButtonCount < m_buttons.size()) && (m_maxButtonCounts[moveDir] > directionButtonCount)) {
+        while ((directionButtonCount < m_buttons.size()) && (m_maxButtonCounts[moveDir] >= currentOffset)) {
             auto pButton = m_buttons[directionButtonCount];
             auto anim = new QPropertyAnimation(pButton, "geometry");
 
@@ -170,7 +172,7 @@ void OverlayButtonList::showButtons()
             bool isVerticalMove = static_cast<bool>(moveDir & ButtonOpenDirection::Up) || static_cast<bool>(moveDir & ButtonOpenDirection::Down);
             auto deltaY = separatorLength * isVerticalMove * currentOffset;
             deltaY = inverseMovement ? deltaY * -1.0 : deltaY;
-            auto targetY = positionRect.y() + deltaY * -1 * static_cast<bool>(moveDir & ButtonOpenDirection::Up) + deltaX * static_cast<bool>(moveDir & ButtonOpenDirection::Down);
+            auto targetY = positionRect.y() + deltaY * -1 * static_cast<bool>(moveDir & ButtonOpenDirection::Up) + deltaY * static_cast<bool>(moveDir & ButtonOpenDirection::Down);
 
             positionRect.moveTo(targetX, targetY);
             anim->setEndValue(positionRect);
@@ -208,9 +210,9 @@ void OverlayButtonList::hideButtons()
 
     auto moveDirected = [&](ButtonOpenDirection moveDir, bool inverseMovement = false) {
         uint currentOffset {1};
-        while ((directionButtonCount < m_buttons.size()) && (m_maxButtonCounts[moveDir] > directionButtonCount)) {
+        while ((directionButtonCount < m_buttons.size()) && (m_maxButtonCounts[moveDir] >= currentOffset)) {
             auto pButton = m_buttons[directionButtonCount];
-            auto anim = new QPropertyAnimation(pButton, "geometry", this);
+            auto anim = new QPropertyAnimation(pButton, "geometry");
 
             QRect positionRect;
             positionRect.setX(this->x());
@@ -229,7 +231,7 @@ void OverlayButtonList::hideButtons()
             bool isVerticalMove = static_cast<bool>(moveDir & ButtonOpenDirection::Up) || static_cast<bool>(moveDir & ButtonOpenDirection::Down);
             auto deltaY = separatorLength * isVerticalMove * currentOffset;
             deltaY = inverseMovement ? deltaY * -1.0 : deltaY;
-            auto targetY = positionRect.y() + deltaY * -1 * static_cast<bool>(moveDir & ButtonOpenDirection::Up) + deltaX * static_cast<bool>(moveDir & ButtonOpenDirection::Down);
+            auto targetY = positionRect.y() + deltaY * -1 * static_cast<bool>(moveDir & ButtonOpenDirection::Up) + deltaY * static_cast<bool>(moveDir & ButtonOpenDirection::Down);
 
             positionRect.moveTo(targetX, targetY);
             anim->setStartValue(positionRect);
@@ -304,8 +306,10 @@ void OverlayButtonList::updateConfiguration()
         pButton->setGeometry(pButton->x(), pButton->y(), width(), height());
     }
 
-    hideButtons();
-    showButtons();
+    if (!m_isButtonsHidden) {
+        hideButtons();
+        showButtons();
+    }
 }
 
 void OverlayButtonList::paintEvent(QPaintEvent *e)

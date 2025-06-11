@@ -30,7 +30,8 @@ public:
         Right   = 0b0001,
         Left    = 0b0010,
         Up      = 0b0100,
-        Down    = 0b1000
+        Down    = 0b1000,
+        All     = Right | Left | Up | Down
     };
 
     /**

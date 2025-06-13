@@ -1,0 +1,108 @@
+
+/* Стиль для полей ввода */
+QLineEdit, QTextEdit, QPlainTextEdit {
+    background-color: #3a3a3a;
+    color: #e0e0e0;
+    border: 1px solid #1e4b4a;
+    border-radius: 3px;
+    padding: 5px;
+    selection-background-color: #1e4b4a;
+}
+
+QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus {
+    border: 1px solid #2a7d7b;
+}
+
+/* Стиль для комбобоксов */
+QComboBox {
+    background-color: #3a3a3a;
+    color: #e0e0e0;
+    border: 1px solid #1e4b4a;
+    border-radius: 3px;
+    padding: 5px;
+    min-width: 100px;
+}
+
+QComboBox:hover {
+    border: 1px solid #2a7d7b;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 20px;
+    border-left: 1px solid #1e4b4a;
+}
+
+QComboBox QAbstractItemView {
+    background-color: #3a3a3a;
+    color: #e0e0e0;
+    selection-background-color: #1e4b4a;
+    outline: none;
+}
+
+/* Стиль для чекбоксов и радиокнопок */
+QCheckBox, QRadioButton {
+    color: #e0e0e0;
+    spacing: 5px;
+}
+
+QCheckBox::indicator, QRadioButton::indicator {
+    width: 16px;
+    height: 16px;
+}
+
+QCheckBox::indicator {
+    background-color: #3a3a3a;
+    border: 1px solid #1e4b4a;
+    border-radius: 3px;
+}
+
+QCheckBox::indicator:checked {
+    background-color: #1e4b4a;
+    image: url(:/images/checkmark.png);
+}
+
+QRadioButton::indicator {
+    border: 1px solid #1e4b4a;
+    border-radius: 8px;
+    background-color: #3a3a3a;
+}
+
+QRadioButton::indicator:checked {
+    background-color: #1e4b4a;
+    border: 4px solid #3a3a3a;
+}
+
+/* Стиль для слайдеров */
+QSlider::groove:horizontal {
+    height: 6px;
+    background: #3a3a3a;
+    border-radius: 3px;
+}
+
+QSlider::handle:horizontal {
+    background: #1e4b4a;
+    border: 1px solid #2a7d7b;
+    width: 16px;
+    height: 16px;
+    margin: -5px 0;
+    border-radius: 8px;
+}
+
+QSlider::handle:horizontal:hover {
+    background: #2a7d7b;
+}
+
+/* Стиль для прогрессбара */
+QProgressBar {
+    border: 1px solid #1e4b4a;
+    border-radius: 3px;
+    text-align: center;
+    background-color: #3a3a3a;
+}
+
+QProgressBar::chunk {
+    background-color: #1e4b4a;
+    border-radius: 2px;
+}

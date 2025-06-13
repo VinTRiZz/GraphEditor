@@ -1,4 +1,5 @@
 #include "objectsinternalscene.h"
+#include "objectsceneconstants.h"
 
 #include <QGraphicsItem>
 #include <QGraphicsRectItem>
@@ -63,6 +64,7 @@ uint ObjectsInternalScene::addObject(QGraphicsItem *pItem)
         throw std::runtime_error("ObjectScene-internal: ID, got from generator, already exists! Check generator functor");
     }
 
+    pItem->setData(ObjectSceneConstants::OBJECTFIELD_ID, nextId);
     m_objectsMap[nextId] = pItem;
     pItem->setParentItem(m_pNullItem);
     return nextId;

@@ -20,8 +20,8 @@ enum GraphProperty
 };
 
 
-const QString DATE_CONVERSION_FORMAT = "HH:mm_dd.MM.yyyy";          //! Формат конвертирования даты в строку
-const QString DATE_DISPLAY_CONVERSION_FORMAT = "HH:mm dd.MM.yyyy";  //! Формат конвертирования даты в строку на показ
+const QString DATE_CONVERSION_FORMAT = "HH:mm:ss_dd.MM.yyyy";          //! Формат конвертирования даты в строку
+const QString DATE_DISPLAY_CONVERSION_FORMAT = "HH:mm:ss dd.MM.yyyy";  //! Формат конвертирования даты в строку на показ
 
 const QString DB_GRAPH_PROPS_TABLENAME          {"graph_properties"};
 const QString DB_GRAPH_PROPS_CREATEQUERY = QString(R"(

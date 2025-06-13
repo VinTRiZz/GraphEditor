@@ -228,11 +228,89 @@ bool SaveMaster::load(const QString &iFilePath, Graph::GraphObject &oGraphObject
 
 bool SaveMaster::testValidance()
 {
-    Graph::GraphObject tmpGraph;
+    LOG_INFO("Validance test of save master started");
 
-    // TODO: Описать
+    Graph::GraphObject savedGraph;
 
-    return false;
+    savedGraph.setName("Test example graph");
+    savedGraph.setDescription("Example description");
+    savedGraph.setCreateTime(QDateTime::currentDateTime());
+    savedGraph.setEditTime(QDateTime::currentDateTime());
+
+    Graph::GVertex vert;
+    vert.shortName = "Vertex 1";
+    vert.backgroundColor = Qt::red;
+    vert.posX = 100;
+    vert.posY = 100;
+    savedGraph.addVertex(vert);
+
+    vert.shortName = "Vertex 2";
+    vert.borderColor = Qt::magenta;
+    vert.backgroundColor = Qt::green;
+    vert.posX = 100;
+    vert.posY = 300;
+    savedGraph.addVertex(vert);
+
+    vert.shortName = "Vertex 3";
+    vert.backgroundColor = Qt::red;
+    vert.posX = 300;
+    vert.posY = 100;
+    savedGraph.addVertex(vert);
+
+    vert.shortName = "Vertex 4";
+    vert.borderColor = Qt::magenta;
+    vert.backgroundColor = Qt::green;
+    vert.posX = 300;
+    vert.posY = 300;
+    savedGraph.addVertex(vert);
+
+    Graph::GConnection con;
+    con.name = "Connection 1";
+    con.idFrom = 1;
+    con.idTo = 2;
+    savedGraph.addConnection(con);
+
+    con.name = "Connection 2";
+    con.idFrom = 2;
+    con.idTo = 3;
+    savedGraph.addConnection(con);
+
+    con.name = "Connection 3";
+    con.idFrom = 1;
+    con.idTo = 3;
+    savedGraph.addConnection(con);
+
+    con.name = "Connection 4";
+    con.idFrom = 1;
+    con.idTo = 4;
+    savedGraph.addConnection(con);
+
+    con.name = "Connection 5";
+    con.idFrom = 3;
+    con.idTo = 1;
+    savedGraph.addConnection(con);
+
+    auto testTargetPath = "/tmp/GraphEditorSaveTest.gse";
+    if (!save(testTargetPath, savedGraph)) {
+        LOG_ERROR("Validance test: save failed");
+        return false;
+    }
+
+    Graph::GraphObject loadedGraph;
+    if (!load(testTargetPath, loadedGraph)) {
+        QFile::remove(testTargetPath);
+        LOG_ERROR("Validance test: load failed");
+        return false;
+    }
+    QFile::remove(testTargetPath);
+
+    if (loadedGraph != savedGraph) {
+        LOG_ERROR("Validance test: Loaded graph is not equal to saved graph. Some errors during save-load operation or in equality compare");
+        return false;
+    }
+
+    LOG_OK("Validance test of save master complete with success");
+    return true;
 }
 
 bool SaveMaster::executeQuery(QSqlQuery &q, const QString &queryText)

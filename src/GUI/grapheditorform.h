@@ -27,6 +27,11 @@ public:
     ~GraphEditorForm();
 
     /**
+     * @brief startValidanceTest Запуск тестирования формы на валидность работы
+     */
+    void startValidanceTest();
+
+    /**
      * @brief getCurrentGraph Получить текущий граф
      * @return Указатель на текущий граф (объект графа существует вместе с формой)
      */
@@ -35,6 +40,7 @@ public:
 private:
     Ui::GraphEditorForm *ui;
 
+    QGraphicsItem*      m_currentGraphItem          {nullptr}; //! Указатель на объект сцены, соответствующий графу
     Graph::GraphObject  m_currentGraph;                        //! Текущий граф
     QString             m_currentGraphFilePath;                //! Путь для сохранения графа в файл
 

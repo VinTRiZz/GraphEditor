@@ -4,9 +4,11 @@
 #include <QFileDialog>
 #include <QFileInfo>
 
+#include "objectsceneconstants.h"
 #include "graphobject.h"
 #include "savemaster.h"
 #include "graphcommon.h"
+#include "graphconversion.h"
 
 #include "logging.h"
 
@@ -22,72 +24,16 @@ GraphEditorForm::GraphEditorForm(QWidget *parent) :
 
     setupSignals();
     setupModels();
-
-//    m_currentGraph.setName("Мой тестовый граф");
-//    m_currentGraph.setDescription("Описание для теста");
-//    m_currentGraph.setCreateTime(QDateTime::currentDateTime());
-//    m_currentGraph.setEditTime(QDateTime::currentDateTime());
-
-//    Graph::GVertex vert;
-//    vert.shortName = "Vertex 1";
-//    vert.backgroundColor = Qt::red;
-//    vert.posX = 100;
-//    vert.posY = 100;
-//    m_currentGraph.addVertex(vert);
-
-//    vert.shortName = "Vertex 2";
-//    vert.borderColor = Qt::magenta;
-//    vert.backgroundColor = Qt::green;
-//    vert.posX = 100;
-//    vert.posY = 300;
-//    m_currentGraph.addVertex(vert);
-
-//    vert.shortName = "Vertex 3";
-//    vert.backgroundColor = Qt::red;
-//    vert.posX = 300;
-//    vert.posY = 100;
-//    m_currentGraph.addVertex(vert);
-
-//    vert.shortName = "Vertex 4";
-//    vert.borderColor = Qt::magenta;
-//    vert.backgroundColor = Qt::green;
-//    vert.posX = 300;
-//    vert.posY = 300;
-//    m_currentGraph.addVertex(vert);
-
-//    Graph::GConnection con;
-//    con.name = "Connection 1";
-//    con.idFrom = 1;
-//    con.idTo = 2;
-//    m_currentGraph.addConnection(con);
-
-//    con.name = "Connection 2";
-//    con.idFrom = 2;
-//    con.idTo = 3;
-//    m_currentGraph.addConnection(con);
-
-//    con.name = "Connection 3";
-//    con.idFrom = 1;
-//    con.idTo = 3;
-//    m_currentGraph.addConnection(con);
-
-//    con.name = "Connection 4";
-//    con.idFrom = 1;
-//    con.idTo = 4;
-//    m_currentGraph.addConnection(con);
-
-//    con.name = "Connection 5";
-//    con.idFrom = 3;
-//    con.idTo = 1;
-//    m_currentGraph.addConnection(con);
-//    m_currentGraph.setIdGenerator(ui->graphScene->getIdGenerator());
-//    ui->graphScene->addObject(m_currentGraph.toItem());
-//    updateGraphInfo();
 }
 
 GraphEditorForm::~GraphEditorForm()
 {
     delete ui;
+}
+
+void GraphEditorForm::startValidanceTest()
+{
+    LOG_WARNING("Validance test not written");
 }
 
 Graph::GraphObject *GraphEditorForm::getCurrentGraph()
@@ -142,7 +88,12 @@ void GraphEditorForm::loadGraph()
         return;
     }
     m_currentGraph.setIdGenerator(ui->graphScene->getIdGenerator());
-    ui->graphScene->addObject(m_currentGraph.toItem());
+
+    if (m_currentGraphItem != nullptr) {
+        ui->graphScene->removeObject(m_currentGraphItem->data(ObjectSceneConstants::OBJECTFIELD_ID).toUInt());
+    }
+    m_currentGraphItem = GraphConversion::toItem(m_currentGraph);
+    ui->graphScene->addObject(m_currentGraphItem);
     updateGraphInfo();
 }
 

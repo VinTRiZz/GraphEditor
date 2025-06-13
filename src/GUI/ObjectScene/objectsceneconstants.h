@@ -9,6 +9,7 @@ namespace ObjectSceneConstants
  */
 enum ObjectField
 {
+    OBJECTFIELD_ID,             //! Короткое имя объекта для отображения
     OBJECTFIELD_NAME_SHORT,     //! Короткое имя объекта для отображения
     OBJECTFIELD_NAME,           //! Полное имя объекта
     OBJECTFIELD_DESCRIPTION,    //! Описание объекта

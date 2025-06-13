@@ -18,6 +18,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void startValidanceTest();
+
 private:
     Ui::MainWindow *ui;
 };

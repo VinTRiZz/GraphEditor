@@ -1,15 +1,6 @@
 #include "graphobject.h"
 
-#include <QGraphicsRectItem>
-#include <QGraphicsEllipseItem>
-#include <QGraphicsLineItem>
-#include <QGraphicsSimpleTextItem>
-#include <QGraphicsPixmapItem>
-
-#include <QFont>
-#include <QBrush>
-#include <QPen>
-
+#include "graphcommon.h"
 #include "logging.h"
 
 namespace Graph
@@ -24,6 +15,51 @@ GraphObject::GraphObject()
     };
 }
 
+bool GraphObject::operator ==(const GraphObject &gObj_) const
+{
+    if (!std::equal(m_vertices.begin(), m_vertices.end(),
+                              gObj_.m_vertices.begin(), gObj_.m_vertices.end(),
+        [](const Graph::GVertex& v1, const Graph::GVertex& v2) {
+        return (v1 == v2);
+    })) {
+        return false;
+    }
+
+    if (!std::equal(m_connections.begin(), m_connections.end(),
+                              gObj_.m_connections.begin(), gObj_.m_connections.end(),
+        [](const Graph::GConnection& c1, const Graph::GConnection& c2) {
+        return (c1 == c2);
+    })) {
+        return false;
+    }
+
+    for (auto& customProp : m_customDataValues) {
+        auto gObjValue = gObj_.m_customDataValues.find(customProp.first);
+        if (gObjValue == gObj_.m_customDataValues.end()) {
+            return false;
+        }
+
+        if (customProp.second != gObjValue->second) {
+            return false;
+        }
+    }
+
+    if ((m_name         != gObj_.m_name) ||
+        (m_description  != gObj_.m_description) ||
+        (m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT) != gObj_.m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT)) ||
+        (m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT)   != gObj_.m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT))
+        ) {
+        return false;
+    }
+
+    return true;
+}
+
+bool GraphObject::operator !=(const GraphObject &gObj_) const
+{
+    return !(*this == gObj_);
+}
+
 void GraphObject::setIdGenerator(const std::function<uint ()> &fGen)
 {
     if (!fGen) {
@@ -31,129 +67,6 @@ void GraphObject::setIdGenerator(const std::function<uint ()> &fGen)
     }
 
     m_idGenerator = fGen;
-}
-
-QGraphicsItem *GraphObject::toItem() const
-{
-    auto pResItem = new QGraphicsRectItem;
-
-    // TODO: Вычислять размеры графа или менять в динамике
-    QRect resRect;
-    resRect.setWidth(500);
-    resRect.setHeight(500);
-    pResItem->setRect(resRect);
-
-    QRect vertexRect;
-    vertexRect.setWidth(100);
-    vertexRect.setHeight(80);
-
-    for (auto& vert : m_vertices) {
-        QGraphicsItem* pVertexItem {nullptr};
-
-        if (vert.pxmap.isNull()) {
-            pVertexItem = new QGraphicsEllipseItem;
-            static_cast<QGraphicsEllipseItem*>(pVertexItem)->setBrush(vert.backgroundColor);
-            static_cast<QGraphicsEllipseItem*>(pVertexItem)->setPen(vert.borderColor);
-            static_cast<QGraphicsEllipseItem*>(pVertexItem)->setRect(vertexRect);
-        } else {
-            pVertexItem = new QGraphicsPixmapItem;
-            static_cast<QGraphicsEllipseItem*>(pVertexItem)->setPen(QPen(Qt::white, 1.5)); // Для контраста
-
-            // Для отображения всего в унифицированном виде
-            auto scaledPxmap = vert.pxmap.scaled(QSize(50, 50));
-            static_cast<QGraphicsPixmapItem*>(pVertexItem)->setPixmap(scaledPxmap);
-        }
-        pVertexItem->setParentItem(pResItem);
-
-        auto pVertexLabel = new QGraphicsSimpleTextItem;
-        pVertexLabel->setParentItem(pVertexItem);
-        pVertexLabel->setPen(vert.borderColor);
-        pVertexLabel->setBrush(Qt::white);
-        pVertexLabel->setText(vert.shortName);
-
-        // TODO: Найти способ задать центральной позицию получше
-        pVertexLabel->setX(vertexRect.center().x() / 2 - pVertexLabel->font().pixelSize() * vert.shortName.size() / 2);
-        pVertexLabel->setY(vertexRect.center().y() - 10);
-        pVertexLabel->setZValue(m_vertexDataLayer);
-
-        if (vert.posX == 0 && vert.posY == 0) {
-            // TODO: Вычислить положение вершины
-        }
-
-        pVertexItem->setX(vert.posX);
-        pVertexItem->setY(vert.posY);
-        pVertexItem->setZValue(m_vertexLayer);
-    }
-
-    const GVertex* pConnectionFrom {nullptr};
-    const GVertex* pConnectionTo {nullptr};
-    for (auto& con : m_connections) {
-        pConnectionFrom = nullptr;
-        pConnectionTo = nullptr;
-
-        for (auto& vert : m_vertices) {
-            if (vert.id == con.idFrom) {
-                pConnectionFrom = &vert;
-            }
-
-            if (vert.id == con.idTo) {
-                pConnectionTo = &vert;
-            }
-
-            if (pConnectionFrom != nullptr && pConnectionTo != nullptr) {
-                break;
-            }
-        }
-
-        if (pConnectionFrom == nullptr || pConnectionTo == nullptr) {
-            throw std::runtime_error("GraphObject::toItem: One of vertices did not found!");
-        }
-
-        auto pConnection = new QGraphicsLineItem;
-
-        QLineF connectionLine;
-        connectionLine.setP1(QPoint(pConnectionFrom->posX + vertexRect.width() / 2, pConnectionFrom->posY + vertexRect.height() / 2));
-        connectionLine.setP2(QPoint(pConnectionTo->posX + vertexRect.width() / 2, pConnectionTo->posY + vertexRect.height() / 2));
-        pConnection->setLine(connectionLine);
-        pConnection->setPen(con.lineColor);
-        pConnection->setZValue(m_connectionLineLayer);
-        pConnection->setParentItem(pResItem);
-
-        auto pConnectionLabel = new QGraphicsSimpleTextItem;
-        pConnectionLabel->setParentItem(pConnection);
-
-        pConnectionLabel->setPen(con.lineColor);
-        pConnectionLabel->setText(con.name);
-
-        auto rotationAngle = -connectionLine.angle();
-
-        LOG_DEBUG_SYNC("Connection:", con.name, "Angle:", rotationAngle);
-
-//        pConnectionLabel->setRotation(rotationAngle);
-
-        // TODO: Найти способ задать центральной позицию получше
-        auto textCos = cos(rotationAngle * M_PI / 180.0);
-        auto textSin = sin(rotationAngle * M_PI / 180.0);
-        auto textWidth = pConnectionLabel->font().pixelSize() * con.name.size();
-        pConnectionLabel->setX(connectionLine.center().x() + textWidth * textSin);
-        pConnectionLabel->setY(connectionLine.center().y() + textWidth * textCos);
-        pConnectionLabel->setZValue(m_connectionTextLayer);
-
-        auto pConnectionLabelRect = new QGraphicsRectItem;
-        pConnectionLabelRect->setParentItem(pConnection);
-        pConnectionLabelRect->setBrush(Qt::white);
-
-        auto labelRect = pConnectionLabel->boundingRect();
-        labelRect.setX(labelRect.x() - 10 * textCos);
-        labelRect.setY(labelRect.y() - 10 * textSin);
-        labelRect.setWidth(labelRect.width() + 10);
-        pConnectionLabelRect->setRect(labelRect);
-        pConnectionLabelRect->setX(pConnectionLabel->x());
-        pConnectionLabelRect->setY(pConnectionLabel->y());
-        pConnectionLabelRect->setZValue(m_connectionRectLayer);
-    }
-
-    return pResItem;
 }
 
 uint GraphObject::addVertex(const GVertex &iVert)

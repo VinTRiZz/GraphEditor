@@ -44,6 +44,35 @@ struct GVertex
     bool isValid() const {
         return isShortnameValid() && (id != 0) && ((borderColor.isValid() && backgroundColor.isValid()) || !pxmap.isNull());
     }
+
+    /**
+     * @brief operator ==   Оператор сравнения для тестирования и сравнения между собой графов
+     * @param oVert_        Другая вершина
+     * @return              true если вершина совпадает с этой
+     */
+    bool operator ==(const GVertex& oVert_) const {
+        return (
+                    (id == oVert_.id) &&
+                    (posX == oVert_.posX) &&
+                    (posY == oVert_.posY) &&
+                    (shortName == oVert_.shortName) &&
+                    (name == oVert_.name) &&
+                    (description == oVert_.description) &&
+                    (customProperties == oVert_.customProperties) &&
+                    (borderColor == oVert_.borderColor) &&
+                    (backgroundColor == oVert_.backgroundColor) &&
+                    (pxmap.toImage() == oVert_.pxmap.toImage())
+        );
+    }
+
+    /**
+     * @brief operator !=   Аналог оператора сравнения, является его инверсией
+     * @param oVert_        Другая вершина
+     * @return              true если вершина НЕ совпадает с этой
+     */
+    bool operator !=(const GVertex& oVert_) const {
+        return !(*this == oVert_);
+    }
 };
 
 
@@ -66,6 +95,21 @@ struct GConnection
     bool isValid() const {
         return (idFrom != idTo) && (idFrom != 0) && (idTo != 0) && lineColor.isValid();
     }
+
+    bool operator ==(const GConnection& oCon_) const {
+        return (
+                    (idFrom == oCon_.idFrom) &&
+                    (idTo == oCon_.idTo) &&
+                    (fabs(oCon_.connectionWeight - connectionWeight) < 1e-6) &&
+                    (name == oCon_.name) &&
+                    (lineColor == oCon_.lineColor) &&
+                    (isDirected == oCon_.isDirected)
+        );
+    }
+
+    bool operator !=(const GConnection& oCon_) const {
+        return !(*this == oCon_);
+    }
 };
 
 
@@ -77,17 +121,15 @@ class GraphObject
 public:
     GraphObject();
 
+    bool operator ==(const GraphObject& gObj_) const;
+
+    bool operator !=(const GraphObject& gObj_) const;
+
     /**
      * @brief setIdGenerator Установить генератор ID для вершин
      * @param fGen функтор генератора ID
      */
     void setIdGenerator(const std::function<uint()>& fGen);
-
-    /**
-     * @brief toItem Конвертировать в QGraphicsItem
-     * @return QGraphicsItem указатель или nullptr, в случае ошибки
-     */
-    QGraphicsItem* toItem() const;
 
     // ============================================================== //
     // ================= Работа с вершинами графа =================== //
@@ -236,16 +278,6 @@ private:
     QDateTime   m_editTime;
 
     std::map<QString, QVariant> m_customDataValues; //! Пользовательские данные
-
-    // Уровни расположения объектов на сцене по их типу
-    static const uint m_mainRectLayer       = 1;    //! Уровень главного объекта ("полотна" графа)
-
-    static const uint m_connectionLineLayer = 10;   //! Уровень линий соединения вершин
-    static const uint m_connectionRectLayer = 11;   //! Уровень прямоугольников с названиями вершин (для контраста)
-    static const uint m_connectionTextLayer = 12;   //! Уровень текста названий вершин
-
-    static const uint m_vertexLayer         = 30;   //! Уровень вершин
-    static const uint m_vertexDataLayer     = 31;   //! Уровень текста названий вершин
 };
 
 }

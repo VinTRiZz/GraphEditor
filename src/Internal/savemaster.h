@@ -28,6 +28,12 @@ public:
      */
     static bool load(const QString& iFilePath, Graph::GraphObject& oGraphObject);
 
+    /**
+     * @brief testValidance Проверка системы сохранений на корректность работы (для юнит-тестов)
+     * @return true если сохранение работает корректно
+     */
+    static bool testValidance();
+
 private:
 
     /**

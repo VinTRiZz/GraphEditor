@@ -226,6 +226,15 @@ bool SaveMaster::load(const QString &iFilePath, Graph::GraphObject &oGraphObject
     return true;
 }
 
+bool SaveMaster::testValidance()
+{
+    Graph::GraphObject tmpGraph;
+
+    // TODO: Описать
+
+    return false;
+}
+
 bool SaveMaster::executeQuery(QSqlQuery &q, const QString &queryText)
 {
     if (!q.exec(queryText)) {

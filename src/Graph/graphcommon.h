@@ -36,8 +36,8 @@ const QString DB_GRAPH_VERTICES_TABLENAME       {"vertices"};
 const QString DB_GRAPH_VERTICES_CREATEQUERY = QString(R"(
 CREATE TABLE IF NOT EXISTS %0 (
     id              INTEGER PRIMARY KEY,
-    posx            INTEGER NOT NULL,
-    posy            INTEGER NOT NULL,
+    posx            FLOAT NOT NULL,
+    posy            FLOAT NOT NULL,
     short_name      TEXT NOT NULL,
     name            TEXT,
     description     TEXT,

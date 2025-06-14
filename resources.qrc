@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>DATA/images/icons/edit.png</file>
+        <file>DATA/images/icons/tools.png</file>
+        <file>DATA/images/icons/toolbox.png</file>
+        <file>DATA/images/icons/toolbox_hide.png</file>
+        <file>DATA/images/icons/gear.png</file>
+    </qresource>
+</RCC>

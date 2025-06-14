@@ -22,6 +22,7 @@ GraphEditorForm::GraphEditorForm(QWidget *parent) :
     ui->graphScene->resizeScene(QSize(1000, 1000));
     ui->graphScene->scale(0.5, 0.5);
 
+    setupWidget();
     setupSignals();
     setupModels();
 }
@@ -39,6 +40,11 @@ void GraphEditorForm::startValidanceTest()
 Graph::GraphObject *GraphEditorForm::getCurrentGraph()
 {
     return &m_currentGraph;
+}
+
+OverlayButtonList *GraphEditorForm::getOverlayButton()
+{
+    return m_pOverlayButton;
 }
 
 bool GraphEditorForm::isGraphPathSet()
@@ -99,19 +105,6 @@ void GraphEditorForm::loadGraph()
 
 void GraphEditorForm::setupSignals()
 {
-    connect(ui->graphProps_toggle_pushButton, &QPushButton::clicked,
-            this, [this](){
-        if (ui->graphProps_groupBox->isHidden()) {
-            ui->graphProps_groupBox->show();
-            ui->graphProps_toggle_pushButton->setText("Скрыть свойства графа");
-            return;
-        }
-
-        ui->graphProps_groupBox->hide();
-        ui->graphProps_toggle_pushButton->setText("Показать свойства графа");
-    });
-    ui->graphProps_toggle_pushButton->click(); // Чтобы UI текст заменился
-
     connect(ui->propertyAdd_pushButton, &QPushButton::clicked,
             this, [this]() {
         auto pItem = new QStandardItem("Моё свойство");
@@ -183,6 +176,33 @@ void GraphEditorForm::setupModels()
         ui->propertyUser_tableView->horizontalHeader()->setStretchLastSection(true);
         ui->propertyUser_tableView->horizontalHeader()->setSizeAdjustPolicy(QHeaderView::AdjustToContents);
     }
+}
+
+void GraphEditorForm::setupWidget()
+{
+    m_pOverlayButton = new OverlayButtonList(this);
+
+    m_pOverlayButton->setToolTip("Инструменты");
+    m_pOverlayButton->setWidgetPosition(50, 50);
+    m_pOverlayButton->setAnimationSpeed(1.5);
+    m_pOverlayButton->setButtonSize(QSize(60, 60));
+
+    OverlayButtonList::ButtonInfo buttonInfo;
+    buttonInfo.icon = QIcon(":/icons/DATA/images/icons/edit.png");
+
+    buttonInfo.action = [this](QPushButton* pSender) {
+        if (ui->graphProps_groupBox->isHidden()) {
+            ui->graphProps_groupBox->show();
+            pSender->setToolTip("Скрыть свойства графа");
+            return;
+        }
+
+        ui->graphProps_groupBox->hide();
+        pSender->setToolTip("Показать свойства графа");
+    };
+
+    auto buttonIndex = m_pOverlayButton->addButton(buttonInfo);
+    m_pOverlayButton->getButton(buttonIndex)->click();
 }
 
 void GraphEditorForm::updateGraphInfo()

@@ -38,13 +38,6 @@
       <item>
        <widget class="ObjectScene" name="graphScene" native="true"/>
       </item>
-      <item>
-       <widget class="QPushButton" name="graphProps_toggle_pushButton">
-        <property name="text">
-         <string>Кнопка тоггла свойств графа</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
    </item>

@@ -11,5 +11,8 @@ if (debug | release) {
 LIBS += -lboost_system \
         -lboost_program_options
 
+RESOURCES += \
+    resources.qrc
+
 include (src/src.pri)
 include (build.pri)

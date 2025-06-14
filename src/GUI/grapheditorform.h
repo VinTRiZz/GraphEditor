@@ -6,6 +6,8 @@
 
 #include "graphobject.h"
 
+#include "overlaybuttonlist.h"
+
 namespace Ui {
 class GraphEditorForm;
 }
@@ -37,6 +39,12 @@ public:
      */
     Graph::GraphObject* getCurrentGraph();
 
+    /**
+     * @brief getOverlayButton Получить указатель на оверлей-кнопку
+     * @return Указатель на кнопку
+     */
+    OverlayButtonList* getOverlayButton();
+
 private:
     Ui::GraphEditorForm *ui;
 
@@ -46,6 +54,8 @@ private:
 
     QStandardItemModel* m_pCommonGraphInfoModel     {nullptr}; //! Модель с общими данными по графу
     QStandardItemModel* m_pUserGraphInfoModel       {nullptr}; //! Модель с пользовательскими данными по графу
+
+    OverlayButtonList*  m_pOverlayButton            {nullptr}; //! Кнопка-оверлей
 
     /**
      * @brief isGraphPathSet Проверить, задан ли путь для сохранения/загрузки графа. Вызовет диалог и задаст путь, если он пуст или не валидный
@@ -72,6 +82,11 @@ private:
      * @brief setupModels Настройка моделей отображения свойств графа
      */
     void setupModels();
+
+    /**
+     * @brief setupWidget Настройка виджетов формы
+     */
+    void setupWidget();
 
     /**
      * @brief updateGraphInfo Обновление информации о графе

@@ -83,11 +83,11 @@ public:
      */
     struct ButtonInfo
     {
-        QString name;                   //! Отображаемое название
-        QString tooltip;                //! Описание кнопки в tooltip
-        QString styleSheet;             //! QSS стиль кнопки
-        QIcon   icon;                   //! Иконка кнопки
-        std::function<void()> action;   //! Действие кнопки
+        QString name;                               //! Отображаемое название
+        QString tooltip;                            //! Описание кнопки в tooltip
+        QString styleSheet;                         //! QSS стиль кнопки
+        QIcon   icon;                               //! Иконка кнопки
+        std::function<void(QPushButton*)> action;   //! Действие кнопки. Аргумент -- указатель на нажатую кнопку
     };
 
     /**
@@ -130,6 +130,13 @@ public:
      */
     void removeButton(uint buttonIndex);
 
+    /**
+     * @brief getButton     Получить кнопку по индексу
+     * @param buttonIndex   Индекс кнопки
+     * @return              nullptr если индекс неверный
+     */
+    QPushButton* getButton(uint buttonIndex);
+
 public slots:
     /**
      * @brief showButtons Отобразить кнопки ("раскрыть" виджет)
@@ -161,6 +168,7 @@ private:
     double  m_animationMultiplier   {1.0};      //! Скорость анимации
     bool    m_isButtonsHidden       {true};     //! Чтобы не обращаться к вектору кнопок
     bool    m_isMovable             {false};    //! Определяет, можно ли двигать кнопку по виджету
+    QSize   m_fixedSize             {50, 50};   //! Создано из-за особенностей отрисовки в кьюте
 
     /**
      * @brief setupButton Настроить кнопку (внутренняя функция), перезаписывает конфигурацию кнопки
@@ -180,15 +188,16 @@ private:
     void setupWidget();
 
     /**
-     * @brief updateConfiguration Обновить конфигурацию кнопки и её дочерних кнопок
-     */
-    void updateConfiguration();
-
-    /**
      * @brief paintEvent Переопределение ивента отрисовки для локации кнопки на родительском виджете
      * @param e Ивент отрисовки
      */
     void paintEvent(QPaintEvent* e);
+
+    /**
+     * @brief resizeEvent Переопределение ивента ресайза из-за гениального кьюта
+     * @param e Ивент ресайза
+     */
+    void resizeEvent(QResizeEvent* e);
 };
 
 #endif // OVERLAYBUTTONLIST_H

@@ -16,7 +16,6 @@ OverlayButtonList::OverlayButtonList(QWidget* parent)
 void OverlayButtonList::setOpenDirection(ButtonOpenDirection direction_)
 {
     m_openDirections = direction_;
-    updateConfiguration();
 }
 
 void OverlayButtonList::setMaxButtonCount(ButtonOpenDirection direction_, uint maxButtonCount)
@@ -36,8 +35,6 @@ void OverlayButtonList::setMaxButtonCount(ButtonOpenDirection direction_, uint m
     if (direction_ & ButtonOpenDirection::Down) {
         m_maxButtonCounts[ButtonOpenDirection::Down] = maxButtonCount;
     }
-
-    updateConfiguration();
 }
 
 void OverlayButtonList::setMovable(bool isMovable)
@@ -49,13 +46,17 @@ void OverlayButtonList::setWidgetPosition(int leftWP, int topWP)
 {
     m_offsets[ButtonOpenDirection::Left] = leftWP;
     m_offsets[ButtonOpenDirection::Up] = topWP;
-    setGeometry(m_offsets[ButtonOpenDirection::Left], m_offsets[ButtonOpenDirection::Up], width(), height());
-    updateConfiguration();
+    move(m_offsets[ButtonOpenDirection::Left], m_offsets[ButtonOpenDirection::Up]);
 }
 
 void OverlayButtonList::setButtonSize(const QSize &bSize_)
 {
-    setGeometry(x(), y(), bSize_.width(), bSize_.height());
+    m_fixedSize = bSize_;
+
+    if (!m_isButtonsHidden) {
+        hideButtons();
+        showButtons();
+    }
 }
 
 void OverlayButtonList::setAnimationSpeed(double increaser_)
@@ -77,7 +78,7 @@ uint OverlayButtonList::addButton(const ButtonInfo &button_)
         showButtons();
     }
 
-    return m_buttons.size();
+    return m_buttons.size() - 1;
 }
 
 void OverlayButtonList::updateButton(const ButtonInfo &button_, uint index)
@@ -141,10 +142,19 @@ void OverlayButtonList::removeButton(uint buttonIndex)
     m_buttons.erase(m_buttons.begin() + buttonIndex);
 }
 
+QPushButton *OverlayButtonList::getButton(uint buttonIndex)
+{
+    if (buttonIndex >= m_buttonsInfo.size()) {
+        return nullptr;
+    }
+    return m_buttons[buttonIndex];
+}
+
 void OverlayButtonList::showButtons()
 {
     for (auto pButton : m_buttons) {
         pButton->show();
+        pButton->setFixedSize(m_fixedSize);
     }
 
     uint directionButtonCount {0};
@@ -271,11 +281,14 @@ void OverlayButtonList::setupButton(QPushButton *pButton, const ButtonInfo &butt
     pButton->setStyleSheet(buttonInfo.styleSheet);
     pButton->setToolTip(buttonInfo.tooltip);
     pButton->setIcon(buttonInfo.icon);
-    pButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    pButton->setFixedSize(size());
     pButton->setHidden(m_isButtonsHidden);
 
     if (buttonInfo.action) {
-        connect(pButton, &QPushButton::clicked, pButton, buttonInfo.action);
+        connect(pButton, &QPushButton::clicked,
+                pButton, [buttonInfo, pButton]() {
+            buttonInfo.action(pButton);
+        });
     }
 }
 
@@ -286,8 +299,10 @@ void OverlayButtonList::setupSignals()
         if (m_buttons.size()) {
             if (m_isButtonsHidden) {
                 showButtons();
+                setIcon(QIcon(":/icons/DATA/images/icons/toolbox_hide.png"));
             } else {
                 hideButtons();
+                setIcon(QIcon(":/icons/DATA/images/icons/toolbox.png"));
             }
         }
     });
@@ -295,21 +310,8 @@ void OverlayButtonList::setupSignals()
 
 void OverlayButtonList::setupWidget()
 {
-    setIcon(QIcon::fromTheme("settings"));
-    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    setGeometry(x(), y(), 40, 40);
-}
-
-void OverlayButtonList::updateConfiguration()
-{
-    for (auto pButton : m_buttons) {
-        pButton->setGeometry(pButton->x(), pButton->y(), width(), height());
-    }
-
-    if (!m_isButtonsHidden) {
-        hideButtons();
-        showButtons();
-    }
+    setIcon(QIcon(":/icons/DATA/images/icons/toolbox.png"));
+    setButtonSize(QSize(50, 50));
 }
 
 void OverlayButtonList::paintEvent(QPaintEvent *e)
@@ -366,4 +368,10 @@ void OverlayButtonList::paintEvent(QPaintEvent *e)
 
     move(positionX, positionY);
     QPushButton::paintEvent(e);
+}
+
+void OverlayButtonList::resizeEvent(QResizeEvent *e)
+{
+    setFixedSize(m_fixedSize);
+    QWidget::resizeEvent(e);
 }

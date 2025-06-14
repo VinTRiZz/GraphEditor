@@ -180,12 +180,17 @@ void GraphEditorForm::setupModels()
 
 void GraphEditorForm::setupWidget()
 {
-    m_pOverlayButton = new OverlayButtonList(this);
+    m_pOverlayButton = new OverlayButtonList(ui->graphScene);
 
     m_pOverlayButton->setToolTip("Инструменты");
-    m_pOverlayButton->setWidgetPosition(50, 50);
+    m_pOverlayButton->setWidgetPadding(OverlayButtonList::Right,    40);
+    m_pOverlayButton->setWidgetPadding(OverlayButtonList::Down,     40);
+    m_pOverlayButton->setWidgetPadding(OverlayButtonList::Up,       -1);
+    m_pOverlayButton->setWidgetPadding(OverlayButtonList::Left,     -1);
+
+    m_pOverlayButton->setOpenDirection(OverlayButtonList::ButtonOpenDirection::Up);
     m_pOverlayButton->setAnimationSpeed(1.5);
-    m_pOverlayButton->setButtonSize(QSize(60, 60));
+    m_pOverlayButton->setButtonSize(QSize(50, 50));
 
     OverlayButtonList::ButtonInfo buttonInfo;
     buttonInfo.icon = QIcon(":/icons/DATA/images/icons/edit.png");
@@ -193,6 +198,7 @@ void GraphEditorForm::setupWidget()
     buttonInfo.action = [this](QPushButton* pSender) {
         if (ui->graphProps_groupBox->isHidden()) {
             ui->graphProps_groupBox->show();
+            m_pOverlayButton->fixPosition();
             pSender->setToolTip("Скрыть свойства графа");
             return;
         }

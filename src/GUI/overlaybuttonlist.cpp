@@ -4,8 +4,6 @@
 #include <QPropertyAnimation>
 #include <QProperty>
 
-#include "logging.h"
-
 OverlayButtonList::OverlayButtonList(QWidget* parent)
     : QPushButton{parent}
 {
@@ -42,11 +40,25 @@ void OverlayButtonList::setMovable(bool isMovable)
     m_isMovable = isMovable;
 }
 
-void OverlayButtonList::setWidgetPosition(int leftWP, int topWP)
+void OverlayButtonList::setWidgetPadding(ButtonOpenDirection direction_, int offsetValue)
 {
-    m_offsets[ButtonOpenDirection::Left] = leftWP;
-    m_offsets[ButtonOpenDirection::Up] = topWP;
-    move(m_offsets[ButtonOpenDirection::Left], m_offsets[ButtonOpenDirection::Up]);
+    if (direction_ & ButtonOpenDirection::Left) {
+        m_padding[ButtonOpenDirection::Left] = offsetValue;
+    }
+
+    if (direction_ & ButtonOpenDirection::Up) {
+        m_padding[ButtonOpenDirection::Up] = offsetValue;
+    }
+
+    if (direction_ & ButtonOpenDirection::Right) {
+        m_padding[ButtonOpenDirection::Right] = offsetValue;
+    }
+
+    if (direction_ & ButtonOpenDirection::Down) {
+        m_padding[ButtonOpenDirection::Down] = offsetValue;
+    }
+
+    update();
 }
 
 void OverlayButtonList::setButtonSize(const QSize &bSize_)
@@ -314,13 +326,8 @@ void OverlayButtonList::setupWidget()
     setButtonSize(QSize(50, 50));
 }
 
-void OverlayButtonList::paintEvent(QPaintEvent *e)
+void OverlayButtonList::fixPosition()
 {
-    if (parentWidget() == nullptr) {
-        QPushButton::paintEvent(e);
-        return;
-    }
-
     auto positionX = this->x();
     auto positionY = this->y();
 
@@ -338,23 +345,29 @@ void OverlayButtonList::paintEvent(QPaintEvent *e)
         }
     }
 
+    const int currentRightPadding     = (parentMaxX - positionX);
+    const int currentLeftPadding      = (positionX);
+    const int currentUpPadding        = positionY;
+    const int currentDownPadding      = (parentMaxY - positionY);
+
     bool isRightPosition =
-            ((parentMaxX - positionX) == m_offsets[ButtonOpenDirection::Left]) &&
-            ((parentMaxY - positionX) == m_offsets[ButtonOpenDirection::Up]) &&
+            (currentRightPadding    == m_padding[ButtonOpenDirection::Right]) &&
+            (currentLeftPadding     == m_padding[ButtonOpenDirection::Left]) &&
+            (currentUpPadding       == m_padding[ButtonOpenDirection::Up]) &&
+            (currentDownPadding     == m_padding[ButtonOpenDirection::Down]) &&
             (positionX < parentMaxX) &&
             (positionY < parentMaxY)
     ;
     if (isRightPosition) {
-        QPushButton::paintEvent(e);
         return;
     }
 
-    positionX = m_offsets[ButtonOpenDirection::Left] > -1 ? m_offsets[ButtonOpenDirection::Left] : positionX;
-    positionX = positionX < parentMaxX ? positionX : parentMaxX;
+    positionX = m_padding[ButtonOpenDirection::Right] > -1 && (m_padding[ButtonOpenDirection::Right] != parentMaxX - positionX) ? parentMaxX - m_padding[ButtonOpenDirection::Right] : positionX;
+    positionX = m_padding[ButtonOpenDirection::Left] > -1 && (m_padding[ButtonOpenDirection::Left] > positionX) ? m_padding[ButtonOpenDirection::Left] : positionX;
     positionX = positionX < 0 ? 0 : positionX;
 
-    positionY = m_offsets[ButtonOpenDirection::Up] > -1 ? m_offsets[ButtonOpenDirection::Up] : positionY;
-    positionY = positionY < parentMaxY ? positionY : parentMaxY;
+    positionY = m_padding[ButtonOpenDirection::Down] > -1 && (m_padding[ButtonOpenDirection::Down] != parentMaxY - positionY) ? parentMaxY - m_padding[ButtonOpenDirection::Down] : positionY;
+    positionY = m_padding[ButtonOpenDirection::Up] > -1 && (m_padding[ButtonOpenDirection::Up] > positionY) ? m_padding[ButtonOpenDirection::Up] : positionY;
     positionY = positionY < 0 ? 0 : positionY;
 
     if (!m_isButtonsHidden) {
@@ -367,11 +380,23 @@ void OverlayButtonList::paintEvent(QPaintEvent *e)
     }
 
     move(positionX, positionY);
+}
+
+void OverlayButtonList::paintEvent(QPaintEvent *e)
+{
+    if (parentWidget() == nullptr) {
+        QPushButton::paintEvent(e);
+        return;
+    }
+
+    fixPosition();
     QPushButton::paintEvent(e);
 }
 
 void OverlayButtonList::resizeEvent(QResizeEvent *e)
 {
-    setFixedSize(m_fixedSize);
+    if (size() != m_fixedSize) {
+        setFixedSize(m_fixedSize);
+    }
     QWidget::resizeEvent(e);
 }

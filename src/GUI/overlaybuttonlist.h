@@ -17,6 +17,11 @@ class OverlayButtonList : public QPushButton
 public:
     explicit OverlayButtonList(QWidget* parent = nullptr);
 
+    /**
+     * @brief fixPosition Переместить кнопку в правильную точку parent виджета. Выведено в public для случаев hide/show виджета (иначе багует)
+     */
+    void fixPosition();
+
     // =========================================================== //
     // =============== Настройки "головной" кнопки =============== //
     // =========================================================== //
@@ -54,11 +59,11 @@ public:
     void setMovable(bool isMovable = true);
 
     /**
-     * @brief setWidgetPosition Установить оффсеты положения на виджете. Задайте -1 для отключения оффсета
-     * @param leftWP    Относительно левого края
-     * @param topWP     Относительно верхнего края
+     * @brief setWidgetPadding  Задать статичный отступ виджета в parent виджете
+     * @param direction_        Сторона, от которой задать отступ
+     * @param offsetValue       Значение отступа. -1 для отключения отступа
      */
-    void setWidgetPosition(int leftWP, int topWP);
+    void setWidgetPadding(ButtonOpenDirection direction_, int offsetValue);
 
     /**
      * @brief setButtonSize Задать размеры кнопок (основной и открывающихся)
@@ -159,9 +164,11 @@ private:
     std::vector<ButtonInfo>                 m_buttonsInfo;      //! Инормация о кнопках
     std::vector<QPushButton*>               m_buttons;          //! Виджеты кнопок
 
-    std::map<ButtonOpenDirection, int>      m_offsets {         //! Оффсеты на виджете
+    std::map<ButtonOpenDirection, int>      m_padding {         //! Отступы на виджете
         {ButtonOpenDirection::Up,       30},
-        {ButtonOpenDirection::Left,     30}
+        {ButtonOpenDirection::Down,     -1},
+        {ButtonOpenDirection::Left,     30},
+        {ButtonOpenDirection::Right,    -1}
     };
 
     double  m_buttonMargins         {15.0};     //! Отступы между кнопками в открытом состоянии

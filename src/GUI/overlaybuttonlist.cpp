@@ -79,6 +79,11 @@ void OverlayButtonList::setAnimationSpeed(double increaser_)
     m_animationMultiplier = increaser_;
 }
 
+void OverlayButtonList::setHideOnClick(double hideOnClick_)
+{
+    m_hideOnClick = hideOnClick_;
+}
+
 uint OverlayButtonList::addButton(const ButtonInfo &button_)
 {
     m_buttonsInfo.push_back(button_);
@@ -167,6 +172,7 @@ void OverlayButtonList::showButtons()
     for (auto pButton : m_buttons) {
         pButton->show();
         pButton->setFixedSize(m_fixedSize);
+        pButton->setIconSize(m_fixedSize.scaled(m_fixedSize.width() * 0.6, m_fixedSize.height() * 0.6, Qt::AspectRatioMode::KeepAspectRatio));
     }
 
     uint directionButtonCount {0};
@@ -224,6 +230,7 @@ void OverlayButtonList::showButtons()
         moveDirected(ButtonOpenDirection::Down);
     }
     m_isButtonsHidden = false;
+    setIcon(QIcon(":/icons/DATA/images/icons/toolbox_hide.png"));
 }
 
 void OverlayButtonList::hideButtons()
@@ -285,6 +292,7 @@ void OverlayButtonList::hideButtons()
     }
 
     m_isButtonsHidden = true;
+    setIcon(QIcon(":/icons/DATA/images/icons/toolbox.png"));
 }
 
 void OverlayButtonList::setupButton(QPushButton *pButton, const ButtonInfo &buttonInfo)
@@ -298,8 +306,11 @@ void OverlayButtonList::setupButton(QPushButton *pButton, const ButtonInfo &butt
 
     if (buttonInfo.action) {
         connect(pButton, &QPushButton::clicked,
-                pButton, [buttonInfo, pButton]() {
+                pButton, [this, buttonInfo, pButton]() {
             buttonInfo.action(pButton);
+            if (m_hideOnClick) {
+                hideButtons();
+            }
         });
     }
 }
@@ -311,10 +322,8 @@ void OverlayButtonList::setupSignals()
         if (m_buttons.size()) {
             if (m_isButtonsHidden) {
                 showButtons();
-                setIcon(QIcon(":/icons/DATA/images/icons/toolbox_hide.png"));
             } else {
                 hideButtons();
-                setIcon(QIcon(":/icons/DATA/images/icons/toolbox.png"));
             }
         }
     });
@@ -397,6 +406,7 @@ void OverlayButtonList::resizeEvent(QResizeEvent *e)
 {
     if (size() != m_fixedSize) {
         setFixedSize(m_fixedSize);
+        setIconSize(m_fixedSize.scaled(m_fixedSize.width() * 0.6, m_fixedSize.height() * 0.6, Qt::AspectRatioMode::KeepAspectRatio));
     }
     QWidget::resizeEvent(e);
 }

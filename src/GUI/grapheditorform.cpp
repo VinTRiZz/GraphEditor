@@ -10,6 +10,10 @@
 #include "graphcommon.h"
 #include "graphconversion.h"
 
+#include <QParallelAnimationGroup>
+#include <QPropertyAnimation>
+#include <QProperty>
+
 #include "logging.h"
 
 GraphEditorForm::GraphEditorForm(QWidget *parent) :
@@ -83,7 +87,6 @@ void GraphEditorForm::saveGraph()
         GraphCommon::showError("Ошибка сохранения графа");
         return;
     }
-    ui->propertyLoad_pushButton->setEnabled(true);
 }
 
 void GraphEditorForm::loadGraph()
@@ -111,43 +114,6 @@ void GraphEditorForm::setupSignals()
         pItem->setColumnCount(2);
         pItem->setChild(1, new QStandardItem("Моё значение"));
         m_pUserGraphInfoModel->appendRow(pItem);
-    });
-
-    connect(ui->propertySave_pushButton, &QPushButton::clicked,
-            this, [this]() {
-        if (!isGraphPathSet()) {
-            return;
-        }
-        saveGraph();
-        updateGraphInfo();
-    });
-
-    connect(ui->propertySaveAs_pushButton, &QPushButton::clicked,
-            this, [this](){
-        m_currentGraphFilePath = QFileDialog::getSaveFileName(this, "Файл для сохранения графа", QDir::homePath(), "Файл графа (*.gse)");
-        if (m_currentGraphFilePath.isEmpty()) {
-            return;
-        }
-        saveGraph();
-        updateGraphInfo();
-    });
-
-    connect(ui->propertyLoad_pushButton, &QPushButton::clicked,
-            this, [this]() {
-        if (!isGraphPathSet()) {
-            return;
-        }
-        loadGraph();
-    });
-    ui->propertyLoad_pushButton->setEnabled(false); // Нечего загружать на старте
-
-    connect(ui->propertyLoadAs_pushButton, &QPushButton::clicked,
-            this, [this]() {
-        m_currentGraphFilePath = QFileDialog::getOpenFileName(this, "Файл сохранённого графа", QDir::homePath(), "Файл графа (*.gse)");
-        if (m_currentGraphFilePath.isEmpty()) {
-            return;
-        }
-        loadGraph();
     });
 }
 
@@ -188,27 +154,108 @@ void GraphEditorForm::setupWidget()
     m_pOverlayButton->setWidgetPadding(OverlayButtonList::Up,       -1);
     m_pOverlayButton->setWidgetPadding(OverlayButtonList::Left,     -1);
 
-    m_pOverlayButton->setOpenDirection(OverlayButtonList::ButtonOpenDirection::Up);
+    m_pOverlayButton->setOpenDirection(OverlayButtonList::ButtonOpenDirection( OverlayButtonList::ButtonOpenDirection::Up | OverlayButtonList::ButtonOpenDirection::Left));
+    m_pOverlayButton->setMaxButtonCount(OverlayButtonList::ButtonOpenDirection::Left, 5);
+    m_pOverlayButton->setMaxButtonCount(OverlayButtonList::ButtonOpenDirection::Up, 5);
+
     m_pOverlayButton->setAnimationSpeed(1.5);
     m_pOverlayButton->setButtonSize(QSize(50, 50));
+    m_pOverlayButton->setHideOnClick(false);
+
 
     OverlayButtonList::ButtonInfo buttonInfo;
     buttonInfo.icon = QIcon(":/icons/DATA/images/icons/edit.png");
-
+    buttonInfo.tooltip = "Показать свойства графа";
     buttonInfo.action = [this](QPushButton* pSender) {
         if (ui->graphProps_groupBox->isHidden()) {
             ui->graphProps_groupBox->show();
-            m_pOverlayButton->fixPosition();
+
+            QPropertyAnimation* animation = new QPropertyAnimation(ui->graphProps_groupBox, "maximumWidth");
+            animation->setDuration(150);
+
+            animation->setStartValue(0);
+            animation->setEndValue(ui->graphProps_groupBox->width());
+            animation->start();
+
+            connect(animation, &QPropertyAnimation::finished,
+                    this, [this, animation]() {
+                delete animation;
+                m_pOverlayButton->fixPosition();
+            });
+
             pSender->setToolTip("Скрыть свойства графа");
             return;
         }
 
-        ui->graphProps_groupBox->hide();
+        QPropertyAnimation* animation = new QPropertyAnimation(ui->graphProps_groupBox, "minimumWidth");
+        animation->setDuration(150);
+
+        animation->setStartValue(ui->graphProps_groupBox->width());
+        animation->setEndValue(0);
+        animation->start();
+
+        connect(animation, &QPropertyAnimation::finished,
+                this, [this, animation]() {
+            delete animation;
+            ui->graphProps_groupBox->hide();
+        });
+
         pSender->setToolTip("Показать свойства графа");
     };
+    ui->graphProps_groupBox->hide();
+    m_pOverlayButton->addButton(buttonInfo);
 
-    auto buttonIndex = m_pOverlayButton->addButton(buttonInfo);
-    m_pOverlayButton->getButton(buttonIndex)->click();
+
+    buttonInfo.icon = QIcon(":/icons/DATA/images/icons/cancel_changes.png");
+    buttonInfo.tooltip = "Отменить изменения";
+    buttonInfo.action = [this](QPushButton*) {
+        if (!isGraphPathSet()) {
+            return;
+        }
+        loadGraph();
+    };
+    auto cancelButtonIndex = m_pOverlayButton->addButton(buttonInfo);
+    m_pOverlayButton->getButton(cancelButtonIndex)->setEnabled(false);
+
+
+    buttonInfo.icon = QIcon(":/icons/DATA/images/icons/save.png");
+    buttonInfo.tooltip = "Сохранить";
+    buttonInfo.action = [this, cancelButtonIndex](QPushButton*) {
+        if (!isGraphPathSet()) {
+            return;
+        }
+        saveGraph();
+        updateGraphInfo();
+        m_pOverlayButton->getButton(cancelButtonIndex)->setEnabled(true);
+    };
+    m_pOverlayButton->addButton(buttonInfo);
+
+
+    buttonInfo.icon = QIcon(":/icons/DATA/images/icons/open_graph.png");
+    buttonInfo.tooltip = "Открыть файл графа";
+    buttonInfo.action = [this, cancelButtonIndex](QPushButton*) {
+        m_currentGraphFilePath = QFileDialog::getOpenFileName(this, "Файл сохранённого графа", QDir::homePath(), "Файл графа (*.gse)");
+        if (m_currentGraphFilePath.isEmpty()) {
+            return;
+        }
+        loadGraph();
+        m_pOverlayButton->getButton(cancelButtonIndex)->setEnabled(true);
+    };
+    m_pOverlayButton->addButton(buttonInfo);
+
+
+    buttonInfo.icon = QIcon(":/icons/DATA/images/icons/save_as.png");
+    buttonInfo.tooltip = "Сохранить как...";
+    buttonInfo.action = [this, cancelButtonIndex](QPushButton*) {
+        m_currentGraphFilePath = QFileDialog::getSaveFileName(this, "Файл для сохранения графа", QDir::homePath(), "Файл графа (*.gse)");
+        if (m_currentGraphFilePath.isEmpty()) {
+            return;
+        }
+        saveGraph();
+        updateGraphInfo();
+        m_pOverlayButton->getButton(cancelButtonIndex)->setEnabled(true);
+    };
+    m_pOverlayButton->addButton(buttonInfo);
 }
 
 void GraphEditorForm::updateGraphInfo()
@@ -246,11 +293,3 @@ void GraphEditorForm::updateGraphInfo()
 
     LOG_INFO("Current graph data update");
 }
-
-
-
-
-
-
-
-

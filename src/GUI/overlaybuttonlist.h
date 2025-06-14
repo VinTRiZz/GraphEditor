@@ -31,7 +31,7 @@ public:
      * @note   При комбинировании распределение кнопок идёт сначала на левой, потом на верхней, потом на правой, потом на левой части
      *         в направлении ОТ центральной кнопки
      */
-    enum ButtonOpenDirection : uint8_t {
+    enum ButtonOpenDirection : int {
         Right   = 0b0001,
         Left    = 0b0010,
         Up      = 0b0100,
@@ -77,6 +77,12 @@ public:
      * @note  При неверном значении increaser_ бросает исключение std::invalid_argument
      */
     void setAnimationSpeed(double increaser_);
+
+    /**
+     * @brief setHideOnClick Включение и отключение скрытия кнопок при нажатии на одну из них
+     * @param hideOnClick_ true для включения скрытия
+     */
+    void setHideOnClick(double hideOnClick_);
 
 
     // =========================================================== //
@@ -175,6 +181,7 @@ private:
     double  m_animationMultiplier   {1.0};      //! Скорость анимации
     bool    m_isButtonsHidden       {true};     //! Чтобы не обращаться к вектору кнопок
     bool    m_isMovable             {false};    //! Определяет, можно ли двигать кнопку по виджету
+    bool    m_hideOnClick           {true};     //! Определяет, скрывать ли кнопки по нажатии на одну из них
     QSize   m_fixedSize             {50, 50};   //! Создано из-за особенностей отрисовки в кьюте
 
     /**

@@ -77,7 +77,7 @@ bool SaveMaster::save(const QString &oFilePath, const Graph::GraphObject &iGraph
         queryText += "'" + vert.shortName + "',";
         queryText += "'" + vert.name + "',";
         queryText += "'" + vert.description + "',";
-        queryText += "'" + QJsonDocument(vert.customProperties).toJson().toBase64() + "',";
+        queryText += "'" + QJsonDocument(vert.customProperties).toJson().toHex() + "',";
         queryText += "'" + getEncoded(vert.borderColor) + "',";
         queryText += "'" + getEncoded(vert.backgroundColor) + "',";
         queryText += "'" + getEncoded(vert.pxmap) + "'";
@@ -325,7 +325,7 @@ bool SaveMaster::executeQuery(QSqlQuery &q, const QString &queryText)
 
 QByteArray SaveMaster::getEncoded(const QByteArray &iStr)
 {
-    return iStr.toBase64();
+    return iStr.toHex();
 }
 
 QByteArray SaveMaster::getEncoded(const QColor &iCol)
@@ -355,20 +355,20 @@ QByteArray SaveMaster::getEncoded(const QPixmap &iPxmap)
     QByteArray bytes;
     QBuffer byteBuff(&bytes);
     if (iPxmap.save(&byteBuff, "PNG")) {
-        return bytes.toBase64();
+        return bytes.toHex();
     }
     return {};
 }
 
 QByteArray SaveMaster::getDecoded(const QByteArray &iBytes)
 {
-    return QByteArray::fromBase64(iBytes);
+    return QByteArray::fromHex(iBytes);
 }
 
 QPixmap SaveMaster::getDecodedPixmap(const QByteArray &iBytes)
 {
     QPixmap pxmap;
-    pxmap.loadFromData(QByteArray::fromBase64(iBytes), "PNG");
+    pxmap.loadFromData(QByteArray::fromHex(iBytes), "PNG");
     return pxmap;
 }
 

@@ -4,11 +4,9 @@
 #include <QFileDialog>
 #include <QFileInfo>
 
-#include "objectsceneconstants.h"
 #include "graphobject.h"
 #include "savemaster.h"
 #include "graphcommon.h"
-#include "graphconversion.h"
 
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>
@@ -26,9 +24,69 @@ GraphEditorForm::GraphEditorForm(QWidget *parent) :
     ui->graphScene->resizeScene(QSize(1000, 1000));
     ui->graphScene->scale(0.5, 0.5);
 
+    m_currentGraph.setName("Test example graph");
+    m_currentGraph.setDescription("Example description");
+    m_currentGraph.setCreateTime(QDateTime::currentDateTime());
+    m_currentGraph.setEditTime(QDateTime::currentDateTime());
+
+    Graph::GVertex vert;
+    vert.shortName = "Vertex 1";
+    vert.backgroundColor = Qt::red;
+    vert.posX = 100;
+    vert.posY = 100;
+    m_currentGraph.addVertex(vert);
+
+    vert.shortName = "Vertex 2";
+    vert.borderColor = Qt::magenta;
+    vert.backgroundColor = Qt::green;
+    vert.posX = 100;
+    vert.posY = 300;
+    m_currentGraph.addVertex(vert);
+
+    vert.shortName = "Vertex 3";
+    vert.backgroundColor = Qt::red;
+    vert.posX = 300;
+    vert.posY = 100;
+    m_currentGraph.addVertex(vert);
+
+    vert.shortName = "Vertex 4";
+    vert.borderColor = Qt::magenta;
+    vert.backgroundColor = Qt::green;
+    vert.posX = 300;
+    vert.posY = 300;
+    m_currentGraph.addVertex(vert);
+
+    Graph::GConnection con;
+    con.name = "Connection 1";
+    con.idFrom = 1;
+    con.idTo = 2;
+    m_currentGraph.addConnection(con);
+
+    con.name = "Connection 2";
+    con.idFrom = 2;
+    con.idTo = 3;
+    m_currentGraph.addConnection(con);
+
+    con.name = "Connection 3";
+    con.idFrom = 1;
+    con.idTo = 3;
+    m_currentGraph.addConnection(con);
+
+    con.name = "Connection 4";
+    con.idFrom = 1;
+    con.idTo = 4;
+    m_currentGraph.addConnection(con);
+
+    con.name = "Connection 5";
+    con.idFrom = 3;
+    con.idTo = 1;
+    m_currentGraph.addConnection(con);
+
     setupWidget();
-    setupSignals();
     setupModels();
+    setupSignals();
+
+    m_graphDrawer.updateGraph();
 }
 
 GraphEditorForm::~GraphEditorForm()
@@ -98,12 +156,8 @@ void GraphEditorForm::loadGraph()
     }
     m_currentGraph.setIdGenerator(ui->graphScene->getIdGenerator());
 
-    if (m_currentGraphItem != nullptr) {
-        ui->graphScene->removeObject(m_currentGraphItem->data(ObjectSceneConstants::OBJECTFIELD_ID).toUInt());
-    }
-    m_currentGraphItem = GraphConversion::toItem(m_currentGraph);
-    ui->graphScene->addObject(m_currentGraphItem);
     updateGraphInfo();
+    m_graphDrawer.updateGraph();
 }
 
 void GraphEditorForm::setupSignals()
@@ -114,6 +168,22 @@ void GraphEditorForm::setupSignals()
         pItem->setColumnCount(2);
         pItem->setChild(1, new QStandardItem("Моё значение"));
         m_pUserGraphInfoModel->appendRow(pItem);
+    });
+
+    connect(ui->propertyRemove_pushButton, &QPushButton::clicked,
+            this, [this]() {
+        auto selectedItems = ui->propertyUser_tableView->selectionModel()->selection();
+
+        auto firstRow = selectedItems.front().top();
+        auto rowCount = selectedItems.front().height();
+
+        m_pUserGraphInfoModel->removeRows(firstRow, rowCount);
+    });
+
+    ui->propertyRemove_pushButton->setDisabled(true);
+    connect(ui->propertyUser_tableView->selectionModel(), &QItemSelectionModel::selectionChanged,
+            this, [this](const QItemSelection &selected, const QItemSelection &) {
+        ui->propertyRemove_pushButton->setDisabled(selected.isEmpty());
     });
 }
 
@@ -256,6 +326,33 @@ void GraphEditorForm::setupWidget()
         m_pOverlayButton->getButton(cancelButtonIndex)->setEnabled(true);
     };
     m_pOverlayButton->addButton(buttonInfo);
+
+    buttonInfo.icon = QIcon(":/icons/DATA/images/icons/mode_none.png");
+    buttonInfo.tooltip = "Сменить режим работы";
+    buttonInfo.action = [this](QPushButton* pButton) {
+        auto currentDrawerMode = m_graphDrawer.getCurrentMode();
+
+        if (currentDrawerMode == GraphDrawer::CurrentDrawerMode::Edit) {
+            pButton->setIcon(QIcon(":/icons/DATA/images/icons/mode_view.png"));
+            m_graphDrawer.startViewMode();
+            return;
+        }
+
+        if (currentDrawerMode == GraphDrawer::CurrentDrawerMode::View) {
+            pButton->setIcon(QIcon(":/icons/DATA/images/icons/mode_none.png"));
+            m_graphDrawer.stopMode();
+            return;
+        }
+
+        pButton->setIcon(QIcon(":/icons/DATA/images/icons/mode_edit.png"));
+        m_graphDrawer.startEditMode();
+    };
+    m_pOverlayButton->addButton(buttonInfo);
+
+    // Настройка мастера редактирования графа
+    m_graphDrawer.setOverlayButtonList(m_pOverlayButton);
+    m_graphDrawer.setCurrentGraph(&m_currentGraph);
+    m_graphDrawer.setScene(ui->graphScene);
 }
 
 void GraphEditorForm::updateGraphInfo()

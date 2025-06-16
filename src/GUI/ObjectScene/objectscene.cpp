@@ -40,6 +40,11 @@ void ObjectScene::init()
     setScene(m_pScene);
 }
 
+void ObjectScene::clearScene()
+{
+    m_pScene->clearScene();
+}
+
 uint ObjectScene::addObject(QGraphicsItem *pItem)
 {
     return m_pScene->addObject(pItem);

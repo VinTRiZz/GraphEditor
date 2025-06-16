@@ -5,7 +5,7 @@
 #include <QStandardItemModel>
 
 #include "graphobject.h"
-
+#include "graphdrawer.h"
 #include "overlaybuttonlist.h"
 
 namespace Ui {
@@ -48,14 +48,14 @@ public:
 private:
     Ui::GraphEditorForm *ui;
 
-    QGraphicsItem*      m_currentGraphItem          {nullptr}; //! Указатель на объект сцены, соответствующий графу
-    Graph::GraphObject  m_currentGraph;                        //! Текущий граф
-    QString             m_currentGraphFilePath;                //! Путь для сохранения графа в файл
+    GraphDrawer         m_graphDrawer;                          //! Макстер редактирования графа
+    Graph::GraphObject  m_currentGraph;                         //! Текущий граф
+    QString             m_currentGraphFilePath;                 //! Путь для сохранения графа в файл
 
-    QStandardItemModel* m_pCommonGraphInfoModel     {nullptr}; //! Модель с общими данными по графу
-    QStandardItemModel* m_pUserGraphInfoModel       {nullptr}; //! Модель с пользовательскими данными по графу
+    QStandardItemModel* m_pCommonGraphInfoModel     {nullptr};  //! Модель с общими данными по графу
+    QStandardItemModel* m_pUserGraphInfoModel       {nullptr};  //! Модель с пользовательскими данными по графу
 
-    OverlayButtonList*  m_pOverlayButton            {nullptr}; //! Кнопка-оверлей
+    OverlayButtonList*  m_pOverlayButton            {nullptr};  //! Кнопка-оверлей
 
     /**
      * @brief isGraphPathSet Проверить, задан ли путь для сохранения/загрузки графа. Вызовет диалог и задаст путь, если он пуст или не валидный

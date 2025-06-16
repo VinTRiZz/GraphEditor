@@ -26,6 +26,11 @@ GraphDrawer::~GraphDrawer()
 
 }
 
+GraphDrawer::CurrentDrawerMode GraphDrawer::getCurrentMode() const
+{
+    return m_currentMode;
+}
+
 void GraphDrawer::setScene(ObjectScene *pScene)
 {
     m_pScene = pScene;
@@ -174,14 +179,20 @@ void GraphDrawer::updateGraph()
 void GraphDrawer::startEditMode()
 {
     m_currentMode = CurrentDrawerMode::Edit;
+
+    LOG_DEBUG("Started edit mode");
 }
 
 void GraphDrawer::startViewMode()
 {
     m_currentMode = CurrentDrawerMode::View;
+
+    LOG_DEBUG("Started view mode");
 }
 
 void GraphDrawer::stopMode()
 {
     m_currentMode = CurrentDrawerMode::None;
+
+    LOG_DEBUG("Disabled mode");
 }

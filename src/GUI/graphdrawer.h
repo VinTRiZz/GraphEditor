@@ -40,6 +40,16 @@ public:
     ~GraphDrawer();
 
     /**
+     * @brief The CurrentDrawerMode enum Режимы работы мастера отрисовки графов
+     */
+    enum class CurrentDrawerMode : uint8_t {
+        None = 0,
+        Edit,
+        View,
+    };
+    CurrentDrawerMode getCurrentMode() const;
+
+    /**
      * @brief setScene  Выбрать целевую сцену
      * @param pScene    Указатель на сцену
      */
@@ -86,14 +96,6 @@ private:
     std::vector<OverlayButtonList::ButtonInfo> m_viewButtonsInfo;
     std::vector<OverlayButtonList::ButtonInfo> m_previousButtons;
 
-    /**
-     * @brief The CurrentDrawerMode enum Режимы работы мастера отрисовки графов
-     */
-    enum class CurrentDrawerMode : uint8_t {
-        None = 0,
-        Edit,
-        View,
-    };
     CurrentDrawerMode m_currentMode {CurrentDrawerMode::None}; //! Текущий режим работы мастера. От него зависит поведение и кнопки оверлея
 };
 

@@ -1,8 +1,9 @@
 #include "overlaybuttonlist.h"
 
-#include <QParallelAnimationGroup>
 #include <QPropertyAnimation>
 #include <QProperty>
+
+#include "logging.h"
 
 OverlayButtonList::OverlayButtonList(QWidget* parent)
     : QPushButton{parent}
@@ -66,8 +67,7 @@ void OverlayButtonList::setButtonSize(const QSize &bSize_)
     m_fixedSize = bSize_;
 
     if (!m_isButtonsHidden) {
-        hideButtons();
-        showButtons();
+        fixButtonsPositions();
     }
 }
 
@@ -91,8 +91,7 @@ uint OverlayButtonList::addButton(const ButtonInfo &button_)
     setupButton(m_buttons.back(), button_);
 
     if (!m_isButtonsHidden) {
-        hideButtons();
-        showButtons();
+        fixButtonsPositions();
     }
 
     return m_buttons.size() - 1;
@@ -175,109 +174,81 @@ void OverlayButtonList::showButtons()
         pButton->setIconSize(m_fixedSize.scaled(m_fixedSize.width() * 0.6, m_fixedSize.height() * 0.6, Qt::AspectRatioMode::KeepAspectRatio));
     }
 
-    uint directionButtonCount {0};
-
-    auto moveDirected = [&](ButtonOpenDirection moveDir, bool inverseMovement = false) {
-        uint currentOffset {1};
-        while ((directionButtonCount < m_buttons.size()) && (m_maxButtonCounts[moveDir] >= currentOffset)) {
-            auto pButton = m_buttons[directionButtonCount];
-            auto anim = new QPropertyAnimation(pButton, "geometry");
-
-            QRect positionRect;
-            positionRect.setX(this->x());
-            positionRect.setY(this->y());
-            positionRect.setWidth(width());
-            positionRect.setHeight(height());
-            anim->setStartValue(positionRect);
-
-            auto separatorLength = m_buttonMargins + positionRect.width();
-            bool isHorizontalMove = static_cast<bool>(moveDir & ButtonOpenDirection::Left) || static_cast<bool>(moveDir & ButtonOpenDirection::Right);
-            auto deltaX = separatorLength * isHorizontalMove * currentOffset;
-            deltaX = inverseMovement ? deltaX * -1.0 : deltaX;
-            auto targetX = positionRect.x() + deltaX * -1 * static_cast<bool>(moveDir & ButtonOpenDirection::Left) + deltaX * static_cast<bool>(moveDir & ButtonOpenDirection::Right);
-
-            separatorLength = m_buttonMargins + positionRect.height();
-            bool isVerticalMove = static_cast<bool>(moveDir & ButtonOpenDirection::Up) || static_cast<bool>(moveDir & ButtonOpenDirection::Down);
-            auto deltaY = separatorLength * isVerticalMove * currentOffset;
-            deltaY = inverseMovement ? deltaY * -1.0 : deltaY;
-            auto targetY = positionRect.y() + deltaY * -1 * static_cast<bool>(moveDir & ButtonOpenDirection::Up) + deltaY * static_cast<bool>(moveDir & ButtonOpenDirection::Down);
-
-            positionRect.moveTo(targetX, targetY);
-            anim->setEndValue(positionRect);
-
-            anim->setDuration(std::max(deltaX / separatorLength, deltaY / separatorLength) * 300 / m_animationMultiplier);
-            connect(anim, &QPropertyAnimation::finished,
-                    this, [anim]() {
-                delete anim;
-            });
-            anim->start();
-
-            currentOffset++;
-            directionButtonCount ++;
-        }
-    };
-
-    if (m_openDirections & ButtonOpenDirection::Left) {
-        moveDirected(ButtonOpenDirection::Left);
-    }
-    if (m_openDirections & ButtonOpenDirection::Right) {
-        moveDirected(ButtonOpenDirection::Right);
-    }
-    if (m_openDirections & ButtonOpenDirection::Up) {
-        moveDirected(ButtonOpenDirection::Up);
-    }
-    if (m_openDirections & ButtonOpenDirection::Down) {
-        moveDirected(ButtonOpenDirection::Down);
-    }
+    moveButtons(!m_isButtonsHidden, true);
     m_isButtonsHidden = false;
     setIcon(QIcon(":/icons/DATA/images/icons/toolbox_hide.png"));
 }
 
 void OverlayButtonList::hideButtons()
 {
+    moveButtons(!m_isButtonsHidden, true);
+    m_isButtonsHidden = true;
+    setIcon(QIcon(":/icons/DATA/images/icons/toolbox.png"));
+}
+
+void OverlayButtonList::moveButtons(bool isInverted, bool isAnimated)
+{
     uint directionButtonCount {0};
 
-    auto moveDirected = [&](ButtonOpenDirection moveDir, bool inverseMovement = false) {
+    auto moveDirected = [&](ButtonOpenDirection moveDir) {
         uint currentOffset {1};
         while ((directionButtonCount < m_buttons.size()) && (m_maxButtonCounts[moveDir] >= currentOffset)) {
             auto pButton = m_buttons[directionButtonCount];
-            auto anim = new QPropertyAnimation(pButton, "geometry");
 
             QRect positionRect;
             positionRect.setX(this->x());
             positionRect.setY(this->y());
             positionRect.setWidth(width());
             positionRect.setHeight(height());
-            anim->setEndValue(positionRect);
+            QRect prevPositionRect = positionRect;
 
+            double animationTime = 0;
+
+            // "дома"
             auto separatorLength = m_buttonMargins + positionRect.width();
             bool isHorizontalMove = static_cast<bool>(moveDir & ButtonOpenDirection::Left) || static_cast<bool>(moveDir & ButtonOpenDirection::Right);
             auto deltaX = separatorLength * isHorizontalMove * currentOffset;
-            deltaX = inverseMovement ? deltaX * -1.0 : deltaX;
             auto targetX = positionRect.x() + deltaX * -1 * static_cast<bool>(moveDir & ButtonOpenDirection::Left) + deltaX * static_cast<bool>(moveDir & ButtonOpenDirection::Right);
 
             separatorLength = m_buttonMargins + positionRect.height();
             bool isVerticalMove = static_cast<bool>(moveDir & ButtonOpenDirection::Up) || static_cast<bool>(moveDir & ButtonOpenDirection::Down);
             auto deltaY = separatorLength * isVerticalMove * currentOffset;
-            deltaY = inverseMovement ? deltaY * -1.0 : deltaY;
             auto targetY = positionRect.y() + deltaY * -1 * static_cast<bool>(moveDir & ButtonOpenDirection::Up) + deltaY * static_cast<bool>(moveDir & ButtonOpenDirection::Down);
 
             positionRect.moveTo(targetX, targetY);
-            anim->setStartValue(positionRect);
 
-            anim->setDuration(std::max(deltaX / separatorLength, deltaY / separatorLength) * 300 / m_animationMultiplier);
-            connect(anim, &QPropertyAnimation::finished,
-                    this, [anim, pButton]() {
-                delete anim;
-                pButton->hide();
-            });
-            anim->start();
+            animationTime = std::max(fabs(deltaX) / separatorLength, fabs(deltaY) / separatorLength) * 300 / m_animationMultiplier;
+
+            if (isInverted) {
+                std::swap(positionRect, prevPositionRect);
+            }
+
+            if (isAnimated) {
+                auto anim = new QPropertyAnimation(pButton, "geometry");
+
+                anim->setStartValue(prevPositionRect);
+                anim->setEndValue(positionRect);
+
+                anim->setDuration(animationTime);
+
+                connect(this, &OverlayButtonList::stopAnimations,
+                        anim, &QPropertyAnimation::stop);
+
+                connect(anim, &QPropertyAnimation::finished,
+                        this, [pButton, isInverted]() {
+                    pButton->setHidden(isInverted);
+                });
+
+                anim->start(QPropertyAnimation::DeleteWhenStopped);
+            } else {
+                pButton->setGeometry(positionRect);
+                pButton->setHidden(isInverted);
+            }
 
             currentOffset++;
             directionButtonCount ++;
         }
     };
-
     if (m_openDirections & ButtonOpenDirection::Left) {
         moveDirected(ButtonOpenDirection::Left);
     }
@@ -290,9 +261,12 @@ void OverlayButtonList::hideButtons()
     if (m_openDirections & ButtonOpenDirection::Down) {
         moveDirected(ButtonOpenDirection::Down);
     }
+}
 
-    m_isButtonsHidden = true;
-    setIcon(QIcon(":/icons/DATA/images/icons/toolbox.png"));
+void OverlayButtonList::fixButtonsPositions()
+{
+    emit stopAnimations();
+    moveButtons(m_isButtonsHidden, false);
 }
 
 void OverlayButtonList::setupButton(QPushButton *pButton, const ButtonInfo &buttonInfo)
@@ -308,6 +282,7 @@ void OverlayButtonList::setupButton(QPushButton *pButton, const ButtonInfo &butt
         connect(pButton, &QPushButton::clicked,
                 pButton, [this, buttonInfo, pButton]() {
             buttonInfo.action(pButton);
+            fixButtonsPositions();
             if (m_hideOnClick) {
                 hideButtons();
             }
@@ -319,13 +294,16 @@ void OverlayButtonList::setupSignals()
 {
     connect(this, &QPushButton::clicked,
             this, [this](){
-        if (m_buttons.size()) {
-            if (m_isButtonsHidden) {
-                showButtons();
-            } else {
-                hideButtons();
-            }
+        if (m_buttons.empty()) {
+            return;
         }
+
+        if (m_isButtonsHidden) {
+            showButtons();
+            return;
+        }
+
+        hideButtons();
     });
 }
 

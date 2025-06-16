@@ -2,6 +2,7 @@
 #define OVERLAYBUTTONLIST_H
 
 #include <QPushButton>
+#include <QPropertyAnimation>
 
 #include <optional>
 
@@ -159,6 +160,12 @@ public slots:
      */
     void hideButtons();
 
+signals:
+    /**
+     * @brief stopAnimations Используется для остановки анимаций разворачивания и сворачивания кнопок
+     */
+    void stopAnimations();
+
 private:
     ButtonOpenDirection                     m_openDirections {ButtonOpenDirection::Right};  //! Направления открытия кнопок
     std::map<ButtonOpenDirection, uint>     m_maxButtonCounts {                             //! Максимум кнопок по направлению
@@ -183,6 +190,18 @@ private:
     bool    m_isMovable             {false};    //! Определяет, можно ли двигать кнопку по виджету
     bool    m_hideOnClick           {true};     //! Определяет, скрывать ли кнопки по нажатии на одну из них
     QSize   m_fixedSize             {50, 50};   //! Создано из-за особенностей отрисовки в кьюте
+
+    /**
+     * @brief moveButtons Перемещает кнопки по осям в соответствии с распределением
+     * @param isInverted  Направление, для скрытия true
+     * @param isAnimated  Анимация, для включения true
+     */
+    void moveButtons(bool isInverted, bool isAnimated);
+
+    /**
+     * @brief fixButtonsPositions Для случаев, когда анимация не закончилась, а кнопки переместились
+     */
+    void fixButtonsPositions();
 
     /**
      * @brief setupButton Настроить кнопку (внутренняя функция), перезаписывает конфигурацию кнопки

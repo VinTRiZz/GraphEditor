@@ -52,6 +52,14 @@ void ObjectsInternalScene::init()
     addItem(m_pNullItem);
 }
 
+void ObjectsInternalScene::clearScene()
+{
+    for (auto pChild : m_pNullItem->childItems()) {
+        removeItem(pChild);
+    }
+    m_pNullItem->childItems().clear();
+}
+
 uint ObjectsInternalScene::addObject(QGraphicsItem *pItem)
 {
     if (pItem == nullptr) {

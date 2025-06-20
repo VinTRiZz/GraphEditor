@@ -120,8 +120,8 @@ bool GraphObject::addConnection(const GConnection &iCon)
     bool containIdFrom {false};
 
     for (auto& vert : m_vertices) {
-        containIdFrom |= vert.id == iCon.idFrom;
-        containIdTo |= vert.id == iCon.idTo;
+        containIdFrom |= (vert.id == iCon.idFrom);
+        containIdTo |= (vert.id == iCon.idTo);
 
         if (containIdFrom && containIdTo) {
             break;

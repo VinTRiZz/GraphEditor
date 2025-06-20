@@ -29,6 +29,8 @@ GraphEditorForm::GraphEditorForm(QWidget *parent) :
     m_currentGraph.setCreateTime(QDateTime::currentDateTime());
     m_currentGraph.setEditTime(QDateTime::currentDateTime());
 
+    m_currentGraph.setIdGenerator(ui->graphScene->getIdGenerator());
+
     Graph::GVertex vert;
     vert.shortName = "Vertex 1";
     vert.backgroundColor = Qt::red;
@@ -37,48 +39,41 @@ GraphEditorForm::GraphEditorForm(QWidget *parent) :
     m_currentGraph.addVertex(vert);
 
     vert.shortName = "Vertex 2";
-    vert.borderColor = Qt::magenta;
+    vert.backgroundColor = Qt::green;
+    vert.posX = 300;
+    vert.posY = 100;
+    m_currentGraph.addVertex(vert);
+
+    vert.shortName = "Vertex 3";
+    vert.backgroundColor = Qt::green;
+    vert.posX = 300;
+    vert.posY = 300;
+    m_currentGraph.addVertex(vert);
+
+    vert.shortName = "Vertex 4";
     vert.backgroundColor = Qt::green;
     vert.posX = 100;
     vert.posY = 300;
     m_currentGraph.addVertex(vert);
 
-    vert.shortName = "Vertex 3";
-    vert.backgroundColor = Qt::red;
-    vert.posX = 300;
-    vert.posY = 100;
-    m_currentGraph.addVertex(vert);
-
-    vert.shortName = "Vertex 4";
-    vert.borderColor = Qt::magenta;
-    vert.backgroundColor = Qt::green;
-    vert.posX = 300;
-    vert.posY = 300;
-    m_currentGraph.addVertex(vert);
-
     Graph::GConnection con;
-    con.name = "Connection 1";
+    con.name = "Connection 1-2";
     con.idFrom = 1;
     con.idTo = 2;
     m_currentGraph.addConnection(con);
 
-    con.name = "Connection 2";
+    con.name = "Connection 2-3";
     con.idFrom = 2;
     con.idTo = 3;
     m_currentGraph.addConnection(con);
 
-    con.name = "Connection 3";
-    con.idFrom = 1;
-    con.idTo = 3;
-    m_currentGraph.addConnection(con);
-
-    con.name = "Connection 4";
-    con.idFrom = 1;
+    con.name = "Connection 3-4";
+    con.idFrom = 3;
     con.idTo = 4;
     m_currentGraph.addConnection(con);
 
-    con.name = "Connection 5";
-    con.idFrom = 3;
+    con.name = "Connection 4-1";
+    con.idFrom = 4;
     con.idTo = 1;
     m_currentGraph.addConnection(con);
 

@@ -3,3 +3,5 @@ HEADERS +=  $$PWD/*.h
 FORMS   +=  $$PWD/*.ui
 
 INCLUDEPATH += $$PWD
+
+include (PredefinedObjects/PredefinedObjects.pri)

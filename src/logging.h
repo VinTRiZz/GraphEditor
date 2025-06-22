@@ -11,8 +11,10 @@
 
 #include <boost/noncopyable.hpp>
 
+#if __cplusplus < 201701UL
 #include <boost/fusion/include/for_each.hpp>
 #include <boost/fusion/include/make_tuple.hpp>
+#endif // C++ 17
 
 #ifdef QT_CORE_LIB
 #include <QDebug>
@@ -244,7 +246,12 @@ public:
             LoggingHelper logger;
             logger.ostreamWriteOnly(timestamp + " [" + logTypeStringColored<lt>() + "] ");
             logger.fileWriteOnly(timestamp + " [" + logTypeString<lt>() + "] ");
+
+#if __cplusplus < 201701UL
             boost::fusion::for_each(boost::fusion::make_tuple(args...), logger);
+#else
+            (logger(args), ...);
+#endif // C++ 17
 
 #ifdef QT_CORE_LIB
             logfileStream << Qt::endl;

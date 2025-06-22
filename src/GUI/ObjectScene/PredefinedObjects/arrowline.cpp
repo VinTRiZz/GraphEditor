@@ -8,11 +8,11 @@ namespace PredefinedObjects
 {
 
 ArrowedLine::ArrowedLine(QGraphicsItem *parent)
-    : QGraphicsLineItem(parent), m_arrowSize(10) {}
+    : QGraphicsLineItem(parent) {}
 
-void ArrowedLine::setArrowSize(qreal size) { m_arrowSize = size; }
+void ArrowedLine::setArrowSize(qreal arrowSize) { m_arrowSize = arrowSize; }
 
-qreal ArrowedLine::arrowSize() const { return m_arrowSize; }
+qreal ArrowedLine::getArrowSize() const { return m_arrowSize; }
 
 void ArrowedLine::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {

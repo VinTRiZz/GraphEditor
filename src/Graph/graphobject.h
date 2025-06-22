@@ -269,8 +269,8 @@ private:
     std::function<uint()>   m_idGenerator; //! Генератор ID для вершин
 
     // Через STL векторы для удобства работы с алгоритмами
-    std::vector<GVertex>        m_vertices;     //! Вершины графа
-    std::vector<GConnection>    m_connections;  //! Рёбра графа
+    std::vector<GVertex>                m_vertices;     //! Вершины графа
+    std::multimap<uint, GConnection>    m_connections;  //! Рёбра графа. Ключ -- целевой ID вершины (в которую "входит" стрелка связи)
 
     QString     m_name                      {"Untitled graph"};
     QString     m_description               {"Empty description of a graph"};

@@ -27,8 +27,8 @@ bool GraphObject::operator ==(const GraphObject &gObj_) const
 
     if (!std::equal(m_connections.begin(), m_connections.end(),
                               gObj_.m_connections.begin(), gObj_.m_connections.end(),
-        [](const Graph::GConnection& c1, const Graph::GConnection& c2) {
-        return (c1 == c2);
+        [](const auto& c1, const auto& c2) {
+        return (c1.first == c2.first) && (c2.second == c2.second);
     })) {
         return false;
     }
@@ -132,24 +132,29 @@ bool GraphObject::addConnection(const GConnection &iCon)
         return false;
     }
 
-    m_connections.push_back(iCon);
+    m_connections.emplace(iCon.idTo, iCon);
     return true;
 }
 
 std::vector<GConnection> GraphObject::getAllConnections() const
 {
-    return m_connections;
+    std::vector<GConnection> res;
+    res.reserve(m_connections.size());
+    for (auto& [idTo, connection] : m_connections) {
+        res.push_back(connection);
+    }
+    return res;
 }
 
 void GraphObject::removeConnection(uint conFrom, uint conTo)
 {
-    auto targetConnection = std::find_if(m_connections.begin(), m_connections.end(), [&](auto& con){
-        return (con.idFrom == conFrom) && (con.idTo == conTo);
-    });
-    if (targetConnection == m_connections.end()) {
-        return;
+    auto targetConnections = m_connections.equal_range(conTo);
+
+    for (auto con = targetConnections.first; con != targetConnections.second; ++con) {
+        if (con->second.idFrom == conFrom) {
+            m_connections.erase(con);
+        }
     }
-    m_connections.erase(targetConnection);
 }
 
 void GraphObject::setName(const QString &iName)

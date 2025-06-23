@@ -32,49 +32,48 @@ GraphEditorForm::GraphEditorForm(QWidget *parent) :
     m_currentGraph.setIdGenerator(ui->graphScene->getIdGenerator());
 
     Graph::GVertex vert;
-    vert.shortName = "Vertex 1";
+    vert.shortName = "Дебич";
     vert.backgroundColor = Qt::red;
+    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_red.png").pixmap(500, 500);
     vert.posX = 100;
     vert.posY = 100;
     m_currentGraph.addVertex(vert);
 
-    vert.shortName = "Vertex 2";
+    vert.shortName = "Кр. дебич";
     vert.backgroundColor = Qt::green;
-    vert.posX = 300;
-    vert.posY = 100;
-    m_currentGraph.addVertex(vert);
-
-    vert.shortName = "Vertex 3";
-    vert.backgroundColor = Qt::green;
+    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_green.png").pixmap(500, 500);
     vert.posX = 300;
     vert.posY = 300;
     m_currentGraph.addVertex(vert);
 
-    vert.shortName = "Vertex 4";
+    vert.shortName = "Др. дебич";
+    vert.backgroundColor = Qt::red;
+    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_red.png").pixmap(500, 500);
+    vert.posX = 500;
+    vert.posY = 500;
+    m_currentGraph.addVertex(vert);
+
+    vert.shortName = "Кр. хер";
     vert.backgroundColor = Qt::green;
+    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_green.png").pixmap(500, 500);
     vert.posX = 100;
-    vert.posY = 300;
+    vert.posY = 500;
     m_currentGraph.addVertex(vert);
 
     Graph::GConnection con;
-    con.name = "Connection 1-2";
     con.idFrom = 1;
     con.idTo = 2;
+    con.lineColor = Qt::red;
     m_currentGraph.addConnection(con);
 
-    con.name = "Connection 2-3";
-    con.idFrom = 2;
-    con.idTo = 3;
-    m_currentGraph.addConnection(con);
-
-    con.name = "Connection 3-4";
-    con.idFrom = 3;
-    con.idTo = 4;
-    m_currentGraph.addConnection(con);
-
-    con.name = "Connection 4-1";
     con.idFrom = 4;
-    con.idTo = 1;
+    con.idTo = 3;
+    con.lineColor = Qt::green;
+    m_currentGraph.addConnection(con);
+
+    con.idFrom = 1;
+    con.idTo = 3;
+    con.lineColor = Qt::magenta;
     m_currentGraph.addConnection(con);
 
     setupWidget();
@@ -227,9 +226,12 @@ void GraphEditorForm::setupWidget()
     m_pOverlayButton->setButtonSize(QSize(50, 50));
     m_pOverlayButton->setHideOnClick(false);
 
+    m_pOverlayButton->setOpenedIcon(QIcon("://DATA/images/icons/toolbox_hide.png"));
+    m_pOverlayButton->setClosedIcon(QIcon("://DATA/images/icons/toolbox_show.png"));
+
 
     OverlayButtonList::ButtonInfo buttonInfo;
-    buttonInfo.icon = QIcon(":/icons/DATA/images/icons/edit.png");
+    buttonInfo.icon = QIcon("://DATA/images/icons/edit.png");
     buttonInfo.tooltip = "Показать свойства графа";
     buttonInfo.action = [this](QPushButton* pSender) {
         if (ui->graphProps_groupBox->isHidden()) {
@@ -270,8 +272,7 @@ void GraphEditorForm::setupWidget()
     ui->graphProps_groupBox->hide();
     m_pOverlayButton->addButton(buttonInfo);
 
-
-    buttonInfo.icon = QIcon(":/icons/DATA/images/icons/cancel_changes.png");
+    buttonInfo.icon = QIcon("://DATA/images/icons/cancel_changes.png");
     buttonInfo.tooltip = "Отменить изменения";
     buttonInfo.action = [this](QPushButton*) {
         if (!isGraphPathSet()) {
@@ -283,7 +284,7 @@ void GraphEditorForm::setupWidget()
     m_pOverlayButton->getButton(cancelButtonIndex)->setEnabled(false);
 
 
-    buttonInfo.icon = QIcon(":/icons/DATA/images/icons/save.png");
+    buttonInfo.icon = QIcon("://DATA/images/icons/save.png");
     buttonInfo.tooltip = "Сохранить";
     buttonInfo.action = [this, cancelButtonIndex](QPushButton*) {
         if (!isGraphPathSet()) {
@@ -296,7 +297,7 @@ void GraphEditorForm::setupWidget()
     m_pOverlayButton->addButton(buttonInfo);
 
 
-    buttonInfo.icon = QIcon(":/icons/DATA/images/icons/open_graph.png");
+    buttonInfo.icon = QIcon("://DATA/images/icons/open_graph.png");
     buttonInfo.tooltip = "Открыть файл графа";
     buttonInfo.action = [this, cancelButtonIndex](QPushButton*) {
         m_currentGraphFilePath = QFileDialog::getOpenFileName(this, "Файл сохранённого графа", QDir::homePath(), "Файл графа (*.gse)");
@@ -309,7 +310,7 @@ void GraphEditorForm::setupWidget()
     m_pOverlayButton->addButton(buttonInfo);
 
 
-    buttonInfo.icon = QIcon(":/icons/DATA/images/icons/save_as.png");
+    buttonInfo.icon = QIcon("://DATA/images/icons/save_as.png");
     buttonInfo.tooltip = "Сохранить как...";
     buttonInfo.action = [this, cancelButtonIndex](QPushButton*) {
         m_currentGraphFilePath = QFileDialog::getSaveFileName(this, "Файл для сохранения графа", QDir::homePath(), "Файл графа (*.gse)");
@@ -322,24 +323,24 @@ void GraphEditorForm::setupWidget()
     };
     m_pOverlayButton->addButton(buttonInfo);
 
-    buttonInfo.icon = QIcon(":/icons/DATA/images/icons/mode_none.png");
+    buttonInfo.icon = QIcon("://DATA/images/icons/mode_none.png");
     buttonInfo.tooltip = "Сменить режим работы";
     buttonInfo.action = [this](QPushButton* pButton) {
         auto currentDrawerMode = m_graphDrawer.getCurrentMode();
 
         if (currentDrawerMode == GraphDrawer::CurrentDrawerMode::Edit) {
-            pButton->setIcon(QIcon(":/icons/DATA/images/icons/mode_view.png"));
+            pButton->setIcon(QIcon("://DATA/images/icons/mode_view.png"));
             m_graphDrawer.startViewMode();
             return;
         }
 
         if (currentDrawerMode == GraphDrawer::CurrentDrawerMode::View) {
-            pButton->setIcon(QIcon(":/icons/DATA/images/icons/mode_none.png"));
+            pButton->setIcon(QIcon("://DATA/images/icons/mode_none.png"));
             m_graphDrawer.stopMode();
             return;
         }
 
-        pButton->setIcon(QIcon(":/icons/DATA/images/icons/mode_edit.png"));
+        pButton->setIcon(QIcon("://DATA/images/icons/mode_edit.png"));
         m_graphDrawer.startEditMode();
     };
     m_pOverlayButton->addButton(buttonInfo);

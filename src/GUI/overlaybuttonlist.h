@@ -85,6 +85,18 @@ public:
      */
     void setHideOnClick(double hideOnClick_);
 
+    /**
+     * @brief setOpenedIcon Задать иконку для состояния, когда все кнопки развёрнуты
+     * @param ic Иконка
+     */
+    void setOpenedIcon(const QIcon& ic);
+
+    /**
+     * @brief setClosedIcon Задать иконку для состояния, когда все иконки свёрнуты
+     * @param ic Иконка
+     */
+    void setClosedIcon(const QIcon& ic);
+
 
     // =========================================================== //
     // ============== Добавление и изменение кнопок ============== //
@@ -190,6 +202,9 @@ private:
     bool    m_isMovable             {false};    //! Определяет, можно ли двигать кнопку по виджету
     bool    m_hideOnClick           {true};     //! Определяет, скрывать ли кнопки по нажатии на одну из них
     QSize   m_fixedSize             {50, 50};   //! Создано из-за особенностей отрисовки в кьюте
+
+    QIcon   m_openIcon;     //! Иконка открытой кнопки
+    QIcon   m_closeIcon;    //! Иконка закрытой кнопки
 
     /**
      * @brief moveButtons Перемещает кнопки по осям в соответствии с распределением

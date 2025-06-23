@@ -84,6 +84,22 @@ void OverlayButtonList::setHideOnClick(double hideOnClick_)
     m_hideOnClick = hideOnClick_;
 }
 
+void OverlayButtonList::setOpenedIcon(const QIcon &ic)
+{
+    m_openIcon = ic;
+    if (!m_isButtonsHidden) {
+        setIcon(m_openIcon);
+    }
+}
+
+void OverlayButtonList::setClosedIcon(const QIcon &ic)
+{
+    m_closeIcon = ic;
+    if (m_isButtonsHidden) {
+        setIcon(m_closeIcon);
+    }
+}
+
 uint OverlayButtonList::addButton(const ButtonInfo &button_)
 {
     m_buttonsInfo.push_back(button_);
@@ -176,14 +192,14 @@ void OverlayButtonList::showButtons()
 
     moveButtons(!m_isButtonsHidden, true);
     m_isButtonsHidden = false;
-    setIcon(QIcon(":/icons/DATA/images/icons/toolbox_hide.png"));
+    setIcon(m_openIcon);
 }
 
 void OverlayButtonList::hideButtons()
 {
     moveButtons(!m_isButtonsHidden, true);
     m_isButtonsHidden = true;
-    setIcon(QIcon(":/icons/DATA/images/icons/toolbox.png"));
+    setIcon(m_closeIcon);
 }
 
 void OverlayButtonList::moveButtons(bool isInverted, bool isAnimated)
@@ -309,7 +325,7 @@ void OverlayButtonList::setupSignals()
 
 void OverlayButtonList::setupWidget()
 {
-    setIcon(QIcon(":/icons/DATA/images/icons/toolbox.png"));
+    setIcon(m_closeIcon);
     setButtonSize(QSize(50, 50));
 }
 

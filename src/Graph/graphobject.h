@@ -8,6 +8,8 @@
 namespace Graph
 {
 
+const uint GRAPH_MAX_SHORTNAME_SIZE { 10 };
+
 
 /**
  * @brief The GVertex class Вершина графа
@@ -34,7 +36,7 @@ struct GVertex
      * @return false если длина больше разрешённой
      */
     bool isShortnameValid() const {
-        return shortName.size() < 10;
+        return shortName.size() < GRAPH_MAX_SHORTNAME_SIZE;
     }
 
     /**
@@ -172,6 +174,13 @@ public:
      * @return false если нет одной из вершин для соединения
      */
     bool addConnection(const GConnection& iCon);
+
+    /**
+     * @brief getConnectionsToVertex Получить все соединения, входящие в вершину с ID = vertexId
+     * @param vertexId ID вершины
+     * @return Вектор входящих соединений
+     */
+    std::vector<GConnection> getConnectionsToVertex(uint vertexId) const;
 
     /**
      * @brief getAllConnections Получить все рёбра в графе

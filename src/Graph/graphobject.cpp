@@ -136,6 +136,16 @@ bool GraphObject::addConnection(const GConnection &iCon)
     return true;
 }
 
+std::vector<GConnection> GraphObject::getConnectionsToVertex(uint vertexId) const
+{
+    std::vector<GConnection> res;
+    auto targetConnections = m_connections.equal_range(vertexId);
+    for (auto con = targetConnections.first; con != targetConnections.second; ++con) {
+        res.push_back(con->second);
+    }
+    return res;
+}
+
 std::vector<GConnection> GraphObject::getAllConnections() const
 {
     std::vector<GConnection> res;

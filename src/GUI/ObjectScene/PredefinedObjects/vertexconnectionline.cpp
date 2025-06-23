@@ -11,7 +11,8 @@ namespace PredefinedObjects
 
 VertexConnectionLine::VertexConnectionLine(QGraphicsItem *parent) :
     QGraphicsItem(parent),
-    m_drawPen {QPen(Qt::black, 1)}
+    m_drawPen {QPen(Qt::black, 1)},
+    m_selectedPen {QPen(Qt::yellow, 3)}
 {
 
 }
@@ -50,7 +51,7 @@ qreal VertexConnectionLine::arrowSize() const
 
 void VertexConnectionLine::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    if (option->state == QStyle::StateFlag::State_Selected) {
+    if (option->state & QStyle::StateFlag::State_Selected) {
         painter->setPen(m_selectedPen);
     } else {
         painter->setPen(m_drawPen);
@@ -145,7 +146,7 @@ void VertexConnectionLine::drawArrow(QPainter *painter)
 
 QRectF VertexConnectionLine::boundingRect() const
 {
-    return QRectF(m_straightLine.x1(), m_straightLine.y1(), m_straightLine.dx(), m_straightLine.dy());
+    return QRectF(m_straightLine.x1(), m_straightLine.y1(), fabs(m_straightLine.dx()), fabs(m_straightLine.dy()));
 }
 
 }

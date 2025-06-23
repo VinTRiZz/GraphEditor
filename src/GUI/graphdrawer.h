@@ -18,11 +18,10 @@ struct GraphConversionConfiguration : boost::noncopyable
     uint mainRectLayer       = 1;    //! Уровень главного объекта ("полотна" графа)
 
     uint connectionLineLayer = 10;   //! Уровень линий соединения вершин
-    uint connectionRectLayer = 11;   //! Уровень прямоугольников с названиями вершин (для контраста)
-    uint connectionTextLayer = 12;   //! Уровень текста названий вершин
 
     uint vertexLayer         = 30;   //! Уровень вершин
-    uint vertexDataLayer     = 31;   //! Уровень текста названий вершин
+    uint vertexDataRectLayer = 31;   //! Уровень рамки текста названий вершин
+    uint vertexDataLayer     = 32;   //! Уровень текста названий вершин
 
     static GraphConversionConfiguration& getInstance() {
         static GraphConversionConfiguration inst;

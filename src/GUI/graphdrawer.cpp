@@ -2,7 +2,7 @@
 
 #include "objectsceneconstants.h"
 
-#include "arrowline.h"
+#include "vertexconnectionline.h"
 
 #include <QGraphicsRectItem>
 #include <QGraphicsEllipseItem>
@@ -60,6 +60,7 @@ void GraphDrawer::updateGraph()
     auto& conversionConfig = GraphConversionConfiguration::getInstance();
 
     const double vertexRadius = 50;
+    double labelHeight {0};
 
     QRect vertexRect;
     vertexRect.setWidth(vertexRadius * 2);
@@ -71,38 +72,49 @@ void GraphDrawer::updateGraph()
         QGraphicsItem* pVertexItem {nullptr};
 
         if (vert.pxmap.isNull()) {
-            pVertexItem = new QGraphicsEllipseItem;
-            static_cast<QGraphicsEllipseItem*>(pVertexItem)->setBrush(vert.backgroundColor);
-            static_cast<QGraphicsEllipseItem*>(pVertexItem)->setPen(vert.borderColor);
-            static_cast<QGraphicsEllipseItem*>(pVertexItem)->setRect(vertexRect);
+            pVertexItem = new QGraphicsRectItem;
+            static_cast<QGraphicsRectItem*>(pVertexItem)->setBrush(vert.backgroundColor);
+            static_cast<QGraphicsRectItem*>(pVertexItem)->setPen(vert.borderColor);
+            static_cast<QGraphicsRectItem*>(pVertexItem)->setRect(vertexRect);
         } else {
             pVertexItem = new QGraphicsPixmapItem;
-            static_cast<QGraphicsEllipseItem*>(pVertexItem)->setPen(QPen(Qt::white, 1.5)); // Для контраста
 
             // Для отображения всего в унифицированном виде
-            auto scaledPxmap = vert.pxmap.scaled(QSize(vertexRadius, vertexRadius));
+            auto scaledPxmap = vert.pxmap.scaled(QSize(vertexRadius * 2, vertexRadius * 2));
             static_cast<QGraphicsPixmapItem*>(pVertexItem)->setPixmap(scaledPxmap);
         }
 
-        auto pVertexLabel = new QGraphicsSimpleTextItem;
+        auto pVertexLabel = new QGraphicsTextItem;
         pVertexLabel->setParentItem(pVertexItem);
-        pVertexLabel->setPen(vert.borderColor);
-        pVertexLabel->setBrush(Qt::white);
-        pVertexLabel->setText(vert.shortName);
+        pVertexLabel->setPlainText(vert.shortName);
+        pVertexLabel->setDefaultTextColor(vert.borderColor);
 
-        // TODO: Найти способ задать центральной позицию получше
-        pVertexLabel->setX(vertexRect.center().x() / 2 - pVertexLabel->font().pixelSize() * vert.shortName.size() / 2);
-        pVertexLabel->setY(vertexRect.center().y() - 10);
+        pVertexLabel->setX(vertexRect.center().x() / 2 - pVertexLabel->textWidth() / 2);
+        pVertexLabel->setY(vertexRect.center().y() + vertexRadius);
         pVertexLabel->setZValue(conversionConfig.vertexDataLayer);
 
-        pVertexItem->setX(vert.posX - vertexRadius);
-        pVertexItem->setY(vert.posY - vertexRadius);
+        auto pVertexContrastRect = new QGraphicsRectItem;
+        pVertexContrastRect->setParentItem(pVertexItem);
+        auto contrastRect = pVertexLabel->boundingRect();
+        contrastRect.moveTo(pVertexLabel->x(), pVertexLabel->y());
+        pVertexContrastRect->setRect(contrastRect);
+        pVertexContrastRect->setPen(vert.borderColor);
+        pVertexContrastRect->setBrush(Qt::white);
+        pVertexContrastRect->setZValue(conversionConfig.vertexDataRectLayer);
+
+        labelHeight = pVertexLabel->boundingRect().height();
+
+        pVertexItem->setX(vert.posX - pVertexItem->boundingRect().width() / 2);
+        pVertexItem->setY(vert.posY - pVertexItem->boundingRect().height() / 2);
         pVertexItem->setZValue(conversionConfig.vertexLayer);
         m_pScene->addObject(pVertexItem);
     }
 
     const GVertex* pConnectionFrom {nullptr};
     const GVertex* pConnectionTo {nullptr};
+
+    QHash<uint, std::vector<GConnection> > connectionHash;
+
     for (auto& con : m_pGraph->getAllConnections()) {
         pConnectionFrom = nullptr;
         pConnectionTo = nullptr;
@@ -125,64 +137,35 @@ void GraphDrawer::updateGraph()
             throw std::runtime_error("GraphObject::toItem: One of vertices did not found!");
         }
 
-        auto pConnection = new PredefinedObjects::ArrowedLine;
-
-        QLineF connectionLine;
-        connectionLine.setP1(QPoint(pConnectionFrom->posX, pConnectionFrom->posY));
-        connectionLine.setP2(QPoint(pConnectionTo->posX, pConnectionTo->posY));
-
-        auto rotationAngle = connectionLine.angle();
-
-        auto vertexCircleCos = cos(rotationAngle * M_PI / 180.0);
-        auto vertexCircleSin = -sin(rotationAngle * M_PI / 180.0);
-
-        auto p1 = connectionLine.p1();
-        auto p2 = connectionLine.p2();
-
-        connectionLine.setP1(QPoint(p1.x() + vertexCircleCos * vertexRadius, p1.x() + vertexCircleSin * vertexRadius));
-
-        if (p1.x() < p2.x()) {
-            vertexCircleCos *= -1;
+        auto connectionCountIt = connectionHash.find(con.idTo);
+        if (connectionCountIt == connectionHash.end()) {
+            connectionHash.insert(con.idTo, m_pGraph->getConnectionsToVertex(con.idTo));
+            connectionCountIt = connectionHash.find(con.idTo);
         }
 
-        if (p1.y() < p2.y()) {
-            vertexCircleSin *= -1;
+        uint connectionCount = connectionCountIt.value().size() + 1;
+        uint connectionNumber = 1;
+
+        for (auto& countCon : connectionCountIt.value()) {
+            if (con == countCon) {
+                break;
+            }
+            connectionNumber++;
         }
 
-        connectionLine.setP2(QPoint(p2.x() + vertexCircleCos * vertexRadius, p2.x() + vertexCircleSin * vertexRadius));
+        auto pConnection = new PredefinedObjects::VertexConnectionLine;
 
-        pConnection->setLine(connectionLine);
+        auto xOffset = (static_cast<double>(connectionNumber) * static_cast<double>(vertexRect.width()) / static_cast<double>(connectionCount)) - pConnection->arrowSize();
+
+        auto fromPos = QPointF(pConnectionFrom->posX, pConnectionFrom->posY + vertexRadius + labelHeight + 2);
+        auto toPos = QPointF(pConnectionTo->posX - vertexRadius + xOffset, pConnectionTo->posY - vertexRadius - 2);
+
+        pConnection->setPositionFrom(fromPos);
+        pConnection->setPositionTo(toPos);
+
         pConnection->setPen(QPen(con.lineColor, 3));
-        pConnection->setZValue(conversionConfig.connectionLineLayer + 30);
+        pConnection->setZValue(conversionConfig.connectionLineLayer);
         m_pScene->addObject(pConnection);
-
-        LOG_DEBUG_SYNC("Connection:", con.name, "Angle:", rotationAngle);
-
-//        auto pConnectionLabel = new QGraphicsSimpleTextItem;
-//        pConnectionLabel->setParentItem(pConnection);
-
-//        pConnectionLabel->setPen(con.lineColor);
-//        pConnectionLabel->setText(con.name);
-
-//        pConnectionLabel->setRotation(rotationAngle);
-
-//        auto textWidth = pConnectionLabel->font().pixelSize() * con.name.size();
-//        pConnectionLabel->setX(connectionLine.center().x() + textWidth * textSin);
-//        pConnectionLabel->setY(connectionLine.center().y() + textWidth * textCos);
-//        pConnectionLabel->setZValue(conversionConfig.connectionTextLayer);
-
-//        auto pConnectionLabelRect = new QGraphicsRectItem;
-//        pConnectionLabelRect->setParentItem(pConnection);
-//        pConnectionLabelRect->setBrush(Qt::white);
-
-//        auto labelRect = pConnectionLabel->boundingRect();
-//        labelRect.setX(labelRect.x() - 10 * textCos);
-//        labelRect.setY(labelRect.y() - 10 * textSin);
-//        labelRect.setWidth(labelRect.width() + 10);
-//        pConnectionLabelRect->setRect(labelRect);
-//        pConnectionLabelRect->setX(pConnectionLabel->x());
-//        pConnectionLabelRect->setY(pConnectionLabel->y());
-//        pConnectionLabelRect->setZValue(conversionConfig.connectionRectLayer);
     }
 }
 

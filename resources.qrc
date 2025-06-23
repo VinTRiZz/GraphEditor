@@ -1,19 +1,23 @@
 <RCC>
-    <qresource prefix="/icons">
-        <file>DATA/images/icons/edit.png</file>
-        <file>DATA/images/icons/tools.png</file>
-        <file>DATA/images/icons/toolbox.png</file>
-        <file>DATA/images/icons/toolbox_hide.png</file>
-        <file>DATA/images/icons/gear.png</file>
-        <file>DATA/images/icons/save.png</file>
-        <file>DATA/images/icons/open_graph.png</file>
-        <file>DATA/images/icons/new_graph.png</file>
-        <file>DATA/images/icons/info.png</file>
-        <file>DATA/images/icons/center.png</file>
-        <file>DATA/images/icons/save_as.png</file>
+    <qresource prefix="/">
+        <file>DATA/images/icons/add_connection.png</file>
+        <file>DATA/images/icons/add_vertex.png</file>
         <file>DATA/images/icons/cancel_changes.png</file>
-        <file>DATA/images/icons/mode_view.png</file>
-        <file>DATA/images/icons/mode_none.png</file>
+        <file>DATA/images/icons/center.png</file>
+        <file>DATA/images/icons/edit.png</file>
+        <file>DATA/images/icons/gear.png</file>
+        <file>DATA/images/icons/info.png</file>
         <file>DATA/images/icons/mode_edit.png</file>
+        <file>DATA/images/icons/mode_none.png</file>
+        <file>DATA/images/icons/mode_view.png</file>
+        <file>DATA/images/icons/new_graph.png</file>
+        <file>DATA/images/icons/open_graph.png</file>
+        <file>DATA/images/icons/save.png</file>
+        <file>DATA/images/icons/save_as.png</file>
+        <file>DATA/images/icons/toolbox_hide.png</file>
+        <file>DATA/images/icons/tools.png</file>
+        <file>DATA/images/vertexicons/vertex_person_green.png</file>
+        <file>DATA/images/vertexicons/vertex_person_red.png</file>
+        <file>DATA/images/icons/toolbox_show.png</file>
     </qresource>
 </RCC>

@@ -1,7 +1,7 @@
 #ifndef GRAPHDRAWER_H
 #define GRAPHDRAWER_H
 
-#include "objectscene.h"
+#include "objectview.h"
 #include "graphobject.h"
 #include "overlaybuttonlist.h"
 
@@ -52,7 +52,7 @@ public:
      * @brief setScene  Выбрать целевую сцену
      * @param pScene    Указатель на сцену
      */
-    void setScene(ObjectScene* pScene);
+    void setScene(ObjectView* pScene);
 
     /**
      * @brief setCurrentGraph   Задать текущий граф
@@ -87,7 +87,7 @@ public:
     void stopMode();
 
 private:
-    ObjectScene*            m_pScene            {nullptr};  //! Сцена, на которой находятся объекты для отрисовки
+    ObjectView*            m_pScene            {nullptr};  //! Сцена, на которой находятся объекты для отрисовки
     Graph::GraphObject*     m_pGraph            {nullptr};  //! Граф, который будет отрисовываться
     OverlayButtonList*      m_pOverlayButton    {nullptr};  //! Кнопка, в которой будет меню
 

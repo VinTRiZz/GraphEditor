@@ -36,7 +36,7 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="ObjectScene" name="graphScene" native="true"/>
+       <widget class="ObjectView" name="graphScene" native="true"/>
       </item>
      </layout>
     </widget>
@@ -129,9 +129,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>ObjectScene</class>
+   <class>ObjectView</class>
    <extends>QWidget</extends>
-   <header>src/GUI/ObjectScene/objectscene.h</header>
+   <header>src/GUI/ObjectScene/objectview.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

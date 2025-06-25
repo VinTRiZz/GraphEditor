@@ -12,13 +12,13 @@ class ObjectsInternalScene;
 /**
  * @brief The ObjectScene class Посредник для отображения объектов на QGraphicScene с доп функционалом
  */
-class ObjectScene : public QGraphicsView
+class ObjectView : public QGraphicsView
 {
     Q_OBJECT
 
 public:
-    explicit ObjectScene(QWidget *parent = nullptr);
-    ~ObjectScene();
+    explicit ObjectView(QWidget *parent = nullptr);
+    ~ObjectView();
 
     /**
      * @brief resizeScene Принудительно изменить размеры полотна сцены
@@ -71,9 +71,17 @@ private:
     Ui::ObjectScene *ui;
     ObjectsInternalScene*       m_pScene            {nullptr};  //! Сцена для отображения объектов (внутренний класс)
 
-    QPointF prevPos;    //! Позиция для перемещения по графу
+    QPointF m_prevPos;                          //! Позиция нажатия на графе
+    bool    m_isHoldingLeftButton   {false};    //! Флаг факта того, что пользователь кникнул на сцену ЛКМ
+    bool    m_isHoldingMiddleButton {false};    //! Флаг факта того, что пользователь кникнул на сцену СКМ
+    bool    m_isHoldingRightButton  {false};    //! Флаг факта того, что пользователь кникнул на сцену ПКМ
+    bool    m_isMovingByUser        {true};     //! Флаг для перемещений сцены по СКМ
+
     void wheelEvent(QWheelEvent* e) override;
     void mousePressEvent(QMouseEvent* e) override;
+    void mouseMoveEvent(QMouseEvent* e) override;
+    void mouseReleaseEvent(QMouseEvent* e) override;
+    void contextMenuEvent(QContextMenuEvent *e) override;
 };
 
 #endif // OBJECTSCENE_H

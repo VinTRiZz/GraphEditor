@@ -33,29 +33,29 @@ GraphEditorForm::GraphEditorForm(QWidget *parent) :
 
     Graph::GVertex vert;
     vert.shortName = "Дебич";
-    vert.backgroundColor = Qt::red;
+    vert.backgroundColor = Qt::green;
     vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_red.png").pixmap(500, 500);
     vert.posX = 100;
     vert.posY = 100;
     m_currentGraph.addVertex(vert);
 
     vert.shortName = "Кр. дебич";
-    vert.backgroundColor = Qt::green;
-    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_green.png").pixmap(500, 500);
+    vert.backgroundColor = Qt::red;
+    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_red.png").pixmap(500, 500);
     vert.posX = 300;
     vert.posY = 300;
     m_currentGraph.addVertex(vert);
 
     vert.shortName = "Др. дебич";
-    vert.backgroundColor = Qt::red;
-    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_red.png").pixmap(500, 500);
+    vert.backgroundColor = Qt::green;
+    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_green.png").pixmap(500, 500);
     vert.posX = 500;
     vert.posY = 500;
     m_currentGraph.addVertex(vert);
 
     vert.shortName = "Кр. хер";
-    vert.backgroundColor = Qt::green;
-    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_green.png").pixmap(500, 500);
+    vert.backgroundColor = Qt::red;
+    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_red.png").pixmap(500, 500);
     vert.posX = 100;
     vert.posY = 500;
     m_currentGraph.addVertex(vert);

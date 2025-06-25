@@ -33,7 +33,7 @@ GraphDrawer::CurrentDrawerMode GraphDrawer::getCurrentMode() const
     return m_currentMode;
 }
 
-void GraphDrawer::setScene(ObjectScene *pScene)
+void GraphDrawer::setScene(ObjectView *pScene)
 {
     m_pScene = pScene;
 }

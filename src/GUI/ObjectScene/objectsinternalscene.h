@@ -8,7 +8,7 @@ namespace Ui {
 class ObjectsInternalScene;
 }
 
-class ObjectsInternalScene : public QGraphicsScene
+class ObjectsInternalScene final : public QGraphicsScene
 {
     Q_OBJECT
 

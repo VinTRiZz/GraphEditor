@@ -92,8 +92,7 @@ void GraphDrawer::updateGraph()
             static_cast<QGraphicsPixmapItem*>(pVertexItem)->setPixmap(scaledPxmap);
         }
 
-        auto pVertexLabel = new QGraphicsTextItem;
-        pVertexLabel->setParentItem(pVertexItem);
+        auto pVertexLabel = new QGraphicsTextItem(pVertexItem);
         pVertexLabel->setPlainText(vert.shortName);
         pVertexLabel->setDefaultTextColor(vert.borderColor);
 
@@ -101,8 +100,7 @@ void GraphDrawer::updateGraph()
         pVertexLabel->setY(vertexRect.center().y() + vertexRadius);
         pVertexLabel->setZValue(conversionConfig.vertexDataLayer);
 
-        auto pVertexContrastRect = new QGraphicsRectItem;
-        pVertexContrastRect->setParentItem(pVertexItem);
+        auto pVertexContrastRect = new QGraphicsRectItem(pVertexItem);
         auto contrastRect = pVertexLabel->boundingRect();
         contrastRect.moveTo(pVertexLabel->x(), pVertexLabel->y());
         pVertexContrastRect->setRect(contrastRect);

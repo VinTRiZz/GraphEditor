@@ -196,7 +196,7 @@ void GraphEditorForm::setupModels()
     }
 
     if (m_pUserGraphInfoModel == nullptr) {
-        m_pUserGraphInfoModel = new QStandardItemModel;
+        m_pUserGraphInfoModel = new QStandardItemModel(this);
         m_pUserGraphInfoModel->setColumnCount(2);
         m_pUserGraphInfoModel->setHeaderData(0, Qt::Horizontal, "Свойство");
         m_pUserGraphInfoModel->setHeaderData(1, Qt::Horizontal, "Значение");

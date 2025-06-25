@@ -104,6 +104,7 @@ bool SaveMaster::save(const QString &oFilePath, const Graph::GraphObject &iGraph
     }
 
     db.close();
+    db.removeDatabase(db.connectionName());
     LOG_OK("Graph saved");
     return true;
 }
@@ -222,6 +223,7 @@ bool SaveMaster::load(const QString &iFilePath, Graph::GraphObject &oGraphObject
     }
 
     db.close();
+    db.removeDatabase(db.connectionName());
     LOG_OK("Graph loaded");
     return true;
 }

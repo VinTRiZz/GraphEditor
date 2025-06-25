@@ -44,6 +44,12 @@ public:
     void init();
 
     /**
+     * @brief setContextMenu    Задать контекстное меню
+     * @param pMenu             Указатель на контекстное меню
+     */
+    void setContextMenu(QMenu* pMenu);
+
+    /**
      * @brief clearScene Очищает сцену от объектов, оставляя её полотно нетронутым
      */
     void clearScene();
@@ -54,6 +60,22 @@ public:
      * @return ID добавленного объекта, сгенерированный с помощью функтора-генератора
      */
     uint addObject(QGraphicsItem* pItem);
+
+    /**
+     * @brief setGrabObject Задать объект, который будет прикреплён к курсору
+     * @param pItem         Указатель на объект
+     */
+    void setGrabObject(QGraphicsItem* pItem);
+
+    /**
+     * @brief acceptGrabObject  Принять объект, прикреплённый к курсору (открепить)
+     */
+    void acceptGrabObject();
+
+    /**
+     * @brief rejectGrabObject  Отклонить объект, прикреплённый к курсору (удалить или вернуть на позицию)
+     */
+    void rejectGrabObject();
 
     /**
      * @brief getAlObjectIds Возвращает все ID объектов, добавленных в сцену
@@ -69,14 +91,17 @@ public:
 
 private:
     Ui::ObjectScene *ui;
-    ObjectsInternalScene*       m_pScene            {nullptr};  //! Сцена для отображения объектов (внутренний класс)
+    ObjectsInternalScene*   m_pScene            {nullptr};  //! Сцена для отображения объектов (внутренний класс)
+    QMenu*                  m_pContextMenu      {nullptr};  //! Контекстное меню
+
+    std::optional<uint>     m_grabObjectId;                 //! ID объекта, который "прикреплён" к указетелю мыши
 
     QPointF m_prevPos;                          //! Позиция нажатия на графе
     bool    m_isHoldingLeftButton   {false};    //! Флаг факта того, что пользователь кникнул на сцену ЛКМ
     bool    m_isHoldingMiddleButton {false};    //! Флаг факта того, что пользователь кникнул на сцену СКМ
-    bool    m_isHoldingRightButton  {false};    //! Флаг факта того, что пользователь кникнул на сцену ПКМ
     bool    m_isMovingByUser        {true};     //! Флаг для перемещений сцены по СКМ
 
+    // Интерфейс QWidget
     void wheelEvent(QWheelEvent* e) override;
     void mousePressEvent(QMouseEvent* e) override;
     void mouseMoveEvent(QMouseEvent* e) override;

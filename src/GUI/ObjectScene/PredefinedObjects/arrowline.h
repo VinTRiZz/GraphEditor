@@ -9,7 +9,7 @@ namespace PredefinedObjects
 class ArrowedLine : public QGraphicsLineItem
 {
 public:
-    ArrowedLine(QGraphicsItem *parent = nullptr);
+    explicit ArrowedLine(QGraphicsItem *parent = nullptr);
 
     /**
      * @brief setArrowSize  Задать размер стрелки

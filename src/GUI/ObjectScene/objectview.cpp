@@ -6,6 +6,10 @@
 
 #include <QScrollBar>
 
+#include <QMenu>
+
+#include <QGraphicsItem>
+
 #include "logging.h"
 
 ObjectView::ObjectView(QWidget *parent) :
@@ -42,6 +46,11 @@ void ObjectView::init()
     setScene(m_pScene);
 }
 
+void ObjectView::setContextMenu(QMenu *pMenu)
+{
+    m_pContextMenu = pMenu;
+}
+
 void ObjectView::clearScene()
 {
     m_pScene->clearScene();
@@ -50,6 +59,27 @@ void ObjectView::clearScene()
 uint ObjectView::addObject(QGraphicsItem *pItem)
 {
     return m_pScene->addObject(pItem);
+}
+
+void ObjectView::setGrabObject(QGraphicsItem *pItem)
+{
+    // Перезатираем предыдущий объект
+    if (m_grabObjectId.has_value()) {
+        m_pScene->removeObject(m_grabObjectId.value());
+    }
+    m_grabObjectId = m_pScene->addObject(pItem);
+}
+
+void ObjectView::acceptGrabObject()
+{
+    m_grabObjectId = std::nullopt;
+}
+
+void ObjectView::rejectGrabObject()
+{
+    if (m_grabObjectId.has_value()) {
+        m_pScene->removeObject(m_grabObjectId.value());
+    }
 }
 
 QList<uint> ObjectView::getAlObjectIds() const
@@ -76,7 +106,6 @@ void ObjectView::mousePressEvent(QMouseEvent *e)
 {
     m_isHoldingLeftButton   = (e->button() == Qt::LeftButton);
     m_isHoldingMiddleButton = (e->button() == Qt::MiddleButton);
-    m_isHoldingRightButton  = (e->button() == Qt::RightButton);
 
     if (m_isHoldingMiddleButton) {
         setCursor(Qt::SizeAllCursor);
@@ -87,6 +116,11 @@ void ObjectView::mousePressEvent(QMouseEvent *e)
 
 void ObjectView::mouseMoveEvent(QMouseEvent *e)
 {
+    if (m_grabObjectId.has_value()) {
+        auto pObject = m_pScene->getObject(m_grabObjectId.value());
+        pObject->setPos(e->scenePosition());
+    }
+
     if (m_isHoldingMiddleButton) {
         auto prevPos = m_prevPos;
         auto currentPos = e->scenePosition();
@@ -101,7 +135,6 @@ void ObjectView::mouseMoveEvent(QMouseEvent *e)
 void ObjectView::mouseReleaseEvent(QMouseEvent *e)
 {
     m_isHoldingLeftButton = false;
-    m_isHoldingRightButton = false;
 
     if (m_isHoldingMiddleButton) {
         setCursor(Qt::ArrowCursor);
@@ -113,5 +146,8 @@ void ObjectView::mouseReleaseEvent(QMouseEvent *e)
 
 void ObjectView::contextMenuEvent(QContextMenuEvent *e)
 {
+    if (nullptr != m_pContextMenu) {
+        m_pContextMenu->exec(e->globalPos());
+    }
     QGraphicsView::contextMenuEvent(e);
 }

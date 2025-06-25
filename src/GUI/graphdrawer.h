@@ -67,6 +67,11 @@ public:
     void setOverlayButtonList(OverlayButtonList* pOverlayButton);
 
     /**
+     * @brief init   Инициализация класса. Обязательно необходимо вызвать после задания ВСЕХ полей
+     */
+    void init();
+
+    /**
      * @brief updateGraph Обновить отрисовываемый граф
      */
     void updateGraph();
@@ -87,15 +92,30 @@ public:
     void stopMode();
 
 private:
-    ObjectView*            m_pScene            {nullptr};  //! Сцена, на которой находятся объекты для отрисовки
+    ObjectView*             m_pSceneView        {nullptr};  //! Сцена, на которой находятся объекты для отрисовки
     Graph::GraphObject*     m_pGraph            {nullptr};  //! Граф, который будет отрисовываться
     OverlayButtonList*      m_pOverlayButton    {nullptr};  //! Кнопка, в которой будет меню
 
-    std::vector<OverlayButtonList::ButtonInfo> m_drawButtonsInfo;
-    std::vector<OverlayButtonList::ButtonInfo> m_viewButtonsInfo;
-    std::vector<OverlayButtonList::ButtonInfo> m_previousButtons;
+    /**
+     * @brief The ModeInformation class Информация о режиме
+     */
+    struct ModeInformation {
+        CurrentDrawerMode                           mode        {CurrentDrawerMode::None};
+        QMenu*                                      contextMenu {nullptr};
+        std::vector<OverlayButtonList::ButtonInfo>  buttons;
+    };
+    std::vector<ModeInformation>            m_availableModes;
+    std::vector<ModeInformation>::iterator  m_currentMode;
 
-    CurrentDrawerMode m_currentMode {CurrentDrawerMode::None}; //! Текущий режим работы мастера. От него зависит поведение и кнопки оверлея
+    /**
+     * @brief setupAvailableModes   Настройка доступных режимов работы
+     */
+    void setupAvailableModes();
+
+    /**
+     * @brief setupCurrentMode  Настроить выбранный режим работы
+     */
+    void setupCurrentMode();
 };
 
 #endif // GRAPHDRAWER_H

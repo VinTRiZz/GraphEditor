@@ -129,6 +129,12 @@ public:
     void updateButton(const ButtonInfo& button_, uint index);
 
     /**
+     * @brief getAllButtons Получить все имеющиеся кнопки
+     * @return              Вектор информации о кнопках
+     */
+    std::vector<ButtonInfo> getAllButtons() const;
+
+    /**
      * @brief buttonCount Получить количество кнопок в общем списке
      * @return Кол-во кнопок
      */

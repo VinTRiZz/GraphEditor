@@ -123,6 +123,11 @@ void OverlayButtonList::updateButton(const ButtonInfo &button_, uint index)
     setupButton(m_buttons[index], m_buttonsInfo[index]);
 }
 
+std::vector<OverlayButtonList::ButtonInfo> OverlayButtonList::getAllButtons() const
+{
+    return m_buttonsInfo;
+}
+
 uint OverlayButtonList::buttonCount() const
 {
     return m_buttonsInfo.size();

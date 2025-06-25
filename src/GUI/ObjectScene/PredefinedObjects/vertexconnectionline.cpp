@@ -74,7 +74,7 @@ void VertexConnectionLine::paint(QPainter *painter, const QStyleOptionGraphicsIt
 
 void VertexConnectionLine::updatePolygon()
 {
-    double lineGoRightSide = m_straightLine.dx() > 0;
+    auto lineGoRightSide = m_straightLine.dx() > 0;
 
     auto pointFrom = m_straightLine.p1();
     auto pointTo = m_straightLine.p2();

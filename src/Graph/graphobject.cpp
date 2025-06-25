@@ -1,7 +1,6 @@
 #include "graphobject.h"
 
 #include "graphcommon.h"
-#include "logging.h"
 
 namespace Graph
 {
@@ -33,7 +32,7 @@ bool GraphObject::operator ==(const GraphObject &gObj_) const
         return false;
     }
 
-    for (auto& customProp : m_customDataValues) {
+    for (const auto& customProp : m_customDataValues) {
         auto gObjValue = gObj_.m_customDataValues.find(customProp.first);
         if (gObjValue == gObj_.m_customDataValues.end()) {
             return false;
@@ -84,7 +83,7 @@ bool GraphObject::updateVertex(const GVertex &iVert)
     if (!iVert.isValid()) {
         throw std::invalid_argument("GraphObject::updateVertex: invalid size of short name");
     }
-    auto targetVertex = std::find_if(m_vertices.begin(), m_vertices.end(), [&](auto& vert){
+    auto targetVertex = std::find_if(m_vertices.begin(), m_vertices.end(), [&](const auto& vert){
         return (vert.id == iVert.id);
     });
     if (targetVertex == m_vertices.end()) {
@@ -101,7 +100,7 @@ std::vector<GVertex> GraphObject::getAllVertices() const
 
 void GraphObject::removeVertex(uint vertexId)
 {
-    auto targetVertex = std::find_if(m_vertices.begin(), m_vertices.end(), [&](auto& vert){
+    auto targetVertex = std::find_if(m_vertices.begin(), m_vertices.end(), [&](const auto& vert){
         return (vert.id == vertexId);
     });
     if (targetVertex == m_vertices.end()) {
@@ -119,7 +118,7 @@ bool GraphObject::addConnection(const GConnection &iCon)
     bool containIdTo {false};
     bool containIdFrom {false};
 
-    for (auto& vert : m_vertices) {
+    for (const auto& vert : m_vertices) {
         containIdFrom |= (vert.id == iCon.idFrom);
         containIdTo |= (vert.id == iCon.idTo);
 
@@ -150,7 +149,7 @@ std::vector<GConnection> GraphObject::getAllConnections() const
 {
     std::vector<GConnection> res;
     res.reserve(m_connections.size());
-    for (auto& [idTo, connection] : m_connections) {
+    for (const auto& [idTo, connection] : m_connections) {
         res.push_back(connection);
     }
     return res;

@@ -12,7 +12,7 @@ namespace PredefinedObjects
 class VertexConnectionLine : public QGraphicsItem
 {
 public:
-    VertexConnectionLine(QGraphicsItem *parent = nullptr);
+    explicit VertexConnectionLine(QGraphicsItem *parent = nullptr);
 
     void setPositionFrom(const QPointF& posFrom);
     void setPositionTo(const QPointF& posTo);

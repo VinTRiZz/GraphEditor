@@ -78,6 +78,15 @@ uint ObjectsInternalScene::addObject(QGraphicsItem *pItem)
     return nextId;
 }
 
+QGraphicsItem *ObjectsInternalScene::getObject(uint objectId)
+{
+    auto targetObject = m_objectsMap.find(objectId);
+    if (targetObject == m_objectsMap.end()) {
+        return nullptr;
+    }
+    return targetObject.value();
+}
+
 QList<uint> ObjectsInternalScene::getAlObjectIds() const
 {
     return m_objectsMap.keys();

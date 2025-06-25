@@ -349,6 +349,7 @@ void GraphEditorForm::setupWidget()
     m_graphDrawer.setOverlayButtonList(m_pOverlayButton);
     m_graphDrawer.setCurrentGraph(&m_currentGraph);
     m_graphDrawer.setScene(ui->graphScene);
+    m_graphDrawer.init();
 }
 
 void GraphEditorForm::updateGraphInfo()

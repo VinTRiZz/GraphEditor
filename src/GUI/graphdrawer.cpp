@@ -10,6 +10,8 @@
 #include <QGraphicsSimpleTextItem>
 #include <QGraphicsPixmapItem>
 
+#include <QMenu>
+
 #include <QFont>
 #include <QBrush>
 #include <QPen>
@@ -30,12 +32,12 @@ GraphDrawer::~GraphDrawer()
 
 GraphDrawer::CurrentDrawerMode GraphDrawer::getCurrentMode() const
 {
-    return m_currentMode;
+    return m_currentMode->mode;
 }
 
 void GraphDrawer::setScene(ObjectView *pScene)
 {
-    m_pScene = pScene;
+    m_pSceneView = pScene;
 }
 
 void GraphDrawer::setCurrentGraph(Graph::GraphObject *pGraph)
@@ -48,14 +50,20 @@ void GraphDrawer::setOverlayButtonList(OverlayButtonList *pOverlayButton)
     m_pOverlayButton = pOverlayButton;
 }
 
+void GraphDrawer::init()
+{
+    setupAvailableModes();
+    setupCurrentMode();
+}
+
 void GraphDrawer::updateGraph()
 {
-    if (m_pGraph == nullptr || m_pScene == nullptr || m_pOverlayButton == nullptr) {
+    if (m_pGraph == nullptr || m_pSceneView == nullptr || m_pOverlayButton == nullptr) {
         return;
     }
 
     // TODO: Вместо удаления, обновить
-    m_pScene->clearScene();
+    m_pSceneView->clearScene();
 
     auto& conversionConfig = GraphConversionConfiguration::getInstance();
 
@@ -107,7 +115,7 @@ void GraphDrawer::updateGraph()
         pVertexItem->setX(vert.posX - pVertexItem->boundingRect().width() / 2);
         pVertexItem->setY(vert.posY - pVertexItem->boundingRect().height() / 2);
         pVertexItem->setZValue(conversionConfig.vertexLayer);
-        m_pScene->addObject(pVertexItem);
+        m_pSceneView->addObject(pVertexItem);
     }
 
     const GVertex* pConnectionFrom {nullptr};
@@ -146,7 +154,7 @@ void GraphDrawer::updateGraph()
         uint connectionCount = connectionCountIt.value().size() + 1;
         uint connectionNumber = 1;
 
-        for (auto& countCon : connectionCountIt.value()) {
+        for (const auto& countCon : connectionCountIt.value()) {
             if (con == countCon) {
                 break;
             }
@@ -165,27 +173,65 @@ void GraphDrawer::updateGraph()
 
         pConnection->setPen(QPen(con.lineColor, 3));
         pConnection->setZValue(conversionConfig.connectionLineLayer);
-        m_pScene->addObject(pConnection);
+        m_pSceneView->addObject(pConnection);
     }
 }
 
 void GraphDrawer::startEditMode()
 {
-    m_currentMode = CurrentDrawerMode::Edit;
+    m_currentMode = std::find_if(m_availableModes.begin(), m_availableModes.end(), [](const auto& modeInfo) {
+        return (modeInfo.mode == CurrentDrawerMode::Edit);
+    });
+    setupCurrentMode();
 
     LOG_DEBUG("Started edit mode");
 }
 
 void GraphDrawer::startViewMode()
 {
-    m_currentMode = CurrentDrawerMode::View;
+    m_currentMode = std::find_if(m_availableModes.begin(), m_availableModes.end(), [](const auto& modeInfo) {
+        return (modeInfo.mode == CurrentDrawerMode::View);
+    });
+    setupCurrentMode();
 
     LOG_DEBUG("Started view mode");
 }
 
 void GraphDrawer::stopMode()
 {
-    m_currentMode = CurrentDrawerMode::None;
+    m_currentMode = std::find_if(m_availableModes.begin(), m_availableModes.end(), [](const auto& modeInfo) {
+        return (modeInfo.mode == CurrentDrawerMode::None);
+    });
+    setupCurrentMode();
 
     LOG_DEBUG("Disabled mode");
+}
+
+void GraphDrawer::setupAvailableModes()
+{
+    ModeInformation tmpMode;
+    tmpMode.mode = CurrentDrawerMode::None;
+    tmpMode.buttons = m_pOverlayButton->getAllButtons();
+    tmpMode.contextMenu = new QMenu(m_pSceneView);
+    tmpMode.contextMenu->addAction("Test (none mode)", [](){ });
+    m_availableModes.push_back(tmpMode);
+
+    tmpMode.mode = CurrentDrawerMode::Edit;
+    tmpMode.buttons = {};
+    tmpMode.contextMenu = new QMenu(m_pSceneView);
+    tmpMode.contextMenu->addAction("Test (EDIT mode)", [](){ });
+    m_availableModes.push_back(tmpMode);
+
+    tmpMode.mode = CurrentDrawerMode::View;
+    tmpMode.buttons = {};
+    tmpMode.contextMenu = new QMenu(m_pSceneView);
+    tmpMode.contextMenu->addAction("Test (VIEW mode)", [](){ });
+    m_availableModes.push_back(tmpMode);
+
+    m_currentMode = m_availableModes.begin();
+}
+
+void GraphDrawer::setupCurrentMode()
+{
+    m_pSceneView->setContextMenu(m_currentMode->contextMenu);
 }

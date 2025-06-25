@@ -2,7 +2,7 @@
 #define OBJECTSINTERNALSCENE_H
 
 #include <QGraphicsScene>
-#include <QMap>
+#include <QHash>
 
 namespace Ui {
 class ObjectsInternalScene;
@@ -52,10 +52,17 @@ public:
     uint addObject(QGraphicsItem* pItem);
 
     /**
+     * @brief getObject Получить объект по его ID
+     * @param objectId  ID объекта
+     * @return          Указатель на объект или nullptr если такого нет
+     */
+    QGraphicsItem* getObject(uint objectId);
+
+    /**
      * @brief getAlObjectIds Возвращает все ID объектов, добавленных в сцену
      * @return Список идентификаторов добавленных объектов
      */
-    QList<uint> getAlObjectIds() const;
+    [[nodiscard]] QList<uint> getAlObjectIds() const;
 
     /**
      * @brief removeObject Удаляет объект с идентификатором
@@ -78,7 +85,7 @@ public:
 private:
     std::function<uint()>       m_idGenerator;                  //! Генератор ID для объектов
     QGraphicsItem*              m_pNullItem         {nullptr};  //! Объект, который являет собой пространство сцены (как бы ограниченная плоскость для расположения объектов)
-    QMap<uint, QGraphicsItem*>  m_objectsMap;                   //! Словарь для сохранения ID объектов
+    QHash<uint, QGraphicsItem*> m_objectsMap;                   //! Словарь для сохранения ID объектов
 };
 
 #endif // OBJECTSINTERNALSCENE_H

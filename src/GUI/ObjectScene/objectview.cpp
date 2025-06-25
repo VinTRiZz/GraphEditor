@@ -9,6 +9,7 @@
 #include <QMenu>
 
 #include <QGraphicsItem>
+#include <QGraphicsRectItem>
 
 #include "logging.h"
 
@@ -49,6 +50,11 @@ void ObjectView::init()
 void ObjectView::setContextMenu(QMenu *pMenu)
 {
     m_pContextMenu = pMenu;
+}
+
+QGraphicsItem *ObjectView::getContextMenuItem()
+{
+    return m_contextMenuItem;
 }
 
 void ObjectView::clearScene()
@@ -105,8 +111,23 @@ void ObjectView::wheelEvent(QWheelEvent *e)
 void ObjectView::mousePressEvent(QMouseEvent *e)
 {
     m_isHoldingLeftButton   = (e->button() == Qt::LeftButton);
-    m_isHoldingMiddleButton = (e->button() == Qt::MiddleButton);
+    if (m_isHoldingLeftButton) {
 
+        // TODO: REMOVE, IT'S TEST!
+        auto pVertexContrastRect = new QGraphicsRectItem();
+        QRect objrect;
+        objrect.setWidth(150);
+        objrect.setHeight(200);
+        pVertexContrastRect->setRect(objrect);
+        pVertexContrastRect->setPen(QPen(Qt::black, 3));
+        pVertexContrastRect->setBrush(Qt::white);
+        pVertexContrastRect->setZValue(100);
+        pVertexContrastRect->setPos(e->scenePosition());
+
+        setGrabObject(pVertexContrastRect);
+    }
+
+    m_isHoldingMiddleButton = (e->button() == Qt::MiddleButton);
     if (m_isHoldingMiddleButton) {
         setCursor(Qt::SizeAllCursor);
         m_prevPos = e->scenePosition();
@@ -116,19 +137,16 @@ void ObjectView::mousePressEvent(QMouseEvent *e)
 
 void ObjectView::mouseMoveEvent(QMouseEvent *e)
 {
+    auto currentPos = e->scenePosition();
     if (m_grabObjectId.has_value()) {
         auto pObject = m_pScene->getObject(m_grabObjectId.value());
-        pObject->setPos(e->scenePosition());
+        pObject->setPos(currentPos);
     }
 
     if (m_isHoldingMiddleButton) {
-        auto prevPos = m_prevPos;
-        auto currentPos = e->scenePosition();
-
-        horizontalScrollBar()->setSliderPosition(horizontalScrollBar()->sliderPosition() - (currentPos.x() - prevPos.x()));
-        verticalScrollBar()->setSliderPosition(verticalScrollBar()->sliderPosition() - (currentPos.y() - prevPos.y()));
-
-        m_prevPos = e->scenePosition();
+        horizontalScrollBar()->setSliderPosition(horizontalScrollBar()->sliderPosition() - (currentPos.x() - m_prevPos.x()));
+        verticalScrollBar()->setSliderPosition(verticalScrollBar()->sliderPosition() - (currentPos.y() - m_prevPos.y()));
+        m_prevPos = currentPos;
     }
 }
 
@@ -147,7 +165,9 @@ void ObjectView::mouseReleaseEvent(QMouseEvent *e)
 void ObjectView::contextMenuEvent(QContextMenuEvent *e)
 {
     if (nullptr != m_pContextMenu) {
+        m_contextMenuItem = itemAt(e->pos());
         m_pContextMenu->exec(e->globalPos());
+        m_contextMenuItem = nullptr; // Обнуление во избежание проблем
     }
     QGraphicsView::contextMenuEvent(e);
 }

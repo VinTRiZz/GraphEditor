@@ -113,6 +113,12 @@ void GraphDrawer::updateGraph()
         pVertexItem->setX(vert.posX - pVertexItem->boundingRect().width() / 2);
         pVertexItem->setY(vert.posY - pVertexItem->boundingRect().height() / 2);
         pVertexItem->setZValue(conversionConfig.vertexLayer);
+
+        pVertexItem->setData(ObjectSceneConstants::OBJECTFIELD_NAME_SHORT,      vert.shortName);
+        pVertexItem->setData(ObjectSceneConstants::OBJECTFIELD_NAME,            vert.name);
+        pVertexItem->setData(ObjectSceneConstants::OBJECTFIELD_DESCRIPTION,     vert.description);
+        pVertexItem->setData(ObjectSceneConstants::OBJECTFIELD_PROPERTY_JSON,   vert.customProperties);
+
         m_pSceneView->addObject(pVertexItem);
     }
 
@@ -171,6 +177,8 @@ void GraphDrawer::updateGraph()
 
         pConnection->setPen(QPen(con.lineColor, 3));
         pConnection->setZValue(conversionConfig.connectionLineLayer);
+
+        pConnection->setData(ObjectSceneConstants::OBJECTFIELD_NAME, con.name);
         m_pSceneView->addObject(pConnection);
     }
 }
@@ -211,19 +219,40 @@ void GraphDrawer::setupAvailableModes()
     tmpMode.mode = CurrentDrawerMode::None;
     tmpMode.buttons = m_pOverlayButton->getAllButtons();
     tmpMode.contextMenu = new QMenu(m_pSceneView);
-    tmpMode.contextMenu->addAction("Test (none mode)", [](){ });
+    tmpMode.contextMenu->addAction("Test (none mode)", [this](){
+        auto pItem = m_pSceneView->getContextMenuItem();
+        LOG_DEBUG("Item:", pItem);
+
+        if (pItem != nullptr) {
+            LOG_DEBUG("Item name:", pItem->data(ObjectSceneConstants::OBJECTFIELD_NAME).toString());
+        }
+    });
     m_availableModes.push_back(tmpMode);
 
     tmpMode.mode = CurrentDrawerMode::Edit;
     tmpMode.buttons = {};
     tmpMode.contextMenu = new QMenu(m_pSceneView);
-    tmpMode.contextMenu->addAction("Test (EDIT mode)", [](){ });
+    tmpMode.contextMenu->addAction("Test (EDIT mode)", [this](){
+        auto pItem = m_pSceneView->getContextMenuItem();
+        LOG_DEBUG("Item:", pItem);
+
+        if (pItem != nullptr) {
+            LOG_DEBUG("Item name:", pItem->data(ObjectSceneConstants::OBJECTFIELD_NAME).toString());
+        }
+    });
     m_availableModes.push_back(tmpMode);
 
     tmpMode.mode = CurrentDrawerMode::View;
     tmpMode.buttons = {};
     tmpMode.contextMenu = new QMenu(m_pSceneView);
-    tmpMode.contextMenu->addAction("Test (VIEW mode)", [](){ });
+    tmpMode.contextMenu->addAction("Test (VIEW mode)", [this](){
+        auto pItem = m_pSceneView->getContextMenuItem();
+        LOG_DEBUG("Item:", pItem);
+
+        if (pItem != nullptr) {
+            LOG_DEBUG("Item name:", pItem->data(ObjectSceneConstants::OBJECTFIELD_NAME).toString());
+        }
+    });
     m_availableModes.push_back(tmpMode);
 
     m_currentMode = m_availableModes.begin();

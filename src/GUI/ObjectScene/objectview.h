@@ -50,6 +50,12 @@ public:
     void setContextMenu(QMenu* pMenu);
 
     /**
+     * @brief getContextMenuItem    Получить указатель на объект, для которого вызвано контекстное меню
+     * @return                      Указатель на объект или nullptr если меню не было вызвано (или было вызвано не над объектом)
+     */
+    QGraphicsItem* getContextMenuItem();
+
+    /**
      * @brief clearScene Очищает сцену от объектов, оставляя её полотно нетронутым
      */
     void clearScene();
@@ -93,6 +99,7 @@ private:
     Ui::ObjectScene *ui;
     ObjectsInternalScene*   m_pScene            {nullptr};  //! Сцена для отображения объектов (внутренний класс)
     QMenu*                  m_pContextMenu      {nullptr};  //! Контекстное меню
+    QGraphicsItem*          m_contextMenuItem   {nullptr};  //! Объект, который находился под указателем мыши во время вызова контекстного меню
 
     std::optional<uint>     m_grabObjectId;                 //! ID объекта, который "прикреплён" к указетелю мыши
 

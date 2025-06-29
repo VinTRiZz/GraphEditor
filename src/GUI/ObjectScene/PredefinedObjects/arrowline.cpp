@@ -4,6 +4,8 @@
 #include <QPainter>
 #include <QPen>
 
+#include <math.h>
+
 namespace PredefinedObjects
 {
 

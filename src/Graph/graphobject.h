@@ -5,10 +5,12 @@
 
 #include <QJsonObject>
 
+#include <math.h>
+
 namespace Graph
 {
 
-const uint GRAPH_MAX_SHORTNAME_SIZE { 10 };
+const unsigned GRAPH_MAX_SHORTNAME_SIZE { 10 };
 
 
 /**
@@ -36,7 +38,7 @@ struct GVertex
      * @return false если длина больше разрешённой
      */
     bool isShortnameValid() const {
-        return shortName.size() < GRAPH_MAX_SHORTNAME_SIZE;
+        return static_cast<unsigned>(shortName.size()) < GRAPH_MAX_SHORTNAME_SIZE;
     }
 
     /**

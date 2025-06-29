@@ -10,7 +10,6 @@
 
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>
-#include <QProperty>
 
 #include "logging.h"
 

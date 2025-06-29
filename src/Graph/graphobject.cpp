@@ -2,6 +2,8 @@
 
 #include "graphcommon.h"
 
+#include <QDateTime>
+
 namespace Graph
 {
 

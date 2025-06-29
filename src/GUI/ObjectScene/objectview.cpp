@@ -3,6 +3,7 @@
 #include "objectsinternalscene.h"
 
 #include <QWheelEvent>
+#include <QMouseEvent>
 
 #include <QScrollBar>
 
@@ -122,7 +123,7 @@ void ObjectView::mousePressEvent(QMouseEvent *e)
         pVertexContrastRect->setPen(QPen(Qt::black, 3));
         pVertexContrastRect->setBrush(Qt::white);
         pVertexContrastRect->setZValue(100);
-        pVertexContrastRect->setPos(e->scenePosition());
+        pVertexContrastRect->setPos(mapToScene(e->pos()));
 
         setGrabObject(pVertexContrastRect);
     }
@@ -130,14 +131,14 @@ void ObjectView::mousePressEvent(QMouseEvent *e)
     m_isHoldingMiddleButton = (e->button() == Qt::MiddleButton);
     if (m_isHoldingMiddleButton) {
         setCursor(Qt::SizeAllCursor);
-        m_prevPos = e->scenePosition();
+        m_prevPos = mapToScene(e->pos());
     }
     QGraphicsView::mousePressEvent(e);
 }
 
 void ObjectView::mouseMoveEvent(QMouseEvent *e)
 {
-    auto currentPos = e->scenePosition();
+    auto currentPos = mapToScene(e->pos());
     if (m_grabObjectId.has_value()) {
         auto pObject = m_pScene->getObject(m_grabObjectId.value());
         pObject->setPos(currentPos);

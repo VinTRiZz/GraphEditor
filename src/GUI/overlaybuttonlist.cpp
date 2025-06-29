@@ -1,7 +1,8 @@
 #include "overlaybuttonlist.h"
 
 #include <QPropertyAnimation>
-#include <QProperty>
+
+#include <math.h>
 
 #include "logging.h"
 

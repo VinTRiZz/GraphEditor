@@ -1,10 +1,13 @@
 #include "vertexconnectionline.h"
 
+#include <QStyleOptionGraphicsItem>
+
 #include <QPainter>
+
+#include <math.h>
 
 #include "logging.h"
 
-#include <QStyleOptionGraphicsItem>
 
 namespace PredefinedObjects
 {

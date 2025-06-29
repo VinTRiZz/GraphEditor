@@ -3,12 +3,14 @@
 
 #include <QGraphicsView>
 
+#include <optional>
+
 namespace Ui {
 class ObjectScene;
 }
 
 class ObjectsInternalScene;
-
+class QMenu;
 /**
  * @brief The ObjectScene class Посредник для отображения объектов на QGraphicScene с доп функционалом
  */

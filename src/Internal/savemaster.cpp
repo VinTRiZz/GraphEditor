@@ -13,7 +13,7 @@
 
 #include <boost/algorithm/hex.hpp>
 
-#include "graphcommon.h"
+#include "Graph/graphcommon.h"
 
 #include  "logging.h"
 

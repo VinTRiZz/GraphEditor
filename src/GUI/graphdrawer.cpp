@@ -1,8 +1,8 @@
 #include "graphdrawer.h"
 
-#include "objectsceneconstants.h"
+#include "GUI/ObjectScene/objectsceneconstants.h"
 
-#include "vertexconnectionline.h"
+#include "GUI/ObjectScene/PredefinedObjects/vertexconnectionline.h"
 
 #include <QGraphicsRectItem>
 #include <QGraphicsEllipseItem>

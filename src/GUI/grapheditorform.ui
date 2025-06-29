@@ -131,7 +131,7 @@
   <customwidget>
    <class>ObjectView</class>
    <extends>QWidget</extends>
-   <header>src/GUI/ObjectScene/objectview.h</header>
+   <header>GUI/ObjectScene/objectview.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

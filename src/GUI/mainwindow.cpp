@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include "savemaster.h"
+#include "Internal/savemaster.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)

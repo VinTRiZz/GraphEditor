@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QStandardItemModel>
 
-#include "graphobject.h"
+#include "Graph/graphobject.h"
 #include "graphdrawer.h"
 #include "overlaybuttonlist.h"
 

@@ -4,9 +4,9 @@
 #include <QFileDialog>
 #include <QFileInfo>
 
-#include "graphobject.h"
-#include "savemaster.h"
-#include "graphcommon.h"
+#include "Graph/graphobject.h"
+#include "Graph/graphcommon.h"
+#include "Internal/savemaster.h"
 
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>

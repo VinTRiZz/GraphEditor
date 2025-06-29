@@ -1,9 +1,9 @@
 #ifndef GRAPHDRAWER_H
 #define GRAPHDRAWER_H
 
-#include "objectview.h"
-#include "graphobject.h"
-#include "overlaybuttonlist.h"
+#include "GUI/ObjectScene/objectview.h"
+#include "Graph/graphobject.h"
+#include "GUI/overlaybuttonlist.h"
 
 #include <QGraphicsItem>
 

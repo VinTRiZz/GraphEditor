@@ -50,32 +50,43 @@ struct GVertex
     }
 
     /**
-     * @brief operator ==   Оператор сравнения для тестирования и сравнения между собой графов
+     * @brief tieFields     Соединить вместе поля структуры для выполнения бинарного оператора к ним
+     * @param vert          Вершина, с которой вместе выполнить оператор
+     * @param vertOperator  Оператор для применения
+     * @return              То, что вернёт оператор
+     */
+    template <typename OperatorT>
+    bool tieFields(const GVertex& vert, OperatorT&& vertOperator) const {
+
+        auto img1 = pxmap.toImage();
+        auto img2 = vert.pxmap.toImage();
+
+        return vertOperator(
+            std::tie(id, posX, posY,
+                     shortName, name, description,
+                     customProperties,
+                     borderColor, backgroundColor, img1),
+            std::tie(vert.id, vert.posX, vert.posY,
+                     vert.shortName, vert.name, vert.description,
+                     vert.customProperties, vert.borderColor, vert.backgroundColor, img2));
+    }
+
+    /**
+     * @brief operator ==   Оператор равенства
      * @param oVert_        Другая вершина
      * @return              true если вершина совпадает с этой
      */
     bool operator ==(const GVertex& oVert_) const {
-        return (
-                    (id == oVert_.id) &&
-                    (posX == oVert_.posX) &&
-                    (posY == oVert_.posY) &&
-                    (shortName == oVert_.shortName) &&
-                    (name == oVert_.name) &&
-                    (description == oVert_.description) &&
-                    (customProperties == oVert_.customProperties) &&
-                    (borderColor == oVert_.borderColor) &&
-                    (backgroundColor == oVert_.backgroundColor) &&
-                    (pxmap.toImage() == oVert_.pxmap.toImage())
-        );
+        return tieFields(oVert_, std::equal_to<>{});
     }
 
     /**
-     * @brief operator !=   Аналог оператора сравнения, является его инверсией
+     * @brief operator !=   Оператор неравенства
      * @param oVert_        Другая вершина
      * @return              true если вершина НЕ совпадает с этой
      */
     bool operator !=(const GVertex& oVert_) const {
-        return !(*this == oVert_);
+        return tieFields(oVert_, std::not_equal_to<>{});
     }
 };
 
@@ -100,19 +111,39 @@ struct GConnection
         return (idFrom != idTo) && (idFrom != 0) && (idTo != 0) && lineColor.isValid();
     }
 
-    bool operator ==(const GConnection& oCon_) const {
-        return (
-                    (idFrom == oCon_.idFrom) &&
-                    (idTo == oCon_.idTo) &&
-                    (fabs(oCon_.connectionWeight - connectionWeight) < 1e-6) &&
-                    (name == oCon_.name) &&
-                    (lineColor == oCon_.lineColor) &&
-                    (isDirected == oCon_.isDirected)
-        );
+    /**
+     * @brief tieFields     Соединить вместе поля структуры для выполнения бинарного оператора к ним
+     * @param vert          Вершина, с которой вместе выполнить оператор
+     * @param vertOperator  Оператор для применения
+     * @return              То, что вернёт оператор
+     */
+    template <typename OperatorT>
+    bool tieFields(const GConnection& cCon_, OperatorT&& vertOperator) const {
+        return vertOperator(
+            std::tie(idFrom, idTo,
+                     name, lineColor, isDirected),
+            std::tie(cCon_.idFrom, cCon_.idTo,
+                     cCon_.name, cCon_.lineColor, cCon_.isDirected));
     }
 
+    /**
+     * @brief operator ==   Оператор равенства
+     * @param oVert_        Другая вершина
+     * @return              true если вершина совпадает с этой
+     */
+    bool operator ==(const GConnection& oCon_) const {
+        auto weightEquality = (fabs(oCon_.connectionWeight - connectionWeight) < 1e-6);
+        return tieFields(oCon_, std::equal_to<>{}) && weightEquality;
+    }
+
+    /**
+     * @brief operator !=   Оператор неравенства
+     * @param oVert_        Другая вершина
+     * @return              true если вершина НЕ совпадает с этой
+     */
     bool operator !=(const GConnection& oCon_) const {
-        return !(*this == oCon_);
+        auto weightEquality = (fabs(oCon_.connectionWeight - connectionWeight) < 1e-6);
+        return tieFields(oCon_, std::not_equal_to<>{}) && !weightEquality;
     }
 };
 
@@ -283,8 +314,9 @@ private:
     std::vector<GVertex>                m_vertices;     //! Вершины графа
     std::multimap<uint, GConnection>    m_connections;  //! Рёбра графа. Ключ -- целевой ID вершины (в которую "входит" стрелка связи)
 
-    QString     m_name                      {"Untitled graph"};
-    QString     m_description               {"Empty description of a graph"};
+    // Основные параметры графа
+    QString     m_name;
+    QString     m_description;
     QDateTime   m_createTime;
     QDateTime   m_editTime;
 

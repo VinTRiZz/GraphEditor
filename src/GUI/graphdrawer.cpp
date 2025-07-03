@@ -167,7 +167,7 @@ void GraphDrawer::updateGraph()
 
         auto pConnection = new PredefinedObjects::VertexConnectionLine;
 
-        auto xOffset = (static_cast<double>(connectionNumber) * static_cast<double>(vertexRect.width()) / static_cast<double>(connectionCount)) - pConnection->arrowSize();
+        auto xOffset = (static_cast<double>(connectionNumber) * static_cast<double>(vertexRect.width()) / static_cast<double>(connectionCount)) - pConnection->getArrowSize();
 
         auto fromPos = QPointF(pConnectionFrom->posX, pConnectionFrom->posY + vertexRadius + labelHeight + 2);
         auto toPos = QPointF(pConnectionTo->posX - vertexRadius + xOffset, pConnectionTo->posY - vertexRadius - 2);

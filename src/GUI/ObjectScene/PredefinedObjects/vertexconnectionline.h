@@ -26,7 +26,11 @@ public:
     void setSelectedPen(const QPen& pen);
 
     void setArrowSize(qreal size);
-    qreal arrowSize() const;
+    qreal getArrowSize() const;
+
+    QRectF boundingRect() const override;
+    bool contains(const QPointF& p) const override;
+    QPainterPath shape() const override;
 
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget*widget) override;
@@ -50,11 +54,6 @@ private:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
     void updatePen();
-
-public:
-    QRectF boundingRect() const override;
-    bool contains(const QPointF& p) const override;
-    QPainterPath shape() const override;
 };
 
 }

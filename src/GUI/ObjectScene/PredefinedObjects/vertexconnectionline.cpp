@@ -72,25 +72,14 @@ void VertexConnectionLine::setArrowSize(qreal size)
     m_arrowSize = size;
 }
 
-qreal VertexConnectionLine::arrowSize() const
+qreal VertexConnectionLine::getArrowSize() const
 {
     return m_arrowSize;
 }
 
-void VertexConnectionLine::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void VertexConnectionLine::paint([[maybe_unused]] QPainter *painter, [[maybe_unused]] const QStyleOptionGraphicsItem *option, [[maybe_unused]] QWidget *widget)
 {
-    // Всегда будет true если Y2 < Y1
-    if (m_straightLine.dy() < 0) {
-        auto lineIt = m_lines.begin();
 
-        std::advance(lineIt, 1);
-        (*lineIt)->show();
-
-        std::advance(lineIt, 1);
-        (*lineIt)->show();
-    }
-
-    updatePen();
 }
 
 void VertexConnectionLine::updatePolygon()
@@ -168,10 +157,11 @@ void VertexConnectionLine::updatePolygon()
         currentLineIt = std::next(currentLineIt);
         (*currentLineIt)->setLine(QLineF(secondBreak, pointTo));
 
-        QPointF boundingTargetPos = QPointF(m_straightLine.x1() > m_straightLine.x2() ? m_straightLine.x2() : m_straightLine.x1(),
+        QPointF boundingTargetPos = QPointF(m_straightLine.x1() > m_straightLine.x2() ? m_straightLine.x2(): m_straightLine.x1(),
                                             firstBreak.y() > secondBreak.y() ? secondBreak.y() : firstBreak.y());
+        boundingTargetPos.setX(boundingTargetPos.x() - m_arrowSize);
         m_boundingRect.moveTo(boundingTargetPos);
-        m_boundingRect.setWidth(std::fabs(firstBreak.x() - secondBreak.x()));
+        m_boundingRect.setWidth(std::fabs(firstBreak.x() - secondBreak.x()) + m_arrowSize * 2);
         m_boundingRect.setHeight(std::fabs(firstBreak.y() - secondBreak.y()));
         return;
     }
@@ -188,9 +178,11 @@ void VertexConnectionLine::updatePolygon()
     currentLineIt = std::next(currentLineIt);
     (*currentLineIt)->setLine(QLineF(secondBreak, pointTo));
 
-    m_boundingRect.moveTo(m_straightLine.p1());
-    m_boundingRect.setWidth(std::fabs(m_straightLine.p2().x() - pointFrom.x()));
-    m_boundingRect.setHeight(std::fabs(m_straightLine.p2().y() - pointFrom.y()));
+    auto movePos = m_straightLine.p1();
+    movePos.setX(movePos.x() - m_arrowSize);
+    m_boundingRect.moveTo(movePos);
+    m_boundingRect.setWidth(std::fabs(m_straightLine.p2().x() - m_straightLine.x1()) + m_arrowSize * 2);
+    m_boundingRect.setHeight(std::fabs(m_straightLine.p2().y() - m_straightLine.y1()));
 }
 
 void VertexConnectionLine::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -201,7 +193,7 @@ void VertexConnectionLine::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void VertexConnectionLine::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     auto isContain = contains(mapToScene(event->pos()));
-    setSelected(isContain);
+    setSelected(isContain ^ isSelected());
     updatePen();
 }
 

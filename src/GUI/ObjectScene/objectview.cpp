@@ -116,17 +116,17 @@ void ObjectView::mousePressEvent(QMouseEvent *e)
     if (m_isHoldingLeftButton) {
 
         // TODO: REMOVE, IT'S TEST!
-        auto pVertexContrastRect = new QGraphicsRectItem();
-        QRect objrect;
-        objrect.setWidth(150);
-        objrect.setHeight(200);
-        pVertexContrastRect->setRect(objrect);
-        pVertexContrastRect->setPen(QPen(Qt::black, 3));
-        pVertexContrastRect->setBrush(Qt::white);
-        pVertexContrastRect->setZValue(100);
-        pVertexContrastRect->setPos(mapToScene(e->pos()));
+//        auto pVertexContrastRect = new QGraphicsRectItem();
+//        QRect objrect;
+//        objrect.setWidth(150);
+//        objrect.setHeight(200);
+//        pVertexContrastRect->setRect(objrect);
+//        pVertexContrastRect->setPen(QPen(Qt::black, 3));
+//        pVertexContrastRect->setBrush(Qt::white);
+//        pVertexContrastRect->setZValue(100);
+//        pVertexContrastRect->setPos(mapToScene(e->pos()));
 
-        setGrabObject(pVertexContrastRect);
+//        setGrabObject(pVertexContrastRect);
     }
 
     m_isHoldingMiddleButton = (e->button() == Qt::MiddleButton);

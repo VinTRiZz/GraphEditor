@@ -47,8 +47,9 @@ void ObjectsInternalScene::init()
     pNullRectItem->setRect(nullRect);
     pNullRectItem->setBrush(Qt::lightGray);
     pNullRectItem->setPen(QPen(Qt::red, 2));
-    m_pNullItem = pNullRectItem;
+    pNullRectItem->setZValue(0);
 
+    m_pNullItem = pNullRectItem;
     m_pNullItem->setData(ObjectSceneConstants::OBJECTFIELD_NAME, "NULL ITEM");
 
     addItem(m_pNullItem);

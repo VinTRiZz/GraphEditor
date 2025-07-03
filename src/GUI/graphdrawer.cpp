@@ -172,8 +172,7 @@ void GraphDrawer::updateGraph()
         auto fromPos = QPointF(pConnectionFrom->posX, pConnectionFrom->posY + vertexRadius + labelHeight + 2);
         auto toPos = QPointF(pConnectionTo->posX - vertexRadius + xOffset, pConnectionTo->posY - vertexRadius - 2);
 
-        pConnection->setPositionFrom(fromPos);
-        pConnection->setPositionTo(toPos);
+        pConnection->setLine(QLineF(fromPos, toPos));
 
         pConnection->setPen(QPen(con.lineColor, 3));
         pConnection->setZValue(conversionConfig.connectionLineLayer);

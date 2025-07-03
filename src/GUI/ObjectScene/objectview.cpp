@@ -14,6 +14,78 @@
 
 #include "logging.h"
 
+
+
+
+
+#include <QGraphicsItem>
+#include <QGraphicsTextItem>
+#include <QPainter>
+#include <QPolygonF>
+
+class ComplexItem : public QGraphicsItem {
+public:
+    ComplexItem(const QPolygonF &polygon, const QString &text, QGraphicsItem *parent = nullptr)
+        : QGraphicsItem(parent), m_polygon(polygon) {
+        // Создаем текст как дочерний элемент
+        m_text = new QGraphicsTextItem(text, this);
+        m_text->setAcceptedMouseButtons(Qt::NoButton); // Отключаем события мыши
+        m_text->setFlag(QGraphicsItem::ItemStacksBehindParent); // Текст под полигоном
+
+        // Позиционируем текст под полигоном
+        QRectF polyRect = m_polygon.boundingRect();
+        m_text->setPos(polyRect.center().x() - m_text->boundingRect().width() / 2,
+                       polyRect.bottom() + 5);
+    }
+
+    QRectF boundingRect() const override {
+        LOG_DEBUG("Test call 1");
+        return m_polygon.boundingRect().united(m_text->boundingRect().translated(m_text->pos()));
+    }
+
+    QPainterPath shape() const override {
+        LOG_DEBUG("Test call 2");
+        QPainterPath path;
+        path.addPolygon(m_polygon); // Только полигон
+        return path;
+    }
+
+    bool contains(const QPointF &point) const override {
+        LOG_DEBUG("Test call 3");
+        return shape().contains(point); // Проверка по полигону
+    }
+
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override {
+        Q_UNUSED(option);
+        Q_UNUSED(widget);
+        painter->setPen(QPen(Qt::red, 4));
+        painter->setBrush(Qt::blue);
+        painter->drawPolygon(m_polygon); // Рисуем полигон
+        // Текст рисуется автоматически (дочерний элемент)
+    }
+
+private:
+    QPolygonF m_polygon;
+    QGraphicsTextItem *m_text;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ObjectView::ObjectView(QWidget *parent) :
     QGraphicsView(parent),
     ui(new Ui::ObjectScene)
@@ -34,6 +106,10 @@ void ObjectView::resizeScene(const QSize &iSize)
 void ObjectView::setIdGenerator(const std::function<uint ()> fGen)
 {
     m_pScene->setIdGenerator(fGen);
+
+    auto pNewScene = new ComplexItem({{10, 10}, {50, 50}, {400, 400}, {30, 30}}, "test");
+    pNewScene->setZValue(50);
+    m_pScene->addObject(pNewScene);
 }
 
 std::function<uint ()> ObjectView::getIdGenerator() const
@@ -114,18 +190,18 @@ void ObjectView::mousePressEvent(QMouseEvent *e)
     m_isHoldingLeftButton   = (e->button() == Qt::LeftButton);
     if (m_isHoldingLeftButton) {
 
-        // TODO: REMOVE, IT'S TEST!
-        auto pVertexContrastRect = new QGraphicsRectItem();
-        QRect objrect;
-        objrect.setWidth(150);
-        objrect.setHeight(200);
-        pVertexContrastRect->setRect(objrect);
-        pVertexContrastRect->setPen(QPen(Qt::black, 3));
-        pVertexContrastRect->setBrush(Qt::white);
-        pVertexContrastRect->setZValue(100);
-        pVertexContrastRect->setPos(mapToScene(e->pos()));
+//        // TODO: REMOVE, IT'S TEST!
+//        auto pVertexContrastRect = new QGraphicsRectItem();
+//        QRect objrect;
+//        objrect.setWidth(150);
+//        objrect.setHeight(200);
+//        pVertexContrastRect->setRect(objrect);
+//        pVertexContrastRect->setPen(QPen(Qt::black, 3));
+//        pVertexContrastRect->setBrush(Qt::white);
+//        pVertexContrastRect->setZValue(100);
+//        pVertexContrastRect->setPos(mapToScene(e->pos()));
 
-        setGrabObject(pVertexContrastRect);
+//        setGrabObject(pVertexContrastRect);
     }
 
     m_isHoldingMiddleButton = (e->button() == Qt::MiddleButton);

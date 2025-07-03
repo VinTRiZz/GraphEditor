@@ -6,6 +6,9 @@
 #include <QPen>
 #include <QBrush>
 
+#include <QGraphicsLineItem>
+#include <QGraphicsPolygonItem>
+
 namespace PredefinedObjects
 {
 
@@ -13,6 +16,8 @@ class VertexConnectionLine : public QGraphicsItem
 {
 public:
     explicit VertexConnectionLine(QGraphicsItem *parent = nullptr);
+
+    void setLine(const QLineF& line);
 
     void setPositionFrom(const QPointF& posFrom);
     void setPositionTo(const QPointF& posTo);
@@ -24,28 +29,32 @@ public:
     qreal arrowSize() const;
 
 protected:
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget*widget) override;
 
 private:
     void updatePolygon();
-    void drawArrow(QPainter *painter);
 
-    QPen    m_drawPen;
-    QPen    m_selectedPen;
+    QPen   m_drawPen;
+    QPen   m_selectedPen;
     QLineF m_straightLine;
 
-    QLineF m_correctionVerticalLine;
-    QLineF m_correctionHorizontalLine;
+    QRectF m_boundingRect;
 
-    QLineF m_firstLine;
-    QLineF m_secondLine;
-    QLineF m_thirdLine;
+    std::list<QGraphicsLineItem*>   m_lines;
+    QGraphicsPolygonItem*           m_pArrowHeadPolygon {nullptr};
 
-    qreal m_arrowSize {10}; // Размер стрелки
+    bool  m_prevSelectedState {false};
+    qreal m_arrowSize {10};
 
-    // QGraphicsItem interface
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+
+    void updatePen();
+
 public:
-    QRectF boundingRect() const;
+    QRectF boundingRect() const override;
+    bool contains(const QPointF& p) const override;
+    QPainterPath shape() const override;
 };
 
 }

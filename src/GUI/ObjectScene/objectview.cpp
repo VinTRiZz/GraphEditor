@@ -105,6 +105,7 @@ void ObjectView::wheelEvent(QWheelEvent *e)
 
     auto cursorPos = mapToScene(mapFromGlobal(QCursor::pos()));
     scale(scaleValue, scaleValue);
+    centerOn(cursorPos);
     auto nextCursorPos = mapToGlobal(mapFromScene(cursorPos));
     QCursor::setPos(nextCursorPos);
 }
@@ -114,18 +115,18 @@ void ObjectView::mousePressEvent(QMouseEvent *e)
     m_isHoldingLeftButton   = (e->button() == Qt::LeftButton);
     if (m_isHoldingLeftButton) {
 
-//        // TODO: REMOVE, IT'S TEST!
-//        auto pVertexContrastRect = new QGraphicsRectItem();
-//        QRect objrect;
-//        objrect.setWidth(150);
-//        objrect.setHeight(200);
-//        pVertexContrastRect->setRect(objrect);
-//        pVertexContrastRect->setPen(QPen(Qt::black, 3));
-//        pVertexContrastRect->setBrush(Qt::white);
-//        pVertexContrastRect->setZValue(100);
-//        pVertexContrastRect->setPos(mapToScene(e->pos()));
+        // TODO: REMOVE, IT'S TEST!
+        auto pVertexContrastRect = new QGraphicsRectItem();
+        QRect objrect;
+        objrect.setWidth(150);
+        objrect.setHeight(200);
+        pVertexContrastRect->setRect(objrect);
+        pVertexContrastRect->setPen(QPen(Qt::black, 3));
+        pVertexContrastRect->setBrush(Qt::white);
+        pVertexContrastRect->setZValue(100);
+        pVertexContrastRect->setPos(mapToScene(e->pos()));
 
-//        setGrabObject(pVertexContrastRect);
+        setGrabObject(pVertexContrastRect);
     }
 
     m_isHoldingMiddleButton = (e->button() == Qt::MiddleButton);
@@ -145,9 +146,9 @@ void ObjectView::mouseMoveEvent(QMouseEvent *e)
     }
 
     if (m_isHoldingMiddleButton) {
-        horizontalScrollBar()->setSliderPosition(horizontalScrollBar()->sliderPosition() - (currentPos.x() - m_prevPos.x()));
-        verticalScrollBar()->setSliderPosition(verticalScrollBar()->sliderPosition() - (currentPos.y() - m_prevPos.y()));
-        m_prevPos = currentPos;
+        auto deltaPos = currentPos - m_prevPos;
+        horizontalScrollBar()->setSliderPosition(horizontalScrollBar()->sliderPosition() - deltaPos.x());
+        verticalScrollBar()->setSliderPosition(verticalScrollBar()->sliderPosition() - deltaPos.y());
     }
 }
 

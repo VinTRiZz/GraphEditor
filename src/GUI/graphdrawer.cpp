@@ -3,6 +3,7 @@
 #include "GUI/ObjectScene/objectsceneconstants.h"
 
 #include "GUI/ObjectScene/PredefinedObjects/vertexconnectionline.h"
+#include "GUI/ObjectScene/PredefinedObjects/vertexobject.h"
 
 #include <QGraphicsRectItem>
 #include <QGraphicsEllipseItem>
@@ -73,42 +74,22 @@ void GraphDrawer::updateGraph()
     QRect vertexRect;
     vertexRect.setWidth(vertexRadius * 2);
     vertexRect.setHeight(vertexRadius * 2);
+    vertexRect.moveTo(vertexRect.x() - vertexRadius, vertexRect.y() - vertexRadius);
 
     auto vertices = m_pGraph->getAllVertices();
 
     for (auto& vert : vertices) {
-        QGraphicsItem* pVertexItem {nullptr};
+        auto pVertexItem = new PredefinedObjects::VertexObject;
 
-        if (vert.pxmap.isNull()) {
-            pVertexItem = new QGraphicsRectItem;
-            static_cast<QGraphicsRectItem*>(pVertexItem)->setBrush(vert.backgroundColor);
-            static_cast<QGraphicsRectItem*>(pVertexItem)->setPen(vert.borderColor);
-            static_cast<QGraphicsRectItem*>(pVertexItem)->setRect(vertexRect);
-        } else {
-            pVertexItem = new QGraphicsPixmapItem;
+//        // TODO: Вернуть как решу вопрос с иконками
+//        if (!vert.pxmap.isNull()) {
+//            // Для отображения всего в унифицированном виде
+//            auto scaledPxmap = vert.pxmap.scaled(QSize(vertexRadius * 2, vertexRadius * 2));
+//            pVertexItem->setImage(scaledPxmap);
+//        }
 
-            // Для отображения всего в унифицированном виде
-            auto scaledPxmap = vert.pxmap.scaled(QSize(vertexRadius * 2, vertexRadius * 2));
-            static_cast<QGraphicsPixmapItem*>(pVertexItem)->setPixmap(scaledPxmap);
-        }
-
-        auto pVertexLabel = new QGraphicsTextItem(pVertexItem);
-        pVertexLabel->setPlainText(vert.shortName);
-        pVertexLabel->setDefaultTextColor(vert.borderColor);
-
-        pVertexLabel->setX(vertexRect.center().x() / 2 - pVertexLabel->textWidth() / 2);
-        pVertexLabel->setY(vertexRect.center().y() + vertexRadius);
-        pVertexLabel->setZValue(conversionConfig.vertexDataLayer);
-
-        auto pVertexContrastRect = new QGraphicsRectItem(pVertexItem);
-        auto contrastRect = pVertexLabel->boundingRect();
-        contrastRect.moveTo(pVertexLabel->x(), pVertexLabel->y());
-        pVertexContrastRect->setRect(contrastRect);
-        pVertexContrastRect->setPen(vert.borderColor);
-        pVertexContrastRect->setBrush(Qt::white);
-        pVertexContrastRect->setZValue(conversionConfig.vertexDataRectLayer);
-
-        labelHeight = pVertexLabel->boundingRect().height();
+        pVertexItem->setText(vert.shortName);
+        pVertexItem->setRect(vertexRect);
 
         pVertexItem->setX(vert.posX - pVertexItem->boundingRect().width() / 2);
         pVertexItem->setY(vert.posY - pVertexItem->boundingRect().height() / 2);
@@ -169,8 +150,8 @@ void GraphDrawer::updateGraph()
 
         auto xOffset = (static_cast<double>(connectionNumber) * static_cast<double>(vertexRect.width()) / static_cast<double>(connectionCount)) - pConnection->getArrowSize();
 
-        auto fromPos = QPointF(pConnectionFrom->posX, pConnectionFrom->posY + vertexRadius + labelHeight + 2);
-        auto toPos = QPointF(pConnectionTo->posX - vertexRadius + xOffset, pConnectionTo->posY - vertexRadius - 2);
+        auto fromPos = QPointF(pConnectionFrom->posX, pConnectionFrom->posY + labelHeight + 2);
+        auto toPos = QPointF(pConnectionTo->posX - vertexRadius + xOffset, pConnectionTo->posY - vertexRadius - 2 - pConnection->getArrowSize());
 
         pConnection->setLine(QLineF(fromPos, toPos));
 

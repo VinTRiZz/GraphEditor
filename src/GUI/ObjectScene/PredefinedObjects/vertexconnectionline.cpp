@@ -16,8 +16,8 @@ namespace PredefinedObjects
 
 VertexConnectionLine::VertexConnectionLine(QGraphicsItem *parent) :
     QGraphicsItem(parent),
-    m_drawPen {QPen(Qt::black, 1)},
-    m_selectedPen {QPen(Qt::yellow, 3)}
+    m_drawPen {QPen(Qt::black, 2)},
+    m_selectedPen {QPen(Qt::yellow, 5, Qt::SolidLine, Qt::RoundCap)}
 {
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setFlag(QGraphicsItem::ItemClipsToShape, true);
@@ -109,8 +109,8 @@ void VertexConnectionLine::updatePolygon()
         // Угол линии
         double angle = (arrowLine.angle() + 180) * M_PI / 180.0;
 
-        static auto PI_DELIM_3 = M_PI / 3;
-        static auto PI_2_DELIM_3 = M_PI * 2 / 3;
+        const auto PI_DELIM_3 = M_PI / 3;
+        const auto PI_2_DELIM_3 = M_PI * 2 / 3;
 
         QPointF arrowP1 = arrowLine.p2();
 
@@ -192,6 +192,10 @@ void VertexConnectionLine::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void VertexConnectionLine::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+    if (event->button() != Qt::LeftButton) {
+        return;
+    }
+
     auto isContain = contains(mapToScene(event->pos()));
     setSelected(isContain ^ isSelected());
     updatePen();

@@ -9,17 +9,22 @@
 namespace PredefinedObjects
 {
 
-class VertexObject : public QGraphicsItem
+class VertexObject : public QGraphicsRectItem
 {
+    // Запрещаем, т.к. надо чтобы было прозрачно.
+    using QGraphicsRectItem::setBrush;
+
 public:
     explicit VertexObject(QGraphicsItem *parent = nullptr);
 
     void setImage(const QPixmap& pxmap);
+    void setText(const QString& text);
+
+    void setRect(const QRectF& iRect);
 
     void setPen(const QPen& pen);
     void setSelectedPen(const QPen& pen);
 
-    QRectF boundingRect() const override;
     bool contains(const QPointF& p) const override;
     QPainterPath shape() const override;
 
@@ -33,13 +38,12 @@ private:
     QPen   m_selectedPen;
     QLineF m_straightLine;
 
-    QRectF m_boundingRect;
-
     QLabel m_imageLabel;
 
-    QGraphicsProxyWidget*   m_vertexImage   {nullptr};
-    QGraphicsEllipseItem*   m_vertexEllipse {nullptr};
-    QGraphicsTextItem*      m_vertexText    {nullptr};
+    QGraphicsProxyWidget*   m_vertexImage       {nullptr};
+    QGraphicsEllipseItem*   m_vertexEllipse     {nullptr};
+    QGraphicsRectItem*      m_vertexTextRect    {nullptr};
+    QGraphicsTextItem*      m_vertexText        {nullptr};
 
     bool  m_prevSelectedState       {false};
     bool  m_isVertexContainPixmap   {false};

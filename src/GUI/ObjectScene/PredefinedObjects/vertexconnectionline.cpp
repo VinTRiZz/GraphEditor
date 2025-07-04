@@ -16,16 +16,17 @@ namespace PredefinedObjects
 
 VertexConnectionLine::VertexConnectionLine(QGraphicsItem *parent) :
     QGraphicsItem(parent),
-    m_drawPen {QPen(Qt::black, 2)},
     m_selectedPen {QPen(Qt::yellow, 5, Qt::SolidLine, Qt::RoundCap)}
 {
+    m_penGradient.setColorAt(0, QColor("#2a8d7c"));
+    m_drawPen.setWidth(3);
+    m_drawPen.setBrush(m_penGradient);
+
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setFlag(QGraphicsItem::ItemClipsToShape, true);
 
-    for (int i = 0; i < 6; ++i) {
-        auto pItem = new QGraphicsLineItem(this);
-        m_lines.push_back(pItem);
-    }
+    m_line = new QGraphicsPathItem(this);
+    m_line->setBrush(Qt::NoBrush);
     m_pArrowHeadPolygon = new QGraphicsPolygonItem(this);
 }
 
@@ -47,13 +48,12 @@ void VertexConnectionLine::setPositionTo(const QPointF &posTo)
     updatePolygon();
 }
 
-void VertexConnectionLine::setPen(const QPen &pen)
+void VertexConnectionLine::setPen(const QColor &penColor)
 {
-    m_drawPen = pen;
+    m_penGradient.setColorAt(1, penColor);
+    m_drawPen.setBrush(m_penGradient);
     auto currentPen = isSelected() ? m_selectedPen : m_drawPen;
-    for (auto& pItem : m_lines) {
-        pItem->setPen(currentPen);
-    }
+    m_line->setPen(currentPen);
     m_pArrowHeadPolygon->setPen(currentPen);
 }
 
@@ -61,9 +61,7 @@ void VertexConnectionLine::setSelectedPen(const QPen &pen)
 {
     m_selectedPen = pen;
     auto currentPen = isSelected() ? m_selectedPen : m_drawPen;
-    for (auto& pItem : m_lines) {
-        pItem->setPen(currentPen);
-    }
+    m_line->setPen(currentPen);
     m_pArrowHeadPolygon->setPen(currentPen);
 }
 
@@ -85,26 +83,54 @@ void VertexConnectionLine::paint([[maybe_unused]] QPainter *painter, [[maybe_unu
 void VertexConnectionLine::updatePolygon()
 {
     m_boundingRect = {};
+    m_line->setPath(createLinePath());
+
+    m_penGradient.setStart(m_straightLine.p1());
+    m_penGradient.setFinalStop(m_straightLine.p2());
+
+    bool isP1Lefter = m_straightLine.x2() > m_straightLine.x1();
+    bool isP1Higher = m_straightLine.y2() > m_straightLine.y1();
+
+    m_boundingRect.moveTop((isP1Higher ? m_straightLine.y1() : m_straightLine.y2()) - m_arrowSize);
+    m_boundingRect.moveLeft((isP1Lefter ? m_straightLine.x1() : m_straightLine.x2()) - m_arrowSize);
+    m_boundingRect.setWidth(std::fabs(m_straightLine.x2() - m_straightLine.x1()) + m_arrowSize * 2);
+    m_boundingRect.setHeight(std::fabs(m_straightLine.y2() - m_straightLine.y1()) + m_arrowSize * 2);
+}
+
+QPainterPath VertexConnectionLine::createLinePath()
+{
+    QPainterPath p;
 
     auto lineGoRightSide = m_straightLine.dx() > 0;
 
     auto pointFrom = m_straightLine.p1();
+    pointFrom.setY(pointFrom.y() + m_arrowSize);
     auto pointTo = m_straightLine.p2();
 
-    auto linePart = (fabs(pointFrom.y() - pointTo.y()) * 1.2 ) / 3.0;
+    auto deltaX = m_straightLine.x2() - m_straightLine.x1();
+    auto deltaY = m_straightLine.y2() - m_straightLine.y1();
 
     QPointF firstBreak;
-    firstBreak.setX(pointFrom.x());
-    firstBreak.setY(pointFrom.y() + linePart);
+    firstBreak.setX(pointFrom.x() + deltaX / 2);
+    firstBreak.setY(pointFrom.y() + std::fabs(deltaY) / 5);
 
     QPointF secondBreak;
-    secondBreak.setX(pointTo.x() - (!lineGoRightSide * -1.0 + lineGoRightSide) * m_arrowSize);
-    secondBreak.setY(pointTo.y() - linePart);
+    secondBreak.setX(pointTo.x() - (!lineGoRightSide * -1.0 + lineGoRightSide) * deltaX / 2);
+    secondBreak.setY(pointTo.y() - std::fabs(deltaY) / 5);
 
     pointTo.setX(pointTo.x() - (-1 * !lineGoRightSide + lineGoRightSide) * m_arrowSize);
     pointTo.setY(pointTo.y() - m_arrowSize);
 
-    auto arrowLine = QLineF(pointTo, m_straightLine.p2());
+    p.moveTo(m_straightLine.p1());
+    p.lineTo(pointFrom);
+    if (pointFrom.y() < pointTo.y()) {
+
+    }
+    p.cubicTo(pointFrom, firstBreak, m_straightLine.center());
+    p.cubicTo(m_straightLine.center(), secondBreak, pointTo);
+
+
+    auto arrowLine = QLineF(QPointF(m_straightLine.x2() - m_arrowSize, m_straightLine.y2() - m_arrowSize), m_straightLine.p2());
     if (arrowLine.length() != 0) {
         // Угол линии
         double angle = (arrowLine.angle() + 180) * M_PI / 180.0;
@@ -120,69 +146,35 @@ void VertexConnectionLine::updatePolygon()
         QPointF arrowP3 = arrowLine.p2() + QPointF(sin(angle + PI_2_DELIM_3) * m_arrowSize,
                                               cos(angle + PI_2_DELIM_3) * m_arrowSize);
 
-        QPolygonF arrowHeadPolygon = {arrowP1, arrowP2, arrowP3};
-        m_pArrowHeadPolygon->setPolygon(arrowHeadPolygon);
-        (*std::prev(m_lines.end()))->setLine(arrowLine);
-
-        m_pArrowHeadPolygon->show();
-        (*std::prev(m_lines.end()))->show();
-    } else {
-        m_pArrowHeadPolygon->hide();
-        (*std::prev(m_lines.end()))->hide();
+        p.lineTo(m_straightLine.p2());
+        p.lineTo(arrowP1);
+        p.lineTo(arrowP2);
+        p.lineTo(arrowP3);
+        p.lineTo(m_straightLine.p2());
     }
 
-    auto currentLineIt = m_lines.begin();
-    (*currentLineIt)->setLine(QLineF(pointFrom, firstBreak));
+    return p;
+}
 
-    if (pointFrom.y() > pointTo.y()) {
-        QPointF correctionBreak1;
-        correctionBreak1.setX(m_straightLine.x1() + m_straightLine.dx() / 2);
-        correctionBreak1.setY(firstBreak.y());
+QPolygonF VertexConnectionLine::createPolygon(const QLineF &line)
+{
+    QRectF rect;
+    QTransform transf;
 
-        QPointF correctionBreak2;
-        correctionBreak2.setX(correctionBreak1.x());
-        correctionBreak2.setY(m_straightLine.y2() - m_arrowSize * 2);
+    auto leftX      = line.x1() > line.x2() ? line.x1() : line.x2();
+    auto bottomY    = line.y1() > line.y2() ? line.y2() : line.y1();
 
-        currentLineIt = std::next(currentLineIt);
-        (*currentLineIt)->setLine(QLineF(firstBreak, correctionBreak1));
+    rect.setLeft(leftX);
+    rect.setBottom(bottomY);
 
-        currentLineIt = std::next(currentLineIt);
-        (*currentLineIt)->setLine(QLineF(correctionBreak1, correctionBreak2));
-        (*currentLineIt)->show();
+    rect.setHeight(line.length());
+    rect.setWidth(5);
 
-        currentLineIt = std::next(currentLineIt);
-        (*currentLineIt)->setLine(QLineF(correctionBreak2, secondBreak));
-        (*currentLineIt)->show();
+    rect.moveTo(line.center().x() - leftX, line.center().y() - bottomY);
 
-        currentLineIt = std::next(currentLineIt);
-        (*currentLineIt)->setLine(QLineF(secondBreak, pointTo));
+    transf.rotate(line.angle());
 
-        QPointF boundingTargetPos = QPointF(m_straightLine.x1() > m_straightLine.x2() ? m_straightLine.x2(): m_straightLine.x1(),
-                                            firstBreak.y() > secondBreak.y() ? secondBreak.y() : firstBreak.y());
-        boundingTargetPos.setX(boundingTargetPos.x() - m_arrowSize);
-        m_boundingRect.moveTo(boundingTargetPos);
-        m_boundingRect.setWidth(std::fabs(firstBreak.x() - secondBreak.x()) + m_arrowSize * 2);
-        m_boundingRect.setHeight(std::fabs(firstBreak.y() - secondBreak.y()));
-        return;
-    }
-
-    currentLineIt = std::next(currentLineIt);
-    (*currentLineIt)->setLine(QLineF(firstBreak, secondBreak));
-
-    currentLineIt = std::next(currentLineIt);
-    (*currentLineIt)->hide();
-
-    currentLineIt = std::next(currentLineIt);
-    (*currentLineIt)->hide();
-
-    currentLineIt = std::next(currentLineIt);
-    (*currentLineIt)->setLine(QLineF(secondBreak, pointTo));
-
-    auto movePos = m_straightLine.p1();
-    movePos.setX(movePos.x() - m_arrowSize);
-    m_boundingRect.moveTo(movePos);
-    m_boundingRect.setWidth(std::fabs(m_straightLine.p2().x() - m_straightLine.x1()) + m_arrowSize * 2);
-    m_boundingRect.setHeight(std::fabs(m_straightLine.p2().y() - m_straightLine.y1()));
+    return transf.mapRect(rect);
 }
 
 void VertexConnectionLine::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -209,9 +201,7 @@ void VertexConnectionLine::updatePen()
     m_prevSelectedState = isSelected();
 
     auto currentPen = isSelected() ? m_selectedPen : m_drawPen;
-    for (auto& pItem : m_lines) {
-        pItem->setPen(currentPen);
-    }
+    m_line->setPen(currentPen);
     m_pArrowHeadPolygon->setPen(currentPen);
 }
 
@@ -222,21 +212,13 @@ QRectF VertexConnectionLine::boundingRect() const
 
 bool VertexConnectionLine::contains(const QPointF &p) const
 {
-    for (auto& line : m_lines) {
-        if (line->contains(p)) {
-            return true;
-        }
-    }
-    return m_pArrowHeadPolygon->contains(p);
+    return m_pArrowHeadPolygon->contains(p) || m_line->contains(p);
 }
 
 QPainterPath VertexConnectionLine::shape() const
 {
     QPainterPath res;
-
-    for (auto& line : m_lines) {
-        res.addPath(line->shape());
-    }
+    res.addPath(m_line->shape());
     res.addPath(m_pArrowHeadPolygon->shape());
     return res;
 }

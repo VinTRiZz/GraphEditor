@@ -152,7 +152,7 @@ void GraphDrawer::updateGraph()
 
         pConnection->setLine(QLineF(fromPos, toPos));
 
-        pConnection->setPen(QPen(con.lineColor, 3));
+        pConnection->setPen(con.lineColor);
         pConnection->setZValue(conversionConfig.connectionLineLayer);
 
         pConnection->setData(ObjectSceneConstants::OBJECTFIELD_NAME, con.name);

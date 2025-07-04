@@ -22,7 +22,7 @@ public:
     void setPositionFrom(const QPointF& posFrom);
     void setPositionTo(const QPointF& posTo);
 
-    void setPen(const QPen& pen);
+    void setPen(const QColor &penColor);
     void setSelectedPen(const QPen& pen);
 
     void setArrowSize(qreal size);
@@ -37,15 +37,18 @@ protected:
 
 private:
     void updatePolygon();
+    QPainterPath createLinePath();
+    QPolygonF createPolygon(const QLineF& line);
 
-    QPen   m_drawPen;
-    QPen   m_selectedPen;
-    QLineF m_straightLine;
+    QLinearGradient m_penGradient;
+    QPen            m_drawPen;
+    QPen            m_selectedPen;
+    QLineF          m_straightLine;
 
     QRectF m_boundingRect;
 
-    std::list<QGraphicsLineItem*>   m_lines;
-    QGraphicsPolygonItem*           m_pArrowHeadPolygon {nullptr};
+    QGraphicsPathItem*      m_line {nullptr};
+    QGraphicsPolygonItem*   m_pArrowHeadPolygon {nullptr};
 
     bool  m_prevSelectedState {false};
     qreal m_arrowSize {10};

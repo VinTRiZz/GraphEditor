@@ -15,11 +15,17 @@ namespace PredefinedObjects
 {
 
 VertexConnectionLine::VertexConnectionLine(QGraphicsItem *parent) :
-    QGraphicsItem(parent),
-    m_selectedPen {QPen(Qt::yellow, 5, Qt::SolidLine, Qt::RoundCap)}
+    QGraphicsItem(parent)
 {
+    m_penSelectedGradient.setColorAt(0, QColor("#fff09c"));
+    m_penSelectedGradient.setColorAt(1, QColor("#ffbc20"));
+    m_selectedPen.setWidth(4);
+    m_selectedPen.setCapStyle(Qt::RoundCap);
+    m_selectedPen.setBrush(m_penSelectedGradient);
+
     m_penGradient.setColorAt(0, QColor("#2a8d7c"));
     m_drawPen.setWidth(3);
+    m_drawPen.setCapStyle(Qt::RoundCap);
     m_drawPen.setBrush(m_penGradient);
 
     setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -85,8 +91,13 @@ void VertexConnectionLine::updatePolygon()
     m_boundingRect = {};
     m_line->setPath(createLinePath());
 
+    m_penSelectedGradient.setStart(m_straightLine.p1());
+    m_penSelectedGradient.setFinalStop(m_straightLine.p2());
+    m_selectedPen.setBrush(m_penSelectedGradient);
+
     m_penGradient.setStart(m_straightLine.p1());
     m_penGradient.setFinalStop(m_straightLine.p2());
+    m_drawPen.setBrush(m_penGradient);
 
     bool isP1Lefter = m_straightLine.x2() > m_straightLine.x1();
     bool isP1Higher = m_straightLine.y2() > m_straightLine.y1();

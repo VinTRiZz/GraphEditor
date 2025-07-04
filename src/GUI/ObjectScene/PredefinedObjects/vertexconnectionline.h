@@ -40,6 +40,7 @@ private:
     QPainterPath createLinePath();
     QPolygonF createPolygon(const QLineF& line);
 
+    QLinearGradient m_penSelectedGradient;
     QLinearGradient m_penGradient;
     QPen            m_drawPen;
     QPen            m_selectedPen;

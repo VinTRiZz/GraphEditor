@@ -19,14 +19,14 @@ if(POLICY CMP0069)
 endif()
 
 # Link time optimization (for future)
-include(CheckIPOSupported)
-check_ipo_supported(RESULT ipo_supported OUTPUT ipo_error)
-if(ipo_supported)
-    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
-    message(STATUS "LTO enabled")
-else()
-    message(WARNING "LTO not supported: ${ipo_error}")
-endif()
+#include(CheckIPOSupported)
+#check_ipo_supported(RESULT ipo_supported OUTPUT ipo_error)
+#if(ipo_supported)
+#    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+#    message(STATUS "LTO enabled")
+#else()
+#    message(WARNING "LTO not supported: ${ipo_error}")
+#endif()
 
 
 # Build binary directory

@@ -20,12 +20,12 @@ public:
     void setImage(const QPixmap& pxmap);
     void setText(const QString& text);
 
+    void setVertexBrush(const QBrush& mainBackground, const QBrush& textBackground);
+
     void setRect(const QRectF& iRect);
 
-    void setPen(const QPen& pen);
     void setSelectedPen(const QPen& pen);
 
-    bool contains(const QPointF& p) const override;
     QPainterPath shape() const override;
 
 private:
@@ -35,20 +35,21 @@ private:
     QPen   m_selectedPen;
     QLineF m_straightLine;
 
+    QBrush m_backgroundMain {QColor("#ecd1a6")};
+    QBrush m_backgroundText {QColor("#f3f5dd")};
+
     QLabel m_imageLabel;
 
+    QGraphicsPathItem*      m_vertexImageRect   {nullptr};
     QGraphicsProxyWidget*   m_vertexImage       {nullptr};
     QGraphicsEllipseItem*   m_vertexEllipse     {nullptr};
     QGraphicsRectItem*      m_vertexTextRect    {nullptr};
     QGraphicsTextItem*      m_vertexText        {nullptr};
 
-    bool  m_prevSelectedState       {false};
-    bool  m_isVertexContainPixmap   {false};
-
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
-    void updatePen();
+    void setupTextItem();
 };
 
 }

@@ -28,9 +28,6 @@ public:
     bool contains(const QPointF& p) const override;
     QPainterPath shape() const override;
 
-protected:
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget*widget) override;
-
 private:
     void updatePolygon();
 

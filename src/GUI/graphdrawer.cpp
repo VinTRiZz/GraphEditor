@@ -74,7 +74,6 @@ void GraphDrawer::updateGraph()
     QRect vertexRect;
     vertexRect.setWidth(vertexRadius * 2);
     vertexRect.setHeight(vertexRadius * 2);
-    vertexRect.moveTo(vertexRect.x() - vertexRadius, vertexRect.y() - vertexRadius);
 
     auto vertices = m_pGraph->getAllVertices();
 
@@ -89,10 +88,8 @@ void GraphDrawer::updateGraph()
 //        }
 
         pVertexItem->setText(vert.shortName);
+        pVertexItem->setPos(vert.posX, vert.posY);
         pVertexItem->setRect(vertexRect);
-
-        pVertexItem->setX(vert.posX - pVertexItem->boundingRect().width() / 2);
-        pVertexItem->setY(vert.posY - pVertexItem->boundingRect().height() / 2);
         pVertexItem->setZValue(conversionConfig.vertexLayer);
 
         pVertexItem->setData(ObjectSceneConstants::OBJECTFIELD_NAME_SHORT,      vert.shortName);
@@ -150,8 +147,8 @@ void GraphDrawer::updateGraph()
 
         auto xOffset = (static_cast<double>(connectionNumber) * static_cast<double>(vertexRect.width()) / static_cast<double>(connectionCount)) - pConnection->getArrowSize();
 
-        auto fromPos = QPointF(pConnectionFrom->posX, pConnectionFrom->posY + labelHeight + 2);
-        auto toPos = QPointF(pConnectionTo->posX - vertexRadius + xOffset, pConnectionTo->posY - vertexRadius - 2 - pConnection->getArrowSize());
+        auto fromPos = QPointF(pConnectionFrom->posX + vertexRadius, pConnectionFrom->posY + 2 * vertexRadius + pConnection->getArrowSize());
+        auto toPos = QPointF(pConnectionTo->posX + xOffset, pConnectionTo->posY - pConnection->getArrowSize());
 
         pConnection->setLine(QLineF(fromPos, toPos));
 

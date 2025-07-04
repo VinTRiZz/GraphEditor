@@ -13,11 +13,9 @@ namespace PredefinedObjects
 
 VertexObject::VertexObject(QGraphicsItem *parent) :
     QGraphicsRectItem(parent),
-    m_drawPen {QPen(Qt::transparent)},
+    m_drawPen {QPen(Qt::red)},
     m_selectedPen {QPen(Qt::yellow, 5, Qt::SolidLine, Qt::RoundCap)}
 {
-    setBrush(Qt::transparent);
-
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setFlag(QGraphicsItem::ItemClipsToShape, true);
 
@@ -35,9 +33,11 @@ VertexObject::VertexObject(QGraphicsItem *parent) :
     m_vertexTextRect->setZValue(0);
     m_vertexTextRect->setBrush(Qt::white);
 
-    m_vertexText    = new QGraphicsTextItem(m_vertexTextRect);
+    m_vertexText    = new QGraphicsTextItem(this);
     m_vertexText->setDefaultTextColor(Qt::black);
     m_vertexText->setZValue(0);
+
+    setPen(m_drawPen);
 }
 
 void VertexObject::setImage(const QPixmap &pxmap)
@@ -55,21 +55,26 @@ void VertexObject::setText(const QString &text)
 
 void VertexObject::setRect(const QRectF &iRect)
 {
+    QGraphicsRectItem::setRect(iRect);
+    auto itemRect = iRect;
+    itemRect.setX(0); itemRect.setY(0); itemRect.setWidth(iRect.width()); itemRect.setHeight(iRect.height());
+    qDebug() << "Set rect of" << this << "as" << iRect;
+
     const double maxParts   = 5.0;
     const double imageParts = 4.0;
     const double textParts  = maxParts - imageParts;
-    const double minSize    = 50.0;
+    const double minSize    = 25.0;
 
-    auto imageRect = iRect;
-    imageRect.setHeight(std::min(iRect.height() * imageParts / maxParts, minSize));
+    auto imageRect = itemRect;
+    imageRect.setHeight(std::max(itemRect.height() * imageParts / maxParts, minSize * 2));
     m_vertexEllipse->setRect(imageRect);
     m_imageLabel.setGeometry(imageRect.toRect());
 
-    auto textRect = iRect;
-    textRect.setHeight(std::min(iRect.height() * textParts / maxParts, minSize));
-    textRect.moveTo(-textRect.width() / 2, imageRect.height() + imageRect.y());
+    auto textRect = itemRect;
+    textRect.setHeight(std::max(itemRect.height() * textParts / maxParts, minSize));
+    textRect.moveTo(0, imageRect.height() + imageRect.y());
     m_vertexTextRect->setRect(textRect);
-    m_vertexText->setPos(- textRect.width() / 2 + (textRect.width() - m_vertexText->boundingRect().width()) / 2, - textRect.height() / 5);
+    m_vertexText->setPos((textRect.width() - m_vertexText->boundingRect().width()) / 2, imageRect.height() - textRect.height() / 5);
 }
 
 void VertexObject::setPen(const QPen &pen)
@@ -118,11 +123,6 @@ QPainterPath VertexObject::shape() const
     return res;
 }
 
-void VertexObject::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
-
-}
-
 void VertexObject::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
 
@@ -136,6 +136,7 @@ void VertexObject::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
     auto isContain = contains(mapToScene(event->pos()));
     setSelected(isContain ^ isSelected());
+    LOG_DEBUG("Selected:", isSelected());
     updatePen();
 }
 

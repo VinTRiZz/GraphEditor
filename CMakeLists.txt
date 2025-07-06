@@ -52,6 +52,8 @@ file(GLOB_RECURSE SOURCES "src/*.cpp")
 file(GLOB_RECURSE UIFILES "src/*.ui")
 file(GLOB_RECURSE RESOURCES "*.qrc")
 
+source_group("Ui Files" FILES ${UIFILES})
+
 
 # Library searches
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Core Gui Sql)

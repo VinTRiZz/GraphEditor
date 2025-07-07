@@ -6,7 +6,7 @@
 
 #include "Graph/graphobject.h"
 #include "graphdrawer.h"
-#include "overlaybuttonlist.h"
+#include "GUI/CustomWidgets/buttonmatrix.h"
 
 namespace Ui {
 class GraphEditorForm;
@@ -43,7 +43,7 @@ public:
      * @brief getOverlayButton Получить указатель на оверлей-кнопку
      * @return Указатель на кнопку
      */
-    OverlayButtonList* getOverlayButton();
+    ButtonMatrix::HeadButton* getOverlayButton();
 
 private:
     Ui::GraphEditorForm *ui;
@@ -55,7 +55,7 @@ private:
     QStandardItemModel* m_pCommonGraphInfoModel     {nullptr};  //! Модель с общими данными по графу
     QStandardItemModel* m_pUserGraphInfoModel       {nullptr};  //! Модель с пользовательскими данными по графу
 
-    OverlayButtonList*  m_pOverlayButton            {nullptr};  //! Кнопка-оверлей
+    ButtonMatrix::HeadButton*  m_pButtonMatrixHead     {nullptr};  //! Кнопка-оверлей
 
     /**
      * @brief isGraphPathSet Проверить, задан ли путь для сохранения/загрузки графа. Вызовет диалог и задаст путь, если он пуст или не валидный

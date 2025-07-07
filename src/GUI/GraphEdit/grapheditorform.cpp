@@ -6,7 +6,7 @@
 
 #include "Graph/graphobject.h"
 #include "Graph/graphcommon.h"
-#include "Internal/savemaster.h"
+#include "Filework/savemaster.h"
 
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>
@@ -104,9 +104,9 @@ Graph::GraphObject *GraphEditorForm::getCurrentGraph()
     return &m_currentGraph;
 }
 
-OverlayButtonList *GraphEditorForm::getOverlayButton()
+ButtonMatrix::HeadButton *GraphEditorForm::getOverlayButton()
 {
-    return m_pOverlayButton;
+    return m_pButtonMatrixHead;
 }
 
 bool GraphEditorForm::isGraphPathSet()
@@ -216,27 +216,22 @@ void GraphEditorForm::setupModels()
 
 void GraphEditorForm::setupWidget()
 {
-    m_pOverlayButton = new OverlayButtonList(ui->graphScene);
+    m_pButtonMatrixHead = new ButtonMatrix::HeadButton(ui->graphScene);
 
-    m_pOverlayButton->setToolTip("Инструменты");
-    m_pOverlayButton->setWidgetPadding(OverlayButtonList::Right,    40);
-    m_pOverlayButton->setWidgetPadding(OverlayButtonList::Down,     40);
-    m_pOverlayButton->setWidgetPadding(OverlayButtonList::Up,       -1);
-    m_pOverlayButton->setWidgetPadding(OverlayButtonList::Left,     -1);
+    m_pButtonMatrixHead->setToolTip("Инструменты");
+    m_pButtonMatrixHead->setButtonPadding(0, 40, 0, 40);
+    m_pButtonMatrixHead->setButtonMatrix(-5, 0, 0, 5);
 
-    m_pOverlayButton->setOpenDirection(OverlayButtonList::ButtonOpenDirection( OverlayButtonList::ButtonOpenDirection::Up | OverlayButtonList::ButtonOpenDirection::Left));
-    m_pOverlayButton->setMaxButtonCount(OverlayButtonList::ButtonOpenDirection::Left, 5);
-    m_pOverlayButton->setMaxButtonCount(OverlayButtonList::ButtonOpenDirection::Up, 5);
+    m_pButtonMatrixHead->setAnimationSpeed(1);
+    m_pButtonMatrixHead->setSize(QSize(50, 50));
 
-    m_pOverlayButton->setAnimationSpeed(1.5);
-    m_pOverlayButton->setButtonSize(QSize(50, 50));
-    m_pOverlayButton->setHideOnClick(false);
+    m_pButtonMatrixHead->setIcons(QIcon("://DATA/images/icons/toolbox_hide.png"),
+                               QIcon("://DATA/images/icons/toolbox_show.png"));
 
-    m_pOverlayButton->setOpenedIcon(QIcon("://DATA/images/icons/toolbox_hide.png"));
-    m_pOverlayButton->setClosedIcon(QIcon("://DATA/images/icons/toolbox_show.png"));
+    ButtonMatrix::ButtonConfig buttonInfo;
 
-
-    OverlayButtonList::ButtonInfo buttonInfo;
+    buttonInfo.positionX = -1;
+    buttonInfo.positionY = 0;
     buttonInfo.icon = QIcon("://DATA/images/icons/edit.png");
     buttonInfo.tooltip = "Показать свойства графа";
     buttonInfo.action = [this](QPushButton* pSender) {
@@ -253,7 +248,6 @@ void GraphEditorForm::setupWidget()
             connect(animation, &QPropertyAnimation::finished,
                     this, [this, animation]() {
                 delete animation;
-                m_pOverlayButton->fixPosition();
             });
 
             pSender->setToolTip("Скрыть свойства графа");
@@ -276,8 +270,10 @@ void GraphEditorForm::setupWidget()
         pSender->setToolTip("Показать свойства графа");
     };
     ui->graphProps_groupBox->hide();
-    m_pOverlayButton->addButton(buttonInfo);
+    m_pButtonMatrixHead->addButton(buttonInfo);
 
+
+    buttonInfo.positionX = -2;
     buttonInfo.icon = QIcon("://DATA/images/icons/cancel_changes.png");
     buttonInfo.tooltip = "Отменить изменения";
     buttonInfo.action = [this](QPushButton*) {
@@ -286,49 +282,54 @@ void GraphEditorForm::setupWidget()
         }
         loadGraph();
     };
-    auto cancelButtonIndex = m_pOverlayButton->addButton(buttonInfo);
-    m_pOverlayButton->getButton(cancelButtonIndex)->setEnabled(false);
+    m_pButtonMatrixHead->addButton(buttonInfo);
+    m_pButtonMatrixHead->getButton(buttonInfo.positionX, buttonInfo.positionY)->setEnabled(false);
 
 
+    buttonInfo.positionX = -3;
     buttonInfo.icon = QIcon("://DATA/images/icons/save.png");
     buttonInfo.tooltip = "Сохранить";
-    buttonInfo.action = [this, cancelButtonIndex](QPushButton*) {
+    buttonInfo.action = [this, buttonInfo](QPushButton*) {
         if (!isGraphPathSet()) {
             return;
         }
         saveGraph();
         updateGraphInfo();
-        m_pOverlayButton->getButton(cancelButtonIndex)->setEnabled(true);
+        m_pButtonMatrixHead->getButton(buttonInfo.positionX, buttonInfo.positionY)->setEnabled(true);
     };
-    m_pOverlayButton->addButton(buttonInfo);
+    m_pButtonMatrixHead->addButton(buttonInfo);
 
 
+    buttonInfo.positionX = -4;
     buttonInfo.icon = QIcon("://DATA/images/icons/open_graph.png");
     buttonInfo.tooltip = "Открыть файл графа";
-    buttonInfo.action = [this, cancelButtonIndex](QPushButton*) {
+    buttonInfo.action = [this, buttonInfo](QPushButton*) {
         m_currentGraphFilePath = QFileDialog::getOpenFileName(this, "Файл сохранённого графа", QDir::homePath(), "Файл графа (*.gse)");
         if (m_currentGraphFilePath.isEmpty()) {
             return;
         }
         loadGraph();
-        m_pOverlayButton->getButton(cancelButtonIndex)->setEnabled(true);
+        m_pButtonMatrixHead->getButton(buttonInfo.positionX, buttonInfo.positionY)->setEnabled(true);
     };
-    m_pOverlayButton->addButton(buttonInfo);
+    m_pButtonMatrixHead->addButton(buttonInfo);
 
 
+    buttonInfo.positionX = -5;
     buttonInfo.icon = QIcon("://DATA/images/icons/save_as.png");
     buttonInfo.tooltip = "Сохранить как...";
-    buttonInfo.action = [this, cancelButtonIndex](QPushButton*) {
+    buttonInfo.action = [this, buttonInfo](QPushButton*) {
         m_currentGraphFilePath = QFileDialog::getSaveFileName(this, "Файл для сохранения графа", QDir::homePath(), "Файл графа (*.gse)");
         if (m_currentGraphFilePath.isEmpty()) {
             return;
         }
         saveGraph();
         updateGraphInfo();
-        m_pOverlayButton->getButton(cancelButtonIndex)->setEnabled(true);
+        m_pButtonMatrixHead->getButton(buttonInfo.positionX, buttonInfo.positionY)->setEnabled(true);
     };
-    m_pOverlayButton->addButton(buttonInfo);
+    m_pButtonMatrixHead->addButton(buttonInfo);
 
+    buttonInfo.positionX = 0;
+    buttonInfo.positionY = 1;
     buttonInfo.icon = QIcon("://DATA/images/icons/mode_none.png");
     buttonInfo.tooltip = "Сменить режим работы";
     buttonInfo.action = [this](QPushButton* pButton) {
@@ -349,10 +350,10 @@ void GraphEditorForm::setupWidget()
         pButton->setIcon(QIcon("://DATA/images/icons/mode_edit.png"));
         m_graphDrawer.startEditMode();
     };
-    m_pOverlayButton->addButton(buttonInfo);
+    m_pButtonMatrixHead->addButton(buttonInfo);
 
     // Настройка мастера редактирования графа
-    m_graphDrawer.setOverlayButtonList(m_pOverlayButton);
+    m_graphDrawer.setOverlayButtonList(m_pButtonMatrixHead);
     m_graphDrawer.setCurrentGraph(&m_currentGraph);
     m_graphDrawer.setScene(ui->graphScene);
     m_graphDrawer.init();

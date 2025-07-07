@@ -46,7 +46,7 @@ void GraphDrawer::setCurrentGraph(Graph::GraphObject *pGraph)
     m_pGraph = pGraph;
 }
 
-void GraphDrawer::setOverlayButtonList(OverlayButtonList *pOverlayButton)
+void GraphDrawer::setOverlayButtonList(ButtonMatrix::HeadButton *pOverlayButton)
 {
     m_pOverlayButton = pOverlayButton;
 }

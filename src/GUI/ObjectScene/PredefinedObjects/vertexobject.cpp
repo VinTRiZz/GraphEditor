@@ -135,7 +135,7 @@ void VertexObject::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     }
     setSelected(!isSelected());
 
-    [[unlikely]] if (isSelected()) {
+    if (isSelected()) [[unlikely]] {
         m_vertexImageRect->show();
     } else {
         m_vertexImageRect->hide();

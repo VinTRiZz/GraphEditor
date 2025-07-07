@@ -3,7 +3,7 @@
 
 #include "GUI/ObjectScene/objectview.h"
 #include "Graph/graphobject.h"
-#include "GUI/overlaybuttonlist.h"
+#include "GUI/CustomWidgets/buttonmatrix.h"
 
 #include <QGraphicsItem>
 
@@ -64,7 +64,7 @@ public:
      * @brief setOverlayButtonList  Задать кнопку оверлея для задания внутри неё меню
      * @param pOverlayButton        Указатель на кнопку оверлея
      */
-    void setOverlayButtonList(OverlayButtonList* pOverlayButton);
+    void setOverlayButtonList(ButtonMatrix::HeadButton* pOverlayButton);
 
     /**
      * @brief init   Инициализация класса. Обязательно необходимо вызвать после задания ВСЕХ полей
@@ -92,17 +92,17 @@ public:
     void stopMode();
 
 private:
-    ObjectView*             m_pSceneView        {nullptr};  //! Сцена, на которой находятся объекты для отрисовки
-    Graph::GraphObject*     m_pGraph            {nullptr};  //! Граф, который будет отрисовываться
-    OverlayButtonList*      m_pOverlayButton    {nullptr};  //! Кнопка, в которой будет меню
+    ObjectView*                 m_pSceneView        {nullptr};  //! Сцена, на которой находятся объекты для отрисовки
+    Graph::GraphObject*         m_pGraph            {nullptr};  //! Граф, который будет отрисовываться
+    ButtonMatrix::HeadButton*   m_pOverlayButton    {nullptr};  //! Кнопка, в которой будет меню
 
     /**
      * @brief The ModeInformation class Информация о режиме
      */
     struct ModeInformation {
-        CurrentDrawerMode                           mode        {CurrentDrawerMode::None};
-        QMenu*                                      contextMenu {nullptr};
-        std::vector<OverlayButtonList::ButtonInfo>  buttons;
+        CurrentDrawerMode                       mode        {CurrentDrawerMode::None};
+        QMenu*                                  contextMenu {nullptr};
+        std::list<ButtonMatrix::ButtonConfig>   buttons;
     };
     std::vector<ModeInformation>            m_availableModes;
     std::vector<ModeInformation>::iterator  m_currentMode;

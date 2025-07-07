@@ -1,4 +1,4 @@
-#include "graphdrawer.h"
+#include "grapheditor.h"
 
 #include "GUI/ObjectScene/objectsceneconstants.h"
 
@@ -21,43 +21,43 @@
 
 using namespace Graph;
 
-GraphDrawer::GraphDrawer()
+GraphEditor::GraphEditor()
 {
 
 }
 
-GraphDrawer::~GraphDrawer()
+GraphEditor::~GraphEditor()
 {
 
 }
 
-GraphDrawer::CurrentDrawerMode GraphDrawer::getCurrentMode() const
+GraphEditor::CurrentDrawerMode GraphEditor::getCurrentMode() const
 {
     return m_currentMode->mode;
 }
 
-void GraphDrawer::setScene(ObjectView *pScene)
+void GraphEditor::setScene(ObjectView *pScene)
 {
     m_pSceneView = pScene;
 }
 
-void GraphDrawer::setCurrentGraph(Graph::GraphObject *pGraph)
+void GraphEditor::setCurrentGraph(Graph::GraphObject *pGraph)
 {
     m_pGraph = pGraph;
 }
 
-void GraphDrawer::setOverlayButtonList(ButtonMatrix::HeadButton *pOverlayButton)
+void GraphEditor::setOverlayButtonList(ButtonMatrix::HeadButton *pOverlayButton)
 {
     m_pOverlayButton = pOverlayButton;
 }
 
-void GraphDrawer::init()
+void GraphEditor::init()
 {
     setupAvailableModes();
     setupCurrentMode();
 }
 
-void GraphDrawer::updateGraph()
+void GraphEditor::updateGraph()
 {
     if (m_pGraph == nullptr || m_pSceneView == nullptr || m_pOverlayButton == nullptr) {
         return;
@@ -160,7 +160,7 @@ void GraphDrawer::updateGraph()
     }
 }
 
-void GraphDrawer::startEditMode()
+void GraphEditor::startEditMode()
 {
     m_currentMode = std::find_if(m_availableModes.begin(), m_availableModes.end(), [](const auto& modeInfo) {
         return (modeInfo.mode == CurrentDrawerMode::Edit);
@@ -170,7 +170,7 @@ void GraphDrawer::startEditMode()
     LOG_DEBUG("Started edit mode");
 }
 
-void GraphDrawer::startViewMode()
+void GraphEditor::startViewMode()
 {
     m_currentMode = std::find_if(m_availableModes.begin(), m_availableModes.end(), [](const auto& modeInfo) {
         return (modeInfo.mode == CurrentDrawerMode::View);
@@ -180,7 +180,7 @@ void GraphDrawer::startViewMode()
     LOG_DEBUG("Started view mode");
 }
 
-void GraphDrawer::stopMode()
+void GraphEditor::stopMode()
 {
     m_currentMode = std::find_if(m_availableModes.begin(), m_availableModes.end(), [](const auto& modeInfo) {
         return (modeInfo.mode == CurrentDrawerMode::None);
@@ -190,7 +190,7 @@ void GraphDrawer::stopMode()
     LOG_DEBUG("Disabled mode");
 }
 
-void GraphDrawer::setupAvailableModes()
+void GraphEditor::setupAvailableModes()
 {
     ModeInformation tmpMode;
     tmpMode.mode = CurrentDrawerMode::None;
@@ -235,7 +235,7 @@ void GraphDrawer::setupAvailableModes()
     m_currentMode = m_availableModes.begin();
 }
 
-void GraphDrawer::setupCurrentMode()
+void GraphEditor::setupCurrentMode()
 {
     m_pSceneView->setContextMenu(m_currentMode->contextMenu);
 }

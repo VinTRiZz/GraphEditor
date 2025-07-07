@@ -30,13 +30,13 @@ struct GraphConversionConfiguration : boost::noncopyable
 };
 
 /**
- * @brief The GraphDrawer class Мастер отрисовки графов на сцене
+ * @brief The GraphEditor class Мастер редактирования компонентов графа на сцене
  */
-class GraphDrawer
+class GraphEditor
 {
 public:
-    GraphDrawer();
-    ~GraphDrawer();
+    GraphEditor();
+    ~GraphEditor();
 
     /**
      * @brief The CurrentDrawerMode enum Режимы работы мастера отрисовки графов

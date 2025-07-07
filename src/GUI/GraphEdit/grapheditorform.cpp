@@ -335,13 +335,13 @@ void GraphEditorForm::setupWidget()
     buttonInfo.action = [this](QPushButton* pButton) {
         auto currentDrawerMode = m_graphDrawer.getCurrentMode();
 
-        if (currentDrawerMode == GraphDrawer::CurrentDrawerMode::Edit) {
+        if (currentDrawerMode == GraphEditor::CurrentDrawerMode::Edit) {
             pButton->setIcon(QIcon("://DATA/images/icons/mode_view.png"));
             m_graphDrawer.startViewMode();
             return;
         }
 
-        if (currentDrawerMode == GraphDrawer::CurrentDrawerMode::View) {
+        if (currentDrawerMode == GraphEditor::CurrentDrawerMode::View) {
             pButton->setIcon(QIcon("://DATA/images/icons/mode_none.png"));
             m_graphDrawer.stopMode();
             return;

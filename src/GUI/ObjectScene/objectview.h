@@ -46,6 +46,12 @@ public:
     void init();
 
     /**
+     * @brief isInited  Проверить, была ли инициализирована сцена
+     * @return          true если инициализация успешна
+     */
+    bool isInited() const;
+
+    /**
      * @brief setContextMenu    Задать контекстное меню
      * @param pMenu             Указатель на контекстное меню
      */

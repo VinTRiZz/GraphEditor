@@ -1,121 +1,26 @@
-#ifndef GRAPHDRAWER_H
-#define GRAPHDRAWER_H
+#ifndef GRAPHEDITOR_H
+#define GRAPHEDITOR_H
 
-#include "GUI/ObjectScene/objectview.h"
-#include "Graph/graphobject.h"
-#include "GUI/CustomWidgets/buttonmatrix.h"
+#include "graphviewbase.h"
 
-#include <QGraphicsItem>
-
-#include <boost/noncopyable.hpp>
-
-/**
- * @brief The GraphConversionConfiguration class Структура для настройки конверсий графов
- */
-struct GraphConversionConfiguration : boost::noncopyable
+namespace Graph
 {
-    // Уровни расположения объектов на сцене по их типу
-    uint mainRectLayer       = 1;    //! Уровень главного объекта ("полотна" графа)
 
-    uint connectionLineLayer = 10;   //! Уровень линий соединения вершин
-
-    uint vertexLayer         = 30;   //! Уровень вершин
-    uint vertexDataRectLayer = 31;   //! Уровень рамки текста названий вершин
-    uint vertexDataLayer     = 32;   //! Уровень текста названий вершин
-
-    static GraphConversionConfiguration& getInstance() {
-        static GraphConversionConfiguration inst;
-        return inst;
-    }
-};
-
-/**
- * @brief The GraphEditor class Мастер редактирования компонентов графа на сцене
- */
-class GraphEditor
+class GraphEditor : virtual public GraphViewBase
 {
 public:
-    GraphEditor();
-    ~GraphEditor();
+    GraphEditor(QWidget* parent = nullptr);
 
-    /**
-     * @brief The CurrentDrawerMode enum Режимы работы мастера отрисовки графов
-     */
-    enum class CurrentDrawerMode : uint8_t {
-        None = 0,
-        Edit,
-        View,
-    };
-    CurrentDrawerMode getCurrentMode() const;
+    void init() override;
 
-    /**
-     * @brief setScene  Выбрать целевую сцену
-     * @param pScene    Указатель на сцену
-     */
-    void setScene(ObjectView* pScene);
-
-    /**
-     * @brief setCurrentGraph   Задать текущий граф
-     * @param pGraph            Указатель на текущий граф
-     */
-    void setCurrentGraph(Graph::GraphObject* pGraph);
-
-    /**
-     * @brief setOverlayButtonList  Задать кнопку оверлея для задания внутри неё меню
-     * @param pOverlayButton        Указатель на кнопку оверлея
-     */
-    void setOverlayButtonList(ButtonMatrix::HeadButton* pOverlayButton);
-
-    /**
-     * @brief init   Инициализация класса. Обязательно необходимо вызвать после задания ВСЕХ полей
-     */
-    void init();
-
-    /**
-     * @brief updateGraph Обновить отрисовываемый граф
-     */
-    void updateGraph();
-
-    /**
-     * @brief startEditMode Запуск режима редактирования графа
-     */
-    void startEditMode();
-
-    /**
-     * @brief startViewMode Запуск режима обзора графа (поиск, чтение и т.д.)
-     */
-    void startViewMode();
-
-    /**
-     * @brief stopMode Остановить текущий режим работы мастера редактирования графа
-     */
-    void stopMode();
+    void startMode() override;
+    bool isModeStarted() const override;
+    void stopMode() override;
 
 private:
-    ObjectView*                 m_pSceneView        {nullptr};  //! Сцена, на которой находятся объекты для отрисовки
-    Graph::GraphObject*         m_pGraph            {nullptr};  //! Граф, который будет отрисовываться
-    ButtonMatrix::HeadButton*   m_pOverlayButton    {nullptr};  //! Кнопка, в которой будет меню
-
-    /**
-     * @brief The ModeInformation class Информация о режиме
-     */
-    struct ModeInformation {
-        CurrentDrawerMode                       mode        {CurrentDrawerMode::None};
-        QMenu*                                  contextMenu {nullptr};
-        std::list<ButtonMatrix::ButtonConfig>   buttons;
-    };
-    std::vector<ModeInformation>            m_availableModes;
-    std::vector<ModeInformation>::iterator  m_currentMode;
-
-    /**
-     * @brief setupAvailableModes   Настройка доступных режимов работы
-     */
-    void setupAvailableModes();
-
-    /**
-     * @brief setupCurrentMode  Настроить выбранный режим работы
-     */
-    void setupCurrentMode();
+    bool m_isModeStarted {false};
 };
 
-#endif // GRAPHDRAWER_H
+}
+
+#endif // GRAPHEDITOR_H

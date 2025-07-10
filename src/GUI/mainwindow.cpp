@@ -18,7 +18,6 @@ MainWindow::~MainWindow()
 void MainWindow::startValidanceTest()
 {
     ui->objectScene->startValidanceTest();
-
     SaveMaster::testValidance();
 }
 

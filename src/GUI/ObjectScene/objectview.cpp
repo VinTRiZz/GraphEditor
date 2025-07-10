@@ -43,9 +43,15 @@ std::function<uint ()> ObjectView::getIdGenerator() const
 
 void ObjectView::init()
 {
+    LOG_DEBUG("CALLED INIT!");
     m_pScene = new ObjectsInternalScene(this);
     m_pScene->init();
     setScene(m_pScene);
+}
+
+bool ObjectView::isInited() const
+{
+    return (nullptr != m_pScene);
 }
 
 void ObjectView::setContextMenu(QMenu *pMenu)

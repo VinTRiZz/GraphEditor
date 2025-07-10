@@ -13,6 +13,8 @@
 
 #include "logging.h"
 
+#include "Testing/testgraphgenerator.h"
+
 GraphEditorForm::GraphEditorForm(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::GraphEditorForm)
@@ -20,73 +22,78 @@ GraphEditorForm::GraphEditorForm(QWidget *parent) :
     ui->setupUi(this);
 
     ui->graphScene->init();
-    ui->graphScene->resizeScene(QSize(1000, 1000));
+    ui->graphScene->resizeScene(QSize(10000, 10000));
     ui->graphScene->scale(0.5, 0.5);
 
-    m_currentGraph.setName("Test example graph");
-    m_currentGraph.setDescription("Example description");
-    m_currentGraph.setCreateTime(QDateTime::currentDateTime());
-    m_currentGraph.setEditTime(QDateTime::currentDateTime());
+    m_currentGraph = std::make_shared<Graph::GraphObject>(Graph::GraphObject());
+    ui->graphScene->setCurrentGraph(m_currentGraph);
 
-    m_currentGraph.setIdGenerator(ui->graphScene->getIdGenerator());
+    m_currentGraph->setName("Test example graph");
+    m_currentGraph->setDescription("Example description");
+    m_currentGraph->setCreateTime(QDateTime::currentDateTime());
+    m_currentGraph->setEditTime(QDateTime::currentDateTime());
 
-    Graph::GVertex vert;
-    vert.shortName = "Дебич";
-    vert.name = "Дебич узел";
-    vert.backgroundColor = Qt::green;
-    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_red.png").pixmap(500, 500);
-    vert.posX = 100;
-    vert.posY = 100;
-    m_currentGraph.addVertex(vert);
+    *m_currentGraph = TestGraphGenerator::generateGraph(10);
 
-    vert.shortName = "Кр. дебич";
-    vert.name = "Кр. дебич узел";
-    vert.backgroundColor = Qt::red;
-    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_red.png").pixmap(500, 500);
-    vert.posX = 300;
-    vert.posY = 300;
-    m_currentGraph.addVertex(vert);
+//    m_currentGraph->setIdGenerator(ui->graphScene->getIdGenerator());
 
-    vert.shortName = "Др. дебич";
-    vert.name = "Др. дебич узел";
-    vert.backgroundColor = Qt::green;
-    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_green.png").pixmap(500, 500);
-    vert.posX = 500;
-    vert.posY = 500;
-    m_currentGraph.addVertex(vert);
+//    Graph::GVertex vert;
+//    vert.shortName = "Дебич";
+//    vert.name = "Дебич узел";
+//    vert.backgroundColor = Qt::green;
+//    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_red.png").pixmap(500, 500);
+//    vert.posX = 100;
+//    vert.posY = 100;
+//    m_currentGraph->addVertex(vert);
 
-    vert.shortName = "Кр. хер";
-    vert.name = "Кр. хер узел";
-    vert.backgroundColor = Qt::red;
-    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_red.png").pixmap(500, 500);
-    vert.posX = 100;
-    vert.posY = 500;
-    m_currentGraph.addVertex(vert);
+//    vert.shortName = "Кр. дебич";
+//    vert.name = "Кр. дебич узел";
+//    vert.backgroundColor = Qt::red;
+//    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_red.png").pixmap(500, 500);
+//    vert.posX = 300;
+//    vert.posY = 300;
+//    m_currentGraph->addVertex(vert);
 
-    Graph::GConnection con;
-    con.name = "1-2";
-    con.idFrom = 1;
-    con.idTo = 2;
-    con.lineColor = Qt::red;
-    m_currentGraph.addConnection(con);
+//    vert.shortName = "Др. дебич";
+//    vert.name = "Др. дебич узел";
+//    vert.backgroundColor = Qt::green;
+//    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_green.png").pixmap(500, 500);
+//    vert.posX = 500;
+//    vert.posY = 500;
+//    m_currentGraph->addVertex(vert);
 
-    con.name = "4-3";
-    con.idFrom = 4;
-    con.idTo = 3;
-    con.lineColor = Qt::green;
-    m_currentGraph.addConnection(con);
+//    vert.shortName = "Кр. хер";
+//    vert.name = "Кр. хер узел";
+//    vert.backgroundColor = Qt::red;
+//    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_red.png").pixmap(500, 500);
+//    vert.posX = 100;
+//    vert.posY = 500;
+//    m_currentGraph->addVertex(vert);
 
-    con.name = "1-3";
-    con.idFrom = 1;
-    con.idTo = 3;
-    con.lineColor = Qt::magenta;
-    m_currentGraph.addConnection(con);
+//    Graph::GConnection con;
+//    con.name = "1-2";
+//    con.idFrom = 1;
+//    con.idTo = 2;
+//    con.lineColor = Qt::red;
+//    m_currentGraph->addConnection(con);
+
+//    con.name = "4-3";
+//    con.idFrom = 4;
+//    con.idTo = 3;
+//    con.lineColor = Qt::green;
+//    m_currentGraph->addConnection(con);
+
+//    con.name = "1-3";
+//    con.idFrom = 1;
+//    con.idTo = 3;
+//    con.lineColor = Qt::magenta;
+//    m_currentGraph->addConnection(con);
 
     setupWidget();
     setupModels();
     setupSignals();
 
-    m_graphDrawer.updateGraph();
+    ui->graphScene->setCurrentGraph(m_currentGraph);
 }
 
 GraphEditorForm::~GraphEditorForm()
@@ -99,9 +106,9 @@ void GraphEditorForm::startValidanceTest()
     LOG_WARNING("Validance test not written");
 }
 
-Graph::GraphObject *GraphEditorForm::getCurrentGraph()
+std::shared_ptr<Graph::GraphObject> GraphEditorForm::getCurrentGraph()
 {
-    return &m_currentGraph;
+    return m_currentGraph;
 }
 
 ButtonMatrix::HeadButton *GraphEditorForm::getOverlayButton()
@@ -130,17 +137,17 @@ void GraphEditorForm::saveGraph()
     const int userPropNameCol = 0;
     const int userPropDataCol = 1;
     for (int row = 0; row < m_pUserGraphInfoModel->rowCount(); ++row) {
-        m_currentGraph.setCustomValue(m_pUserGraphInfoModel->index(row, userPropNameCol).data().toString(),
+        m_currentGraph->setCustomValue(m_pUserGraphInfoModel->index(row, userPropNameCol).data().toString(),
                                         m_pUserGraphInfoModel->index(row, userPropDataCol).data());
     }
 
-    m_currentGraph.setEditTime(QDateTime::currentDateTime());
+    m_currentGraph->setEditTime(QDateTime::currentDateTime());
 
     if (QFileInfo(m_currentGraphFilePath).suffix() != "gse") {
         m_currentGraphFilePath += ".gse";
     }
 
-    auto saveSucceed = SaveMaster::save(m_currentGraphFilePath, m_currentGraph);
+    auto saveSucceed = SaveMaster::save(m_currentGraphFilePath, *m_currentGraph);
     if (!saveSucceed) {
         GraphCommon::showError("Ошибка сохранения графа");
         return;
@@ -149,15 +156,14 @@ void GraphEditorForm::saveGraph()
 
 void GraphEditorForm::loadGraph()
 {
-    auto loadSucceed = SaveMaster::load(m_currentGraphFilePath, m_currentGraph);
+    auto loadSucceed = SaveMaster::load(m_currentGraphFilePath, *m_currentGraph);
     if (!loadSucceed) {
         GraphCommon::showError("Ошибка загрузки графа");
         return;
     }
-    m_currentGraph.setIdGenerator(ui->graphScene->getIdGenerator());
+    m_currentGraph->setIdGenerator(ui->graphScene->getIdGenerator());
 
     updateGraphInfo();
-    m_graphDrawer.updateGraph();
 }
 
 void GraphEditorForm::setupSignals()
@@ -333,30 +339,8 @@ void GraphEditorForm::setupWidget()
     buttonInfo.icon = QIcon("://DATA/images/icons/mode_none.png");
     buttonInfo.tooltip = "Сменить режим работы";
     buttonInfo.action = [this](QPushButton* pButton) {
-        auto currentDrawerMode = m_graphDrawer.getCurrentMode();
-
-        if (currentDrawerMode == GraphEditor::CurrentDrawerMode::Edit) {
-            pButton->setIcon(QIcon("://DATA/images/icons/mode_view.png"));
-            m_graphDrawer.startViewMode();
-            return;
-        }
-
-        if (currentDrawerMode == GraphEditor::CurrentDrawerMode::View) {
-            pButton->setIcon(QIcon("://DATA/images/icons/mode_none.png"));
-            m_graphDrawer.stopMode();
-            return;
-        }
-
-        pButton->setIcon(QIcon("://DATA/images/icons/mode_edit.png"));
-        m_graphDrawer.startEditMode();
     };
     m_pButtonMatrixHead->addButton(buttonInfo);
-
-    // Настройка мастера редактирования графа
-    m_graphDrawer.setOverlayButtonList(m_pButtonMatrixHead);
-    m_graphDrawer.setCurrentGraph(&m_currentGraph);
-    m_graphDrawer.setScene(ui->graphScene);
-    m_graphDrawer.init();
 }
 
 void GraphEditorForm::updateGraphInfo()
@@ -367,26 +351,26 @@ void GraphEditorForm::updateGraphInfo()
 
     // Полу-хардкод
     auto pItem = new QStandardItem("Название");
-    auto pProperyItem = new QStandardItem(m_currentGraph.getName());
+    auto pProperyItem = new QStandardItem(m_currentGraph->getName());
     pItem->setEditable(false);
     m_pCommonGraphInfoModel->appendRow({pItem, pProperyItem});
 
     pItem = new QStandardItem("Описание");
-    pProperyItem = new QStandardItem(m_currentGraph.getDescription());
+    pProperyItem = new QStandardItem(m_currentGraph->getDescription());
     pItem->setEditable(false);
     m_pCommonGraphInfoModel->appendRow({pItem, pProperyItem});
 
     pItem = new QStandardItem("Создан");
-    pProperyItem = new QStandardItem(m_currentGraph.getCreateTime().toString(GraphCommon::DATE_DISPLAY_CONVERSION_FORMAT));
+    pProperyItem = new QStandardItem(m_currentGraph->getCreateTime().toString(GraphCommon::DATE_DISPLAY_CONVERSION_FORMAT));
     pItem->setEditable(false);
     m_pCommonGraphInfoModel->appendRow({pItem, pProperyItem});
 
     pItem = new QStandardItem("Изменён");
-    pProperyItem = new QStandardItem(m_currentGraph.getEditTime().toString(GraphCommon::DATE_DISPLAY_CONVERSION_FORMAT));
+    pProperyItem = new QStandardItem(m_currentGraph->getEditTime().toString(GraphCommon::DATE_DISPLAY_CONVERSION_FORMAT));
     pItem->setEditable(false);
     m_pCommonGraphInfoModel->appendRow({pItem, pProperyItem});
 
-    for (auto& [key, value] : m_currentGraph.getCustomValueMap()) {
+    for (auto& [key, value] : m_currentGraph->getCustomValueMap()) {
         pItem = new QStandardItem(key);
         pProperyItem = new QStandardItem(value.toString());
         m_pUserGraphInfoModel->appendRow({pItem, pProperyItem});

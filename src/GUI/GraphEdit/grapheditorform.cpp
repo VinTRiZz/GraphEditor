@@ -25,7 +25,7 @@ GraphEditorForm::GraphEditorForm(QWidget *parent) :
     ui->graphScene->resizeScene(QSize(10000, 10000));
     ui->graphScene->scale(0.5, 0.5);
 
-    m_currentGraph = std::make_shared<Graph::GraphObject>(Graph::GraphObject());
+    m_currentGraph = new Graph::GraphExtendedObject(this);
     ui->graphScene->setCurrentGraph(m_currentGraph);
 
     m_currentGraph->setName("Test example graph");
@@ -33,61 +33,61 @@ GraphEditorForm::GraphEditorForm(QWidget *parent) :
     m_currentGraph->setCreateTime(QDateTime::currentDateTime());
     m_currentGraph->setEditTime(QDateTime::currentDateTime());
 
-    *m_currentGraph = TestGraphGenerator::generateGraph(10);
+//    *m_currentGraph = TestGraphGenerator::generateGraph(10);
 
-//    m_currentGraph->setIdGenerator(ui->graphScene->getIdGenerator());
+    m_currentGraph->setIdGenerator(ui->graphScene->getIdGenerator());
 
-//    Graph::GVertex vert;
-//    vert.shortName = "Дебич";
-//    vert.name = "Дебич узел";
-//    vert.backgroundColor = Qt::green;
-//    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_red.png").pixmap(500, 500);
-//    vert.posX = 100;
-//    vert.posY = 100;
-//    m_currentGraph->addVertex(vert);
+    Graph::GVertex vert;
+    vert.shortName = "Дебич";
+    vert.name = "Дебич узел";
+    vert.backgroundColor = Qt::green;
+    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_red.png").pixmap(500, 500);
+    vert.posX = 100;
+    vert.posY = 100;
+    m_currentGraph->addVertex(vert);
 
-//    vert.shortName = "Кр. дебич";
-//    vert.name = "Кр. дебич узел";
-//    vert.backgroundColor = Qt::red;
-//    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_red.png").pixmap(500, 500);
-//    vert.posX = 300;
-//    vert.posY = 300;
-//    m_currentGraph->addVertex(vert);
+    vert.shortName = "Кр. дебич";
+    vert.name = "Кр. дебич узел";
+    vert.backgroundColor = Qt::red;
+    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_red.png").pixmap(500, 500);
+    vert.posX = 300;
+    vert.posY = 300;
+    m_currentGraph->addVertex(vert);
 
-//    vert.shortName = "Др. дебич";
-//    vert.name = "Др. дебич узел";
-//    vert.backgroundColor = Qt::green;
-//    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_green.png").pixmap(500, 500);
-//    vert.posX = 500;
-//    vert.posY = 500;
-//    m_currentGraph->addVertex(vert);
+    vert.shortName = "Др. дебич";
+    vert.name = "Др. дебич узел";
+    vert.backgroundColor = Qt::green;
+    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_green.png").pixmap(500, 500);
+    vert.posX = 500;
+    vert.posY = 500;
+    m_currentGraph->addVertex(vert);
 
-//    vert.shortName = "Кр. хер";
-//    vert.name = "Кр. хер узел";
-//    vert.backgroundColor = Qt::red;
-//    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_red.png").pixmap(500, 500);
-//    vert.posX = 100;
-//    vert.posY = 500;
-//    m_currentGraph->addVertex(vert);
+    vert.shortName = "Кр. хер";
+    vert.name = "Кр. хер узел";
+    vert.backgroundColor = Qt::red;
+    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_red.png").pixmap(500, 500);
+    vert.posX = 100;
+    vert.posY = 500;
+    m_currentGraph->addVertex(vert);
 
-//    Graph::GConnection con;
-//    con.name = "1-2";
-//    con.idFrom = 1;
-//    con.idTo = 2;
-//    con.lineColor = Qt::red;
-//    m_currentGraph->addConnection(con);
+    Graph::GConnection con;
+    con.name = "1-2";
+    con.idFrom = 1;
+    con.idTo = 2;
+    con.lineColor = Qt::red;
+    m_currentGraph->addConnection(con);
 
-//    con.name = "4-3";
-//    con.idFrom = 4;
-//    con.idTo = 3;
-//    con.lineColor = Qt::green;
-//    m_currentGraph->addConnection(con);
+    con.name = "4-3";
+    con.idFrom = 4;
+    con.idTo = 3;
+    con.lineColor = Qt::green;
+    m_currentGraph->addConnection(con);
 
-//    con.name = "1-3";
-//    con.idFrom = 1;
-//    con.idTo = 3;
-//    con.lineColor = Qt::magenta;
-//    m_currentGraph->addConnection(con);
+    con.name = "1-3";
+    con.idFrom = 1;
+    con.idTo = 3;
+    con.lineColor = Qt::magenta;
+    m_currentGraph->addConnection(con);
 
     setupWidget();
     setupModels();
@@ -106,7 +106,7 @@ void GraphEditorForm::startValidanceTest()
     LOG_WARNING("Validance test not written");
 }
 
-std::shared_ptr<Graph::GraphObject> GraphEditorForm::getCurrentGraph()
+Graph::GraphExtendedObject* GraphEditorForm::getCurrentGraph()
 {
     return m_currentGraph;
 }

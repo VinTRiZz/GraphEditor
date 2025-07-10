@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QStandardItemModel>
 
-#include "Graph/graphobject.h"
+#include "graphextendedobject.h"
 #include "GUI/CustomWidgets/buttonmatrix.h"
 
 namespace Ui {
@@ -36,7 +36,7 @@ public:
      * @brief getCurrentGraph Получить текущий граф
      * @return Указатель на текущий граф (объект графа существует вместе с формой)
      */
-    std::shared_ptr<Graph::GraphObject> getCurrentGraph();
+    Graph::GraphExtendedObject* getCurrentGraph();
 
     /**
      * @brief getOverlayButton Получить указатель на оверлей-кнопку
@@ -47,8 +47,8 @@ public:
 private:
     Ui::GraphEditorForm *ui;
 
-    std::shared_ptr<Graph::GraphObject> m_currentGraph;         //! Текущий граф
-    QString                             m_currentGraphFilePath; //! Путь для сохранения графа в файл
+    Graph::GraphExtendedObject* m_currentGraph;         //! Текущий граф
+    QString                     m_currentGraphFilePath; //! Путь для сохранения графа в файл
 
     QStandardItemModel* m_pCommonGraphInfoModel     {nullptr};  //! Модель с общими данными по графу
     QStandardItemModel* m_pUserGraphInfoModel       {nullptr};  //! Модель с пользовательскими данными по графу

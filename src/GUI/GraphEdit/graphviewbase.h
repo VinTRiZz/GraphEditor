@@ -1,7 +1,7 @@
 #ifndef GRAPHVIEWBASE_H
 #define GRAPHVIEWBASE_H
 
-#include "Graph/graphobject.h"
+#include "graphextendedobject.h"
 
 #include "GUI/ObjectScene/objectview.h"
 #include "GUI/CustomWidgets/buttonmatrix.h"
@@ -51,15 +51,15 @@ public:
      * @brief setCurrentGraph   Задать текущий граф
      * @param pGraph            Указатель на текущий граф
      */
-    void setCurrentGraph(std::shared_ptr<Graph::GraphObject> pGraph);
+    void setCurrentGraph(Graph::GraphExtendedObject* pGraph);
 
 private:
     struct Impl;
     std::unique_ptr<Impl> d;
 
 protected:
-    std::shared_ptr<Graph::GraphObject> m_pGraph;
-    ButtonMatrix::HeadButton            m_overlayButton;
+    Graph::GraphExtendedObject* m_pGraph {nullptr};
+    ButtonMatrix::HeadButton    m_overlayButton;
 
     void updateGraph();
 };

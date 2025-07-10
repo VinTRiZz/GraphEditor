@@ -28,7 +28,7 @@ void GraphViewBase::init()
     }
 }
 
-void GraphViewBase::setCurrentGraph(std::shared_ptr<GraphObject> pGraph)
+void GraphViewBase::setCurrentGraph(Graph::GraphExtendedObject* pGraph)
 {
     m_pGraph = pGraph;
     updateGraph();

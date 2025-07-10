@@ -43,7 +43,6 @@ std::function<uint ()> ObjectView::getIdGenerator() const
 
 void ObjectView::init()
 {
-    LOG_DEBUG("CALLED INIT!");
     m_pScene = new ObjectsInternalScene(this);
     m_pScene->init();
     setScene(m_pScene);
@@ -152,7 +151,7 @@ void ObjectView::mouseMoveEvent(QMouseEvent *e)
     }
 
     if (m_isHoldingMiddleButton) {
-        auto deltaPos = currentPos - m_prevPos;
+        auto deltaPos = e->pos() - mapFromScene(m_prevPos);
         horizontalScrollBar()->setSliderPosition(horizontalScrollBar()->sliderPosition() - deltaPos.x());
         verticalScrollBar()->setSliderPosition(verticalScrollBar()->sliderPosition() - deltaPos.y());
     }

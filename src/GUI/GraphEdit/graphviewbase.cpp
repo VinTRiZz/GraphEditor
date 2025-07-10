@@ -1,5 +1,7 @@
 #include "graphviewbase.h"
 
+#include "logging.h"
+
 namespace Graph
 {
 
@@ -13,7 +15,13 @@ GraphViewBase::GraphViewBase(QWidget *parent) :
     ObjectView(parent),
     d {std::make_unique<Impl>(Impl())}
 {
-
+    connect(this, &ObjectView::clickedOnItem,
+            this, [this](QGraphicsItem* pItem) {
+        if (nullptr != pItem) {
+            rejectGrabObject();
+        }
+        setGrabObject(pItem);
+    });
 }
 
 GraphViewBase::~GraphViewBase()
@@ -41,7 +49,7 @@ void GraphViewBase::updateGraph()
     }
 
     // TODO: Вместо удаления, обновить
-    clearScene();
+    removeAllObjects();
 
     auto& conversionConfig = GraphConversionConfiguration::getInstance();
 

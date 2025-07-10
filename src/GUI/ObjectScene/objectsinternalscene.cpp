@@ -4,6 +4,8 @@
 #include <QGraphicsItem>
 #include <QGraphicsRectItem>
 
+#include "logging.h"
+
 ObjectsInternalScene::ObjectsInternalScene(QObject *parent) :
     QGraphicsScene(parent)
 {
@@ -21,6 +23,13 @@ ObjectsInternalScene::~ObjectsInternalScene()
 void ObjectsInternalScene::resizeScene(const QSize &iSize)
 {
     static_cast<QGraphicsRectItem*>(m_pNullItem)->setRect(0, 0, iSize.width(), iSize.height());
+}
+
+bool ObjectsInternalScene::isNullItem(QGraphicsItem *pItem) const
+{
+    LOG_DEBUG("Item:", reinterpret_cast<uint64_t>(pItem), reinterpret_cast<uint64_t>(m_pNullItem));
+    LOG_DEBUG("Item data:", pItem->data(ObjectSceneConstants::OBJECTFIELD_NAME), pItem->data(ObjectSceneConstants::OBJECTFIELD_NAME_SHORT));
+    return (pItem == m_pNullItem);
 }
 
 void ObjectsInternalScene::setIdGenerator(const std::function<uint ()> fGen)
@@ -50,6 +59,7 @@ void ObjectsInternalScene::init()
     pNullRectItem->setZValue(0);
 
     m_pNullItem = pNullRectItem;
+    pNullRectItem->setData(ObjectSceneConstants::OBJECTFIELD_ID, 0);
     m_pNullItem->setData(ObjectSceneConstants::OBJECTFIELD_NAME, "NULL ITEM");
 
     addItem(m_pNullItem);

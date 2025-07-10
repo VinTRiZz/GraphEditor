@@ -22,99 +22,40 @@ public:
     explicit ObjectView(QWidget *parent = nullptr);
     ~ObjectView();
 
-    /**
-     * @brief resizeScene Принудительно изменить размеры полотна сцены
-     * @param iSize Новый размер сцены
-     */
-    void resizeScene(const QSize& iSize);
-
-    /**
-     * @brief setIdGenerator Установить генератор ID объекта (должен возвращать уникальный ID объектов)
-     * @param fGen Функтор-генератор
-     */
     void setIdGenerator(const std::function<uint()> fGen);
-
-    /**
-     * @brief getIdGenerator Функция получения функтора-генератора ID
-     * @return Функтор-генератор ID
-     */
     std::function<uint()> getIdGenerator() const;
 
-    /**
-     * @brief init Создание и настройка внутренних компонент. Вынесена для вызовов при необходимости
-     */
-    void init();
+    void resizeScene(const QSize& iSize);
 
-    /**
-     * @brief isInited  Проверить, была ли инициализирована сцена
-     * @return          true если инициализация успешна
-     */
+    void init();
     bool isInited() const;
 
-    /**
-     * @brief setContextMenu    Задать контекстное меню
-     * @param pMenu             Указатель на контекстное меню
-     */
     void setContextMenu(QMenu* pMenu);
-
-    /**
-     * @brief getContextMenuItem    Получить указатель на объект, для которого вызвано контекстное меню
-     * @return                      Указатель на объект или nullptr если меню не было вызвано (или было вызвано не над объектом)
-     */
     QGraphicsItem* getContextMenuItem();
 
-    /**
-     * @brief clearScene Очищает сцену от объектов, оставляя её полотно нетронутым
-     */
-    void clearScene();
-
-    /**
-     * @brief addObject Добавить объект на сцену. Координатами считаются координаты, заданные в pItem
-     * @param pItem Указатель на объект сцены
-     * @return ID добавленного объекта, сгенерированный с помощью функтора-генератора
-     */
     uint addObject(QGraphicsItem* pItem);
-
-    /**
-     * @brief setGrabObject Задать объект, который будет прикреплён к курсору
-     * @param pItem         Указатель на объект
-     */
-    void setGrabObject(QGraphicsItem* pItem);
-
-    /**
-     * @brief acceptGrabObject  Принять объект, прикреплённый к курсору (открепить)
-     */
-    void acceptGrabObject();
-
-    /**
-     * @brief rejectGrabObject  Отклонить объект, прикреплённый к курсору (удалить или вернуть на позицию)
-     */
-    void rejectGrabObject();
-
-    /**
-     * @brief getAlObjectIds Возвращает все ID объектов, добавленных в сцену
-     * @return Список идентификаторов добавленных объектов
-     */
     QList<uint> getAlObjectIds() const;
-
-    /**
-     * @brief removeObject Удаляет объект с идентификатором
-     * @param itemId Идентификатор объекта
-     */
+    void removeAllObjects();
     void removeObject(uint itemId);
+
+    QGraphicsItem* getGrabObject() const;
+
+public slots:
+    void setGrabObject(QGraphicsItem* pItem);
+    void acceptGrabObject();
+    void rejectGrabObject();
 
 private:
     Ui::ObjectScene *ui;
     ObjectsInternalScene*   m_pScene            {nullptr};  //! Сцена для отображения объектов (внутренний класс)
     QMenu*                  m_pContextMenu      {nullptr};  //! Контекстное меню
     QGraphicsItem*          m_contextMenuItem   {nullptr};  //! Объект, который находился под указателем мыши во время вызова контекстного меню
+    std::optional<uint>     m_grabObjectId;                 //! ID объекта, который "прикреплён" к указателю мыши
 
-    std::optional<uint>     m_grabObjectId;                 //! ID объекта, который "прикреплён" к указетелю мыши
-
-    QPointF m_prevPos;                          //! Позиция нажатия на графе
-    bool    m_isHoldingLeftButton   {false};    //! Флаг факта того, что пользователь кникнул на сцену ЛКМ
-    bool    m_isHoldingMiddleButton {false};    //! Флаг факта того, что пользователь кникнул на сцену СКМ
-    bool    m_isMovingByUser        {true};     //! Флаг для перемещений сцены по СКМ
+    QPointF m_prevPos;                                      //! Позиция нажатия на графе
+    bool    m_isHoldingLeftButton   {false};                //! Флаг факта того, что пользователь кникнул на сцену ЛКМ
+    bool    m_isHoldingMiddleButton {false};                //! Флаг факта того, что пользователь кникнул на сцену СКМ
+    bool    m_isMovingByUser        {true};                 //! Флаг для перемещений сцены по СКМ
 
     // Интерфейс QWidget
     void wheelEvent(QWheelEvent* e) override;
@@ -122,6 +63,11 @@ private:
     void mouseMoveEvent(QMouseEvent* e) override;
     void mouseReleaseEvent(QMouseEvent* e) override;
     void contextMenuEvent(QContextMenuEvent *e) override;
+
+signals:
+    void clickedOnItem(QGraphicsItem* pTargetItem);
+    void pressedOnItem(QGraphicsItem* pTargetItem);
+    void releasedOnItem(QGraphicsItem* pTargetItem);
 };
 
 #endif // OBJECTSCENE_H

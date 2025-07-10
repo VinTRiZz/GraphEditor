@@ -136,7 +136,7 @@ class LoggingMaster : boost::noncopyable
          * @param val данные
          */
         template <typename T>
-        void operator()(T val) {
+        void operator()(T&& val) {
             fileWriteOnly(val);
             ostreamWriteOnly(val);
         }
@@ -342,6 +342,11 @@ inline void LoggingMaster::LoggingHelper::fileWriteOnly(double val) {
     resv = resv.replace(",", ".");
 
     LoggingMaster::getInstance().logfileStream << resv.toUtf8().data() << " ";
+}
+
+template <>
+inline void LoggingMaster::LoggingHelper::fileWriteOnly(QVariant val) {
+    LoggingMaster::getInstance().logfileStream << val.toString().toUtf8().data() << " ";
 }
 #endif // QT_CORE_LIB
 

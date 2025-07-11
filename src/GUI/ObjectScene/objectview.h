@@ -5,12 +5,15 @@
 
 #include <optional>
 
+#include "objectsceneconstants.h"
+
 namespace Ui {
 class ObjectScene;
 }
 
 class ObjectsInternalScene;
 class QMenu;
+
 /**
  * @brief The ObjectScene class Посредник для отображения объектов на QGraphicScene с доп функционалом
  */
@@ -18,14 +21,13 @@ class ObjectView : public QGraphicsView
 {
     Q_OBJECT
 
+    // Запрет интерфейса чтобы избежать поломки дочерними классами
+    using QGraphicsView::scene;
+    using QGraphicsView::setScene;
+
 public:
     explicit ObjectView(QWidget *parent = nullptr);
     ~ObjectView();
-
-    void setIdGenerator(const std::function<uint()> fGen);
-    std::function<uint()> getIdGenerator() const;
-
-    void resizeScene(const QSize& iSize);
 
     void init();
     bool isInited() const;
@@ -33,10 +35,10 @@ public:
     void setContextMenu(QMenu* pMenu);
     QGraphicsItem* getContextMenuItem();
 
-    uint addObject(QGraphicsItem* pItem);
-    QList<uint> getAlObjectIds() const;
+    ObjectSceneConstants::objectId_t addObject(QGraphicsItem* pItem);
+    QList<ObjectSceneConstants::objectId_t> getAlObjectIds() const;
     void removeAllObjects();
-    void removeObject(uint itemId);
+    void removeObject(ObjectSceneConstants::objectId_t itemId);
 
     QGraphicsItem* getGrabObject() const;
 
@@ -50,7 +52,9 @@ private:
     ObjectsInternalScene*   m_pScene            {nullptr};  //! Сцена для отображения объектов (внутренний класс)
     QMenu*                  m_pContextMenu      {nullptr};  //! Контекстное меню
     QGraphicsItem*          m_contextMenuItem   {nullptr};  //! Объект, который находился под указателем мыши во время вызова контекстного меню
-    std::optional<uint>     m_grabObjectId;                 //! ID объекта, который "прикреплён" к указателю мыши
+
+    QPointF                                         m_grabObjectPos;    //! Положение объекта до grab
+    std::optional<ObjectSceneConstants::objectId_t> m_grabObjectId;     //! ID объекта, который "прикреплён" к указателю мыши
 
     QPointF m_prevPos;                                      //! Позиция нажатия на графе
     bool    m_isHoldingLeftButton   {false};                //! Флаг факта того, что пользователь кникнул на сцену ЛКМ

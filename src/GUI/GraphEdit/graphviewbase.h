@@ -34,10 +34,14 @@ struct GraphConversionConfiguration : boost::noncopyable
 
 class GraphViewBase : public ObjectView
 {
-    // Блокировка работы ObjectView во избежание поломки интерфейса
-    using ObjectView::setScene;
-
 public:
+
+    enum ObjectType : int {
+        OBJECT_TYPE_UNKNOWN,
+        OBJECT_TYPE_VERTEX,
+        OBJECT_TYPE_CONNECTION,
+    };
+
     GraphViewBase(QWidget* parent = nullptr);
     ~GraphViewBase();
 

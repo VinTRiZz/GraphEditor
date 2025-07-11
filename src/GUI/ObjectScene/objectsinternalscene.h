@@ -4,6 +4,8 @@
 #include <QGraphicsScene>
 #include <QHash>
 
+#include "objectsceneconstants.h"
+
 namespace Ui {
 class ObjectsInternalScene;
 }
@@ -16,27 +18,26 @@ public:
     explicit ObjectsInternalScene(QObject *parent = nullptr);
     ~ObjectsInternalScene();
 
+    // TODO: Удалить после динамического ресайза
     void resizeScene(const QSize& iSize);
+    QGraphicsItem* getParentOfComplex(QGraphicsItem* pItem);
     bool isNullItem(QGraphicsItem* pItem) const;
-
-    void setIdGenerator(const std::function<uint()> fGen);
-    std::function<uint()> getIdGenerator() const;
 
     void init();
     void clearScene();
 
-    uint addObject(QGraphicsItem* pItem);
-    QGraphicsItem* getObject(uint objectId);
-    [[nodiscard]] QList<uint> getAlObjectIds() const;
-    void removeObject(uint itemId);
+    ObjectSceneConstants::objectId_t addObject(QGraphicsItem* pItem);
+    QGraphicsItem* getObject(ObjectSceneConstants::objectId_t objectId);
+    [[nodiscard]] QList<ObjectSceneConstants::objectId_t> getAlObjectIds() const;
+    void removeObject(ObjectSceneConstants::objectId_t itemId);
 
     void setBackgroundColor(const QColor& bgrColor);
     void setBorderColor(const QColor& borderColor);
 
 private:
-    std::function<uint()>       m_idGenerator;              //! Генератор ID для объектов
+    std::function<ObjectSceneConstants::objectId_t()>       m_idGenerator;              //! Генератор ID для объектов
     QGraphicsItem*              m_pNullItem     {nullptr};  //! Объект, который являет собой пространство сцены (как бы ограниченная плоскость для расположения объектов)
-    QHash<uint, QGraphicsItem*> m_objectsMap;               //! Словарь для сохранения ID объектов
+    QHash<ObjectSceneConstants::objectId_t, QGraphicsItem*> m_objectsMap;               //! Словарь для сохранения ID объектов
 };
 
 #endif // OBJECTSINTERNALSCENE_H

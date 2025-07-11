@@ -17,9 +17,17 @@ GraphViewBase::GraphViewBase(QWidget *parent) :
 {
     connect(this, &ObjectView::clickedOnItem,
             this, [this](QGraphicsItem* pItem) {
-        if (nullptr != pItem) {
-            rejectGrabObject();
+
+        // Нельзя выбирать соединения (пока что!)
+        if (pItem->data(ObjectSceneConstants::OBJECTFIELD_OBJECTTYPE).toInt() == OBJECT_TYPE_CONNECTION) {
+            return;
         }
+
+        if (nullptr != getGrabObject()) {
+            rejectGrabObject();
+            return;
+        }
+
         setGrabObject(pItem);
     });
 }
@@ -81,6 +89,7 @@ void GraphViewBase::updateGraph()
         pVertexItem->setData(ObjectSceneConstants::OBJECTFIELD_NAME,            vert.name);
         pVertexItem->setData(ObjectSceneConstants::OBJECTFIELD_DESCRIPTION,     vert.description);
         pVertexItem->setData(ObjectSceneConstants::OBJECTFIELD_PROPERTY_JSON,   vert.customProperties);
+        pVertexItem->setData(ObjectSceneConstants::OBJECTFIELD_OBJECTTYPE,      OBJECT_TYPE_VERTEX);
 
         addObject(pVertexItem);
     }
@@ -141,6 +150,7 @@ void GraphViewBase::updateGraph()
         pConnection->setZValue(conversionConfig.connectionLineLayer);
 
         pConnection->setData(ObjectSceneConstants::OBJECTFIELD_NAME, con.name);
+        pConnection->setData(ObjectSceneConstants::OBJECTFIELD_OBJECTTYPE,      OBJECT_TYPE_CONNECTION);
         addObject(pConnection);
     }
 }

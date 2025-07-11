@@ -26,26 +26,14 @@ ObjectView::~ObjectView()
     delete ui;
 }
 
-void ObjectView::setIdGenerator(const std::function<uint ()> fGen)
-{
-    m_pScene->setIdGenerator(fGen);
-}
-
-std::function<uint ()> ObjectView::getIdGenerator() const
-{
-    return m_pScene->getIdGenerator();
-}
-
-void ObjectView::resizeScene(const QSize &iSize)
-{
-    m_pScene->resizeScene(iSize);
-}
-
 void ObjectView::init()
 {
     m_pScene = new ObjectsInternalScene(this);
     m_pScene->init();
     setScene(m_pScene);
+
+    m_pScene->resizeScene(QSize(10000, 10000));
+    scale(0.5, 0.5);
 }
 
 bool ObjectView::isInited() const
@@ -63,12 +51,12 @@ QGraphicsItem *ObjectView::getContextMenuItem()
     return m_contextMenuItem;
 }
 
-uint ObjectView::addObject(QGraphicsItem *pItem)
+ObjectSceneConstants::objectId_t ObjectView::addObject(QGraphicsItem *pItem)
 {
     return m_pScene->addObject(pItem);
 }
 
-QList<uint> ObjectView::getAlObjectIds() const
+QList<ObjectSceneConstants::objectId_t> ObjectView::getAlObjectIds() const
 {
     return m_pScene->getAlObjectIds();
 }
@@ -78,14 +66,14 @@ void ObjectView::removeAllObjects()
     m_pScene->clearScene();
 }
 
-void ObjectView::removeObject(uint itemId)
+void ObjectView::removeObject(ObjectSceneConstants::objectId_t itemId)
 {
     return m_pScene->removeObject(itemId);
 }
 
 QGraphicsItem *ObjectView::getGrabObject() const
 {
-    if (m_grabObjectId.has_value()) {
+    if (!m_grabObjectId.has_value()) {
         return nullptr;
     }
     return m_pScene->getObject(m_grabObjectId.value());
@@ -93,7 +81,12 @@ QGraphicsItem *ObjectView::getGrabObject() const
 
 void ObjectView::setGrabObject(QGraphicsItem *pItem)
 {
+    if (nullptr == pItem) {
+        m_grabObjectId = std::nullopt;
+        return;
+    }
     m_grabObjectId = pItem->data(ObjectSceneConstants::ObjectField::OBJECTFIELD_ID).toUInt();
+    m_grabObjectPos = pItem->pos();
 }
 
 void ObjectView::acceptGrabObject()
@@ -103,9 +96,12 @@ void ObjectView::acceptGrabObject()
 
 void ObjectView::rejectGrabObject()
 {
-    if (m_grabObjectId.has_value()) {
-        m_pScene->removeObject(m_grabObjectId.value());
+    if (!m_grabObjectId.has_value()) {
+        throw std::runtime_error("ObjectView::rejectGrabObject Error: can not reject without item grabbed");
     }
+    auto grabObject = getGrabObject();
+    grabObject->setPos(m_grabObjectPos);
+    m_grabObjectId = std::nullopt;
 }
 
 void ObjectView::wheelEvent(QWheelEvent *e)
@@ -124,7 +120,7 @@ void ObjectView::mousePressEvent(QMouseEvent *e)
     if (m_isHoldingLeftButton) {
         auto targetItem = itemAt(e->pos());
         if (!m_pScene->isNullItem(targetItem)) {
-            LOG_DEBUG("Target item id:", targetItem->data(ObjectSceneConstants::OBJECTFIELD_ID));
+            targetItem = m_pScene->getParentOfComplex(targetItem);
             emit pressedOnItem(targetItem);
         }
     }
@@ -142,7 +138,7 @@ void ObjectView::mouseMoveEvent(QMouseEvent *e)
     auto currentPos = mapToScene(e->pos());
     if (m_grabObjectId.has_value()) {
         auto pObject = m_pScene->getObject(m_grabObjectId.value());
-        pObject->setPos(currentPos);
+        pObject->setPos(currentPos - pObject->boundingRect().center());
     }
 
     if (m_isHoldingMiddleButton) {
@@ -157,6 +153,7 @@ void ObjectView::mouseReleaseEvent(QMouseEvent *e)
     if (m_isHoldingLeftButton) {
         auto targetItem = itemAt(e->pos());
         if (!m_pScene->isNullItem(targetItem)) {
+            targetItem = m_pScene->getParentOfComplex(targetItem);
             emit releasedOnItem(targetItem);
             emit clickedOnItem(targetItem);
         }

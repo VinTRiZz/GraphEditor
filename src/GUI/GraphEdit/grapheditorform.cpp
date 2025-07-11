@@ -22,8 +22,6 @@ GraphEditorForm::GraphEditorForm(QWidget *parent) :
     ui->setupUi(this);
 
     ui->graphScene->init();
-    ui->graphScene->resizeScene(QSize(10000, 10000));
-    ui->graphScene->scale(0.5, 0.5);
 
     m_currentGraph = new Graph::GraphExtendedObject(this);
     ui->graphScene->setCurrentGraph(m_currentGraph);
@@ -34,8 +32,6 @@ GraphEditorForm::GraphEditorForm(QWidget *parent) :
     m_currentGraph->setEditTime(QDateTime::currentDateTime());
 
 //    *m_currentGraph = TestGraphGenerator::generateGraph(10);
-
-    m_currentGraph->setIdGenerator(ui->graphScene->getIdGenerator());
 
     Graph::GVertex vert;
     vert.shortName = "Дебич";
@@ -161,7 +157,6 @@ void GraphEditorForm::loadGraph()
         GraphCommon::showError("Ошибка загрузки графа");
         return;
     }
-    m_currentGraph->setIdGenerator(ui->graphScene->getIdGenerator());
 
     updateGraphInfo();
 }

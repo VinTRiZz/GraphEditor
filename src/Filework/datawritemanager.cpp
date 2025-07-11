@@ -13,6 +13,8 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 
+#include "Graph/graphcommon.h"
+
 #include "logging.h"
 
 namespace Filework

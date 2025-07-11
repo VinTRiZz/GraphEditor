@@ -1,7 +1,8 @@
 #ifndef GRAPHVIEWBASE_H
 #define GRAPHVIEWBASE_H
 
-#include "graphextendedobject.h"
+#include "../GraphEdit/graphextendedobject.h"
+#include "graphmodebase.h"
 
 #include "GUI/ObjectScene/objectview.h"
 #include "GUI/CustomWidgets/buttonmatrix.h"
@@ -31,39 +32,37 @@ struct GraphConversionConfiguration : boost::noncopyable
     }
 };
 
-
-class GraphViewBase : public ObjectView
+class GraphSceneBase : public ObjectView
 {
 public:
-
     enum ObjectType : int {
         OBJECT_TYPE_UNKNOWN,
         OBJECT_TYPE_VERTEX,
         OBJECT_TYPE_CONNECTION,
     };
 
-    GraphViewBase(QWidget* parent = nullptr);
-    ~GraphViewBase();
+    GraphSceneBase(QWidget* parent = nullptr);
+    ~GraphSceneBase();
 
     virtual void init();
 
-    virtual void startMode() = 0;
-    virtual bool isModeStarted() const = 0;
-    virtual void stopMode() = 0;
+    void setMode(GraphModeBase* pMode);
 
     /**
      * @brief setCurrentGraph   Задать текущий граф
      * @param pGraph            Указатель на текущий граф
      */
-    void setCurrentGraph(Graph::GraphExtendedObject* pGraph);
+    virtual void setCurrentGraph(Graph::GraphExtendedObject* pGraph);
 
-private:
-    struct Impl;
-    std::unique_ptr<Impl> d;
+    /**
+     * @brief getCurrentGraph   Получить текущий граф
+     * @return                  nullptr если не задан или заданный граф
+     */
+    Graph::GraphExtendedObject* getCurrentGraph() const;
 
 protected:
     Graph::GraphExtendedObject* m_pGraph {nullptr};
-    ButtonMatrix::HeadButton    m_overlayButton;
+    GraphModeBase*              m_pCurrentMode {nullptr};
 
     void updateGraph();
 };

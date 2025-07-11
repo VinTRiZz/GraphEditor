@@ -4,6 +4,8 @@
 #include <QGraphicsItem>
 #include <QGraphicsProxyWidget>
 
+#include <QPen>
+
 #include <QLabel>
 
 namespace PredefinedObjects

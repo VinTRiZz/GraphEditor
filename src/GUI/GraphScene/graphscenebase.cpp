@@ -1,19 +1,14 @@
-#include "graphviewbase.h"
+#include "graphscenebase.h"
+
+#include "GUI/ObjectScene/predefinedobjects.h"
 
 #include "logging.h"
 
 namespace Graph
 {
 
-struct GraphViewBase::Impl
-{
-
-};
-
-
-GraphViewBase::GraphViewBase(QWidget *parent) :
-    ObjectView(parent),
-    d {std::make_unique<Impl>(Impl())}
+GraphSceneBase::GraphSceneBase(QWidget *parent) :
+    ObjectView(parent)
 {
     connect(this, &ObjectView::clickedOnItem,
             this, [this](QGraphicsItem* pItem) {
@@ -32,25 +27,36 @@ GraphViewBase::GraphViewBase(QWidget *parent) :
     });
 }
 
-GraphViewBase::~GraphViewBase()
+GraphSceneBase::~GraphSceneBase()
 {
 
 }
 
-void GraphViewBase::init()
+void GraphSceneBase::init()
 {
     if (!isInited()) {
         ObjectView::init();
     }
 }
 
-void GraphViewBase::setCurrentGraph(Graph::GraphExtendedObject* pGraph)
+void GraphSceneBase::setMode(GraphModeBase *pMode)
+{
+    m_pCurrentMode = pMode;
+    pMode->setGraphScene(this);
+}
+
+void GraphSceneBase::setCurrentGraph(Graph::GraphExtendedObject* pGraph)
 {
     m_pGraph = pGraph;
     updateGraph();
 }
 
-void GraphViewBase::updateGraph()
+GraphExtendedObject *GraphSceneBase::getCurrentGraph() const
+{
+    return m_pGraph;
+}
+
+void GraphSceneBase::updateGraph()
 {
     if (!m_pGraph) {
         return;

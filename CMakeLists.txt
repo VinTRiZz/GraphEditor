@@ -86,10 +86,11 @@ target_sources(${PROJECT_NAME} PRIVATE ${RCC_SOURCES})
 target_sources(${PROJECT_NAME} PRIVATE ${HEADERS} ${SOURCES} ${UIFILES})
 
 # Precompiled headers (for future)
-file(GLOB PRECOMPILED_HEADERS ${PRECOMPILED_HEADERS} "src/Graph/*.h")
-file(GLOB PRECOMPILED_HEADERS ${PRECOMPILED_HEADERS} "src/GUI/ObjectScene/*.h")
-file(GLOB PRECOMPILED_HEADERS ${PRECOMPILED_HEADERS} "src/GUI/ObjectScene/PredefinedObjects/*.h")
-target_precompile_headers(${PROJECT_NAME} PRIVATE ${PRECOMPILED_HEADERS})
+#file(GLOB PRECOMPILED_HEADERS ${PRECOMPILED_HEADERS} "src/Graph/*.h")
+#file(GLOB PRECOMPILED_HEADERS ${PRECOMPILED_HEADERS} "src/GUI/CustomWidgets/*.h")
+#file(GLOB PRECOMPILED_HEADERS ${PRECOMPILED_HEADERS} "src/GUI/ObjectScene/*.h")
+#file(GLOB PRECOMPILED_HEADERS ${PRECOMPILED_HEADERS} "src/GUI/ObjectScene/PredefinedObjects/*.h")
+#target_precompile_headers(${PROJECT_NAME} PRIVATE ${PRECOMPILED_HEADERS})
 
 
 # Runtime linking of target

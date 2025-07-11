@@ -50,6 +50,13 @@ public:
     bool updateVertex(const GVertex& iVert);
 
     /**
+     * @brief getVertex Получить вершину по её ID
+     * @param vertexId  ID вершины
+     * @return          std::nullopt если вершины с таким ID нет
+     */
+    std::optional<GVertex> getVertex(uint vertexId) const;
+
+    /**
      * @brief getAllVertices Получить все вершины графа
      * @return вектор вершин графа
      */
@@ -79,6 +86,14 @@ public:
      * @return Вектор входящих соединений
      */
     std::vector<GConnection> getConnectionsToVertex(uint vertexId) const;
+
+    /**
+     * @brief getConnection Получить соединение по ID вершин, от и к которой оно идёт
+     * @param vertexFromId  Вершина от которой исходит соединение
+     * @param vertexToId    Вершина к которой исходит соединение
+     * @return              std::nullopt если такого соединения нет
+     */
+    std::optional<GConnection> getConnection(uint vertexFromId, uint vertexToId) const;
 
     /**
      * @brief getAllConnections Получить все рёбра в графе

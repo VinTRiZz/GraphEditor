@@ -31,9 +31,6 @@ void ObjectView::init()
     m_pScene = new ObjectsInternalScene(this);
     m_pScene->init();
     setScene(m_pScene);
-
-    m_pScene->resizeScene(QSize(10000, 10000));
-    scale(0.5, 0.5);
 }
 
 bool ObjectView::isInited() const
@@ -64,6 +61,10 @@ QList<ObjectSceneConstants::objectId_t> ObjectView::getAlObjectIds() const
 void ObjectView::removeAllObjects()
 {
     m_pScene->clearScene();
+
+    // TODO: Убрать когда появится динамическое поле
+    m_pScene->resizeScene(QSize(10000, 10000));
+    scale(0.5, 0.5);
 }
 
 void ObjectView::removeObject(ObjectSceneConstants::objectId_t itemId)

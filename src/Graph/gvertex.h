@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QPixmap>
+#include <QJsonObject>
 
 namespace Graph
 {

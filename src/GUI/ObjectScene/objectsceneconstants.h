@@ -4,7 +4,7 @@
 namespace ObjectSceneConstants
 {
 
-using objectId_t = uint;
+using objectId_t = unsigned;
 
 /**
  * @brief The ObjectField enum Определяет, какие данные могут быть в объекте

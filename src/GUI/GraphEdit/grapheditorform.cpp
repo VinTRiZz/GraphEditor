@@ -334,7 +334,13 @@ void GraphEditorForm::setupWidget()
     buttonInfo.icon = QIcon("://DATA/images/icons/mode_none.png");
     buttonInfo.tooltip = "Сменить режим работы";
     buttonInfo.action = [this](QPushButton* pButton) {
+
     };
+
+    // После переключения из режима view нужен редактор
+    connect(ui->graphScene, &Graph::GraphEditView::startedNoneMode,
+            m_pButtonMatrixHead, &ButtonMatrix::HeadButton::show);
+
     m_pButtonMatrixHead->addButton(buttonInfo);
 }
 

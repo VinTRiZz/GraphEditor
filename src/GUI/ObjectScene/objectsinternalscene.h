@@ -19,7 +19,9 @@ public:
     ~ObjectsInternalScene();
 
     // TODO: Удалить после динамического ресайза
+    [[deprecated("Необходимо написать динамический ресайз сцены")]]
     void resizeScene(const QSize& iSize);
+
     QGraphicsItem* getParentOfComplex(QGraphicsItem* pItem);
     bool isNullItem(QGraphicsItem* pItem) const;
 

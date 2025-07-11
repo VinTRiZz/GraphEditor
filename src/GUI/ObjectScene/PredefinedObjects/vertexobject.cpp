@@ -4,6 +4,8 @@
 
 #include <QGraphicsSceneMouseEvent>
 
+#include <QTextOption>
+
 #include "logging.h"
 
 

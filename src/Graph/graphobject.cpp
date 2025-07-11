@@ -95,6 +95,17 @@ bool GraphObject::updateVertex(const GVertex &iVert)
     return true;
 }
 
+std::optional<GVertex> GraphObject::getVertex(uint vertexId) const
+{
+    auto targetVertex = std::find_if(m_vertices.begin(), m_vertices.end(), [&](const auto& vert){
+        return (vert.id == vertexId);
+    });
+    if (targetVertex == m_vertices.end()) {
+        return std::nullopt;
+    }
+    return *targetVertex;
+}
+
 std::vector<GVertex> GraphObject::getAllVertices() const
 {
     return m_vertices;
@@ -145,6 +156,25 @@ std::vector<GConnection> GraphObject::getConnectionsToVertex(uint vertexId) cons
         res.push_back(con->second);
     }
     return res;
+}
+
+std::optional<GConnection> GraphObject::getConnection(uint vertexFromId, uint vertexToId) const
+{
+    auto targetConRange = m_connections.equal_range(vertexFromId);
+
+    // Not found
+    if (targetConRange.first == targetConRange.second) {
+        return std::nullopt;
+    }
+
+    while (targetConRange.first != targetConRange.second) {
+
+        if (targetConRange.first->second.idTo == vertexToId) {
+            return targetConRange.first->second;
+        }
+        targetConRange.first++;
+    }
+    return std::nullopt;
 }
 
 std::vector<GConnection> GraphObject::getAllConnections() const

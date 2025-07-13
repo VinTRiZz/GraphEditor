@@ -10,21 +10,7 @@ namespace Graph
 GraphSceneBase::GraphSceneBase(QWidget *parent) :
     ObjectView(parent)
 {
-    connect(this, &ObjectView::clickedOnItem,
-            this, [this](QGraphicsItem* pItem) {
 
-        // Нельзя выбирать соединения (пока что!)
-        if (pItem->data(ObjectSceneConstants::OBJECTFIELD_OBJECTTYPE).toInt() == OBJECT_TYPE_CONNECTION) {
-            return;
-        }
-
-        if (nullptr != getGrabObject()) {
-            rejectGrabObject();
-            return;
-        }
-
-        setGrabObject(pItem);
-    });
 }
 
 GraphSceneBase::~GraphSceneBase()
@@ -41,8 +27,18 @@ void GraphSceneBase::init()
 
 void GraphSceneBase::setMode(GraphModeBase *pMode)
 {
+    if (nullptr != m_pCurrentMode) {
+        disconnect(m_pCurrentMode, nullptr, this, nullptr);
+        disconnect(this, nullptr, m_pCurrentMode, nullptr);
+    }
+
     m_pCurrentMode = pMode;
     pMode->setGraphScene(this);
+
+    connect(this, &ObjectView::pressedOnItem,
+            m_pCurrentMode, &GraphModeBase::processPress);
+    connect(this, &ObjectView::releasedOnItem,
+            m_pCurrentMode, &GraphModeBase::processRelease);
 }
 
 void GraphSceneBase::setCurrentGraph(Graph::GraphExtendedObject* pGraph)

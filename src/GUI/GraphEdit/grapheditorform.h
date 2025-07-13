@@ -19,7 +19,6 @@ class GraphEditorForm : public QWidget
     Q_OBJECT
 
 public:
-
     /**
      * @brief GraphEditorForm
      * @param parent
@@ -32,26 +31,11 @@ public:
      */
     void startValidanceTest();
 
-    /**
-     * @brief getCurrentGraph Получить текущий граф
-     * @return Указатель на текущий граф (объект графа существует вместе с формой)
-     */
-    Graph::GraphExtendedObject* getCurrentGraph();
-
-    /**
-     * @brief getOverlayButton Получить указатель на оверлей-кнопку
-     * @return Указатель на кнопку
-     */
-    ButtonMatrix::HeadButton* getOverlayButton();
-
 private:
     Ui::GraphEditorForm *ui;
 
     Graph::GraphExtendedObject* m_currentGraph;         //! Текущий граф
     QString                     m_currentGraphFilePath; //! Путь для сохранения графа в файл
-
-    QStandardItemModel* m_pCommonGraphInfoModel     {nullptr};  //! Модель с общими данными по графу
-    QStandardItemModel* m_pUserGraphInfoModel       {nullptr};  //! Модель с пользовательскими данными по графу
 
     ButtonMatrix::HeadButton*  m_pButtonMatrixHead     {nullptr};  //! Кнопка-оверлей
 
@@ -77,19 +61,9 @@ private:
     void setupSignals();
 
     /**
-     * @brief setupModels Настройка моделей отображения свойств графа
-     */
-    void setupModels();
-
-    /**
      * @brief setupWidget Настройка виджетов формы
      */
     void setupWidget();
-
-    /**
-     * @brief updateGraphInfo Обновление информации о графе
-     */
-    void updateGraphInfo();
 };
 
 #endif // GRAPHEDITORFORM_H

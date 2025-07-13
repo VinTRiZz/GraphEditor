@@ -50,7 +50,7 @@ void ObjectsInternalScene::init()
     nullRect.setWidth(500);
     nullRect.setHeight(500);
     pNullRectItem->setRect(nullRect);
-    pNullRectItem->setBrush(Qt::lightGray);
+    pNullRectItem->setBrush(QColor(210, 215, 210));
     pNullRectItem->setPen(QPen(Qt::red, 2));
     pNullRectItem->setZValue(0);
 

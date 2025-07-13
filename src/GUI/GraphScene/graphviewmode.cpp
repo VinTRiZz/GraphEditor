@@ -22,19 +22,29 @@ void GraphViewMode::start()
 {
     // TODO: Setup button matrix
 
-    m_isModeStarted = true;
-}
-
-bool GraphViewMode::isRunning() const
-{
-    return m_isModeStarted;
+    setStarted();
 }
 
 void GraphViewMode::stop()
 {
     // TODO: Reset button matrix
 
-    m_isModeStarted = false;
+    setStopped();
+}
+
+void GraphViewMode::processPress(QGraphicsItem *pItem)
+{
+    
+}
+
+void GraphViewMode::processMove(QGraphicsItem *pItem, const QPointF &currentPos)
+{
+    
+}
+
+void GraphViewMode::processRelease(QGraphicsItem *pItem)
+{
+    
 }
 
 GraphViewMode::SearchProxy GraphViewMode::toSearchCache(const GVertex &vert) const
@@ -49,9 +59,9 @@ GraphViewMode::SearchProxy GraphViewMode::toSearchCache(const GConnection &con) 
 
 void GraphViewMode::registerGraph()
 {
-    connect(m_pScene->getCurrentGraph(), &GraphExtendedObject::vertexAdded,
+    connect(getScene()->getCurrentGraph(), &GraphExtendedObject::vertexAdded,
             this, [this](ObjectSceneConstants::objectId_t addedId) {
-        auto addedVertex = m_pScene->getCurrentGraph()->getVertex(addedId);
+        auto addedVertex = getScene()->getCurrentGraph()->getVertex(addedId);
         if (!addedVertex.has_value()) {
             LOG_WARNING_SYNC("Error occured: getVertex() returned no value, but vertex added");
             return;

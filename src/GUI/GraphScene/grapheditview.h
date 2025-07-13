@@ -19,10 +19,12 @@ public:
 
     void setCurrentGraph(Graph::GraphExtendedObject* pGraph) override;
 
+    void startViewMode();
+    void startEditMode();
+
 signals:
-    void startedNoneMode();
-    void startedViewMode();
-    void startedEditMode();
+    void startedView();
+    void startedEdit();
 
 private:
     GraphViewMode m_viewMode;

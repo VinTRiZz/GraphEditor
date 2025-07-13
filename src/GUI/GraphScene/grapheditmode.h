@@ -15,15 +15,15 @@ public:
     void init() override;
 
     void start() override;
-    bool isRunning() const override;
     void stop() override;
+
+    void processPress(QGraphicsItem* pItem) override;
+    void processMove(QGraphicsItem* pItem, const QPointF& currentPos) override;
+    void processRelease(QGraphicsItem* pItem) override;
 
 signals:
     void enabledEdit();
     void disabledEdit();
-
-private:
-    bool m_isModeStarted {false};
 };
 
 }

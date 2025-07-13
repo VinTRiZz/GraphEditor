@@ -19,12 +19,13 @@ public:
     void init() override;
 
     void start() override;
-    bool isRunning() const override;
     void stop() override;
 
-private:
-    bool m_isModeStarted {false};
+    void processPress(QGraphicsItem* pItem) override;
+    void processMove(QGraphicsItem* pItem, const QPointF& currentPos) override;
+    void processRelease(QGraphicsItem* pItem) override;
 
+private:
     struct SearchProxy
     {
         QStringView name;

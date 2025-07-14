@@ -286,6 +286,7 @@ void HeadButton::setupButton(QPushButton *pButton, const ButtonConfig &buttonInf
     pButton->setIcon(buttonInfo.icon);
     pButton->setFixedSize(m_fixedSize);
     pButton->setHidden(!m_isButtonsExpanded);
+    pButton->setEnabled(buttonInfo.isEnabled);
 
     if (!buttonInfo.action) {
         return;

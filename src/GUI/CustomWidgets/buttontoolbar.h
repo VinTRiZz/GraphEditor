@@ -18,6 +18,7 @@ struct ButtonConfig
     QString     tooltip;    //! Описание кнопки в tooltip
     QString     styleSheet; //! QSS стиль кнопки
     QIcon       icon;       //! Иконка кнопки
+    bool        isEnabled   {true}; //! Изначальное состояние
 
     std::function<void(QPushButton*)> action;   //! Действие кнопки. Аргумент -- указатель на нажатую кнопку
 };
@@ -33,6 +34,7 @@ public:
 
     void addButton(const ButtonConfig& conf);
     void updateButton(const ButtonConfig& conf);
+    void setButtonEnabled(unsigned buttonPos, bool isButtonEnabled);
     void removeButton(unsigned buttonPos);
 
     void setButtonSize(const QSize& iSize);
@@ -50,6 +52,8 @@ private:
 
     bool m_isVertical {false};
     QSize m_buttonsSize {50, 50};
+
+    void resizeEvent(QResizeEvent* e) override;
 };
 
 }

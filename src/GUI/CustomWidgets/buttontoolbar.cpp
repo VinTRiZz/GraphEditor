@@ -63,6 +63,19 @@ void HeadWidget::updateButton(const ButtonConfig &conf)
     updateLayout();
 }
 
+void HeadWidget::setButtonEnabled(unsigned int buttonPos, bool isButtonEnabled)
+{
+    if (buttonPos >= m_buttons.size()) {
+        return;
+    }
+    auto targetIt = m_buttons.begin();
+    std::advance(targetIt, buttonPos);
+    if (targetIt == m_buttons.end()) {
+        return;
+    }
+    targetIt->pButton->setEnabled(isButtonEnabled);
+}
+
 void HeadWidget::removeButton(unsigned int buttonPos)
 {
     if (buttonPos >= m_buttons.size()) {
@@ -91,13 +104,23 @@ void HeadWidget::updateLayout()
         setLayout(new QHBoxLayout);
     }
 
+    auto pItem = layout()->takeAt(0);
+    while (pItem != nullptr) {
+        delete pItem;
+        pItem = layout()->takeAt(0);
+    }
+
     for (auto& buttonConf : m_buttons) {
         if (nullptr == buttonConf.pButton) {
             buttonConf.pButton = new QPushButton(this);
+            setupButton(buttonConf.pButton, buttonConf.config);
         }
-        setupButton(buttonConf.pButton, buttonConf.config);
+        buttonConf.pButton->setEnabled(buttonConf.config.isEnabled);
         layout()->addWidget(buttonConf.pButton);
     }
+    auto horPolicy = !m_isVertical ? QSizePolicy::Expanding : QSizePolicy::Preferred;
+    auto vertPolicy = m_isVertical ? QSizePolicy::Expanding : QSizePolicy::Preferred;
+    layout()->addItem(new QSpacerItem(m_buttonsSize.width(), m_buttonsSize.height(), horPolicy, vertPolicy));
 }
 
 void HeadWidget::setupButton(QPushButton *pButton, const ButtonConfig &buttonInfo)
@@ -107,6 +130,7 @@ void HeadWidget::setupButton(QPushButton *pButton, const ButtonConfig &buttonInf
     pButton->setToolTip(buttonInfo.tooltip);
     pButton->setIcon(buttonInfo.icon);
     pButton->setFixedSize(m_buttonsSize);
+    pButton->setEnabled(buttonInfo.isEnabled);
 
     if (!buttonInfo.action) {
         return;
@@ -116,6 +140,17 @@ void HeadWidget::setupButton(QPushButton *pButton, const ButtonConfig &buttonInf
             pButton, [buttonInfo, pButton]() {
         buttonInfo.action(pButton);
     });
+}
+
+void HeadWidget::resizeEvent(QResizeEvent *e)
+{
+    if (size() != m_buttonsSize) {
+        for (auto& buttonInfo : m_buttons) {
+            buttonInfo.pButton->setFixedSize(m_buttonsSize);
+            buttonInfo.pButton->setIconSize(m_buttonsSize.scaled(m_buttonsSize.width() * 0.6, m_buttonsSize.height() * 0.6, Qt::AspectRatioMode::KeepAspectRatio));
+        }
+    }
+    QWidget::resizeEvent(e);
 }
 
 }

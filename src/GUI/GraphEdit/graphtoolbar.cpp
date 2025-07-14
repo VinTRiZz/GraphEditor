@@ -1,0 +1,95 @@
+#include "graphtoolbar.h"
+
+#include <QFileDialog>
+
+GraphToolbar::GraphToolbar(QWidget* parent) :
+    ButtonToolbar::HeadWidget(parent)
+{
+    init();
+}
+
+void GraphToolbar::init()
+{
+    setButtonSize(QSize(35, 35));
+
+    ButtonToolbar::ButtonConfig buttonInfo;
+
+    buttonInfo.icon = QIcon("://DATA/images/icons/edit.png");
+    buttonInfo.tooltip = "Показать свойства графа";
+    buttonInfo.action = [this](QPushButton* pSender) {
+        const auto propertyIsHiddenName {"isPropertiesHidden"};
+
+        if (pSender->property(propertyIsHiddenName).toBool()) {
+            pSender->setToolTip("Показать свойства графа");
+            emit hideProperties();
+            pSender->setProperty(propertyIsHiddenName, false);
+            return;
+        }
+        pSender->setToolTip("Скрыть свойства графа");
+        emit showProperties();
+        pSender->setProperty(propertyIsHiddenName, true);
+    };
+    addButton(buttonInfo);
+
+
+    buttonInfo.buttonPos++;
+    buttonInfo.icon = QIcon("://DATA/images/icons/cancel_changes.png");
+    buttonInfo.tooltip = "Отменить изменения";
+    buttonInfo.action = [this](QPushButton*) {
+        emit loadGraph({});
+    };
+    buttonInfo.isEnabled = false;
+    addButton(buttonInfo);
+    buttonInfo.isEnabled = true;
+
+
+    auto cancelChangesPos = buttonInfo.buttonPos;
+    buttonInfo.icon = QIcon("://DATA/images/icons/save.png");
+    buttonInfo.tooltip = "Сохранить";
+    buttonInfo.buttonPos++;
+    buttonInfo.action = [this, cancelChangesPos](QPushButton*) mutable {
+        emit saveGraph({});
+        setButtonEnabled(cancelChangesPos, true);
+    };
+    buttonInfo.isEnabled = false;
+    addButton(buttonInfo);
+    buttonInfo.isEnabled = true;
+
+
+    auto saveChangesChangesPos = buttonInfo.buttonPos;
+    buttonInfo.buttonPos++;
+    buttonInfo.icon = QIcon("://DATA/images/icons/open_graph.png");
+    buttonInfo.tooltip = "Открыть файл графа";
+    buttonInfo.action = [this, saveChangesChangesPos](QPushButton* pButton) {
+        auto graphPath = QFileDialog::getOpenFileName(this, "Файл сохранённого графа", QDir::homePath(), "Файл графа (*.gse)");
+        if (graphPath.isEmpty()) {
+            return;
+        }
+        loadGraph(graphPath);
+        setButtonEnabled(saveChangesChangesPos, true);
+    };
+    addButton(buttonInfo);
+
+
+    buttonInfo.buttonPos++;
+    buttonInfo.icon = QIcon("://DATA/images/icons/save_as.png");
+    buttonInfo.tooltip = "Сохранить как...";
+    buttonInfo.action = [this, saveChangesChangesPos](QPushButton* pButton) {
+        auto graphPath = QFileDialog::getSaveFileName(this, "Файл для сохранения графа", QDir::homePath(), "Файл графа (*.gse)");
+        if (graphPath.isEmpty()) {
+            return;
+        }
+        emit saveGraph(graphPath);
+        setButtonEnabled(saveChangesChangesPos, true);
+    };
+    addButton(buttonInfo);
+
+    buttonInfo.buttonPos++;
+    buttonInfo.icon = QIcon("://DATA/images/icons/mode_none.png");
+    buttonInfo.tooltip = "Сменить режим работы";
+    buttonInfo.action = [this](QPushButton* pButton) {
+
+    };
+
+    addButton(buttonInfo);
+}

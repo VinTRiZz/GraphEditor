@@ -17,6 +17,8 @@ public:
     explicit GraphExtendedObject(QObject* parent = nullptr);
     ~GraphExtendedObject();
 
+    GraphExtendedObject& operator =(const GraphObject& obj);
+
     // Все методы ниже аналогичны методам GraphObject, но они сигналят
     uint addVertex(const GVertex& iVert);
     bool updateVertex(const GVertex& iVert);

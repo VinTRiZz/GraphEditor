@@ -13,15 +13,17 @@ namespace ButtonMatrix
  */
 struct ButtonConfig
 {
-    uint            buttonId {};
+    uint    buttonId {};
 
-    int             positionX {};   //! Координата X в матрице кнопки
-    int             positionY {};   //! Координата Y в матрице кнопки
+    int     positionX {};   //! Координата X в матрице кнопки
+    int     positionY {};   //! Координата Y в матрице кнопки
 
-    QString         name;       //! Отображаемое название
-    QString         tooltip;    //! Описание кнопки в tooltip
-    QString         styleSheet; //! QSS стиль кнопки
-    QIcon           icon;       //! Иконка кнопки
+    QString name;       //! Отображаемое название
+    QString tooltip;    //! Описание кнопки в tooltip
+    QString styleSheet; //! QSS стиль кнопки
+    QIcon   icon;       //! Иконка кнопки
+
+    bool    isEnabled   {true}; //! Изначальное состояние
 
     std::function<void(QPushButton*)> action;   //! Действие кнопки. Аргумент -- указатель на нажатую кнопку
 };

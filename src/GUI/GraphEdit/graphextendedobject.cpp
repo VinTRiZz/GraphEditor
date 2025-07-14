@@ -14,6 +14,12 @@ GraphExtendedObject::~GraphExtendedObject()
 
 }
 
+GraphExtendedObject &GraphExtendedObject::operator =(const GraphObject &obj)
+{
+    GraphObject::operator=(obj);
+    return *this;
+}
+
 uint GraphExtendedObject::addVertex(const GVertex &iVert)
 {
     auto id = GraphObject::addVertex(iVert);

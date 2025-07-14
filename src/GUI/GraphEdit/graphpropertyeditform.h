@@ -28,10 +28,29 @@ public:
 
     void setCurrentGraph(Graph::GraphExtendedObject* pGraph);
 
+public slots:
+    void showAnimated();
+    void hideAnimated();
+
+    /**
+     * @brief updateEditTime Должно вызываться после любых изменений свойств графа
+     */
+    void updateEditTime();
+
 private:
     Ui::GraphPropertyEditForm *ui;
 
+    unsigned m_showWidth {400}; //! Значение ширины, которой будет окно после появления. Нужно для анимаций
+
     Graph::GraphExtendedObject* m_currentGraph; //! Текущий граф
+
+    enum GraphCommonPropertyRows : int
+    {
+        NAMEROW = 0,
+        DESCRIPTIONROW,
+        CREATEDROW,
+        EDITEDROW,
+    };
 
     QStandardItemModel* m_pCommonGraphInfoModel     {nullptr};  //! Модель с общими данными по графу
     QStandardItemModel* m_pUserGraphInfoModel       {nullptr};  //! Модель с пользовательскими данными по графу
@@ -50,6 +69,7 @@ private:
      * @brief setupWidget Настройка виджетов формы
      */
     void setupWidget();
+
 };
 
 }

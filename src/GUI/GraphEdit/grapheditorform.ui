@@ -16,33 +16,40 @@
   <property name="styleSheet">
    <string notr="true"/>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout_2">
+  <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <widget class="QGroupBox" name="graphScene_groupBox">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-       <horstretch>5</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="title">
-      <string>Отображение графа</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-     <property name="flat">
-      <bool>true</bool>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="Graph::GraphEditView" name="graphScene" native="true"/>
-      </item>
-     </layout>
-    </widget>
+    <widget class="GraphToolbar" name="buttonToolbar" native="true"/>
    </item>
    <item>
-    <widget class="Graph::GraphPropertyEditForm" name="propertyEditForm" native="true"/>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QGroupBox" name="graphScene_groupBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>5</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="title">
+        <string>Отображение графа</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="Graph::GraphEditView" name="graphScene" native="true"/>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="Graph::GraphPropertyEditForm" name="propertyEditForm" native="true"/>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -57,6 +64,12 @@
    <class>Graph::GraphPropertyEditForm</class>
    <extends>QWidget</extends>
    <header>GUI/GraphEdit/graphpropertyeditform.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GraphToolbar</class>
+   <extends>QWidget</extends>
+   <header>GUI/GraphEdit/graphtoolbar.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

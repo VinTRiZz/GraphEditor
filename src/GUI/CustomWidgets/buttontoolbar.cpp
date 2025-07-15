@@ -147,7 +147,7 @@ void HeadWidget::resizeEvent(QResizeEvent *e)
     if (size() != m_buttonsSize) {
         for (auto& buttonInfo : m_buttons) {
             buttonInfo.pButton->setFixedSize(m_buttonsSize);
-            buttonInfo.pButton->setIconSize(m_buttonsSize.scaled(m_buttonsSize.width() * 0.6, m_buttonsSize.height() * 0.6, Qt::AspectRatioMode::KeepAspectRatio));
+            buttonInfo.pButton->setIconSize(m_buttonsSize.scaled(m_buttonsSize.width() * 0.85, m_buttonsSize.height() * 0.85, Qt::AspectRatioMode::KeepAspectRatio));
         }
     }
     QWidget::resizeEvent(e);

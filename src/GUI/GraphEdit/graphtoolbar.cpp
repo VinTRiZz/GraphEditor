@@ -14,7 +14,7 @@ void GraphToolbar::init()
 
     ButtonToolbar::ButtonConfig buttonInfo;
 
-    buttonInfo.icon = QIcon("://DATA/images/icons/edit.png");
+    buttonInfo.icon = QIcon("://DATA/images/icons/edit_properties.svg");
     buttonInfo.tooltip = "Показать свойства графа";
     buttonInfo.action = [this](QPushButton* pSender) {
         const auto propertyIsHiddenName {"isPropertiesHidden"};
@@ -33,7 +33,7 @@ void GraphToolbar::init()
 
 
     buttonInfo.buttonPos++;
-    buttonInfo.icon = QIcon("://DATA/images/icons/cancel_changes.png");
+    buttonInfo.icon = QIcon("://DATA/images/icons/graph_cancel_changes.svg");
     buttonInfo.tooltip = "Отменить изменения";
     buttonInfo.action = [this](QPushButton*) {
         emit loadGraph({});
@@ -44,7 +44,7 @@ void GraphToolbar::init()
 
 
     auto cancelChangesPos = buttonInfo.buttonPos;
-    buttonInfo.icon = QIcon("://DATA/images/icons/save.png");
+    buttonInfo.icon = QIcon("://DATA/images/icons/graph_save.svg");
     buttonInfo.tooltip = "Сохранить";
     buttonInfo.buttonPos++;
     buttonInfo.action = [this, cancelChangesPos](QPushButton*) mutable {
@@ -58,7 +58,7 @@ void GraphToolbar::init()
 
     auto saveChangesChangesPos = buttonInfo.buttonPos;
     buttonInfo.buttonPos++;
-    buttonInfo.icon = QIcon("://DATA/images/icons/open_graph.png");
+    buttonInfo.icon = QIcon("://DATA/images/icons/graph_open.svg");
     buttonInfo.tooltip = "Открыть файл графа";
     buttonInfo.action = [this, saveChangesChangesPos](QPushButton* pButton) {
         auto graphPath = QFileDialog::getOpenFileName(this, "Файл сохранённого графа", QDir::homePath(), "Файл графа (*.gse)");
@@ -72,7 +72,7 @@ void GraphToolbar::init()
 
 
     buttonInfo.buttonPos++;
-    buttonInfo.icon = QIcon("://DATA/images/icons/save_as.png");
+    buttonInfo.icon = QIcon("://DATA/images/icons/graph_save_as.svg");
     buttonInfo.tooltip = "Сохранить как...";
     buttonInfo.action = [this, saveChangesChangesPos](QPushButton* pButton) {
         auto graphPath = QFileDialog::getSaveFileName(this, "Файл для сохранения графа", QDir::homePath(), "Файл графа (*.gse)");
@@ -84,12 +84,12 @@ void GraphToolbar::init()
     };
     addButton(buttonInfo);
 
-    buttonInfo.buttonPos++;
-    buttonInfo.icon = QIcon("://DATA/images/icons/mode_none.png");
-    buttonInfo.tooltip = "Сменить режим работы";
-    buttonInfo.action = [this](QPushButton* pButton) {
+//    buttonInfo.buttonPos++;
+//    buttonInfo.icon = QIcon("://DATA/images/icons/mode_none.svg");
+//    buttonInfo.tooltip = "Сменить режим работы";
+//    buttonInfo.action = [this](QPushButton* pButton) {
 
-    };
+//    };
 
-    addButton(buttonInfo);
+//    addButton(buttonInfo);
 }

@@ -38,14 +38,12 @@ signals:
 private:
     bool m_isModeStarted {false};
     GraphSceneBase* m_pScene {nullptr};
-    ButtonMatrix::HeadButton* m_buttonMatrixHead {nullptr};
 
 protected:
     void setStarted();
     void setStopped();
 
     GraphSceneBase* getScene() const;
-    ButtonMatrix::HeadButton* getButtonMatrixHead() const;
 
     std::vector<ButtonMatrix::ButtonConfig> m_modeButtonConfiguration;
 };

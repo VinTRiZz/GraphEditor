@@ -22,14 +22,30 @@ void GraphSceneBase::init()
 {
     if (!isInited()) {
         ObjectView::init();
+
+        m_buttonMatrixHead = new ButtonMatrix::HeadButton(this);
+
+        m_buttonMatrixHead->setButtonsSize(QSize(35, 35));
+        m_buttonMatrixHead->setButtonMatrix(-10, -10, 0, 0);
+        m_buttonMatrixHead->setButtonMargin(10);
+
+        m_buttonMatrixHead->setAnimationSpeed(1.5);
+        m_buttonMatrixHead->setIcons(QIcon("://DATA/images/icons/tools_open.svg"), QIcon("://DATA/images/icons/tools_close.svg"));
+        m_buttonMatrixHead->setButtonPadding(0, 30, 0, 30);
+        m_buttonMatrixHead->collapse(false);
     }
 }
 
 void GraphSceneBase::setMode(GraphModeBase *pMode)
 {
+    if (nullptr == pMode) [[unlikely]] {
+        throw std::invalid_argument("Invalid mode set (nullptr)");
+    }
+
     if (nullptr != m_pCurrentMode) {
         disconnect(m_pCurrentMode, nullptr, this, nullptr);
         disconnect(this, nullptr, m_pCurrentMode, nullptr);
+        m_pCurrentMode->stop();
     }
 
     m_pCurrentMode = pMode;
@@ -39,6 +55,9 @@ void GraphSceneBase::setMode(GraphModeBase *pMode)
             m_pCurrentMode, &GraphModeBase::processPress);
     connect(this, &ObjectView::releasedOnItem,
             m_pCurrentMode, &GraphModeBase::processRelease);
+
+    m_buttonMatrixHead->show();
+    pMode->start();
 }
 
 void GraphSceneBase::setCurrentGraph(Graph::GraphExtendedObject* pGraph)
@@ -52,6 +71,11 @@ GraphExtendedObject *GraphSceneBase::getCurrentGraph() const
     return m_pGraph;
 }
 
+ButtonMatrix::HeadButton *GraphSceneBase::getButtonMatrixHead() const
+{
+    return m_buttonMatrixHead;
+}
+
 void GraphSceneBase::updateGraph()
 {
     if (!m_pGraph) {
@@ -61,7 +85,7 @@ void GraphSceneBase::updateGraph()
     // TODO: Вместо удаления, обновить
     removeAllObjects();
 
-    auto& conversionConfig = GraphConversionConfiguration::getInstance();
+    auto& conversionConfig = GraphSceneConfiguration::getInstance();
 
     const double vertexRadius = 50;
     double labelHeight {0};

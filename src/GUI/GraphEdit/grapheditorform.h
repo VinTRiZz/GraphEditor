@@ -37,8 +37,6 @@ private:
     Graph::GraphExtendedObject* m_currentGraph;         //! Текущий граф
     QString                     m_currentGraphFilePath; //! Путь для сохранения графа в файл
 
-    ButtonMatrix::HeadButton*   m_pButtonMatrixHead  {nullptr};  //! Кнопка-оверлей
-
     /**
      * @brief isGraphPathSet Проверить, задан ли путь для сохранения/загрузки графа. Вызовет диалог и задаст путь, если он пуст или не валидный
      * @return true если путь корректен после ввода пользователем

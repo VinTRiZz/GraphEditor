@@ -15,19 +15,14 @@ namespace Graph
 /**
  * @brief The GraphConversionConfiguration class Структура для настройки конверсий графов
  */
-struct GraphConversionConfiguration : boost::noncopyable
+struct GraphSceneConfiguration : boost::noncopyable
 {
     // Уровни расположения объектов на сцене по их типу
-    uint mainRectLayer       = 1;    //! Уровень главного объекта ("полотна" графа)
-
     uint connectionLineLayer = 10;   //! Уровень линий соединения вершин
+    uint vertexLayer         = 20;   //! Уровень вершин
 
-    uint vertexLayer         = 30;   //! Уровень вершин
-    uint vertexDataRectLayer = 31;   //! Уровень рамки текста названий вершин
-    uint vertexDataLayer     = 32;   //! Уровень текста названий вершин
-
-    static GraphConversionConfiguration& getInstance() {
-        static GraphConversionConfiguration inst;
+    static GraphSceneConfiguration& getInstance() {
+        static GraphSceneConfiguration inst;
         return inst;
     }
 };
@@ -60,9 +55,16 @@ public:
      */
     Graph::GraphExtendedObject* getCurrentGraph() const;
 
+    /**
+     * @brief getButtonMatrixHead   Получить головную кнопку матрицы кнопок
+     * @return                      Указатель
+     */
+    ButtonMatrix::HeadButton* getButtonMatrixHead() const;
+
 protected:
     Graph::GraphExtendedObject* m_pGraph {nullptr};
     GraphModeBase*              m_pCurrentMode {nullptr};
+    ButtonMatrix::HeadButton*   m_buttonMatrixHead {nullptr};
 
     void updateGraph();
 };

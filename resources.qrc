@@ -8,5 +8,7 @@
         <file>DATA/images/icons/graph_save.svg</file>
         <file>DATA/images/vertexicons/person_green.svg</file>
         <file>DATA/images/vertexicons/person_red.svg</file>
+        <file>DATA/images/icons/tools_close.svg</file>
+        <file>DATA/images/icons/tools_open.svg</file>
     </qresource>
 </RCC>

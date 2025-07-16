@@ -1,5 +1,6 @@
 #include "graphmodebase.h"
 
+#include "graphscenebase.h"
 
 namespace Graph
 {
@@ -41,11 +42,6 @@ void GraphModeBase::setStopped()
 GraphSceneBase *GraphModeBase::getScene() const
 {
     return m_pScene;
-}
-
-ButtonMatrix::HeadButton *GraphModeBase::getButtonMatrixHead() const
-{
-    return m_buttonMatrixHead;
 }
 
 }

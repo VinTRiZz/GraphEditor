@@ -113,10 +113,10 @@ public:
     void setButtonMargin(double buttonMargins);
 
     /**
-     * @brief setSize   Задать размеры кнопки (фиксированные)
-     * @param iSize     Размеры
+     * @brief setButtonsSize    Задать размеры кнопки (фиксированные)
+     * @param iSize             Размеры
      */
-    void setSize(const QSize& iSize);
+    void setButtonsSize(const QSize& iSize);
 
     /**
      * @brief getButton Получить кнопку по координатам

@@ -95,8 +95,8 @@ void HeadButton::setButtonPadding(unsigned int left, unsigned int right, unsigne
 
 void HeadButton::setIcons(const QIcon &collapsedIcon, const QIcon &expandedIcon)
 {
-    m_expandedIcon  = collapsedIcon;
-    m_collapsedIcon = expandedIcon;
+    m_expandedIcon  = expandedIcon;
+    m_collapsedIcon = collapsedIcon;
 
     setIcon(m_isButtonsExpanded ? expandedIcon : collapsedIcon);
 }
@@ -114,7 +114,7 @@ void HeadButton::setButtonMargin(double buttonMargins)
     }
 }
 
-void HeadButton::setSize(const QSize &iSize)
+void HeadButton::setButtonsSize(const QSize &iSize)
 {
     m_fixedSize = iSize;
     resize(iSize);
@@ -314,7 +314,7 @@ void HeadButton::resizeEvent(QResizeEvent *e)
 {
     if (size() != m_fixedSize) {
         setFixedSize(m_fixedSize);
-        setIconSize(m_fixedSize.scaled(m_fixedSize.width() * 0.6, m_fixedSize.height() * 0.6, Qt::AspectRatioMode::KeepAspectRatio));
+        setIconSize(m_fixedSize.scaled(m_fixedSize.width() * 0.85, m_fixedSize.height() * 0.85, Qt::AspectRatioMode::KeepAspectRatio));
     }
     QWidget::resizeEvent(e);
 }

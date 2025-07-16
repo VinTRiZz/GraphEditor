@@ -17,7 +17,11 @@ class VertexConnectionLine : public QGraphicsItem
 public:
     explicit VertexConnectionLine(QGraphicsItem *parent = nullptr);
 
+    void setVertexFrom(QGraphicsItem* pVertexFrom);
+    void setVertexTo(QGraphicsItem* pVertexFrom);
+
     void setLine(const QLineF& line);
+    QLineF getLine() const;
 
     void setPositionFrom(const QPointF& posFrom);
     void setPositionTo(const QPointF& posTo);

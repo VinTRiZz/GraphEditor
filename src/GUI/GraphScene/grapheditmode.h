@@ -3,6 +3,8 @@
 
 #include "graphmodebase.h"
 
+#include "GUI/ObjectScene/predefinedobjects.h"
+
 namespace Graph
 {
 
@@ -24,6 +26,29 @@ public:
 signals:
     void enabledEdit();
     void disabledEdit();
+
+private:
+    std::list<ButtonMatrix::ButtonConfig> m_editButtons;
+
+    // Флаги редактирования
+    enum CurrentEditMode {
+        CEM_NONE,
+        CEM_MOVING,
+        CEM_ADD_VERTEX,
+        CEM_ADD_CONNECTION,
+        CEM_EDIT_PROPERTIES,
+        CEM_REMOVING,
+    };
+    CurrentEditMode m_currentEditMode {CurrentEditMode::CEM_NONE};
+
+    void clearMode();
+
+    void toggleMovingItem(QGraphicsItem* pItem);
+    void clearMovingMode();
+
+    PredefinedObjects::VertexConnectionLine* m_pendingConnectionLine {nullptr};
+    bool m_isAddingConnection {false};
+    void setPendingConnection(QGraphicsItem* pVertexItemFrom);
 };
 
 }

@@ -22,6 +22,9 @@ public:
     void startViewMode();
     void startEditMode();
 
+    bool isEditMode() const;
+    bool isViewMode() const;
+
 signals:
     void startedView();
     void startedEdit();

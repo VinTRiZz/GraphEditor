@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="500"
+   height="500"
+   viewBox="0 0 132.29167 132.29167"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="mode_change.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:zoom="1.4734708"
+     inkscape:cx="303.02603"
+     inkscape:cy="261.96651"
+     inkscape:window-width="1920"
+     inkscape:window-height="1007"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2">
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect12358"
+       is_visible="true"
+       lpeversion="1" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect12354"
+       is_visible="true"
+       lpeversion="1" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect1037"
+       is_visible="true"
+       lpeversion="1" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect1033"
+       is_visible="true"
+       lpeversion="1" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect1029"
+       is_visible="true"
+       lpeversion="1" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect971"
+       is_visible="true"
+       lpeversion="1" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect967"
+       is_visible="true"
+       lpeversion="1" />
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient20871">
+      <stop
+         style="stop-color:#2a8d7c;stop-opacity:1;"
+         offset="0"
+         id="stop20867" />
+      <stop
+         style="stop-color:#2a8d7c;stop-opacity:0;"
+         offset="1"
+         id="stop20869" />
+    </linearGradient>
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect17551"
+       is_visible="true"
+       lpeversion="1" />
+    <linearGradient
+       id="linearGradient12835"
+       inkscape:swatch="solid">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop12833" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3055"
+       inkscape:swatch="solid">
+      <stop
+         style="stop-color:#333333;stop-opacity:1;"
+         offset="0"
+         id="stop3053" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient20871"
+       id="linearGradient20873"
+       x1="38.989177"
+       y1="125.86868"
+       x2="58.87061"
+       y2="125.86868"
+       gradientUnits="userSpaceOnUse" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect12354-7"
+       is_visible="true"
+       lpeversion="1" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g1098"
+       transform="translate(3.4117293,-14.544741)">
+      <rect
+         style="fill:#2a8d7c;stroke:#2a8d7c;stroke-width:2.46156;stroke-linecap:round;stroke-linejoin:round"
+         id="rect988"
+         width="65.186699"
+         height="21.732037"
+         x="44.799042"
+         y="27.201698" />
+      <path
+         sodipodi:type="star"
+         style="fill:#2a8d7c;stroke:#2a8d7c;stroke-width:2.64583;stroke-linecap:round;stroke-linejoin:round"
+         id="path1094"
+         inkscape:flatsided="true"
+         sodipodi:sides="3"
+         sodipodi:cx="46.866386"
+         sodipodi:cy="12.210399"
+         sodipodi:r1="21.527554"
+         sodipodi:r2="10.793691"
+         sodipodi:arg1="1.017502"
+         sodipodi:arg2="2.0646995"
+         inkscape:rounded="0"
+         inkscape:randomized="0.039926407"
+         d="M 57.448931,30.707823 24.819396,13.268412 57.492491,-6.7533128 Z"
+         inkscape:transform-center-x="5.2253883"
+         inkscape:transform-center-y="-0.19694461"
+         transform="translate(-14.006047,26.575576)" />
+    </g>
+    <g
+       id="g1098-3"
+       transform="matrix(-1,0,0,1,128.58813,68.647285)">
+      <rect
+         style="fill:#2a8d7c;stroke:#2a8d7c;stroke-width:2.46156;stroke-linecap:round;stroke-linejoin:round"
+         id="rect988-6"
+         width="65.186699"
+         height="21.732037"
+         x="44.799042"
+         y="27.201698" />
+      <path
+         sodipodi:type="star"
+         style="fill:#2a8d7c;stroke:#2a8d7c;stroke-width:2.64583;stroke-linecap:round;stroke-linejoin:round"
+         id="path1094-7"
+         inkscape:flatsided="true"
+         sodipodi:sides="3"
+         sodipodi:cx="46.866386"
+         sodipodi:cy="12.210399"
+         sodipodi:r1="21.527554"
+         sodipodi:r2="10.793691"
+         sodipodi:arg1="1.017502"
+         sodipodi:arg2="2.0646995"
+         inkscape:rounded="0"
+         inkscape:randomized="0.039926407"
+         d="M 57.448931,30.707823 24.819396,13.268412 57.492491,-6.7533128 Z"
+         inkscape:transform-center-x="5.2253883"
+         inkscape:transform-center-y="-0.19694461"
+         transform="translate(-14.006047,26.575576)" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:34.5091px;fill:#2a8d7c;stroke:#2a8d7c;stroke-width:4.04404;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+       x="16.775188"
+       y="65.57782"
+       id="text1200"
+       transform="scale(0.81806806,1.2223922)"><tspan
+         sodipodi:role="line"
+         id="tspan1198"
+         style="fill:none;stroke-width:4.04404;stroke-dasharray:none"
+         x="16.775188"
+         y="65.57782">РЕЖИМ</tspan></text>
+  </g>
+</svg>

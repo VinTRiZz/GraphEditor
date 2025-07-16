@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="500"
+   height="500"
+   viewBox="0 0 132.29167 132.29167"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="mode_edit_remove.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:zoom="1.0419012"
+     inkscape:cx="272.09874"
+     inkscape:cy="286.0156"
+     inkscape:window-width="1920"
+     inkscape:window-height="1007"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2">
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect12358"
+       is_visible="true"
+       lpeversion="1" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect12354"
+       is_visible="true"
+       lpeversion="1" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect1037"
+       is_visible="true"
+       lpeversion="1" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect1033"
+       is_visible="true"
+       lpeversion="1" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect1029"
+       is_visible="true"
+       lpeversion="1" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect971"
+       is_visible="true"
+       lpeversion="1" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect967"
+       is_visible="true"
+       lpeversion="1" />
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient20871">
+      <stop
+         style="stop-color:#2a8d7c;stop-opacity:1;"
+         offset="0"
+         id="stop20867" />
+      <stop
+         style="stop-color:#2a8d7c;stop-opacity:0;"
+         offset="1"
+         id="stop20869" />
+    </linearGradient>
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect17551"
+       is_visible="true"
+       lpeversion="1" />
+    <linearGradient
+       id="linearGradient12835"
+       inkscape:swatch="solid">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop12833" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3055"
+       inkscape:swatch="solid">
+      <stop
+         style="stop-color:#333333;stop-opacity:1;"
+         offset="0"
+         id="stop3053" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient20871"
+       id="linearGradient20873"
+       x1="38.989177"
+       y1="125.86868"
+       x2="58.87061"
+       y2="125.86868"
+       gradientUnits="userSpaceOnUse" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect12354-7"
+       is_visible="true"
+       lpeversion="1" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g826"
+       transform="matrix(1.4254569,0,0,1.3127164,-27.112937,-31.719412)">
+      <path
+         style="fill:#2a8d7c;stroke:#2a8d7c;stroke-width:11.9062;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+         d="m 47.518925,111.48091 h 36.75848"
+         id="path867" />
+      <path
+         style="fill:#2a8d7c;stroke:#2a8d7c;stroke-width:11.9062;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+         d="M 47.122599,111.38832 38.691895,64.34012"
+         id="path1221"
+         sodipodi:nodetypes="cc" />
+      <path
+         style="fill:#2a8d7c;stroke:#2a8d7c;stroke-width:11.9062;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+         d="M 84.038873,111.38832 92.469577,64.340123"
+         id="path1221-7"
+         sodipodi:nodetypes="cc" />
+      <path
+         style="fill:#2a8d7c;stroke:#2a8d7c;stroke-width:11.9062;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+         d="M 37.837481,44.693937 H 93.197018"
+         id="path1333" />
+      <path
+         style="fill:#2a8d7c;stroke:#2a8d7c;stroke-width:11.9062;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+         d="M 54.089823,38.59931 H 77.706508"
+         id="path1335" />
+      <ellipse
+         style="fill:none;fill-opacity:1;stroke:#2a8d7c;stroke-width:5.94061;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+         id="path14117-5"
+         cx="65.771194"
+         cy="98.78376"
+         rx="3.7446198"
+         ry="2.728848" />
+      <ellipse
+         style="fill:none;fill-opacity:1;stroke:#2a8d7c;stroke-width:5.94061;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+         id="path14117-3"
+         cx="56.121365"
+         cy="86.594505"
+         rx="3.7446198"
+         ry="2.728848" />
+      <ellipse
+         style="fill:none;fill-opacity:1;stroke:#2a8d7c;stroke-width:5.94061;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+         id="path14117-56"
+         cx="74.659195"
+         cy="86.84845"
+         rx="3.7446198"
+         ry="2.728848" />
+      <ellipse
+         style="fill:none;fill-opacity:1;stroke:#2a8d7c;stroke-width:5.94061;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+         id="path14117-2"
+         cx="65.771187"
+         cy="76.690735"
+         rx="3.7446198"
+         ry="2.728848" />
+      <ellipse
+         style="fill:none;fill-opacity:1;stroke:#2a8d7c;stroke-width:5.94061;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+         id="path14117-1"
+         cx="52.820107"
+         cy="67.802734"
+         rx="3.7446198"
+         ry="2.728848" />
+      <ellipse
+         style="fill:none;fill-opacity:1;stroke:#2a8d7c;stroke-width:5.94061;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+         id="path14117-27"
+         cx="77.45256"
+         cy="67.294853"
+         rx="3.7446198"
+         ry="2.728848" />
+    </g>
+  </g>
+</svg>

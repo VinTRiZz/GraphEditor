@@ -51,6 +51,11 @@ void VertexConnectionLine::setLine(const QLineF &line)
     updatePolygon();
 }
 
+QLineF VertexConnectionLine::getLine() const
+{
+    return m_straightLine;
+}
+
 void VertexConnectionLine::setPositionFrom(const QPointF &posFrom)
 {
     m_straightLine.setP1(posFrom);

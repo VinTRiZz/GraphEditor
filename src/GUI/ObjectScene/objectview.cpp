@@ -80,6 +80,11 @@ QGraphicsItem *ObjectView::getGrabObject() const
     return m_pScene->getObject(m_grabObjectId.value());
 }
 
+void ObjectView::setMovingCallback(const std::function<void (const QPointF &)> &callbackFunc)
+{
+    m_movingCallback = callbackFunc;
+}
+
 void ObjectView::setGrabObject(QGraphicsItem *pItem)
 {
     if (nullptr == pItem) {
@@ -146,6 +151,10 @@ void ObjectView::mouseMoveEvent(QMouseEvent *e)
         auto deltaPos = e->pos() - mapFromScene(m_prevPos);
         horizontalScrollBar()->setSliderPosition(horizontalScrollBar()->sliderPosition() - deltaPos.x());
         verticalScrollBar()->setSliderPosition(verticalScrollBar()->sliderPosition() - deltaPos.y());
+    }
+
+    if (m_movingCallback) {
+        m_movingCallback(e->scenePosition());
     }
 }
 

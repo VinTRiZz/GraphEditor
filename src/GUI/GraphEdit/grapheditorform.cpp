@@ -123,6 +123,15 @@ void GraphEditorForm::setupSignals()
         }
         loadGraph();
     });
+
+    connect(ui->buttonToolbar, &GraphToolbar::changeMode,
+            ui->graphScene, [this](){
+        if (ui->graphScene->isEditMode()) {
+            ui->graphScene->startViewMode();
+        } else if (ui->graphScene->isViewMode()) {
+            ui->graphScene->startEditMode();
+        }
+    });
 }
 
 void GraphEditorForm::setupWidget()

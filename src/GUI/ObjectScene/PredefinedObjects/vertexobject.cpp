@@ -6,10 +6,12 @@
 
 #include <QTextOption>
 
-#include "logging.h"
-
 #include <QFileInfo>
 #include <QImageReader>
+
+#include "vertexconnectionline.h"
+
+#include "logging.h"
 
 #include "Graph/graphcommon.h"
 
@@ -36,6 +38,7 @@ VertexObject::VertexObject(QGraphicsItem *parent) :
 
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setFlag(QGraphicsItem::ItemClipsToShape, true);
+    setFlag(QGraphicsItem::ItemSendsScenePositionChanges, true);
 
     m_selectedPen = QPen(Qt::black, 4, Qt::SolidLine, Qt::RoundCap);
     QRadialGradient gradient (0, 0, 100);
@@ -156,6 +159,48 @@ QPainterPath VertexObject::shape() const
     return res;
 }
 
+void VertexObject::setSelected(bool isItemSelected)
+{
+    QGraphicsRectItem::setSelected(isItemSelected);
+    if (isItemSelected) [[unlikely]] {
+        m_selectedRectItem->show();
+    } else {
+        m_selectedRectItem->hide();
+    }
+}
+
+void VertexObject::subscribeAsConnectionFrom(VertexConnectionLine *pLine)
+{
+    m_connectionsFromThis.emplace(pLine);
+    updateConnectionLines();
+}
+
+void VertexObject::unsubscribeConnectionFrom(VertexConnectionLine *pLine)
+{
+    m_connectionsFromThis.erase(pLine);
+    updateConnectionLines();
+}
+
+void VertexObject::subscribeAsConnectionTo(VertexConnectionLine *pLine)
+{
+    m_connectionsToThis.emplace(pLine);
+    updateConnectionLines();
+}
+
+void VertexObject::unsubscribeConnectionTo(VertexConnectionLine *pLine)
+{
+    m_connectionsToThis.erase(pLine);
+    updateConnectionLines();
+}
+
+QVariant VertexObject::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+    if (change == ItemPositionChange) {
+        updateConnectionLines();
+    }
+    return QGraphicsRectItem::itemChange(change, value);
+}
+
 void VertexObject::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
 
@@ -166,12 +211,8 @@ void VertexObject::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     if (event->button() != Qt::LeftButton) {
         return;
     }
-    setSelected(!isSelected());
-
-    if (isSelected()) [[unlikely]] {
-        m_selectedRectItem->show();
-    } else {
-        m_selectedRectItem->hide();
+    if (flags() & ItemIsSelectable) {
+        setSelected(!isSelected());
     }
 }
 
@@ -200,6 +241,39 @@ void VertexObject::setupTextItem()
     QTextOption option = doc->defaultTextOption();
     option.setAlignment(Qt::AlignCenter);
     doc->setDefaultTextOption(option);
+}
+
+void VertexObject::updateConnectionLines()
+{
+    unsigned connectionNumber {0};
+    auto vertexRadius = static_cast<double>(rect().width()) / 2.0;
+
+    for (auto pConFrom : m_connectionsFromThis) {
+        auto fromPos = QPointF(x() + vertexRadius,
+                               y() + 2 * vertexRadius + pConFrom->getArrowSize());
+
+        pConFrom->setPositionFrom(fromPos);
+        connectionNumber++;
+    }
+
+    connectionNumber = 0;
+    for (auto pConTo : m_connectionsToThis) {
+        auto conLine = pConTo->getLine();
+
+        auto isConnectionFromLeft = conLine.x1() < x();
+        double connectionOffsetMultiplier = (isConnectionFromLeft ? -1 : 1);
+
+        auto lineOffset = static_cast<double>(connectionNumber) / (static_cast<double>(m_connectionsToThis.size() + 1));
+        auto xOffset =
+                (isConnectionFromLeft ? 0 : vertexRadius) +
+                lineOffset * vertexRadius -
+                connectionOffsetMultiplier * pConTo->getArrowSize();
+
+        auto toPos = QPointF(x() + xOffset, y() - pConTo->getArrowSize());
+
+        pConTo->setPositionTo(toPos);
+        connectionNumber++;
+    }
 }
 
 }

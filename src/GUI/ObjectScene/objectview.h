@@ -42,6 +42,8 @@ public:
 
     QGraphicsItem* getGrabObject() const;
 
+    void setMovingCallback(const std::function<void(const QPointF&)>& callbackFunc);
+
 public slots:
     void setGrabObject(QGraphicsItem* pItem);
     void acceptGrabObject();
@@ -60,6 +62,8 @@ private:
     bool    m_isHoldingLeftButton   {false};                //! Флаг факта того, что пользователь кникнул на сцену ЛКМ
     bool    m_isHoldingMiddleButton {false};                //! Флаг факта того, что пользователь кникнул на сцену СКМ
     bool    m_isMovingByUser        {true};                 //! Флаг для перемещений сцены по СКМ
+
+    std::function<void(const QPointF&)> m_movingCallback;   //! Колбек для обработки перемещения по сцене
 
     // Интерфейс QWidget
     void wheelEvent(QWheelEvent* e) override;

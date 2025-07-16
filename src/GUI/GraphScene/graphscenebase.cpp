@@ -25,7 +25,7 @@ void GraphSceneBase::init()
 
         m_buttonMatrixHead = new ButtonMatrix::HeadButton(this);
 
-        m_buttonMatrixHead->setButtonsSize(QSize(35, 35));
+        m_buttonMatrixHead->setButtonsSize(QSize(50, 50));
         m_buttonMatrixHead->setButtonMatrix(-10, -10, 0, 0);
         m_buttonMatrixHead->setButtonMargin(10);
 
@@ -33,6 +33,7 @@ void GraphSceneBase::init()
         m_buttonMatrixHead->setIcons(QIcon("://DATA/images/icons/tools_open.svg"), QIcon("://DATA/images/icons/tools_close.svg"));
         m_buttonMatrixHead->setButtonPadding(0, 30, 0, 30);
         m_buttonMatrixHead->collapse(false);
+        m_buttonMatrixHead->hide();
     }
 }
 
@@ -49,7 +50,6 @@ void GraphSceneBase::setMode(GraphModeBase *pMode)
     }
 
     m_pCurrentMode = pMode;
-    pMode->setGraphScene(this);
 
     connect(this, &ObjectView::pressedOnItem,
             m_pCurrentMode, &GraphModeBase::processPress);
@@ -95,6 +95,7 @@ void GraphSceneBase::updateGraph()
     vertexRect.setHeight(vertexRadius * 2);
 
     auto vertices = m_pGraph->getAllVertices();
+    std::unordered_map<uint, PredefinedObjects::VertexObject*> vertexObjects;
 
     for (auto& vert : vertices) {
         auto pVertexItem = new PredefinedObjects::VertexObject;
@@ -118,6 +119,7 @@ void GraphSceneBase::updateGraph()
         pVertexItem->setToolTip(vert.name);
 
         addObject(pVertexItem);
+        vertexObjects[vert.id] = pVertexItem;
     }
 
     const GVertex* pConnectionFrom {nullptr};
@@ -126,58 +128,68 @@ void GraphSceneBase::updateGraph()
     QHash<uint, std::vector<GConnection> > connectionHash;
 
     for (auto& con : m_pGraph->getAllConnections()) {
-        pConnectionFrom = nullptr;
-        pConnectionTo = nullptr;
+//        pConnectionFrom = nullptr;
+//        pConnectionTo = nullptr;
 
-        for (auto& vert : vertices) {
-            if (vert.id == con.idFrom) {
-                pConnectionFrom = &vert;
-            }
+//        for (auto& vert : vertices) {
+//            if (vert.id == con.idFrom) {
+//                pConnectionFrom = &vert;
+//            }
 
-            if (vert.id == con.idTo) {
-                pConnectionTo = &vert;
-            }
+//            if (vert.id == con.idTo) {
+//                pConnectionTo = &vert;
+//            }
 
-            if (pConnectionFrom != nullptr && pConnectionTo != nullptr) {
-                break;
-            }
+//            if (pConnectionFrom != nullptr && pConnectionTo != nullptr) {
+//                break;
+//            }
+//        }
+
+//        if (pConnectionFrom == nullptr || pConnectionTo == nullptr) {
+//            throw std::runtime_error("One of vertices did not found!");
+//        }
+
+//        auto connectionCountIt = connectionHash.find(con.idTo);
+//        if (connectionCountIt == connectionHash.end()) {
+//            connectionHash.insert(con.idTo, m_pGraph->getConnectionsToVertex(con.idTo));
+//            connectionCountIt = connectionHash.find(con.idTo);
+//        }
+
+//        uint connectionCount = connectionCountIt.value().size() + 1;
+//        uint connectionNumber = 1;
+
+//        for (const auto& countCon : connectionCountIt.value()) {
+//            if (con == countCon) {
+//                break;
+//            }
+//            connectionNumber++;
+//        }
+
+        auto pConFrom = vertexObjects.find(con.idFrom);
+        if (pConFrom == vertexObjects.end()) {
+            throw std::runtime_error("Vertex from did not found!");
         }
 
-        if (pConnectionFrom == nullptr || pConnectionTo == nullptr) {
-            throw std::runtime_error("One of vertices did not found!");
-        }
-
-        auto connectionCountIt = connectionHash.find(con.idTo);
-        if (connectionCountIt == connectionHash.end()) {
-            connectionHash.insert(con.idTo, m_pGraph->getConnectionsToVertex(con.idTo));
-            connectionCountIt = connectionHash.find(con.idTo);
-        }
-
-        uint connectionCount = connectionCountIt.value().size() + 1;
-        uint connectionNumber = 1;
-
-        for (const auto& countCon : connectionCountIt.value()) {
-            if (con == countCon) {
-                break;
-            }
-            connectionNumber++;
+        auto pConTo   = vertexObjects.find(con.idTo);
+        if (pConTo == vertexObjects.end()) {
+            throw std::runtime_error("Target vertex did not found!");
         }
 
         auto pConnection = new PredefinedObjects::VertexConnectionLine;
 
-        auto isConnectionFromLeft = pConnectionFrom->posX < pConnectionTo->posX;
-        double connectionOffsetMultiplier = (isConnectionFromLeft ? -1 : 1);
+//        auto isConnectionFromLeft = pConnectionFrom->posX < pConnectionTo->posX;
+//        double connectionOffsetMultiplier = (isConnectionFromLeft ? -1 : 1);
 
-        auto lineOffset = static_cast<double>(connectionNumber) / (static_cast<double>(connectionCount));
-        auto xOffset =
-                (isConnectionFromLeft ? 0 : vertexRadius) +
-                lineOffset * vertexRadius -
-                connectionOffsetMultiplier * pConnection->getArrowSize();
+//        auto lineOffset = static_cast<double>(connectionNumber) / (static_cast<double>(connectionCount));
+//        auto xOffset =
+//                (isConnectionFromLeft ? 0 : vertexRadius) +
+//                lineOffset * vertexRadius -
+//                connectionOffsetMultiplier * pConnection->getArrowSize();
 
-        auto fromPos = QPointF(pConnectionFrom->posX + vertexRadius, pConnectionFrom->posY + 2 * vertexRadius + pConnection->getArrowSize());
-        auto toPos = QPointF(pConnectionTo->posX + xOffset, pConnectionTo->posY - pConnection->getArrowSize());
+//        auto fromPos = QPointF(pConnectionFrom->posX + vertexRadius, pConnectionFrom->posY + 2 * vertexRadius + pConnection->getArrowSize());
+//        auto toPos = QPointF(pConnectionTo->posX + xOffset, pConnectionTo->posY - pConnection->getArrowSize());
 
-        pConnection->setLine(QLineF(fromPos, toPos));
+//        pConnection->setLine(QLineF(fromPos, toPos));
 
         pConnection->setPen(con.lineColor);
         pConnection->setZValue(conversionConfig.connectionLineLayer);
@@ -186,6 +198,9 @@ void GraphSceneBase::updateGraph()
         pConnection->setData(ObjectSceneConstants::OBJECTFIELD_OBJECTTYPE,      OBJECT_TYPE_CONNECTION);
         pConnection->setToolTip(con.name);
         addObject(pConnection);
+
+        pConFrom->second->subscribeAsConnectionFrom(pConnection);
+        pConTo->second->subscribeAsConnectionTo(pConnection);
     }
 }
 

@@ -18,110 +18,7 @@
     <normaloff>.</normaloff>.</iconset>
   </property>
   <property name="styleSheet">
-   <string notr="true">/* ОСНОВНЫЕ СТИЛИ */
-QWidget {
-    background-color: #1f1f1f;
-    color: #c0c0c0;
-    font-family: &quot;Segoe UI&quot;, Arial, sans-serif;
-    border: 0px;
-}
-
-/*  ГРУП БОКСЫ */
-QGroupBox {
-    border: 1px solid #1f4f4d;
-    border-radius: 4px;
-    margin-top: 10px;
-    padding-top: 15px;
-    background-color: #1a1a1a;
-}
-
-QGroupBox::title {
-    subcontrol-origin: margin;
-    left: 10px;
-    padding: 0 3px;
-    color: #d0d0d0;
-}
-
-/*  КНОПКИ */
-QPushButton {
-    background-color: #2a2a2a;
-    color: #d0d0d0;
-    border: 2px solid #1f4f4d;
-    border-radius: 5px;
-    padding: 3px 4px;
-    min-width: 100px;
-}
-
-QPushButton:disabled {
-    background-color: #2d2d2d;
-    color: #6a6a6a;
-    border: 1px solid #3a3a3a;
-}
-
-QPushButton:hover {
-    background-color: #2d2d2d;
-    border: 2px solid #30605e;
-    color: #bbb;
-}
-
-QPushButton:pressed {
-	background-color: #383838;
-    border: 2px solid #777;
-	padding-top: 6px;
-    padding-bottom: 4px;
-}
-
-/* СЛАЙДЕРЫ */
-QScrollBar {
-    border: none;
-    background: #0d0d0d;
-    margin: 0px 0px 0px 0px;
-}
-
-QScrollBar::handle:vertical {
-	background-color: #2a2a2a;
-    border: 2px solid #1f4f4d;
-    min-height: 20px;
-    border-radius: 4px;
-    margin: 2px;
-}
-
-QScrollBar::handle:horizontal {
-	background-color: #2a2a2a;
-    border: 2px solid #1f4f4d;
-    min-width: 20px;
-    border-radius: 4px;
-    margin: 2px;
-}
-
-QScrollBar::handle:hover {
-    background-color: #2d2d2d;
-    border: 2px solid #30605e;
-    color: #bbb;
-}
-
-QScrollBar::handle:pressed {
-    background-color: #383838;
-    border: 2px solid #777;
-	padding-top: 6px;
-    padding-bottom: 4px;
-}
-
-QScrollBar::add-line, QScrollBar::sub-line {
-    background: transparent;
-    height: 0px;
-    subcontrol-position: top;
-    subcontrol-origin: margin;
-}
-
-QScrollBar::up-arrow, QScrollBar::down-arrow {
-    width: 0px;
-    height: 0px;
-}
-
-QScrollBar::add-page, QScrollBar::sub-page {
-    background: none;
-}</string>
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -136,7 +33,7 @@ QScrollBar::add-page, QScrollBar::sub-page {
      <x>0</x>
      <y>0</y>
      <width>811</width>
-     <height>20</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

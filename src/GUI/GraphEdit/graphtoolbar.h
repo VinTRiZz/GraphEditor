@@ -17,6 +17,8 @@ signals:
 
     void saveGraph(const QString& sPath);
     void loadGraph(const QString& lPath);
+
+    void changeMode();
 };
 
 #endif // GRAPHTOOLBAR_H

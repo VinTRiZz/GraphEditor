@@ -57,7 +57,8 @@ void HeadButton::removeButton(int buttonX, int buttonY)
     if (!isValid(buttonX, buttonY)) {
         return;
     }
-    auto& buttonConf = m_buttonMatrix[buttonX][buttonY];
+    auto mappedPos = mapToMatrix(buttonX, buttonY);
+    auto& buttonConf = m_buttonMatrix[mappedPos.first][mappedPos.second];
     delete buttonConf.pButton;
     buttonConf = {};
 }

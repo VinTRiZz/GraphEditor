@@ -10,5 +10,11 @@
         <file>DATA/images/vertexicons/person_red.svg</file>
         <file>DATA/images/icons/tools_close.svg</file>
         <file>DATA/images/icons/tools_open.svg</file>
+        <file>DATA/images/icons/mode_change.svg</file>
+        <file>DATA/images/icons/mode_edit_move.svg</file>
+        <file>DATA/images/icons/mode_edit_remove.svg</file>
+        <file>DATA/images/icons/mode_edit_add_connection.svg</file>
+        <file>DATA/images/icons/mode_edit_add_vertex.svg</file>
+        <file>DATA/styles/mainstyles.qss</file>
     </qresource>
 </RCC>

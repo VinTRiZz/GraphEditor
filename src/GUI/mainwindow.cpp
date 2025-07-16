@@ -3,11 +3,22 @@
 
 #include "Filework/savemaster.h"
 
+#include <QFile>
+#include "logging.h"
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    QFile stylesFile("://DATA/styles/mainstyles.qss");
+    if (!stylesFile.open(QIODevice::ReadOnly)) {
+        LOG_ERROR("Error opening styles:", stylesFile.errorString());
+        return;
+    }
+    setStyleSheet(stylesFile.readAll());
+    LOG_OK("Styles set");
 }
 
 MainWindow::~MainWindow()

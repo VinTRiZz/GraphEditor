@@ -84,12 +84,12 @@ void GraphToolbar::init()
     };
     addButton(buttonInfo);
 
-//    buttonInfo.buttonPos++;
-//    buttonInfo.icon = QIcon("://DATA/images/icons/mode_none.svg");
-//    buttonInfo.tooltip = "Сменить режим работы";
-//    buttonInfo.action = [this](QPushButton* pButton) {
+    buttonInfo.buttonPos++;
+    buttonInfo.icon = QIcon("://DATA/images/icons/mode_change.svg");
+    buttonInfo.tooltip = "Сменить режим работы";
+    buttonInfo.action = [this](QPushButton*) {
+        emit changeMode();
+    };
 
-//    };
-
-//    addButton(buttonInfo);
+    addButton(buttonInfo);
 }

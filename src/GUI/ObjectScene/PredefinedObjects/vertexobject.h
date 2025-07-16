@@ -7,8 +7,12 @@
 
 #include <QLabel>
 
+#include <set>
+
 namespace PredefinedObjects
 {
+
+class VertexConnectionLine;
 
 class VertexObject : public QGraphicsRectItem
 {
@@ -29,6 +33,16 @@ public:
 
     QPainterPath shape() const override;
 
+    void setSelected(bool isItemSelected);
+
+    void subscribeAsConnectionFrom(VertexConnectionLine* pLine);
+    void unsubscribeConnectionFrom(VertexConnectionLine* pLine);
+
+    void subscribeAsConnectionTo(VertexConnectionLine* pLine);
+    void unsubscribeConnectionTo(VertexConnectionLine* pLine);
+
+    void updateConnectionLines();
+
 private:
     QPen   m_selectedPen;
     QLineF m_straightLine;
@@ -38,6 +52,11 @@ private:
     QGraphicsEllipseItem*   m_vertexEllipse     {nullptr};
     QGraphicsRectItem*      m_vertexTextRect    {nullptr};
     QGraphicsTextItem*      m_vertexText        {nullptr};
+
+    std::set<VertexConnectionLine*> m_connectionsFromThis;
+    std::set<VertexConnectionLine*> m_connectionsToThis;
+
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;

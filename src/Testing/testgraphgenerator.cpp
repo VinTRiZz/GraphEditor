@@ -73,55 +73,95 @@ Graph::GraphObject TestGraphGenerator::generateGraph(uint vertexCount)
     auto greenPersonImage = greenPersonIcon.pixmap(500).toImage();
 
     Graph::GVertex vert;
-    vert.shortName = "Дебич";
-    vert.name = "Дебич узел";
+    vert.shortName = "Нода 1";
+    vert.name = "Соединён с 2 и 3";
     vert.backgroundColor = Qt::green;
     vert.image = greenPersonImage;
-    vert.posX = 100;
-    vert.posY = 100;
-    result.addVertex(vert);
+    vert.posX = 200;
+    vert.posY = 200;
+    auto firstVertexId = result.addVertex(vert);
 
-    vert.shortName = "Кр. дебич";
-    vert.name = "Кр. дебич узел";
+    vert.shortName = "Нода 2";
+    vert.name = "Соединён с 3";
     vert.backgroundColor = Qt::red;
     vert.image = redPersonImage;
-    vert.posX = 300;
-    vert.posY = 300;
-    result.addVertex(vert);
-
-    vert.shortName = "Др. дебич";
-    vert.name = "Др. дебич узел";
-    vert.backgroundColor = Qt::green;
-    vert.image = greenPersonImage;
     vert.posX = 500;
-    vert.posY = 500;
-    result.addVertex(vert);
+    vert.posY = 200;
+    auto secondVertexId = result.addVertex(vert);
 
-    vert.shortName = "Кр. хер";
-    vert.name = "Кр. хер узел";
-    vert.backgroundColor = Qt::red;
-    vert.image = redPersonImage;
-    vert.posX = 100;
+    vert.shortName = "Нода 3";
+    vert.name = "Соединён с 2 и 4";
+    vert.backgroundColor = Qt::green;
+    vert.image = {};
+    vert.posX = 300;
     vert.posY = 500;
-    result.addVertex(vert);
+    auto thirdVertexId = result.addVertex(vert);
+
+    vert.shortName = "Нода 4";
+    vert.name = "Соединён с 1 и 2";
+    vert.backgroundColor = Qt::red;
+    vert.image = {};
+    vert.posX = 100;
+    vert.posY = 400;
+    auto fourthVertexId = result.addVertex(vert);
+
+    vert.shortName = "Тест нода";
+    vert.name = "Соединён с 1";
+    vert.backgroundColor = QColor();
+    vert.borderColor     = QColor();
+    vert.image = {};
+    vert.posX = 900;
+    vert.posY = 400;
+    auto fifthVertexId = result.addVertex(vert);
 
     Graph::GConnection con;
-    con.name = "1-2";
-    con.idFrom = 1;
-    con.idTo = 2;
-    con.lineColor = Qt::red;
-    result.addConnection(con);
 
-    con.name = "4-3";
-    con.idFrom = 4;
-    con.idTo = 3;
+    con.name = "1-2";
+    con.idFrom = firstVertexId;
+    con.idTo = secondVertexId;
     con.lineColor = Qt::green;
     result.addConnection(con);
 
     con.name = "1-3";
-    con.idFrom = 1;
-    con.idTo = 3;
+    con.idFrom = firstVertexId;
+    con.idTo = thirdVertexId;
+    con.lineColor = Qt::green;
+    result.addConnection(con);
+
+    con.name = "2-3";
+    con.idFrom = secondVertexId;
+    con.idTo = thirdVertexId;
+    con.lineColor = Qt::red;
+    result.addConnection(con);
+
+    con.name = "3-2";
+    con.idFrom = thirdVertexId;
+    con.idTo = secondVertexId;
+    con.lineColor = Qt::black;
+    result.addConnection(con);
+
+    con.name = "3-4";
+    con.idFrom = thirdVertexId;
+    con.idTo = fourthVertexId;
+    con.lineColor = Qt::black;
+    result.addConnection(con);
+
+    con.name = "4-1";
+    con.idFrom = fourthVertexId;
+    con.idTo = firstVertexId;
     con.lineColor = Qt::magenta;
+    result.addConnection(con);
+
+    con.name = "4-2";
+    con.idFrom = fourthVertexId;
+    con.idTo = secondVertexId;
+    con.lineColor = Qt::magenta;
+    result.addConnection(con);
+
+    con.name = "5-1";
+    con.idFrom = fifthVertexId;
+    con.idTo = firstVertexId;
+    con.lineColor = Qt::cyan;
     result.addConnection(con);
 
     return result;

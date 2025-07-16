@@ -27,9 +27,9 @@ struct GVertex
     QJsonObject customProperties    {};                 //! JSON с пользовательскими свойствами
 
     // Отрисовка
-    QColor  borderColor         {Qt::black};        //! Цвет границы
-    QColor  backgroundColor     {Qt::transparent};  //! Цвет фона
-    QImage  image;                                  //! Изображение с альфа-каналом
+    QColor  borderColor;        //! Цвет границы
+    QColor  backgroundColor;    //! Цвет фона
+    QImage  image;              //! Изображение с альфа-каналом
 
     /**
      * @brief isShortnameValid Проверка корректности длины краткого наименования вершины

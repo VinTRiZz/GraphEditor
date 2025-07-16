@@ -84,6 +84,8 @@ void GraphSceneBase::updateGraph()
         pVertexItem->setRect(vertexRect);
         pVertexItem->setZValue(conversionConfig.vertexLayer);
 
+        pVertexItem->setNodeColor(vert.borderColor, vert.backgroundColor);
+
         pVertexItem->setData(ObjectSceneConstants::OBJECTFIELD_NAME_SHORT,      vert.shortName);
         pVertexItem->setData(ObjectSceneConstants::OBJECTFIELD_NAME,            vert.name);
         pVertexItem->setData(ObjectSceneConstants::OBJECTFIELD_DESCRIPTION,     vert.description);

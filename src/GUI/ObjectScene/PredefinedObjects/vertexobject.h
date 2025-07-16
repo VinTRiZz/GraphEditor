@@ -22,22 +22,18 @@ public:
 
     void setText(const QString& text);
 
+    void setNodeColor(const QColor& borderColor, const QBrush &backgroundBrush);
     void setVertexBrush(const QBrush& mainBackground, const QBrush& textBackground);
 
     void setRect(const QRectF& iRect);
 
-    void setSelectedPen(const QPen& pen);
-
     QPainterPath shape() const override;
 
 private:
-    QPen   m_drawPen;
     QPen   m_selectedPen;
     QLineF m_straightLine;
 
-    QBrush m_backgroundMain {QColor("#ecd1a6")};
-    QBrush m_backgroundText {QColor("#f3f5dd")};
-
+    QGraphicsPathItem*      m_selectedRectItem  {nullptr};
     QGraphicsPixmapItem*    m_vertexImage       {nullptr};
     QGraphicsEllipseItem*   m_vertexEllipse     {nullptr};
     QGraphicsRectItem*      m_vertexTextRect    {nullptr};

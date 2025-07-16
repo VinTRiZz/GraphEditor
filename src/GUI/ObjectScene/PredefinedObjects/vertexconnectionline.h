@@ -23,7 +23,7 @@ public:
     void setPositionTo(const QPointF& posTo);
 
     void setPen(const QColor &penColor);
-    void setSelectedPen(const QPen& pen);
+    void setSelectedPen(const QColor &penColor);
 
     void setArrowSize(qreal size);
     qreal getArrowSize() const;
@@ -48,11 +48,12 @@ private:
 
     QRectF m_boundingRect;
 
-    QGraphicsPathItem*      m_line {nullptr};
+    QGraphicsPathItem*      m_line              {nullptr};
+    QGraphicsPathItem*      m_lineSelected      {nullptr};
     QGraphicsPolygonItem*   m_pArrowHeadPolygon {nullptr};
 
     bool  m_prevSelectedState {false};
-    qreal m_arrowSize {10};
+    qreal m_arrowSize {8};
 
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;

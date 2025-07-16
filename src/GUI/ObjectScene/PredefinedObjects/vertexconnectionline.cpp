@@ -19,7 +19,7 @@ VertexConnectionLine::VertexConnectionLine(QGraphicsItem *parent) :
 {
     m_penSelectedGradient.setColorAt(0, QColor("#fff09c"));
     m_penSelectedGradient.setColorAt(1, QColor("#ffbc20"));
-    m_selectedPen.setWidth(4);
+    m_selectedPen.setWidth(8);
     m_selectedPen.setCapStyle(Qt::RoundCap);
     m_selectedPen.setBrush(m_penSelectedGradient);
 
@@ -33,6 +33,15 @@ VertexConnectionLine::VertexConnectionLine(QGraphicsItem *parent) :
 
     m_line = new QGraphicsPathItem(this);
     m_line->setBrush(Qt::NoBrush);
+    m_line->setPen(m_drawPen);
+    m_line->setZValue(1);
+
+    m_lineSelected = new QGraphicsPathItem(this);
+    m_lineSelected->setBrush(Qt::NoBrush);
+    m_lineSelected->setPen(m_selectedPen);
+    m_lineSelected->setZValue(0);
+    m_lineSelected->hide();
+
     m_pArrowHeadPolygon = new QGraphicsPolygonItem(this);
 }
 
@@ -58,16 +67,16 @@ void VertexConnectionLine::setPen(const QColor &penColor)
 {
     m_penGradient.setColorAt(1, penColor);
     m_drawPen.setBrush(m_penGradient);
+    m_line->setPen(m_drawPen);
     auto currentPen = isSelected() ? m_selectedPen : m_drawPen;
-    m_line->setPen(currentPen);
     m_pArrowHeadPolygon->setPen(currentPen);
 }
 
-void VertexConnectionLine::setSelectedPen(const QPen &pen)
+void VertexConnectionLine::setSelectedPen(const QColor &penColor)
 {
-    m_selectedPen = pen;
+    m_selectedPen = QPen(penColor, 5);
+    m_lineSelected->setPen(penColor);
     auto currentPen = isSelected() ? m_selectedPen : m_drawPen;
-    m_line->setPen(currentPen);
     m_pArrowHeadPolygon->setPen(currentPen);
 }
 
@@ -90,6 +99,7 @@ void VertexConnectionLine::updatePolygon()
 {
     m_boundingRect = {};
     m_line->setPath(createLinePath());
+    m_lineSelected->setPath(createLinePath());
 
     m_penSelectedGradient.setStart(m_straightLine.p1());
     m_penSelectedGradient.setFinalStop(m_straightLine.p2());
@@ -110,38 +120,27 @@ void VertexConnectionLine::updatePolygon()
 
 QPainterPath VertexConnectionLine::createLinePath()
 {
-    QPainterPath p;
-
-    auto lineGoRightSide = m_straightLine.dx() > 0;
-
     auto pointFrom = m_straightLine.p1();
     pointFrom.setY(pointFrom.y() + m_arrowSize);
+
     auto pointTo = m_straightLine.p2();
-
-    auto deltaX = m_straightLine.x2() - m_straightLine.x1();
-    auto deltaY = m_straightLine.y2() - m_straightLine.y1();
-
-    QPointF firstBreak;
-    firstBreak.setX(pointFrom.x() + deltaX / 2);
-    firstBreak.setY(pointFrom.y() + std::fabs(deltaY) / 5);
-
-    QPointF secondBreak;
-    secondBreak.setX(pointTo.x() - (!lineGoRightSide * -1.0 + lineGoRightSide) * deltaX / 2);
-    secondBreak.setY(pointTo.y() - std::fabs(deltaY) / 5);
-
-    pointTo.setX(pointTo.x() - (-1 * !lineGoRightSide + lineGoRightSide) * m_arrowSize);
+    pointTo.setX(pointTo.x() + (pointFrom.x() > pointTo.x() ? m_arrowSize : - m_arrowSize));
     pointTo.setY(pointTo.y() - m_arrowSize);
 
+    QPainterPath p;
     p.moveTo(m_straightLine.p1());
     p.lineTo(pointFrom);
-    if (pointFrom.y() < pointTo.y()) {
 
-    }
-    p.cubicTo(pointFrom, firstBreak, m_straightLine.center());
-    p.cubicTo(m_straightLine.center(), secondBreak, pointTo);
+    auto firstControlPoint = m_straightLine.center();
+    firstControlPoint.setY(pointFrom.y());
 
+    auto secondControlPoint = m_straightLine.center();
+    secondControlPoint.setY(pointTo.y());
 
-    auto arrowLine = QLineF(QPointF(m_straightLine.x2() - m_arrowSize, m_straightLine.y2() - m_arrowSize), m_straightLine.p2());
+    p.cubicTo(pointFrom, firstControlPoint, m_straightLine.center());
+    p.cubicTo(m_straightLine.center(), secondControlPoint, pointTo);
+
+    auto arrowLine = QLineF(pointTo, m_straightLine.p2());
     if (arrowLine.length() != 0) {
         // Угол линии
         double angle = (arrowLine.angle() + 180) * M_PI / 180.0;
@@ -158,10 +157,9 @@ QPainterPath VertexConnectionLine::createLinePath()
                                               cos(angle + PI_2_DELIM_3) * m_arrowSize);
 
         p.lineTo(m_straightLine.p2());
-        p.lineTo(arrowP1);
         p.lineTo(arrowP2);
         p.lineTo(arrowP3);
-        p.lineTo(m_straightLine.p2());
+        p.lineTo(arrowP1);
     }
 
     return p;
@@ -202,6 +200,12 @@ void VertexConnectionLine::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     auto isContain = contains(mapToScene(event->pos()));
     setSelected(isContain ^ isSelected());
     updatePen();
+
+    if (isSelected()) {
+        m_lineSelected->show();
+    } else {
+        m_lineSelected->hide();
+    }
 }
 
 void VertexConnectionLine::updatePen()
@@ -212,7 +216,6 @@ void VertexConnectionLine::updatePen()
     m_prevSelectedState = isSelected();
 
     auto currentPen = isSelected() ? m_selectedPen : m_drawPen;
-    m_line->setPen(currentPen);
     m_pArrowHeadPolygon->setPen(currentPen);
 }
 

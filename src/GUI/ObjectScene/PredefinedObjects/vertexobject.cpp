@@ -99,6 +99,7 @@ void VertexObject::setRect(const QRectF &iRect)
     imageRect.setHeight(std::max(itemRect.height() * imageParts / maxParts, minSize * 2));
     m_vertexEllipse->setRect(imageRect);
     m_vertexImage->setPixmap(m_vertexImage->pixmap().scaled(QSize(imageRect.width(), imageRect.height()), Qt::AspectRatioMode::KeepAspectRatio));
+    m_vertexImage->moveBy((imageRect.width() - m_vertexImage->boundingRect().width()) / 2, 0);
 
     auto textSize = std::max(itemRect.height() * textParts * 0.95 / maxParts, minSize);
     auto textRect = itemRect;

@@ -6,5 +6,7 @@
         <file>DATA/images/icons/graph_open.svg</file>
         <file>DATA/images/icons/graph_save_as.svg</file>
         <file>DATA/images/icons/graph_save.svg</file>
+        <file>DATA/images/vertexicons/person_green.svg</file>
+        <file>DATA/images/vertexicons/person_red.svg</file>
     </qresource>
 </RCC>

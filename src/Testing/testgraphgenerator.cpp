@@ -65,11 +65,18 @@ Graph::GraphObject TestGraphGenerator::generateGraph(uint vertexCount)
 //    }
 
     // TODO: Remove hardcode
+
+    auto redPersonIcon = QIcon("://DATA/images/vertexicons/person_red.svg");
+    auto redPersonImage = redPersonIcon.pixmap(500).toImage();
+
+    auto greenPersonIcon = QIcon("://DATA/images/vertexicons/person_green.svg");
+    auto greenPersonImage = greenPersonIcon.pixmap(500).toImage();
+
     Graph::GVertex vert;
     vert.shortName = "Дебич";
     vert.name = "Дебич узел";
     vert.backgroundColor = Qt::green;
-    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_red.png").pixmap(500, 500);
+    vert.image = greenPersonImage;
     vert.posX = 100;
     vert.posY = 100;
     result.addVertex(vert);
@@ -77,7 +84,7 @@ Graph::GraphObject TestGraphGenerator::generateGraph(uint vertexCount)
     vert.shortName = "Кр. дебич";
     vert.name = "Кр. дебич узел";
     vert.backgroundColor = Qt::red;
-    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_red.png").pixmap(500, 500);
+    vert.image = redPersonImage;
     vert.posX = 300;
     vert.posY = 300;
     result.addVertex(vert);
@@ -85,7 +92,7 @@ Graph::GraphObject TestGraphGenerator::generateGraph(uint vertexCount)
     vert.shortName = "Др. дебич";
     vert.name = "Др. дебич узел";
     vert.backgroundColor = Qt::green;
-    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_green.png").pixmap(500, 500);
+    vert.image = greenPersonImage;
     vert.posX = 500;
     vert.posY = 500;
     result.addVertex(vert);
@@ -93,7 +100,7 @@ Graph::GraphObject TestGraphGenerator::generateGraph(uint vertexCount)
     vert.shortName = "Кр. хер";
     vert.name = "Кр. хер узел";
     vert.backgroundColor = Qt::red;
-    vert.pxmap = QIcon("://DATA/images/vertexicons/vertex_person_red.png").pixmap(500, 500);
+    vert.image = redPersonImage;
     vert.posX = 100;
     vert.posY = 500;
     result.addVertex(vert);

@@ -80,7 +80,7 @@ bool SaveMaster::save(const QString &oFilePath, const Graph::GraphObject &iGraph
         queryText += "'" + QJsonDocument(vert.customProperties).toJson().toHex() + "',";
         queryText += "'" + getEncoded(vert.borderColor) + "',";
         queryText += "'" + getEncoded(vert.backgroundColor) + "',";
-        queryText += "'" + getEncoded(vert.pxmap) + "'";
+        queryText += "'" + getEncoded(QPixmap::fromImage(vert.image)) + "'";
 
         queryText += ")";
         if (!executeQuery(q, queryText)) { return false; }
@@ -200,7 +200,7 @@ bool SaveMaster::load(const QString &iFilePath, Graph::GraphObject &oGraphObject
         vert.customProperties   = QJsonDocument::fromJson(getDecoded(q.value(valPos++).toByteArray())).object();
         vert.borderColor        = getDecodedColor(q.value(valPos++).toByteArray());
         vert.backgroundColor    = getDecodedColor(q.value(valPos++).toByteArray());
-        vert.pxmap              = getDecodedPixmap(q.value(valPos++).toByteArray());
+        vert.image              = getDecodedPixmap(q.value(valPos++).toByteArray()).toImage();
         oGraphObject.addVertex(vert);
     }
 
@@ -332,24 +332,7 @@ QByteArray SaveMaster::getEncoded(const QByteArray &iStr)
 
 QByteArray SaveMaster::getEncoded(const QColor &iCol)
 {
-    auto encodedString = QString("%1%2%3%4");
-
-    auto toHex = [](int val) -> QString {
-        std::string tmpStr;
-        GraphCommon::convertEncodeChar(val, 16, tmpStr);
-        auto res = QString::fromStdString(tmpStr);
-        if (res.isEmpty()) {
-            return "00";
-        }
-        return res;
-    };
-
-    return encodedString.arg(
-        toHex(iCol.red()),
-        toHex(iCol.green()),
-        toHex(iCol.blue()),
-        toHex(iCol.alpha())
-    ).toUtf8();
+    return iCol.name().toUtf8().data();
 }
 
 QByteArray SaveMaster::getEncoded(const QPixmap &iPxmap)
@@ -376,9 +359,5 @@ QPixmap SaveMaster::getDecodedPixmap(const QByteArray &iBytes)
 
 QColor SaveMaster::getDecodedColor(const QByteArray &iBytes)
 {
-    auto redComponent = std::stoi(std::string({iBytes.at(0), iBytes.at(1)}), 0, 16);
-    auto greenComponent = std::stoi(std::string({iBytes.at(2), iBytes.at(3)}), 0, 16);
-    auto blueComponent = std::stoi(std::string({iBytes.at(4), iBytes.at(5)}), 0, 16);
-    auto alphaComponent = std::stoi(std::string({iBytes.at(6), iBytes.at(7)}), 0, 16);
-    return QColor(redComponent, greenComponent, blueComponent, alphaComponent);
+    return QColor(iBytes.data()); // From name
 }

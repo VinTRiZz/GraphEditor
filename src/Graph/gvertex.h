@@ -1,6 +1,7 @@
 #ifndef GVERTEX_H
 #define GVERTEX_H
 
+#include "qicon.h"
 #include <QString>
 #include <QPixmap>
 #include <QJsonObject>
@@ -26,9 +27,9 @@ struct GVertex
     QJsonObject customProperties    {};                 //! JSON с пользовательскими свойствами
 
     // Отрисовка
-    QColor      borderColor         {Qt::black};        //! Цвет границы
-    QColor      backgroundColor     {Qt::transparent};  //! Цвет фона
-    QPixmap     pxmap               {};                 //! Изображение, которое будет отображаться вместо вершины
+    QColor  borderColor         {Qt::black};        //! Цвет границы
+    QColor  backgroundColor     {Qt::transparent};  //! Цвет фона
+    QImage  image;                                  //! Изображение с альфа-каналом
 
     /**
      * @brief isShortnameValid Проверка корректности длины краткого наименования вершины
@@ -43,7 +44,7 @@ struct GVertex
      * @return false если объект не может использоваться в графе
      */
     bool isValid() const {
-        return isShortnameValid() && (id != 0) && ((borderColor.isValid() && backgroundColor.isValid()) || !pxmap.isNull());
+        return isShortnameValid() && (id != 0) && ((borderColor.isValid() && backgroundColor.isValid()) || !image.isNull());
     }
 
     /**
@@ -54,9 +55,8 @@ struct GVertex
      */
     template <typename OperatorT>
     bool tieFields(const GVertex& vert, OperatorT&& vertOperator) const {
-
-        auto img1 = pxmap.toImage();
-        auto img2 = vert.pxmap.toImage();
+        auto img1 = image.constBits();
+        auto img2 = vert.image.constBits();
 
         return vertOperator(
             std::tie(id, posX, posY,

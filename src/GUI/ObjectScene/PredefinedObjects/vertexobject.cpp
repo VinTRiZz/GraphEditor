@@ -8,9 +8,23 @@
 
 #include "logging.h"
 
+#include <QFileInfo>
+#include <QImageReader>
 
 namespace PredefinedObjects
 {
+
+// Загрузка изображения с поддержкой прозрачности
+QPixmap loadImageWithAlpha(const QString& path) {
+    QImageReader reader(path);
+    reader.setAutoTransform(true);  // Автоповорот по EXIF
+    reader.setDecideFormatFromContent(true);  // Определение формата по содержимому
+
+    if (reader.supportsAnimation()) {  // Для GIF/APNG
+        return QPixmap::fromImage(reader.read());
+    }
+    return QPixmap(path);  // Для PNG/JPEG/BMP/etc
+}
 
 
 VertexObject::VertexObject(QGraphicsItem *parent) :
@@ -28,13 +42,8 @@ VertexObject::VertexObject(QGraphicsItem *parent) :
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setFlag(QGraphicsItem::ItemClipsToShape, true);
 
-    m_vertexImageRect = new QGraphicsPathItem(this);
-    m_vertexImageRect->setPen(m_selectedPen);
-    m_vertexImageRect->hide();
-
-    m_vertexImage   = new QGraphicsProxyWidget(this);
-    m_vertexImage->setWidget(&m_imageLabel);
-    m_imageLabel.hide();
+    m_vertexImage   = new QGraphicsPixmapItem(this);
+    m_vertexImage->hide();
     m_vertexImage->setZValue(0);
 
     m_vertexEllipse = new QGraphicsEllipseItem(this);
@@ -48,10 +57,10 @@ VertexObject::VertexObject(QGraphicsItem *parent) :
     setupTextItem();
 }
 
-void VertexObject::setImage(const QPixmap &pxmap)
+void VertexObject::setImage(const QImage &img)
 {
-    m_imageLabel.setPixmap(pxmap);
-    m_imageLabel.show();
+    m_vertexImage->setPixmap(QPixmap::fromImage(img));
+    m_vertexImage->show();
 
     m_vertexEllipse->hide();
 }
@@ -80,7 +89,6 @@ void VertexObject::setRect(const QRectF &iRect)
 
     QPainterPath path;
     path.addRoundedRect(itemRoundRect, 10, 10);
-    m_vertexImageRect->setPath(path);
 
     const double maxParts   = 5.0;
     const double imageParts = 4.0;
@@ -90,7 +98,7 @@ void VertexObject::setRect(const QRectF &iRect)
     auto imageRect = itemRect;
     imageRect.setHeight(std::max(itemRect.height() * imageParts / maxParts, minSize * 2));
     m_vertexEllipse->setRect(imageRect);
-    m_imageLabel.setGeometry(imageRect.toRect());
+    m_vertexImage->setPixmap(m_vertexImage->pixmap().scaled(QSize(imageRect.width(), imageRect.height()), Qt::AspectRatioMode::KeepAspectRatio));
 
     auto textSize = std::max(itemRect.height() * textParts * 0.95 / maxParts, minSize);
     auto textRect = itemRect;
@@ -138,9 +146,9 @@ void VertexObject::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     setSelected(!isSelected());
 
     if (isSelected()) [[unlikely]] {
-        m_vertexImageRect->show();
+        m_vertexImage->show();
     } else {
-        m_vertexImageRect->hide();
+        m_vertexImage->hide();
     }
 }
 

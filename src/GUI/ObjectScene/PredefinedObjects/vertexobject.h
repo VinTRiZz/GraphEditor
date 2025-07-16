@@ -2,7 +2,6 @@
 #define VERTEXOBJECT_H
 
 #include <QGraphicsItem>
-#include <QGraphicsProxyWidget>
 
 #include <QPen>
 
@@ -19,7 +18,8 @@ class VertexObject : public QGraphicsRectItem
 public:
     explicit VertexObject(QGraphicsItem *parent = nullptr);
 
-    void setImage(const QPixmap& pxmap);
+    void setImage(const QImage& img);
+
     void setText(const QString& text);
 
     void setVertexBrush(const QBrush& mainBackground, const QBrush& textBackground);
@@ -31,8 +31,6 @@ public:
     QPainterPath shape() const override;
 
 private:
-    void updatePolygon();
-
     QPen   m_drawPen;
     QPen   m_selectedPen;
     QLineF m_straightLine;
@@ -40,10 +38,7 @@ private:
     QBrush m_backgroundMain {QColor("#ecd1a6")};
     QBrush m_backgroundText {QColor("#f3f5dd")};
 
-    QLabel m_imageLabel;
-
-    QGraphicsPathItem*      m_vertexImageRect   {nullptr};
-    QGraphicsProxyWidget*   m_vertexImage       {nullptr};
+    QGraphicsPixmapItem*    m_vertexImage       {nullptr};
     QGraphicsEllipseItem*   m_vertexEllipse     {nullptr};
     QGraphicsRectItem*      m_vertexTextRect    {nullptr};
     QGraphicsTextItem*      m_vertexText        {nullptr};

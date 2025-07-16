@@ -75,12 +75,9 @@ void GraphSceneBase::updateGraph()
     for (auto& vert : vertices) {
         auto pVertexItem = new PredefinedObjects::VertexObject;
 
-//        // TODO: Вернуть как решу вопрос с иконками
-//        if (!vert.pxmap.isNull()) {
-//            // Для отображения всего в унифицированном виде
-//            auto scaledPxmap = vert.pxmap.scaled(QSize(vertexRadius * 2, vertexRadius * 2));
-//            pVertexItem->setImage(scaledPxmap);
-//        }
+        if (!vert.image.isNull()) {
+            pVertexItem->setImage(vert.image);
+        }
 
         pVertexItem->setText(vert.shortName);
         pVertexItem->setPos(vert.posX, vert.posY);

@@ -98,7 +98,7 @@ void ObjectView::acceptGrabObject()
 void ObjectView::rejectGrabObject()
 {
     if (!m_grabObjectId.has_value()) {
-        throw std::runtime_error("ObjectView::rejectGrabObject Error: can not reject without item grabbed");
+        throw std::runtime_error("ObjectView Error: can not reject without item grabbed");
     }
     auto grabObject = getGrabObject();
     grabObject->setPos(m_grabObjectPos);

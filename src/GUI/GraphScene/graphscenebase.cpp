@@ -91,6 +91,7 @@ void GraphSceneBase::updateGraph()
         pVertexItem->setData(ObjectSceneConstants::OBJECTFIELD_DESCRIPTION,     vert.description);
         pVertexItem->setData(ObjectSceneConstants::OBJECTFIELD_PROPERTY_JSON,   vert.customProperties);
         pVertexItem->setData(ObjectSceneConstants::OBJECTFIELD_OBJECTTYPE,      OBJECT_TYPE_VERTEX);
+        pVertexItem->setToolTip(vert.name);
 
         addObject(pVertexItem);
     }
@@ -119,7 +120,7 @@ void GraphSceneBase::updateGraph()
         }
 
         if (pConnectionFrom == nullptr || pConnectionTo == nullptr) {
-            throw std::runtime_error("GraphObject::toItem: One of vertices did not found!");
+            throw std::runtime_error("One of vertices did not found!");
         }
 
         auto connectionCountIt = connectionHash.find(con.idTo);
@@ -140,7 +141,14 @@ void GraphSceneBase::updateGraph()
 
         auto pConnection = new PredefinedObjects::VertexConnectionLine;
 
-        auto xOffset = (static_cast<double>(connectionNumber) * static_cast<double>(vertexRect.width()) / static_cast<double>(connectionCount)) - pConnection->getArrowSize();
+        auto isConnectionFromLeft = pConnectionFrom->posX < pConnectionTo->posX;
+        double connectionOffsetMultiplier = (isConnectionFromLeft ? -1 : 1);
+
+        auto lineOffset = static_cast<double>(connectionNumber) / (static_cast<double>(connectionCount));
+        auto xOffset =
+                (isConnectionFromLeft ? 0 : vertexRadius) +
+                lineOffset * vertexRadius -
+                connectionOffsetMultiplier * pConnection->getArrowSize();
 
         auto fromPos = QPointF(pConnectionFrom->posX + vertexRadius, pConnectionFrom->posY + 2 * vertexRadius + pConnection->getArrowSize());
         auto toPos = QPointF(pConnectionTo->posX + xOffset, pConnectionTo->posY - pConnection->getArrowSize());
@@ -152,6 +160,7 @@ void GraphSceneBase::updateGraph()
 
         pConnection->setData(ObjectSceneConstants::OBJECTFIELD_NAME, con.name);
         pConnection->setData(ObjectSceneConstants::OBJECTFIELD_OBJECTTYPE,      OBJECT_TYPE_CONNECTION);
+        pConnection->setToolTip(con.name);
         addObject(pConnection);
     }
 }

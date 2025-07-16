@@ -64,7 +64,7 @@ bool GraphObject::operator !=(const GraphObject &gObj_) const
 void GraphObject::setIdGenerator(const std::function<uint ()> &fGen)
 {
     if (!fGen) {
-        throw std::invalid_argument("ObjectScene: invalid id generator passed into setIdGenerator");
+        throw std::invalid_argument("GraphObject: invalid id generator passed into setIdGenerator");
     }
 
     m_idGenerator = fGen;

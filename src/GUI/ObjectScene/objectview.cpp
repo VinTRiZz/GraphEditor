@@ -136,6 +136,10 @@ void ObjectView::mousePressEvent(QMouseEvent *e)
         setCursor(Qt::SizeAllCursor);
         m_prevPos = mapToScene(e->pos());
     }
+
+    if (m_movingCallback) {
+        m_movingCallback(mapToScene(e->pos()));
+    }
     QGraphicsView::mousePressEvent(e);
 }
 
@@ -154,7 +158,7 @@ void ObjectView::mouseMoveEvent(QMouseEvent *e)
     }
 
     if (m_movingCallback) {
-        m_movingCallback(e->scenePosition());
+        m_movingCallback(mapToScene(e->pos()));
     }
 }
 

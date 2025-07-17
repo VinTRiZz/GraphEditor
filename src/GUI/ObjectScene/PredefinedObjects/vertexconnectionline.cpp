@@ -11,6 +11,8 @@
 
 #include "logging.h"
 
+#include "vertexobject.h"
+
 namespace PredefinedObjects
 {
 
@@ -43,6 +45,27 @@ VertexConnectionLine::VertexConnectionLine(QGraphicsItem *parent) :
     m_lineSelected->hide();
 
     m_pArrowHeadPolygon = new QGraphicsPolygonItem(this);
+}
+
+VertexConnectionLine::~VertexConnectionLine()
+{
+    if (m_fromVertex) {
+        m_fromVertex->unsubscribeConnectionFrom(this);
+    }
+
+    if (m_toVertex) {
+        m_toVertex->unsubscribeConnectionTo(this);
+    }
+}
+
+void VertexConnectionLine::setVertexFrom(VertexObject *pVertexFrom)
+{
+    m_fromVertex = pVertexFrom;
+}
+
+void VertexConnectionLine::setVertexTo(VertexObject *pVertexTo)
+{
+    m_toVertex = pVertexTo;
 }
 
 void VertexConnectionLine::setLine(const QLineF &line)

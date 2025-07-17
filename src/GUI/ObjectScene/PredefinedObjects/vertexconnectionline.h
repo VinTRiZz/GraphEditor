@@ -12,13 +12,16 @@
 namespace PredefinedObjects
 {
 
+class VertexObject;
+
 class VertexConnectionLine : public QGraphicsItem
 {
 public:
     explicit VertexConnectionLine(QGraphicsItem *parent = nullptr);
+    ~VertexConnectionLine();
 
-    void setVertexFrom(QGraphicsItem* pVertexFrom);
-    void setVertexTo(QGraphicsItem* pVertexFrom);
+    void setVertexFrom(VertexObject* pVertexFrom);
+    void setVertexTo(VertexObject* pVertexTo);
 
     void setLine(const QLineF& line);
     QLineF getLine() const;
@@ -40,9 +43,8 @@ protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget*widget) override;
 
 private:
-    void updatePolygon();
-    QPainterPath createLinePath();
-    QPolygonF createPolygon(const QLineF& line);
+    VertexObject*   m_fromVertex {nullptr};
+    VertexObject*   m_toVertex {nullptr};
 
     QLinearGradient m_penSelectedGradient;
     QLinearGradient m_penGradient;
@@ -62,6 +64,9 @@ private:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
+    void updatePolygon();
+    QPainterPath createLinePath();
+    QPolygonF createPolygon(const QLineF& line);
     void updatePen();
 };
 

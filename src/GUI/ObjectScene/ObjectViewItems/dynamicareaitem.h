@@ -3,6 +3,9 @@
 
 #include "itembase.h"
 
+#include <QBrush>
+#include <QPen>
+
 namespace ObjectViewItems
 {
 
@@ -22,8 +25,25 @@ public:
     void removeRegisteredItems(ObjectViewConstants::ObjectType objT);
 
 private:
-    QGraphicsRectItem* m_pCenterRect {nullptr};
+
+    // TODO: Убрать, когда напишу динамический ресайз
+    QGraphicsRectItem* m_hardcodeRect {nullptr};
+
+
+    QRectF m_fieldRect;
+    QBrush m_fieldBrush;
+    QPen   m_gridPen;
+
+    std::pair<double, double> m_matrixMin; // Для маппинга
+    std::pair<double, double> m_matrixMax; // Для маппинга
+
+    std::list<std::list<QGraphicsRectItem*> > m_fieldMatrix; // cols with rows
     std::list<ItemBase*> m_registeredItems;
+
+    void setFieldRect(int minX, int minY, int maxX, int maxY);
+    void updateFieldRect();
+    void updateRectSizes();
+    QGraphicsItem* getFieldByPos(const QPointF& p);
 };
 
 }

@@ -19,11 +19,6 @@ ObjectsInternalScene::~ObjectsInternalScene()
 
 }
 
-void ObjectsInternalScene::resizeScene(const QSize &iSize)
-{
-    m_pNullItem->setRectSize(QRectF(0, 0, iSize.width(), iSize.height()));
-}
-
 ObjectViewItems::ItemBase *ObjectsInternalScene::getParentOfComplex(QGraphicsItem *pItem)
 {
     auto itemParentIdVariant = pItem->data(ObjectViewConstants::OBJECTFIELD_PARENTITEM_ID);
@@ -42,7 +37,7 @@ void ObjectsInternalScene::init()
 {
     m_pNullItem = new DynamicAreaItem();
     m_pNullItem->setBrush(QColor(210, 215, 210));
-    m_pNullItem->setPen(QPen(Qt::red, 2));
+    m_pNullItem->setPen(QPen(QColor(110, 115, 110), 2));
     m_pNullItem->setZValue(0);
     addItem(m_pNullItem);
 }

@@ -2,18 +2,23 @@
 #define ARROWLINE_H
 
 #include <QGraphicsLineItem>
+#include <QPen>
 
-#include "predefinedobjectbase.h"
+#include "itembase.h"
 
-namespace PredefinedObjects
+namespace ObjectViewItems
 {
 
-class ArrowedLine : public PredefinedObjectBase
+class ArrowedLine : public ItemBase
 {
 public:
     explicit ArrowedLine(QGraphicsItem *parent = nullptr);
 
+    void setPen(const QPen& drawPen);
+    void setSelectedPen(const QPen& drawPen);
+
     void setLine(const QLineF& iLine);
+    void setLine(const QPointF& p1, const QPointF& p2);
     QLineF getLine() const;
 
     /**
@@ -33,10 +38,13 @@ protected:
 
 private:
     void drawArrow(QPainter *painter);
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 
-    qreal m_arrowSize {10}; // Размер стрелки
+    QGraphicsLineItem* m_line {nullptr};
 
-    QLineF m_straightLine;
+    qreal   m_arrowSize {10}; // Размер стрелки
+    QPen    m_drawPen;
+    QPen    m_drawSelectedPen;
 };
 
 }

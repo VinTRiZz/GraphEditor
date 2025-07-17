@@ -191,9 +191,9 @@ bool SaveMaster::load(const QString &iFilePath, Graph::GraphObject &oGraphObject
         Graph::GVertex vert;
         int valPos {0};
 
-        vert.id                 = q.value(valPos++).toUInt();
-        vert.posX               = q.value(valPos++).toUInt();
-        vert.posY               = q.value(valPos++).toUInt();
+        vert.id                 = q.value(valPos++).toLongLong();
+        vert.posX               = q.value(valPos++).toLongLong();
+        vert.posY               = q.value(valPos++).toLongLong();
         vert.shortName          = q.value(valPos++).toString();
         vert.name               = q.value(valPos++).toString();
         vert.description        = q.value(valPos++).toString();
@@ -212,8 +212,8 @@ bool SaveMaster::load(const QString &iFilePath, Graph::GraphObject &oGraphObject
         int valPos {0};
         valPos++; // Skip ID
 
-        con.idFrom              = q.value(valPos++).toUInt();
-        con.idTo                = q.value(valPos++).toUInt();
+        con.idFrom              = q.value(valPos++).toLongLong();
+        con.idTo                = q.value(valPos++).toLongLong();
         con.connectionWeight    = q.value(valPos++).toDouble();
         con.name                = q.value(valPos++).toString();
         con.lineColor           = getDecodedColor(q.value(valPos++).toByteArray());

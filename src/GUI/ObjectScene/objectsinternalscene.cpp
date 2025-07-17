@@ -1,21 +1,17 @@
 #include "objectsinternalscene.h"
+
 #include "objectsceneconstants.h"
 
-#include <QGraphicsItem>
 #include <QGraphicsRectItem>
 
 #include "logging.h"
 
+using namespace ObjectViewItems;
+
 ObjectsInternalScene::ObjectsInternalScene(QObject *parent) :
     QGraphicsScene(parent)
 {
-    ObjectSceneConstants::objectId_t currentId {1};
-    m_idGenerator = [currentId]() mutable -> ObjectSceneConstants::objectId_t {
-        if (currentId + 1 == std::numeric_limits<decltype(currentId)>::max()) [[unlikely]] {
-            return 1;
-        }
-        return currentId++;
-    };
+
 }
 
 ObjectsInternalScene::~ObjectsInternalScene()
@@ -25,79 +21,58 @@ ObjectsInternalScene::~ObjectsInternalScene()
 
 void ObjectsInternalScene::resizeScene(const QSize &iSize)
 {
-    static_cast<QGraphicsRectItem*>(m_pNullItem)->setRect(0, 0, iSize.width(), iSize.height());
+    m_pNullItem->setRectSize(QRectF(0, 0, iSize.width(), iSize.height()));
 }
 
-QGraphicsItem *ObjectsInternalScene::getParentOfComplex(QGraphicsItem *pItem)
+ObjectViewItems::ItemBase *ObjectsInternalScene::getParentOfComplex(QGraphicsItem *pItem)
 {
     auto itemParentIdVariant = pItem->data(ObjectSceneConstants::OBJECTFIELD_PARENTITEM_ID);
     if (itemParentIdVariant.isNull()) {
-        return pItem;
+        return dynamic_cast<ObjectViewItems::ItemBase*>(pItem);
     }
-    return getObject(itemParentIdVariant.toUInt());
+    return getObject(itemParentIdVariant.toLongLong());
 }
 
 bool ObjectsInternalScene::isNullItem(QGraphicsItem *pItem) const
 {
-    return (pItem == m_pNullItem);
+    return (dynamic_cast<ObjectViewItems::DynamicAreaItem*>(pItem) != nullptr);
 }
 
 void ObjectsInternalScene::init()
 {
-    auto pNullRectItem = new QGraphicsRectItem();
-
-    QRect nullRect;
-    nullRect.setWidth(500);
-    nullRect.setHeight(500);
-    pNullRectItem->setRect(nullRect);
-    pNullRectItem->setBrush(QColor(210, 215, 210));
-    pNullRectItem->setPen(QPen(Qt::red, 2));
-    pNullRectItem->setZValue(0);
-
-    m_pNullItem = pNullRectItem;
-    pNullRectItem->setData(ObjectSceneConstants::OBJECTFIELD_ID, 0);
-    m_pNullItem->setData(ObjectSceneConstants::OBJECTFIELD_NAME, "NULL ITEM");
-
+    m_pNullItem = new DynamicAreaItem();
+    m_pNullItem->setBrush(QColor(210, 215, 210));
+    m_pNullItem->setPen(QPen(Qt::red, 2));
+    m_pNullItem->setZValue(0);
     addItem(m_pNullItem);
 }
 
 void ObjectsInternalScene::clearScene()
 {
-    for (auto pChild : m_pNullItem->childItems()) {
-        removeItem(pChild);
-    }
-    m_pNullItem->childItems().clear();
+    m_pNullItem->clearRegisteredItems();
 }
 
-ObjectSceneConstants::objectId_t ObjectsInternalScene::addObject(QGraphicsItem *pItem)
+void ObjectsInternalScene::addObject(ObjectViewItems::ItemBase *pItem)
 {
-    if (pItem == nullptr) {
+    if (nullptr == pItem ||
+        nullptr == dynamic_cast<ObjectViewItems::ItemBase*>(pItem)) {
         throw std::invalid_argument("ObjectsScene-internal: invalid (nullptr) item");
     }
-    auto nextId = m_idGenerator();
 
-    // На всякий случай
-    if (m_objectsMap.contains(nextId)) {
-        throw std::runtime_error("ObjectScene-internal: ID, got from generator, already exists! Check generator functor");
-    }
-
-    pItem->setData(ObjectSceneConstants::OBJECTFIELD_ID, nextId);
-
-    std::function<void(QGraphicsItem*, ObjectSceneConstants::objectId_t)> setChildComplexId = [&setChildComplexId](QGraphicsItem* pItem, ObjectSceneConstants::objectId_t parentId){
+    std::function<void(QGraphicsItem*, ObjectSceneConstants::objectId_t)> setChildComplexId =
+        [&setChildComplexId](QGraphicsItem* pItem, ObjectSceneConstants::objectId_t parentId){
         pItem->setData(ObjectSceneConstants::OBJECTFIELD_PARENTITEM_ID, parentId);
         for (auto* pChild : pItem->childItems()) {
             setChildComplexId(pChild, parentId);
         }
     };
-    setChildComplexId(pItem, nextId);
+    setChildComplexId(pItem, pItem->getObjectId());
     pItem->setData(ObjectSceneConstants::OBJECTFIELD_PARENTITEM_ID, QVariant()); // Обнуление для сохранения зависимости parent-child
-
-    m_objectsMap[nextId] = pItem;
-    pItem->setParentItem(m_pNullItem);
-    return nextId;
+    m_objectsMap[pItem->getObjectId()] = pItem;
+    m_pNullItem->registerItem(pItem);
 }
 
-QGraphicsItem *ObjectsInternalScene::getObject(ObjectSceneConstants::objectId_t objectId)
+ObjectViewItems::ItemBase *ObjectsInternalScene::getObject(ObjectSceneConstants::objectId_t objectId)
 {
     auto targetObject = m_objectsMap.find(objectId);
     if (targetObject == m_objectsMap.end()) {
@@ -106,7 +81,12 @@ QGraphicsItem *ObjectsInternalScene::getObject(ObjectSceneConstants::objectId_t 
     return targetObject.value();
 }
 
-QList<ObjectSceneConstants::objectId_t> ObjectsInternalScene::getAlObjectIds() const
+QList<ObjectViewItems::ItemBase *> ObjectsInternalScene::getAllObjects() const
+{
+    return m_objectsMap.values();
+}
+
+QList<ObjectSceneConstants::objectId_t> ObjectsInternalScene::getAllObjectIds() const
 {
     return m_objectsMap.keys();
 }
@@ -122,10 +102,10 @@ void ObjectsInternalScene::removeObject(ObjectSceneConstants::objectId_t itemId)
 
 void ObjectsInternalScene::setBackgroundColor(const QColor &bgrColor)
 {
-    static_cast<QGraphicsRectItem*>(m_pNullItem)->setBrush(bgrColor);
+    m_pNullItem->setBrush(bgrColor);
 }
 
 void ObjectsInternalScene::setBorderColor(const QColor &borderColor)
 {
-    static_cast<QGraphicsRectItem*>(m_pNullItem)->setPen(QPen(borderColor, 2));
+    m_pNullItem->setPen(QPen(borderColor, 3));
 }

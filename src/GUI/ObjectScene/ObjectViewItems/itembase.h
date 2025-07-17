@@ -5,17 +5,19 @@
 
 #include "../objectsceneconstants.h"
 
-namespace PredefinedObjects
+namespace ObjectViewItems
 {
 
-class PredefinedObjectBase : public QGraphicsItem
+class ItemBase : public QGraphicsItem
 {
 public:
-    explicit PredefinedObjectBase(QGraphicsItem* parent = nullptr);
+    explicit ItemBase(QGraphicsItem* parent = nullptr);
 
     void setType(ObjectSceneConstants::ObjectType objType);
     ObjectSceneConstants::ObjectType getType() const;
 
+    void setSystemId();
+    void setObjectId(ObjectSceneConstants::objectId_t id);
     ObjectSceneConstants::objectId_t getObjectId() const;
 
     virtual void setShortName(const QString& text);

@@ -20,7 +20,7 @@ GraphExtendedObject &GraphExtendedObject::operator =(const GraphObject &obj)
     return *this;
 }
 
-uint GraphExtendedObject::addVertex(const GVertex &iVert)
+GraphCommon::graphId_t GraphExtendedObject::addVertex(const GVertex &iVert)
 {
     auto id = GraphObject::addVertex(iVert);
     emit vertexAdded(id);
@@ -36,7 +36,7 @@ bool GraphExtendedObject::updateVertex(const GVertex &iVert)
     return res;
 }
 
-void GraphExtendedObject::removeVertex(uint vertexId)
+void GraphExtendedObject::removeVertex(GraphCommon::graphId_t vertexId)
 {
     GraphObject::removeVertex(vertexId);
     emit vertexRemoved(vertexId);
@@ -51,7 +51,7 @@ bool GraphExtendedObject::addConnection(const GConnection &iCon)
     return res;
 }
 
-void GraphExtendedObject::removeConnection(uint conFrom, uint conTo)
+void GraphExtendedObject::removeConnection(GraphCommon::graphId_t conFrom, GraphCommon::graphId_t conTo)
 {
     GraphObject::removeConnection(conFrom, conTo);
     emit connectionRemoved(conFrom, conTo);

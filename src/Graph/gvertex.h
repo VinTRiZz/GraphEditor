@@ -1,10 +1,12 @@
 #ifndef GVERTEX_H
 #define GVERTEX_H
 
-#include "qicon.h"
+#include <QIcon>
 #include <QString>
 #include <QPixmap>
 #include <QJsonObject>
+
+#include "graphcommon.h"
 
 namespace Graph
 {
@@ -16,7 +18,7 @@ const unsigned GRAPH_MAX_SHORTNAME_SIZE { 10 };
  */
 struct GVertex
 {
-    uint        id                  {0};                //! ID вершины
+    GraphCommon::graphId_t        id                  {0};                //! ID вершины
     double      posX                {0};                //! При наличии, положение на графе. Записывается после первой отрисовки
     double      posY                {0};                //! При наличии, положение на графе. Записывается после первой отрисовки
 

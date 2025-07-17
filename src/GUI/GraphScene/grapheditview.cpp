@@ -21,9 +21,9 @@ void GraphEditView::init()
     m_viewMode.setGraphScene(this);
     m_editMode.setGraphScene(this);
 
+    GraphSceneBase::init();
     m_viewMode.init();
     m_editMode.init();
-    GraphSceneBase::init();
     LOG_INFO("Inited graph view");
 
     startViewMode();

@@ -9,14 +9,14 @@
 #include <QGraphicsLineItem>
 #include <QGraphicsPolygonItem>
 
-#include "predefinedobjectbase.h"
+#include "itembase.h"
 
-namespace PredefinedObjects
+namespace ObjectViewItems
 {
 
 class VertexObject;
 
-class VertexConnectionLine : public PredefinedObjectBase
+class VertexConnectionLine : public ItemBase
 {
 public:
     explicit VertexConnectionLine(QGraphicsItem *parent = nullptr);

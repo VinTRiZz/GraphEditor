@@ -10,6 +10,8 @@
 namespace GraphCommon
 {
 
+using graphId_t = long long;
+
 /**
  * @brief The GraphProperty enum Обычные для всех свойства графа
  */

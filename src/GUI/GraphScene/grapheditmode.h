@@ -43,18 +43,22 @@ private:
 
     void clearMode();
 
-    PredefinedObjects::VertexObject*            m_movingVertex {nullptr};
-    PredefinedObjects::VertexConnectionLine*    m_movingConnectionLine {nullptr};
-    void toggleMovingItem(PredefinedObjects::PredefinedObjectBase* pItem);
+    ObjectViewItems::VertexObject*            m_movingVertex {nullptr};
+    ObjectViewItems::VertexConnectionLine*    m_movingConnectionLine {nullptr};
+    void toggleMovingItem(ObjectViewItems::ItemBase* pItem);
     void clearMovingMode();
 
-    PredefinedObjects::VertexConnectionLine* m_pendingConnectionLine {nullptr};
-    void setPendingConnection(PredefinedObjects::PredefinedObjectBase* pTargetVertexItem);
+    ObjectViewItems::VertexConnectionLine* m_pendingConnectionLine {nullptr};
+    void setPendingConnection(ObjectViewItems::ItemBase* pTargetVertexItem);
     void clearConnectionAddMode();
 
-    PredefinedObjects::VertexObject* m_pendingVertex {nullptr};
-    void setPendingVertex(PredefinedObjects::PredefinedObjectBase* pItem);
+    ObjectViewItems::VertexObject* m_pendingVertex {nullptr};
+    void setPendingVertex(ObjectViewItems::ItemBase* pItem);
     void clearVertexAddMode();
+
+    ObjectViewItems::PropertyEditItem* m_propertyEditor {nullptr};
+    void setTargetForPropertyEditor(ObjectViewItems::ItemBase* pItem);
+    void clearPropertyEditMode();
 };
 
 }

@@ -1,7 +1,6 @@
 #include "graphscenebase.h"
 
-#include "GUI/ObjectScene/predefinedobjects.h"
-
+#include "Graph/graphcommon.h"
 #include "logging.h"
 
 namespace Graph
@@ -60,6 +59,40 @@ void GraphSceneBase::setMode(GraphModeBase *pMode)
     pMode->start();
 }
 
+void GraphSceneBase::writeChangesToGraph()
+{
+    auto objects = getAllObjects();
+
+    std::list<ObjectViewItems::ItemBase*> vertices;
+    std::list<ObjectViewItems::ItemBase*> connections;
+
+    for (auto pObject : objects) {
+        auto pCastedObject = dynamic_cast<ObjectViewItems::ItemBase*>(pObject);
+        if (nullptr == pCastedObject) {
+            continue;
+        }
+
+        if (pCastedObject->getType() == ObjectSceneConstants::OBJECTTYPE_VERTEX) {
+            vertices.push_back(pCastedObject);
+            continue;
+        }
+
+        if (pCastedObject->getType() == ObjectSceneConstants::OBJECTTYPE_VERTEX_CONNECTION) {
+            connections.push_back(pCastedObject);
+        }
+    }
+
+    Graph::GVertex tmpVertex;
+    for (auto vert : vertices) {
+        tmpVertex.id = vert->getObjectId();
+    }
+
+    Graph::GConnection tmpConnection;
+    for (auto con : connections) {
+        // TODO: Update connections
+    }
+}
+
 void GraphSceneBase::setCurrentGraph(Graph::GraphExtendedObject* pGraph)
 {
     m_pGraph = pGraph;
@@ -93,10 +126,10 @@ void GraphSceneBase::updateGraph()
     vertexRect.setHeight(sceneConfig.vertexWidth);
 
     auto vertices = m_pGraph->getAllVertices();
-    std::unordered_map<uint, PredefinedObjects::VertexObject*> vertexObjects;
+    std::unordered_map<GraphCommon::graphId_t, ObjectViewItems::VertexObject*> vertexObjects;
 
     for (auto& vert : vertices) {
-        auto pVertexItem = new PredefinedObjects::VertexObject;
+        auto pVertexItem = createVertex(vert.id);
 
         if (!vert.image.isNull()) {
             pVertexItem->setImage(vert.image);
@@ -113,14 +146,13 @@ void GraphSceneBase::updateGraph()
 
         pVertexItem->setNodeColor(vert.borderColor, vert.backgroundColor);
 
-        addObject(pVertexItem);
         vertexObjects[vert.id] = pVertexItem;
     }
 
     const GVertex* pConnectionFrom {nullptr};
     const GVertex* pConnectionTo {nullptr};
 
-    QHash<uint, std::vector<GConnection> > connectionHash;
+    QHash<GraphCommon::graphId_t, std::vector<GConnection> > connectionHash;
 
     for (auto& con : m_pGraph->getAllConnections()) {
         auto pConFrom = vertexObjects.find(con.idFrom);
@@ -133,35 +165,33 @@ void GraphSceneBase::updateGraph()
             throw std::runtime_error("Target vertex did not found!");
         }
 
-        auto pConnection = new PredefinedObjects::VertexConnectionLine;
+        auto pConnection = createConnectionLine(con.idFrom, con.idTo);
 
         pConnection->setPen(con.lineColor);
         pConnection->setZValue(sceneConfig.connectionLineLayer);
 
         pConnection->setName(con.name);
         pConnection->setToolTip(con.name);
-        addObject(pConnection);
 
         pConFrom->second->subscribeAsConnectionFrom(pConnection);
         pConTo->second->subscribeAsConnectionTo(pConnection);
     }
 }
 
-PredefinedObjects::VertexConnectionLine *GraphSceneBase::createConnectionLine()
+ObjectViewItems::VertexConnectionLine *GraphSceneBase::createConnectionLine(ObjectSceneConstants::objectId_t idFrom, ObjectSceneConstants::objectId_t idTo)
 {
-    auto pConnection = new PredefinedObjects::VertexConnectionLine;
-
+    auto pConnection = new ObjectViewItems::VertexConnectionLine;
+    pConnection->setObjectId(idFrom << 16 | idTo); // TODO: Придумать чёт с соединениями
     pConnection->setZValue(GraphSceneConfiguration::getInstance().connectionLineLayer);
-
-    pConnection->setName({});
     addObject(pConnection);
 
     return pConnection;
 }
 
-PredefinedObjects::VertexObject *GraphSceneBase::createVertex()
+ObjectViewItems::VertexObject *GraphSceneBase::createVertex(ObjectSceneConstants::objectId_t vertexId)
 {
-    auto pVertexItem = new PredefinedObjects::VertexObject;
+    auto pVertexItem = new ObjectViewItems::VertexObject;
+    pVertexItem->setObjectId(vertexId);
 
     pVertexItem->setShortName("My node");
     pVertexItem->setName("My node template");
@@ -176,7 +206,6 @@ PredefinedObjects::VertexObject *GraphSceneBase::createVertex()
     pVertexItem->setRect(vertexRect);
 
     addObject(pVertexItem);
-
     return pVertexItem;
 }
 

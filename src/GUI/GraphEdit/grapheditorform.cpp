@@ -75,6 +75,8 @@ void GraphEditorForm::saveGraph()
         m_currentGraphFilePath += ".gse";
     }
 
+    ui->graphScene->writeChangesToGraph();
+
     auto saveSucceed = SaveMaster::save(m_currentGraphFilePath, *m_currentGraph);
     if (!saveSucceed) {
         GraphCommon::showError("Ошибка сохранения графа");

@@ -5,14 +5,14 @@
 #include <QPen>
 #include <set>
 
-#include "predefinedobjectbase.h"
+#include "itembase.h"
 
-namespace PredefinedObjects
+namespace ObjectViewItems
 {
 
 class VertexConnectionLine;
 
-class VertexObject : public PredefinedObjectBase
+class VertexObject : public ItemBase
 {
 public:
     explicit VertexObject(QGraphicsItem *parent = nullptr);
@@ -23,7 +23,11 @@ public:
     void setShortName(const QString& iText) override;
 
     void setNodeColor(const QColor& borderColor, const QBrush &backgroundBrush);
-    void setVertexBrush(const QBrush& mainBackground, const QBrush& textBackground);
+    void setTextBackgroundBrush(const QBrush& textBackground);
+
+    QColor getBorderColor() const;
+    QColor getBackgroundColor() const;
+    QImage getImage() const;
 
     void setRect(const QRectF& iRect);
 

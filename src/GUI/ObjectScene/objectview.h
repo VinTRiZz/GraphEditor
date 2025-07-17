@@ -6,6 +6,7 @@
 #include <optional>
 
 #include "objectsceneconstants.h"
+#include "predefinedobjects.h"
 
 namespace Ui {
 class ObjectScene;
@@ -35,8 +36,10 @@ public:
     void setContextMenu(QMenu* pMenu);
     QGraphicsItem* getContextMenuItem();
 
-    ObjectSceneConstants::objectId_t addObject(QGraphicsItem* pItem);
-    QList<ObjectSceneConstants::objectId_t> getAlObjectIds() const;
+    void addObject(ObjectViewItems::ItemBase *pItem);
+    QGraphicsItem* getObject(ObjectSceneConstants::objectId_t itemId) const;
+    QList<ObjectViewItems::ItemBase *> getAllObjects() const;
+    QList<ObjectSceneConstants::objectId_t> getAllObjectIds() const;
     void removeAllObjects();
     void removeObject(ObjectSceneConstants::objectId_t itemId);
 

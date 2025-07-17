@@ -1,8 +1,10 @@
 #ifndef PREDEFINEDOBJECTS_H
 #define PREDEFINEDOBJECTS_H
 
-#include "PredefinedObjects/arrowline.h"
-#include "PredefinedObjects/vertexconnectionline.h"
-#include "PredefinedObjects/vertexobject.h"
+#include "ObjectViewItems/dynamicareaitem.h"
+#include "ObjectViewItems/arrowline.h"
+#include "ObjectViewItems/vertexobject.h"
+#include "ObjectViewItems/vertexconnectionline.h"
+#include "ObjectViewItems/propertyedititem.h"
 
 #endif // PREDEFINEDOBJECTS_H

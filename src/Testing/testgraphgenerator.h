@@ -8,9 +8,9 @@
 class TestGraphGenerator : public boost::noncopyable
 {
 public:
-    static Graph::GConnection  generateConnection(uint idFrom, uint idTo);
-    static Graph::GVertex      generateVertex(uint id);
-    static Graph::GraphObject  generateGraph(uint vertexCount);
+    static Graph::GConnection  generateConnection(GraphCommon::graphId_t idFrom, GraphCommon::graphId_t idTo);
+    static Graph::GVertex      generateVertex(GraphCommon::graphId_t id);
+    static Graph::GraphObject  generateGraph(GraphCommon::graphId_t vertexCount);
 };
 
 #endif // TESTGRAPHGENERATOR_H

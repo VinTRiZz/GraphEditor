@@ -5,7 +5,7 @@
 
 #include <QIcon>
 
-Graph::GConnection TestGraphGenerator::generateConnection(uint idFrom, uint idTo)
+Graph::GConnection TestGraphGenerator::generateConnection(GraphCommon::graphId_t idFrom, GraphCommon::graphId_t idTo)
 {
     Graph::GConnection res;
 
@@ -20,7 +20,7 @@ Graph::GConnection TestGraphGenerator::generateConnection(uint idFrom, uint idTo
     return res;
 }
 
-Graph::GVertex TestGraphGenerator::generateVertex(uint id)
+Graph::GVertex TestGraphGenerator::generateVertex(GraphCommon::graphId_t id)
 {
     Graph::GVertex result;
     result.id = id;
@@ -37,7 +37,7 @@ Graph::GVertex TestGraphGenerator::generateVertex(uint id)
     return result;
 }
 
-Graph::GraphObject TestGraphGenerator::generateGraph(uint vertexCount)
+Graph::GraphObject TestGraphGenerator::generateGraph(GraphCommon::graphId_t vertexCount)
 {
     Graph::GraphObject result;
 
@@ -46,15 +46,15 @@ Graph::GraphObject TestGraphGenerator::generateGraph(uint vertexCount)
     result.setCreateTime(QDateTime::currentDateTime());
     result.setEditTime(QDateTime::currentDateTime());
 
-//    for (uint i = 0; i < vertexCount; ++i) {
+//    for (GraphCommon::graphId_t i = 0; i < vertexCount; ++i) {
 //        result.addVertex(generateVertex(i));
 //    }
 
 //    if (vertexCount > 0) {
-//        std::list<uint> addedVertexes;
+//        std::list<GraphCommon::graphId_t> addedVertexes;
 //        auto vertices = result.getAllVertices();
-//        for (uint i = 0; i < vertexCount; ++i) {
-//            for (uint j = 0; j < 3; ++j) {
+//        for (GraphCommon::graphId_t i = 0; i < vertexCount; ++i) {
+//            for (GraphCommon::graphId_t j = 0; j < 3; ++j) {
 //                auto targetVertex = vertices.at(std::abs(std::rand()) % vertices.size());
 //                while (targetVertex.id == i) {
 //                    targetVertex = vertices.at(std::abs(std::rand()) % vertices.size());

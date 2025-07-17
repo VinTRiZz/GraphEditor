@@ -14,12 +14,14 @@
 #include "vertexobject.h"
 #include "../objectsceneconstants.h"
 
-namespace PredefinedObjects
+namespace ObjectViewItems
 {
 
 VertexConnectionLine::VertexConnectionLine(QGraphicsItem *parent) :
-    PredefinedObjectBase(parent)
+    ItemBase(parent)
 {
+    setName("Vertex connection line");
+
     setType(ObjectSceneConstants::OBJECTTYPE_VERTEX_CONNECTION);
 
     m_penSelectedGradient.setColorAt(0, QColor("#fff09c"));

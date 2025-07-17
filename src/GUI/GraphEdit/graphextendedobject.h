@@ -2,6 +2,8 @@
 #define GRAPHEXTENDEDOBJECT_H
 
 #include "Graph/graphobject.h"
+#include "Graph/graphcommon.h"
+
 #include <QObject>
 
 namespace Graph
@@ -20,13 +22,13 @@ public:
     GraphExtendedObject& operator =(const GraphObject& obj);
 
     // Все методы ниже аналогичны методам GraphObject, но они сигналят
-    uint addVertex(const GVertex& iVert);
+    GraphCommon::graphId_t addVertex(const GVertex& iVert);
     bool updateVertex(const GVertex& iVert);
-    void removeVertex(uint vertexId);
+    void removeVertex(GraphCommon::graphId_t vertexId);
 
     // Все методы ниже аналогичны методам GraphObject, но они сигналят
     bool addConnection(const GConnection& iCon);
-    void removeConnection(uint conFrom, uint conTo);
+    void removeConnection(GraphCommon::graphId_t conFrom, GraphCommon::graphId_t conTo);
 
     // Все методы ниже аналогичны методам GraphObject, но они сигналят
     void setName(const QString& iName);
@@ -42,12 +44,12 @@ signals:
     void graphPropertyChanged();
     void graphCustomPropertyChanged();
 
-    void vertexAdded(uint vertexId);
-    void vertexUpdate(uint vertexId);
-    void vertexRemoved(uint vertexId);
+    void vertexAdded(GraphCommon::graphId_t vertexId);
+    void vertexUpdate(GraphCommon::graphId_t vertexId);
+    void vertexRemoved(GraphCommon::graphId_t vertexId);
 
-    void connectionAdded(uint vertexFrom, uint vertexTo);
-    void connectionRemoved(uint vertexFrom, uint vertexTo);
+    void connectionAdded(GraphCommon::graphId_t vertexFrom, GraphCommon::graphId_t vertexTo);
+    void connectionRemoved(GraphCommon::graphId_t vertexFrom, GraphCommon::graphId_t vertexTo);
 };
 
 }

@@ -6,22 +6,39 @@
 
 #include <math.h>
 
-namespace PredefinedObjects
+namespace ObjectViewItems
 {
 
 ArrowedLine::ArrowedLine(QGraphicsItem *parent)
-    : PredefinedObjectBase(parent) {
+    : ItemBase(parent) {
+    setName("Arrowed line");
     setType(ObjectSceneConstants::OBJECTTYPE_ARROWLINE);
+    m_line = new QGraphicsLineItem(this);
+}
+
+void ArrowedLine::setPen(const QPen &drawPen)
+{
+    m_drawPen = drawPen;
+}
+
+void ArrowedLine::setSelectedPen(const QPen &drawPen)
+{
+    m_drawSelectedPen = drawPen;
 }
 
 void ArrowedLine::setLine(const QLineF &iLine)
 {
-    m_straightLine = iLine;
+    m_line->setLine(iLine);
+}
+
+void ArrowedLine::setLine(const QPointF &p1, const QPointF &p2)
+{
+    setLine(QLineF(p1, p2));
 }
 
 QLineF ArrowedLine::getLine() const
 {
-    return m_straightLine;
+    return m_line->line();
 }
 
 void ArrowedLine::setArrowSize(qreal arrowSize) { m_arrowSize = arrowSize; }
@@ -30,7 +47,6 @@ qreal ArrowedLine::getArrowSize() const { return m_arrowSize; }
 
 void ArrowedLine::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    painter->drawLine(m_straightLine);
     drawArrow(painter);
 }
 
@@ -64,6 +80,19 @@ void ArrowedLine::drawArrow(QPainter *painter)
     // Рисуем стрелку
     painter->setBrush(painter->pen().color());
     painter->drawPolygon(arrowHead);
+}
+
+QVariant ArrowedLine::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+    if (change == ItemSelectedChange) {
+        if (value.toBool()) {
+            m_line->setPen(m_drawSelectedPen);
+        } else {
+            m_line->setPen(m_drawPen);
+        }
+    }
+
+    return QGraphicsItem::itemChange(change, value);
 }
 
 }

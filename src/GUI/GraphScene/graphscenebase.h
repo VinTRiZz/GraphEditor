@@ -6,7 +6,6 @@
 
 #include "GUI/ObjectScene/objectview.h"
 #include "GUI/CustomWidgets/buttonmatrix.h"
-#include "GUI/ObjectScene/predefinedobjects.h"
 
 #include <boost/noncopyable.hpp>
 
@@ -19,8 +18,8 @@ namespace Graph
 struct GraphSceneConfiguration : boost::noncopyable
 {
     // Уровни расположения объектов на сцене по их типу
-    uint connectionLineLayer = 10;   //! Уровень линий соединения вершин
-    uint vertexLayer         = 20;   //! Уровень вершин
+    GraphCommon::graphId_t connectionLineLayer = 10;   //! Уровень линий соединения вершин
+    GraphCommon::graphId_t vertexLayer         = 20;   //! Уровень вершин
 
     double vertexWidth       = 100;  //! Ширина и высота вершины
 
@@ -40,6 +39,8 @@ public:
 
     void setMode(GraphModeBase* pMode);
 
+    void writeChangesToGraph();
+
     /**
      * @brief setCurrentGraph   Задать текущий граф
      * @param pGraph            Указатель на текущий граф
@@ -58,8 +59,8 @@ public:
      */
     ButtonMatrix::HeadButton* getButtonMatrixHead() const;
 
-    PredefinedObjects::VertexConnectionLine* createConnectionLine();
-    PredefinedObjects::VertexObject* createVertex();
+    ObjectViewItems::VertexConnectionLine* createConnectionLine(ObjectSceneConstants::objectId_t idFrom, ObjectSceneConstants::objectId_t idTo);
+    ObjectViewItems::VertexObject* createVertex(ObjectSceneConstants::objectId_t vertexId);
 
 protected:
     Graph::GraphExtendedObject* m_pGraph {nullptr};

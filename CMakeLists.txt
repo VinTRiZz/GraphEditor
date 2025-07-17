@@ -61,21 +61,13 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core Gui Sql)
 
 
 # Qt configuration
-set(CMAKE_AUTOUIC OFF)
-set(CMAKE_AUTOMOC OFF)
-set(CMAKE_AUTORCC OFF)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 
 # Target
 add_executable( ${PROJECT_NAME} )
 
-# Qt things
-qt_wrap_cpp(MOC_SOURCES ${HEADERS})
-target_sources(${PROJECT_NAME} PRIVATE ${MOC_SOURCES})
-
-# UI files
-qt_wrap_ui(UI_SOURCES ${UIFILES})
-target_sources(${PROJECT_NAME} PRIVATE ${UI_SOURCES})
-qt_generate_moc(${UI_SOURCES} ${PROJECT_NAME})
 target_include_directories( ${PROJECT_NAME} PRIVATE ${CMAKE_CACHEFILE_DIR} )
 target_include_directories( ${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src )
 

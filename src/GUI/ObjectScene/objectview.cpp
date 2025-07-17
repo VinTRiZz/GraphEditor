@@ -48,14 +48,24 @@ QGraphicsItem *ObjectView::getContextMenuItem()
     return m_contextMenuItem;
 }
 
-ObjectSceneConstants::objectId_t ObjectView::addObject(QGraphicsItem *pItem)
+void ObjectView::addObject(ObjectViewItems::ItemBase *pItem)
 {
-    return m_pScene->addObject(pItem);
+    m_pScene->addObject(pItem);
 }
 
-QList<ObjectSceneConstants::objectId_t> ObjectView::getAlObjectIds() const
+QGraphicsItem *ObjectView::getObject(ObjectSceneConstants::objectId_t itemId) const
 {
-    return m_pScene->getAlObjectIds();
+    return m_pScene->getObject(itemId);
+}
+
+QList<ObjectViewItems::ItemBase *> ObjectView::getAllObjects() const
+{
+    return m_pScene->getAllObjects();
+}
+
+QList<ObjectSceneConstants::objectId_t> ObjectView::getAllObjectIds() const
+{
+    return m_pScene->getAllObjectIds();
 }
 
 void ObjectView::removeAllObjects()
@@ -91,7 +101,7 @@ void ObjectView::setGrabObject(QGraphicsItem *pItem)
         m_grabObjectId = std::nullopt;
         return;
     }
-    m_grabObjectId = pItem->data(ObjectSceneConstants::ObjectField::OBJECTFIELD_ID).toUInt();
+    m_grabObjectId = pItem->data(ObjectSceneConstants::ObjectField::OBJECTFIELD_ID).toLongLong();
     m_grabObjectPos = pItem->pos();
 }
 

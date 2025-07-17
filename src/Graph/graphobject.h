@@ -9,6 +9,7 @@
 
 #include "gvertex.h"
 #include "gconnection.h"
+#include "graphcommon.h"
 
 namespace Graph
 {
@@ -29,7 +30,13 @@ public:
      * @brief setIdGenerator Установить генератор ID для вершин
      * @param fGen функтор генератора ID
      */
-    void setIdGenerator(const std::function<uint()>& fGen);
+    void setIdGenerator(const std::function<GraphCommon::graphId_t (bool)> &fGen);
+
+    /**
+     * @brief getNextId Получить ID, который будет следующим для вершины
+     * @return          ID
+     */
+    GraphCommon::graphId_t getNextId() const;
 
     // ============================================================== //
     // ================= Работа с вершинами графа =================== //
@@ -40,7 +47,7 @@ public:
      * @param iVert Структура с описанием свойств вершины
      * @return ID добавленной вершины
      */
-    uint addVertex(const GVertex& iVert);
+    GraphCommon::graphId_t addVertex(const GVertex& iVert);
 
     /**
      * @brief updateVertex Заменить свойства вершины на другие
@@ -54,7 +61,7 @@ public:
      * @param vertexId  ID вершины
      * @return          std::nullopt если вершины с таким ID нет
      */
-    std::optional<GVertex> getVertex(uint vertexId) const;
+    std::optional<GVertex> getVertex(GraphCommon::graphId_t vertexId) const;
 
     /**
      * @brief getAllVertices Получить все вершины графа
@@ -66,7 +73,7 @@ public:
      * @brief removeVertex Удалить вершину по ID
      * @param vertexId ID вершины
      */
-    void removeVertex(uint vertexId);
+    void removeVertex(GraphCommon::graphId_t vertexId);
 
 
     // ============================================================== //
@@ -85,7 +92,7 @@ public:
      * @param vertexId ID вершины
      * @return Вектор входящих соединений
      */
-    std::vector<GConnection> getConnectionsToVertex(uint vertexId) const;
+    std::vector<GConnection> getConnectionsToVertex(GraphCommon::graphId_t vertexId) const;
 
     /**
      * @brief getConnection Получить соединение по ID вершин, от и к которой оно идёт
@@ -93,7 +100,7 @@ public:
      * @param vertexToId    Вершина к которой исходит соединение
      * @return              std::nullopt если такого соединения нет
      */
-    std::optional<GConnection> getConnection(uint vertexFromId, uint vertexToId) const;
+    std::optional<GConnection> getConnection(GraphCommon::graphId_t vertexFromId, GraphCommon::graphId_t vertexToId) const;
 
     /**
      * @brief getAllConnections Получить все рёбра в графе
@@ -106,7 +113,7 @@ public:
      * @param conFrom Вершина от которой исходит ребро
      * @param conTo Вершина к которой исходит ребро
      */
-    void removeConnection(uint conFrom, uint conTo);
+    void removeConnection(GraphCommon::graphId_t conFrom, GraphCommon::graphId_t conTo);
 
 
     // ============================================================== //
@@ -188,11 +195,11 @@ public:
     std::map<QString, QVariant> getCustomValueMap() const;
 
 private:
-    std::function<uint()>   m_idGenerator; //! Генератор ID для вершин
+    std::function<GraphCommon::graphId_t(bool)>   m_idGenerator; //! Генератор ID для вершин
 
     // Через STL векторы для удобства работы с алгоритмами
     std::vector<GVertex>                m_vertices;     //! Вершины графа
-    std::multimap<uint, GConnection>    m_connections;  //! Рёбра графа. Ключ -- целевой ID вершины (в которую "входит" стрелка связи)
+    std::multimap<GraphCommon::graphId_t, GConnection>    m_connections;  //! Рёбра графа. Ключ -- целевой ID вершины (в которую "входит" стрелка связи)
 
     // Основные параметры графа
     QString     m_name;

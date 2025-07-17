@@ -16,7 +16,7 @@
 
 #include "Graph/graphcommon.h"
 
-namespace PredefinedObjects
+namespace ObjectViewItems
 {
 
 // Загрузка изображения с поддержкой прозрачности
@@ -33,8 +33,10 @@ QPixmap loadImageWithAlpha(const QString& path) {
 
 
 VertexObject::VertexObject(QGraphicsItem *parent) :
-    PredefinedObjectBase(parent)
+    ItemBase(parent)
 {
+    setName("Vertex object");
+
     setType(ObjectSceneConstants::OBJECTTYPE_VERTEX);
 
     setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -90,7 +92,7 @@ void VertexObject::setImage(const QImage &img)
 void VertexObject::setShortName(const QString &iText)
 {
     m_vertexText->setPlainText(iText);
-    PredefinedObjectBase::setShortName(iText);
+    ItemBase::setShortName(iText);
 }
 
 void VertexObject::setNodeColor(const QColor &borderColor, const QBrush &backgroundBrush)
@@ -108,10 +110,24 @@ void VertexObject::setNodeColor(const QColor &borderColor, const QBrush &backgro
     }
 }
 
-void VertexObject::setVertexBrush(const QBrush &mainBackground, const QBrush &textBackground)
+void VertexObject::setTextBackgroundBrush(const QBrush &textBackground)
 {
-    m_vertexEllipse->setBrush(mainBackground);
     m_vertexTextRect->setBrush(textBackground);
+}
+
+QColor VertexObject::getBorderColor() const
+{
+    return m_vertexEllipse->pen().color();
+}
+
+QColor VertexObject::getBackgroundColor() const
+{
+    return m_vertexEllipse->brush().color();
+}
+
+QImage VertexObject::getImage() const
+{
+    return m_vertexImage->pixmap().toImage();
 }
 
 void VertexObject::setRect(const QRectF &iRect)
@@ -145,7 +161,7 @@ void VertexObject::setRect(const QRectF &iRect)
     if (m_vertexImage->isVisible()) {
         m_vertexImage->setPixmap(m_vertexImage->pixmap().scaled(QSize(imageRect.width(), imageRect.height()), Qt::AspectRatioMode::KeepAspectRatio));
     }
-    m_vertexImage->moveBy((imageRect.width() - m_vertexImage->boundingRect().width()) / 2, 0);
+    m_vertexImage->setPos({(boundingRect().width() - m_vertexImage->boundingRect().width()) / 2.0, 0});
 
     // Текст
     auto textSize = std::max(itemRect.height() * textParts * 0.95 / maxParts, minSize);
@@ -230,7 +246,7 @@ QVariant VertexObject::itemChange(GraphicsItemChange change, const QVariant &val
         }
     }
 
-    return PredefinedObjectBase::itemChange(change, value);
+    return ItemBase::itemChange(change, value);
 }
 
 void VertexObject::setupTextItem()

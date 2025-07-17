@@ -26,7 +26,7 @@ void GraphSceneBase::init()
         m_buttonMatrixHead = new ButtonMatrix::HeadButton(this);
 
         m_buttonMatrixHead->setButtonsSize(QSize(50, 50));
-        m_buttonMatrixHead->setButtonMatrix(-10, -10, 0, 0);
+        m_buttonMatrixHead->setButtonMatrix(-10, 0, 0, 10);
         m_buttonMatrixHead->setButtonMargin(10);
 
         m_buttonMatrixHead->setAnimationSpeed(0.5);

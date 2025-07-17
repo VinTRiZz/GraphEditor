@@ -22,5 +22,6 @@
         <file>DATA/images/iconbase.svg</file>
         <file>DATA/images/vertexicons/person/green.svg</file>
         <file>DATA/images/vertexicons/person/red.svg</file>
+        <file>DATA/images/icons/editmode/mode_edit_properties_active.svg</file>
     </qresource>
 </RCC>

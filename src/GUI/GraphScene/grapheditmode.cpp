@@ -76,6 +76,21 @@ void GraphEditMode::init()
     buttonConf.positionY = 0;
     buttonConf.isEnabled = true;
     m_editButtons.push_back(buttonConf);
+
+
+    buttonConf = {};
+    buttonConf.icon = QIcon("://DATA/images/icons/editmode/mode_edit_properties.svg");
+    buttonConf.secondIcon   = QIcon("://DATA/images/icons/editmode/mode_edit_properties_active.svg");
+    buttonConf.tooltip = "Изменение свойств вершины";
+    buttonConf.action = [this, buttonConf](QPushButton* pButton) -> void {
+        clearMode();
+        m_currentEditMode = CEM_REMOVING;
+        pButton->setIcon(buttonConf.secondIcon);
+    };
+    buttonConf.positionX = 0;
+    buttonConf.positionY = 1;
+    buttonConf.isEnabled = true;
+    m_editButtons.push_back(buttonConf);
 }
 
 void GraphEditMode::start()

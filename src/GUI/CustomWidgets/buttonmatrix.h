@@ -22,6 +22,7 @@ struct ButtonConfig
     QString tooltip;    //! Описание кнопки в tooltip
     QString styleSheet; //! QSS стиль кнопки
     QIcon   icon;       //! Иконка кнопки
+    QIcon   secondIcon; //! Иконка кнопки для второго состояния (disabled, activated и т.д.). Не используется матрицей, сугубо для удобства
 
     bool    isEnabled   {true}; //! Изначальное состояние
 

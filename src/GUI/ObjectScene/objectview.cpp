@@ -149,7 +149,7 @@ void ObjectView::mouseMoveEvent(QMouseEvent *e)
 {
     auto currentPos = mapToScene(e->pos());
     if (m_grabObjectId.has_value()) {
-        auto pObject = m_pScene->getObject(m_grabObjectId.value());
+        auto pObject = getGrabObject();
         pObject->setPos(currentPos - pObject->boundingRect().center());
     }
 

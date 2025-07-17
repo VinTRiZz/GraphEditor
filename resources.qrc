@@ -16,5 +16,9 @@
         <file>DATA/images/icons/mode_edit_add_connection.svg</file>
         <file>DATA/images/icons/mode_edit_add_vertex.svg</file>
         <file>DATA/styles/mainstyles.qss</file>
+        <file>DATA/images/icons/mode_edit_add_connection_active.svg</file>
+        <file>DATA/images/icons/mode_edit_add_vertex_active.svg</file>
+        <file>DATA/images/icons/mode_edit_move_active.svg</file>
+        <file>DATA/images/icons/mode_edit_remove_active.svg</file>
     </qresource>
 </RCC>

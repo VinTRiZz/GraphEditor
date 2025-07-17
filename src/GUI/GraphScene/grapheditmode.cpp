@@ -105,6 +105,10 @@ void GraphEditMode::processPress(QGraphicsItem *pItem)
     case CEM_ADD_CONNECTION:
         setPendingConnection(pCastedItem);
         break;
+
+    case CEM_REMOVING:
+        delete pCastedItem;
+        break;
     }
 }
 
@@ -132,6 +136,10 @@ void GraphEditMode::clearMode()
 
     case CEM_ADD_CONNECTION:
         clearConnectionAddMode();
+        break;
+
+    case CEM_REMOVING:
+        // Do nothing (nothing to clear)
         break;
     }
 }

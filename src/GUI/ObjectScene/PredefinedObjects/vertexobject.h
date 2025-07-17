@@ -16,6 +16,7 @@ class VertexObject : public PredefinedObjectBase
 {
 public:
     explicit VertexObject(QGraphicsItem *parent = nullptr);
+    ~VertexObject();
 
     void setImage(const QImage& img);
 

@@ -66,6 +66,19 @@ VertexObject::VertexObject(QGraphicsItem *parent) :
     setupTextItem();
 }
 
+VertexObject::~VertexObject()
+{
+    for (auto pLine : m_connectionsToThis) {
+        pLine->setVertexTo(nullptr);
+        delete pLine;
+    }
+
+    for (auto pLine : m_connectionsFromThis) {
+        pLine->setVertexFrom(nullptr);
+        delete pLine;
+    }
+}
+
 void VertexObject::setImage(const QImage &img)
 {
     m_vertexImage->setPixmap(QPixmap::fromImage(img));

@@ -1,24 +1,26 @@
 <RCC>
     <qresource prefix="/">
-        <file>DATA/images/icons/edit_properties.svg</file>
-        <file>DATA/images/icons/graph_cancel_changes.svg</file>
-        <file>DATA/images/icons/graph_new.svg</file>
-        <file>DATA/images/icons/graph_open.svg</file>
-        <file>DATA/images/icons/graph_save_as.svg</file>
-        <file>DATA/images/icons/graph_save.svg</file>
-        <file>DATA/images/vertexicons/person_green.svg</file>
-        <file>DATA/images/vertexicons/person_red.svg</file>
-        <file>DATA/images/icons/tools_close.svg</file>
-        <file>DATA/images/icons/tools_open.svg</file>
-        <file>DATA/images/icons/mode_change.svg</file>
-        <file>DATA/images/icons/mode_edit_move.svg</file>
-        <file>DATA/images/icons/mode_edit_remove.svg</file>
-        <file>DATA/images/icons/mode_edit_add_connection.svg</file>
-        <file>DATA/images/icons/mode_edit_add_vertex.svg</file>
         <file>DATA/styles/mainstyles.qss</file>
-        <file>DATA/images/icons/mode_edit_add_connection_active.svg</file>
-        <file>DATA/images/icons/mode_edit_add_vertex_active.svg</file>
-        <file>DATA/images/icons/mode_edit_move_active.svg</file>
-        <file>DATA/images/icons/mode_edit_remove_active.svg</file>
+        <file>DATA/images/icons/common/edit_properties.svg</file>
+        <file>DATA/images/icons/common/graph_cancel_changes.svg</file>
+        <file>DATA/images/icons/common/graph_new.svg</file>
+        <file>DATA/images/icons/common/graph_open.svg</file>
+        <file>DATA/images/icons/common/graph_save_as.svg</file>
+        <file>DATA/images/icons/common/graph_save.svg</file>
+        <file>DATA/images/icons/common/mode_change.svg</file>
+        <file>DATA/images/icons/common/tools_close.svg</file>
+        <file>DATA/images/icons/common/tools_open.svg</file>
+        <file>DATA/images/icons/editmode/mode_edit_add_connection.svg</file>
+        <file>DATA/images/icons/editmode/mode_edit_add_connection_active.svg</file>
+        <file>DATA/images/icons/editmode/mode_edit_add_vertex.svg</file>
+        <file>DATA/images/icons/editmode/mode_edit_add_vertex_active.svg</file>
+        <file>DATA/images/icons/editmode/mode_edit_move.svg</file>
+        <file>DATA/images/icons/editmode/mode_edit_move_active.svg</file>
+        <file>DATA/images/icons/editmode/mode_edit_properties.svg</file>
+        <file>DATA/images/icons/editmode/mode_edit_remove.svg</file>
+        <file>DATA/images/icons/editmode/mode_edit_remove_active.svg</file>
+        <file>DATA/images/iconbase.svg</file>
+        <file>DATA/images/vertexicons/person/green.svg</file>
+        <file>DATA/images/vertexicons/person/red.svg</file>
     </qresource>
 </RCC>

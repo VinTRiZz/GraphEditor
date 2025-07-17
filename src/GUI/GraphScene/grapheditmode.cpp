@@ -18,8 +18,8 @@ void GraphEditMode::init()
     ButtonMatrix::ButtonConfig buttonConf;
 
     buttonConf = {};
-    buttonConf.icon         = QIcon("://DATA/images/icons/mode_edit_move.svg");
-    buttonConf.secondIcon   = QIcon("://DATA/images/icons/mode_edit_move_active.svg");
+    buttonConf.icon         = QIcon("://DATA/images/icons/editmode/mode_edit_move.svg");
+    buttonConf.secondIcon   = QIcon("://DATA/images/icons/editmode/mode_edit_move_active.svg");
     buttonConf.tooltip = "Перемещение вершин графа";
     buttonConf.action = [this, buttonConf](QPushButton* pButton) -> void {
         clearMode();
@@ -33,8 +33,8 @@ void GraphEditMode::init()
 
 
     buttonConf = {};
-    buttonConf.icon = QIcon("://DATA/images/icons/mode_edit_add_vertex.svg");
-    buttonConf.secondIcon   = QIcon("://DATA/images/icons/mode_edit_add_vertex_active.svg");
+    buttonConf.icon = QIcon("://DATA/images/icons/editmode/mode_edit_add_vertex.svg");
+    buttonConf.secondIcon   = QIcon("://DATA/images/icons/editmode/mode_edit_add_vertex_active.svg");
     buttonConf.tooltip = "Добавление вершин графа";
     buttonConf.action = [this, buttonConf](QPushButton* pButton) -> void {
         clearMode();
@@ -49,8 +49,8 @@ void GraphEditMode::init()
 
 
     buttonConf = {};
-    buttonConf.icon = QIcon("://DATA/images/icons/mode_edit_add_connection.svg");
-    buttonConf.secondIcon   = QIcon("://DATA/images/icons/mode_edit_add_connection_active.svg");
+    buttonConf.icon = QIcon("://DATA/images/icons/editmode/mode_edit_add_connection.svg");
+    buttonConf.secondIcon   = QIcon("://DATA/images/icons/editmode/mode_edit_add_connection_active.svg");
     buttonConf.tooltip = "Добавление соединений";
     buttonConf.action = [this, buttonConf](QPushButton* pButton) -> void {
         clearMode();
@@ -64,8 +64,8 @@ void GraphEditMode::init()
 
 
     buttonConf = {};
-    buttonConf.icon = QIcon("://DATA/images/icons/mode_edit_remove.svg");
-    buttonConf.secondIcon   = QIcon("://DATA/images/icons/mode_edit_remove_active.svg");
+    buttonConf.icon = QIcon("://DATA/images/icons/editmode/mode_edit_remove.svg");
+    buttonConf.secondIcon   = QIcon("://DATA/images/icons/editmode/mode_edit_remove_active.svg");
     buttonConf.tooltip = "Удаление элементов графа";
     buttonConf.action = [this, buttonConf](QPushButton* pButton) -> void {
         clearMode();

@@ -66,10 +66,10 @@ Graph::GraphObject TestGraphGenerator::generateGraph(uint vertexCount)
 
     // TODO: Remove hardcode
 
-    auto redPersonIcon = QIcon("://DATA/images/vertexicons/person_red.svg");
+    auto redPersonIcon = QIcon("://DATA/images/vertexicons/person/red.svg");
     auto redPersonImage = redPersonIcon.pixmap(500).toImage();
 
-    auto greenPersonIcon = QIcon("://DATA/images/vertexicons/person_green.svg");
+    auto greenPersonIcon = QIcon("://DATA/images/vertexicons/person/green.svg");
     auto greenPersonImage = greenPersonIcon.pixmap(500).toImage();
 
     Graph::GVertex vert;

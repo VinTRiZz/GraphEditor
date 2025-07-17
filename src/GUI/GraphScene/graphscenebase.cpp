@@ -30,7 +30,7 @@ void GraphSceneBase::init()
         m_buttonMatrixHead->setButtonMargin(10);
 
         m_buttonMatrixHead->setAnimationSpeed(0.5);
-        m_buttonMatrixHead->setIcons(QIcon("://DATA/images/icons/tools_open.svg"), QIcon("://DATA/images/icons/tools_close.svg"));
+        m_buttonMatrixHead->setIcons(QIcon("://DATA/images/icons/common/tools_open.svg"), QIcon("://DATA/images/icons/common/tools_close.svg"));
         m_buttonMatrixHead->setButtonPadding(0, 30, 0, 30);
         m_buttonMatrixHead->collapse(false);
         m_buttonMatrixHead->hide();

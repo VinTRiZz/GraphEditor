@@ -6,6 +6,7 @@
 
 #include "GUI/ObjectScene/objectview.h"
 #include "GUI/CustomWidgets/buttonmatrix.h"
+#include "GUI/ObjectScene/predefinedobjects.h"
 
 #include <boost/noncopyable.hpp>
 
@@ -60,6 +61,9 @@ public:
      * @return                      Указатель
      */
     ButtonMatrix::HeadButton* getButtonMatrixHead() const;
+
+    PredefinedObjects::VertexConnectionLine* createConnectionLine();
+    PredefinedObjects::VertexObject* createVertex();
 
 protected:
     Graph::GraphExtendedObject* m_pGraph {nullptr};

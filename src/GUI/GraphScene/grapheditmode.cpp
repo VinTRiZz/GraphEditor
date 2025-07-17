@@ -130,26 +130,68 @@ void GraphEditMode::clearMode()
 void GraphEditMode::toggleMovingItem(QGraphicsItem *pItem)
 {
     auto pScene = getScene();
-    auto pGrabObject = pScene->getGrabObject();
 
-    // Соединения нельзя перемещать (пока что). Логика сложная
-    if (pItem->data(ObjectSceneConstants::OBJECTFIELD_OBJECTTYPE).toInt() == GraphSceneBase::OBJECT_TYPE_CONNECTION) {
+    // Если соединение, перемещаем точку целевую
+    if (pItem->data(ObjectSceneConstants::OBJECTFIELD_OBJECTTYPE).toInt() == GraphSceneBase::OBJECT_TYPE_CONNECTION &&
+        pItem != m_movingConnectionLine) {
+        m_movingConnectionLine = static_cast<PredefinedObjects::VertexConnectionLine*>(pItem);
+        pScene->setMovingCallback([this](const QPointF& p) {
+            m_movingConnectionLine->setPositionTo(p);
+        });
         return;
     }
 
-    // Если сейчас не выбран объект, выбираем для перемещения
-    if (nullptr == pGrabObject) {
+    // Для соединений -- применить изменения
+    if (nullptr != m_movingConnectionLine) {
+        // Отменяем если не вершина
+        if (pItem->data(ObjectSceneConstants::OBJECTFIELD_OBJECTTYPE).toInt() != GraphSceneBase::OBJECT_TYPE_VERTEX ||
+            pItem == m_movingConnectionLine->getVertexFrom()) {
+            m_movingConnectionLine->resetPositions();
+            clearMovingMode();
+            return;
+        }
+
+        // Соединяем
+        static_cast<PredefinedObjects::VertexObject*>(pItem)->subscribeAsConnectionTo(m_movingConnectionLine);
+
+        // Забываем, что соединяли только что. Теперь это не наша забота
+        clearMovingMode();
+        return;
+    }
+
+    // Если вершина, прикрепляем её к курсору
+    if (pItem->data(ObjectSceneConstants::OBJECTFIELD_OBJECTTYPE).toInt() == GraphSceneBase::OBJECT_TYPE_VERTEX &&
+        pItem != m_movingVertex) {
+        if (nullptr != m_movingVertex) {
+            pScene->rejectGrabObject();
+        }
         pScene->setGrabObject(pItem);
-        pItem->setSelected(true);
+        m_movingVertex = static_cast<PredefinedObjects::VertexObject*>(pItem);
         return;
     }
-    pScene->acceptGrabObject();
-    static_cast<PredefinedObjects::VertexObject*>(pItem)->updateConnectionLines();
+
+    // Забываем, что делали только что (по сути применяем изменения). Теперь это не наша забота
+    if (nullptr != m_movingVertex) {
+        pScene->acceptGrabObject();
+        clearMovingMode();
+    }
 }
 
 void GraphEditMode::clearMovingMode()
 {
     auto pScene = getScene();
+    pScene->setMovingCallback({});
+
+    if (nullptr != m_movingConnectionLine) {
+        m_movingConnectionLine->setSelected(false);
+        m_movingConnectionLine = nullptr;
+    }
+
+    if (nullptr != m_movingVertex) {
+        m_movingVertex->setSelected(false);
+        m_movingVertex = nullptr;
+    }
+
     if (nullptr == pScene->getGrabObject()) {
         return;
     }
@@ -159,7 +201,6 @@ void GraphEditMode::clearMovingMode()
 void GraphEditMode::setPendingConnection(QGraphicsItem *pTargetVertexItem)
 {
     auto pScene = getScene();
-    auto pGrabObject = pScene->getGrabObject();
 
     if (pTargetVertexItem->data(ObjectSceneConstants::OBJECTFIELD_OBJECTTYPE).toInt() != GraphSceneBase::OBJECT_TYPE_VERTEX) {
         clearConnectionAddMode();
@@ -168,8 +209,7 @@ void GraphEditMode::setPendingConnection(QGraphicsItem *pTargetVertexItem)
 
     // Выбираем начальную точку соединения
     if (nullptr == m_pendingConnectionLine) {
-        m_pendingConnectionLine = new PredefinedObjects::VertexConnectionLine;
-        getScene()->addObject(m_pendingConnectionLine);
+        m_pendingConnectionLine = pScene->createConnectionLine();
 
         static_cast<PredefinedObjects::VertexObject*>(pTargetVertexItem)->subscribeAsConnectionFrom(m_pendingConnectionLine);
 
@@ -182,10 +222,8 @@ void GraphEditMode::setPendingConnection(QGraphicsItem *pTargetVertexItem)
 
     // Соединяем
     static_cast<PredefinedObjects::VertexObject*>(pTargetVertexItem)->subscribeAsConnectionTo(m_pendingConnectionLine);
-
-    // Забываем, что соединяли только что. Теперь это не наша забота
     m_pendingConnectionLine = nullptr;
-    pScene->setMovingCallback({});
+    clearConnectionAddMode();
 }
 
 void GraphEditMode::clearConnectionAddMode()

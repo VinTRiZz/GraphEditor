@@ -21,13 +21,18 @@ public:
     ~VertexConnectionLine();
 
     void setVertexFrom(VertexObject* pVertexFrom);
+    VertexObject* getVertexFrom() const;
+
     void setVertexTo(VertexObject* pVertexTo);
+    VertexObject* getVertexTo() const;
 
     void setLine(const QLineF& line);
+    void setLine(const QPointF& p1, const QPointF& p2);
     QLineF getLine() const;
 
     void setPositionFrom(const QPointF& posFrom);
     void setPositionTo(const QPointF& posTo);
+    void resetPositions();
 
     void setPen(const QColor &penColor);
     void setSelectedPen(const QColor &penColor);
@@ -61,13 +66,12 @@ private:
     bool  m_prevSelectedState {false};
     qreal m_arrowSize {8};
 
-    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
-
     void updatePolygon();
     QPainterPath createLinePath();
     QPolygonF createPolygon(const QLineF& line);
     void updatePen();
+
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 };
 
 }

@@ -12,6 +12,7 @@
 #include "logging.h"
 
 #include "vertexobject.h"
+#include "../objectsceneconstants.h"
 
 namespace PredefinedObjects
 {
@@ -60,18 +61,39 @@ VertexConnectionLine::~VertexConnectionLine()
 
 void VertexConnectionLine::setVertexFrom(VertexObject *pVertexFrom)
 {
+    if (m_toVertex == pVertexFrom) {
+        return;
+    }
     m_fromVertex = pVertexFrom;
+}
+
+VertexObject *VertexConnectionLine::getVertexFrom() const
+{
+    return m_fromVertex;
 }
 
 void VertexConnectionLine::setVertexTo(VertexObject *pVertexTo)
 {
+    if (m_fromVertex == pVertexTo) {
+        return;
+    }
     m_toVertex = pVertexTo;
+}
+
+VertexObject *VertexConnectionLine::getVertexTo() const
+{
+    return m_toVertex;
 }
 
 void VertexConnectionLine::setLine(const QLineF &line)
 {
     m_straightLine = line;
     updatePolygon();
+}
+
+void VertexConnectionLine::setLine(const QPointF &p1, const QPointF &p2)
+{
+    setLine(QLineF(p1, p2));
 }
 
 QLineF VertexConnectionLine::getLine() const
@@ -89,6 +111,14 @@ void VertexConnectionLine::setPositionTo(const QPointF &posTo)
 {
     m_straightLine.setP2(posTo);
     updatePolygon();
+}
+
+void VertexConnectionLine::resetPositions()
+{
+    if (nullptr == m_toVertex) {
+        return;
+    }
+    m_toVertex->updateConnectionLines();
 }
 
 void VertexConnectionLine::setPen(const QColor &penColor)
@@ -214,28 +244,6 @@ QPolygonF VertexConnectionLine::createPolygon(const QLineF &line)
     return transf.mapRect(rect);
 }
 
-void VertexConnectionLine::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-
-}
-
-void VertexConnectionLine::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
-    if (event->button() != Qt::LeftButton) {
-        return;
-    }
-
-    auto isContain = contains(mapToScene(event->pos()));
-    setSelected(isContain ^ isSelected());
-    updatePen();
-
-    if (isSelected()) {
-        m_lineSelected->show();
-    } else {
-        m_lineSelected->hide();
-    }
-}
-
 void VertexConnectionLine::updatePen()
 {
     if (isSelected() == m_prevSelectedState) {
@@ -245,6 +253,19 @@ void VertexConnectionLine::updatePen()
 
     auto currentPen = isSelected() ? m_selectedPen : m_drawPen;
     m_pArrowHeadPolygon->setPen(currentPen);
+}
+
+QVariant VertexConnectionLine::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+    if (change == ItemSelectedChange) {
+        if (value.toBool()) {
+            m_lineSelected->show();
+        } else {
+            m_lineSelected->hide();
+        }
+    }
+
+    return QGraphicsItem::itemChange(change, value);
 }
 
 QRectF VertexConnectionLine::boundingRect() const

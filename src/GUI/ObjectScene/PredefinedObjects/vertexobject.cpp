@@ -10,6 +10,7 @@
 #include <QImageReader>
 
 #include "vertexconnectionline.h"
+#include "../objectsceneconstants.h"
 
 #include "logging.h"
 
@@ -76,6 +77,7 @@ void VertexObject::setImage(const QImage &img)
 void VertexObject::setText(const QString &text)
 {
     m_vertexText->setPlainText(text);
+    setToolTip(data(ObjectSceneConstants::OBJECTFIELD_NAME).toString());
 }
 
 void VertexObject::setNodeColor(const QColor &borderColor, const QBrush &backgroundBrush)
@@ -159,38 +161,46 @@ QPainterPath VertexObject::shape() const
     return res;
 }
 
-void VertexObject::setSelected(bool isItemSelected)
-{
-    QGraphicsRectItem::setSelected(isItemSelected);
-    if (isItemSelected) [[unlikely]] {
-        m_selectedRectItem->show();
-    } else {
-        m_selectedRectItem->hide();
-    }
-}
-
 void VertexObject::subscribeAsConnectionFrom(VertexConnectionLine *pLine)
 {
+    if (this == pLine->getVertexTo()) {
+        return;
+    }
+
+    if (nullptr != pLine->getVertexFrom()) {
+        pLine->getVertexFrom()->unsubscribeConnectionFrom(pLine);
+    }
+
+    pLine->setVertexFrom(this);
     m_connectionsFromThis.emplace(pLine);
     updateConnectionLines();
 }
 
 void VertexObject::unsubscribeConnectionFrom(VertexConnectionLine *pLine)
 {
+    pLine->setVertexFrom(nullptr);
     m_connectionsFromThis.erase(pLine);
-    updateConnectionLines();
 }
 
 void VertexObject::subscribeAsConnectionTo(VertexConnectionLine *pLine)
 {
+    if (this == pLine->getVertexFrom()) {
+        return;
+    }
+
+    if (nullptr != pLine->getVertexTo()) {
+        pLine->getVertexTo()->unsubscribeConnectionTo(pLine);
+    }
+
+    pLine->setVertexTo(this);
     m_connectionsToThis.emplace(pLine);
     updateConnectionLines();
 }
 
 void VertexObject::unsubscribeConnectionTo(VertexConnectionLine *pLine)
 {
+    pLine->setVertexTo(nullptr);
     m_connectionsToThis.erase(pLine);
-    updateConnectionLines();
 }
 
 QVariant VertexObject::itemChange(GraphicsItemChange change, const QVariant &value)
@@ -198,22 +208,16 @@ QVariant VertexObject::itemChange(GraphicsItemChange change, const QVariant &val
     if (change == ItemPositionChange) {
         updateConnectionLines();
     }
+
+    if (change == ItemSelectedChange) {
+        if (value.toBool()) [[unlikely]] {
+            m_selectedRectItem->show();
+        } else {
+            m_selectedRectItem->hide();
+        }
+    }
+
     return QGraphicsRectItem::itemChange(change, value);
-}
-
-void VertexObject::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-
-}
-
-void VertexObject::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
-    if (event->button() != Qt::LeftButton) {
-        return;
-    }
-    if (flags() & ItemIsSelectable) {
-        setSelected(!isSelected());
-    }
 }
 
 void VertexObject::setupTextItem()

@@ -209,7 +209,7 @@ void GraphEditMode::toggleMovingItem(ObjectViewItems::ItemBase *pItem)
     auto pScene = getScene();
 
     // Если соединение, перемещаем точку целевую
-    if (pItem->getType() == ObjectSceneConstants::OBJECTTYPE_VERTEX_CONNECTION &&
+    if (pItem->getType() == ObjectViewConstants::OBJECTTYPE_VERTEX_CONNECTION &&
         pItem != m_movingConnectionLine) {
         m_movingConnectionLine = static_cast<ObjectViewItems::VertexConnectionLine*>(pItem);
         pScene->setMovingCallback([this](const QPointF& p) {
@@ -221,7 +221,7 @@ void GraphEditMode::toggleMovingItem(ObjectViewItems::ItemBase *pItem)
     // Для соединений -- применить изменения
     if (nullptr != m_movingConnectionLine) {
         // Отменяем если не вершина
-        if (pItem->getType() != ObjectSceneConstants::OBJECTTYPE_VERTEX ||
+        if (pItem->getType() != ObjectViewConstants::OBJECTTYPE_VERTEX ||
             pItem == m_movingConnectionLine->getVertexFrom()) {
             m_movingConnectionLine->resetPositions();
             clearMovingMode();
@@ -237,7 +237,7 @@ void GraphEditMode::toggleMovingItem(ObjectViewItems::ItemBase *pItem)
     }
 
     // Если вершина, прикрепляем её к курсору
-    if (pItem->getType() == ObjectSceneConstants::OBJECTTYPE_VERTEX &&
+    if (pItem->getType() == ObjectViewConstants::OBJECTTYPE_VERTEX &&
         pItem != m_movingVertex) {
         if (nullptr != m_movingVertex) {
             pScene->rejectGrabObject();
@@ -283,7 +283,7 @@ void GraphEditMode::setPendingConnection(ObjectViewItems::ItemBase *pTargetVerte
 
     auto pScene = getScene();
 
-    if (pTargetVertexItem->getType() != ObjectSceneConstants::OBJECTTYPE_VERTEX) {
+    if (pTargetVertexItem->getType() != ObjectViewConstants::OBJECTTYPE_VERTEX) {
         clearConnectionAddMode();
         return;
     }
@@ -344,12 +344,17 @@ void GraphEditMode::clearVertexAddMode()
 
 void GraphEditMode::setTargetForPropertyEditor(ObjectViewItems::ItemBase *pItem)
 {
-    if (pItem->getType() != ObjectSceneConstants::OBJECTTYPE_VERTEX) {
+    if (pItem == nullptr) {
+        return;
+    }
+
+    if (m_propertyEditor->isVisible()) {
         m_propertyEditor->hide();
         return;
     }
+
     m_propertyEditor->show();
-    m_propertyEditor->setPos(pItem->pos());
+    m_propertyEditor->setTargetItem(pItem);
 }
 
 void GraphEditMode::clearPropertyEditMode()

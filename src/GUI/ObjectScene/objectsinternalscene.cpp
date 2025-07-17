@@ -26,7 +26,7 @@ void ObjectsInternalScene::resizeScene(const QSize &iSize)
 
 ObjectViewItems::ItemBase *ObjectsInternalScene::getParentOfComplex(QGraphicsItem *pItem)
 {
-    auto itemParentIdVariant = pItem->data(ObjectSceneConstants::OBJECTFIELD_PARENTITEM_ID);
+    auto itemParentIdVariant = pItem->data(ObjectViewConstants::OBJECTFIELD_PARENTITEM_ID);
     if (itemParentIdVariant.isNull()) {
         return dynamic_cast<ObjectViewItems::ItemBase*>(pItem);
     }
@@ -52,6 +52,11 @@ void ObjectsInternalScene::clearScene()
     m_pNullItem->clearRegisteredItems();
 }
 
+void ObjectsInternalScene::removeSpecialObjects(ObjectViewConstants::ObjectType objT)
+{
+    m_pNullItem->removeRegisteredItems(objT);
+}
+
 void ObjectsInternalScene::addObject(ObjectViewItems::ItemBase *pItem)
 {
     if (nullptr == pItem ||
@@ -59,20 +64,20 @@ void ObjectsInternalScene::addObject(ObjectViewItems::ItemBase *pItem)
         throw std::invalid_argument("ObjectsScene-internal: invalid (nullptr) item");
     }
 
-    std::function<void(QGraphicsItem*, ObjectSceneConstants::objectId_t)> setChildComplexId =
-        [&setChildComplexId](QGraphicsItem* pItem, ObjectSceneConstants::objectId_t parentId){
-        pItem->setData(ObjectSceneConstants::OBJECTFIELD_PARENTITEM_ID, parentId);
+    std::function<void(QGraphicsItem*, ObjectViewConstants::objectId_t)> setChildComplexId =
+        [&setChildComplexId](QGraphicsItem* pItem, ObjectViewConstants::objectId_t parentId){
+        pItem->setData(ObjectViewConstants::OBJECTFIELD_PARENTITEM_ID, parentId);
         for (auto* pChild : pItem->childItems()) {
             setChildComplexId(pChild, parentId);
         }
     };
     setChildComplexId(pItem, pItem->getObjectId());
-    pItem->setData(ObjectSceneConstants::OBJECTFIELD_PARENTITEM_ID, QVariant()); // Обнуление для сохранения зависимости parent-child
+    pItem->setData(ObjectViewConstants::OBJECTFIELD_PARENTITEM_ID, QVariant()); // Обнуление для сохранения зависимости parent-child
     m_objectsMap[pItem->getObjectId()] = pItem;
     m_pNullItem->registerItem(pItem);
 }
 
-ObjectViewItems::ItemBase *ObjectsInternalScene::getObject(ObjectSceneConstants::objectId_t objectId)
+ObjectViewItems::ItemBase *ObjectsInternalScene::getObject(ObjectViewConstants::objectId_t objectId)
 {
     auto targetObject = m_objectsMap.find(objectId);
     if (targetObject == m_objectsMap.end()) {
@@ -86,12 +91,12 @@ QList<ObjectViewItems::ItemBase *> ObjectsInternalScene::getAllObjects() const
     return m_objectsMap.values();
 }
 
-QList<ObjectSceneConstants::objectId_t> ObjectsInternalScene::getAllObjectIds() const
+QList<ObjectViewConstants::objectId_t> ObjectsInternalScene::getAllObjectIds() const
 {
     return m_objectsMap.keys();
 }
 
-void ObjectsInternalScene::removeObject(ObjectSceneConstants::objectId_t itemId)
+void ObjectsInternalScene::removeObject(ObjectViewConstants::objectId_t itemId)
 {
     auto pItem = m_objectsMap.value(itemId, nullptr);
     if (pItem != nullptr) {

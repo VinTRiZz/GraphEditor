@@ -19,6 +19,8 @@ public:
     std::list<ItemBase*> getRegisteredItems() const;
     void clearRegisteredItems();
 
+    void removeRegisteredItems(ObjectViewConstants::ObjectType objT);
+
 private:
     QGraphicsRectItem* m_pCenterRect {nullptr};
     std::list<ItemBase*> m_registeredItems;

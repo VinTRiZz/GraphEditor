@@ -37,11 +37,12 @@ public:
     QGraphicsItem* getContextMenuItem();
 
     void addObject(ObjectViewItems::ItemBase *pItem);
-    QGraphicsItem* getObject(ObjectSceneConstants::objectId_t itemId) const;
+    QGraphicsItem* getObject(ObjectViewConstants::objectId_t itemId) const;
     QList<ObjectViewItems::ItemBase *> getAllObjects() const;
-    QList<ObjectSceneConstants::objectId_t> getAllObjectIds() const;
+    QList<ObjectViewConstants::objectId_t> getAllObjectIds() const;
     void removeAllObjects();
-    void removeObject(ObjectSceneConstants::objectId_t itemId);
+    void removeObject(ObjectViewConstants::objectId_t itemId);
+    void removeSpecialObjects(ObjectViewConstants::ObjectType objT);
 
     QGraphicsItem* getGrabObject() const;
 
@@ -59,7 +60,7 @@ private:
     QGraphicsItem*          m_contextMenuItem   {nullptr};  //! Объект, который находился под указателем мыши во время вызова контекстного меню
 
     QPointF                                         m_grabObjectPos;    //! Положение объекта до grab
-    std::optional<ObjectSceneConstants::objectId_t> m_grabObjectId;     //! ID объекта, который "прикреплён" к указателю мыши
+    std::optional<ObjectViewConstants::objectId_t> m_grabObjectId;     //! ID объекта, который "прикреплён" к указателю мыши
 
     QPointF m_prevPos;                                      //! Позиция нажатия на графе
     bool    m_isHoldingLeftButton   {false};                //! Флаг факта того, что пользователь кникнул на сцену ЛКМ

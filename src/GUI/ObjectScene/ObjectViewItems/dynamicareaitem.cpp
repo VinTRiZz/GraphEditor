@@ -54,4 +54,23 @@ void DynamicAreaItem::clearRegisteredItems()
     m_registeredItems.clear();
 }
 
+void DynamicAreaItem::removeRegisteredItems(ObjectViewConstants::ObjectType objT)
+{
+    auto removedBeginIt = std::remove_if(m_registeredItems.begin(), m_registeredItems.end(), [objT](auto* pItem){
+        auto res = (pItem->getType() == objT);
+        if (res) {
+            delete pItem;
+        }
+        return res;
+    });
+
+    auto currentIt = removedBeginIt;
+    while (currentIt != m_registeredItems.end()) {
+        delete *currentIt;
+        *currentIt = nullptr;
+        currentIt++;
+    }
+    m_registeredItems.erase(removedBeginIt, m_registeredItems.end());
+}
+
 }

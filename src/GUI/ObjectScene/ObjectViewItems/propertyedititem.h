@@ -45,7 +45,7 @@ public:
 
 private:
     struct Impl;
-    std::unique_ptr<Impl> d;
+    std::shared_ptr<Impl> d;
 
     ItemBase*   m_pTargetItem {nullptr};
     ArrowedLine*            m_targetLocatorItem {nullptr};

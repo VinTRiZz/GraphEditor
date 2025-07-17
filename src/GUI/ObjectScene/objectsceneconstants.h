@@ -1,9 +1,9 @@
-#ifndef OBJECTSCENECONSTANTS_H
-#define OBJECTSCENECONSTANTS_H
+#ifndef ObjectViewConstants_H
+#define ObjectViewConstants_H
 
 #include <stdint.h>
 
-namespace ObjectSceneConstants
+namespace ObjectViewConstants
 {
 
 // СОГЛАШЕНИЕ:
@@ -41,4 +41,4 @@ enum ObjectType : int
 
 }
 
-#endif // OBJECTSCENECONSTANTS_H
+#endif // ObjectViewConstants_H

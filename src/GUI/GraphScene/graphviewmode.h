@@ -32,7 +32,7 @@ private:
         QStringView shortName;
         QStringView description;
     };
-    std::map<ObjectSceneConstants::objectId_t, SearchProxy> objectsSearchCache;
+    std::map<ObjectViewConstants::objectId_t, SearchProxy> objectsSearchCache;
 
     SearchProxy toSearchCache(const Graph::GVertex& vert) const;
     SearchProxy toSearchCache(const Graph::GConnection& con) const;

@@ -27,7 +27,7 @@ PropertyEditItem::PropertyEditItem(QGraphicsItem* parent) :
 {
     setName("Property editor");
 
-    setType(ObjectSceneConstants::OBJECTTYPE_PROPERTY_EDITOR);
+    setType(ObjectViewConstants::OBJECTTYPE_PROPERTY_EDITOR);
 
     setFlag(QGraphicsItem::ItemIsMovable, true);
 
@@ -60,7 +60,10 @@ PropertyEditWidget *PropertyEditItem::getCustomPropertyEditor() const
 void PropertyEditItem::setTargetItem(ItemBase *pTargetItem)
 {
     m_pTargetItem = pTargetItem;
-    d->customPropertyWidget->setCustomProperties(m_pTargetItem->getCustomProperties());
+
+    if (nullptr != d->customPropertyWidget) {
+        d->customPropertyWidget->setCustomProperties(m_pTargetItem->getCustomProperties());
+    }
 }
 
 QVariant PropertyEditItem::itemChange(GraphicsItemChange change, const QVariant &value)

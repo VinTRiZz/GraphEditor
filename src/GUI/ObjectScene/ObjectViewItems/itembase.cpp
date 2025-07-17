@@ -7,8 +7,8 @@
 namespace ObjectViewItems
 {
 
-static ObjectSceneConstants::objectId_t getSystemId() {
-    static ObjectSceneConstants::objectId_t currentId {-1};
+static ObjectViewConstants::objectId_t getSystemId() {
+    static ObjectViewConstants::objectId_t currentId {-1};
     return --currentId;
 };
 
@@ -18,14 +18,14 @@ ItemBase::ItemBase(QGraphicsItem *parent) :
     setName(QString("Unchanged name of: \"%0\"").arg(boost::core::demangle(typeid(this).name()).c_str()));
 }
 
-void ItemBase::setType(ObjectSceneConstants::ObjectType objType)
+void ItemBase::setType(ObjectViewConstants::ObjectType objType)
 {
-    setData(ObjectSceneConstants::OBJECTFIELD_OBJECTTYPE, objType);
+    setData(ObjectViewConstants::OBJECTFIELD_OBJECTTYPE, objType);
 }
 
-ObjectSceneConstants::ObjectType ItemBase::getType() const
+ObjectViewConstants::ObjectType ItemBase::getType() const
 {
-    return ObjectSceneConstants::ObjectType(data(ObjectSceneConstants::OBJECTFIELD_OBJECTTYPE).toInt());
+    return ObjectViewConstants::ObjectType(data(ObjectViewConstants::OBJECTFIELD_OBJECTTYPE).toInt());
 }
 
 void ItemBase::setSystemId()
@@ -33,17 +33,17 @@ void ItemBase::setSystemId()
     setObjectId(getSystemId());
 }
 
-void ItemBase::setObjectId(ObjectSceneConstants::objectId_t id)
+void ItemBase::setObjectId(ObjectViewConstants::objectId_t id)
 {
-    setData(ObjectSceneConstants::OBJECTFIELD_ID, id);
+    setData(ObjectViewConstants::OBJECTFIELD_ID, id);
 }
 
-ObjectSceneConstants::objectId_t ItemBase::getObjectId() const
+ObjectViewConstants::objectId_t ItemBase::getObjectId() const
 {
-    if (!data(ObjectSceneConstants::OBJECTFIELD_PARENTITEM_ID).isNull()) {
-        return data(ObjectSceneConstants::OBJECTFIELD_PARENTITEM_ID).toLongLong();
+    if (!data(ObjectViewConstants::OBJECTFIELD_PARENTITEM_ID).isNull()) {
+        return data(ObjectViewConstants::OBJECTFIELD_PARENTITEM_ID).toLongLong();
     }
-    return data(ObjectSceneConstants::OBJECTFIELD_ID).toLongLong();
+    return data(ObjectViewConstants::OBJECTFIELD_ID).toLongLong();
 }
 
 void ItemBase::paint([[maybe_unused]] QPainter *painter, [[maybe_unused]] const QStyleOptionGraphicsItem *option, [[maybe_unused]] QWidget *widget)
@@ -58,43 +58,43 @@ void ItemBase::setBoundingRect(const QRectF &bRect)
 
 void ItemBase::setShortName(const QString &text)
 {
-    setData(ObjectSceneConstants::OBJECTFIELD_NAME_SHORT, text);
+    setData(ObjectViewConstants::OBJECTFIELD_NAME_SHORT, text);
 }
 
 QString ItemBase::getShortName() const
 {
-    return data(ObjectSceneConstants::OBJECTFIELD_NAME_SHORT).toString();
+    return data(ObjectViewConstants::OBJECTFIELD_NAME_SHORT).toString();
 }
 
 void ItemBase::setName(const QString &text)
 {
-    setData(ObjectSceneConstants::OBJECTFIELD_NAME, text);
-    setToolTip(data(ObjectSceneConstants::OBJECTFIELD_NAME).toString());
+    setData(ObjectViewConstants::OBJECTFIELD_NAME, text);
+    setToolTip(data(ObjectViewConstants::OBJECTFIELD_NAME).toString());
 }
 
 QString ItemBase::getName() const
 {
-    return data(ObjectSceneConstants::OBJECTFIELD_NAME).toString();
+    return data(ObjectViewConstants::OBJECTFIELD_NAME).toString();
 }
 
 void ItemBase::setDescription(const QString &text)
 {
-    setData(ObjectSceneConstants::OBJECTFIELD_DESCRIPTION, text);
+    setData(ObjectViewConstants::OBJECTFIELD_DESCRIPTION, text);
 }
 
 QString ItemBase::getDescription() const
 {
-    return data(ObjectSceneConstants::OBJECTFIELD_DESCRIPTION).toString();
+    return data(ObjectViewConstants::OBJECTFIELD_DESCRIPTION).toString();
 }
 
 void ItemBase::setCustomProperties(const QJsonObject &props)
 {
-    setData(ObjectSceneConstants::OBJECTFIELD_PROPERTY_JSON, props);
+    setData(ObjectViewConstants::OBJECTFIELD_PROPERTY_JSON, props);
 }
 
 QJsonObject ItemBase::getCustomProperties() const
 {
-    return data(ObjectSceneConstants::OBJECTFIELD_PROPERTY_JSON).toJsonObject();
+    return data(ObjectViewConstants::OBJECTFIELD_PROPERTY_JSON).toJsonObject();
 }
 
 QRectF ItemBase::boundingRect() const

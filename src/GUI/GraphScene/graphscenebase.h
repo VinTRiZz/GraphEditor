@@ -59,8 +59,8 @@ public:
      */
     ButtonMatrix::HeadButton* getButtonMatrixHead() const;
 
-    ObjectViewItems::VertexConnectionLine* createConnectionLine(ObjectSceneConstants::objectId_t idFrom, ObjectSceneConstants::objectId_t idTo);
-    ObjectViewItems::VertexObject* createVertex(ObjectSceneConstants::objectId_t vertexId);
+    ObjectViewItems::VertexConnectionLine* createConnectionLine(ObjectViewConstants::objectId_t idFrom, ObjectViewConstants::objectId_t idTo);
+    ObjectViewItems::VertexObject* createVertex(ObjectViewConstants::objectId_t vertexId);
 
 protected:
     Graph::GraphExtendedObject* m_pGraph {nullptr};

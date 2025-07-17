@@ -31,6 +31,10 @@ void ObjectView::init()
     m_pScene = new ObjectsInternalScene(this);
     m_pScene->init();
     setScene(m_pScene);
+
+    // TODO: Убрать когда появится динамическое поле
+    m_pScene->resizeScene(QSize(10000, 10000));
+    scale(0.5, 0.5);
 }
 
 bool ObjectView::isInited() const
@@ -53,7 +57,7 @@ void ObjectView::addObject(ObjectViewItems::ItemBase *pItem)
     m_pScene->addObject(pItem);
 }
 
-QGraphicsItem *ObjectView::getObject(ObjectSceneConstants::objectId_t itemId) const
+QGraphicsItem *ObjectView::getObject(ObjectViewConstants::objectId_t itemId) const
 {
     return m_pScene->getObject(itemId);
 }
@@ -63,7 +67,7 @@ QList<ObjectViewItems::ItemBase *> ObjectView::getAllObjects() const
     return m_pScene->getAllObjects();
 }
 
-QList<ObjectSceneConstants::objectId_t> ObjectView::getAllObjectIds() const
+QList<ObjectViewConstants::objectId_t> ObjectView::getAllObjectIds() const
 {
     return m_pScene->getAllObjectIds();
 }
@@ -71,15 +75,16 @@ QList<ObjectSceneConstants::objectId_t> ObjectView::getAllObjectIds() const
 void ObjectView::removeAllObjects()
 {
     m_pScene->clearScene();
-
-    // TODO: Убрать когда появится динамическое поле
-    m_pScene->resizeScene(QSize(10000, 10000));
-    scale(0.5, 0.5);
 }
 
-void ObjectView::removeObject(ObjectSceneConstants::objectId_t itemId)
+void ObjectView::removeObject(ObjectViewConstants::objectId_t itemId)
 {
     return m_pScene->removeObject(itemId);
+}
+
+void ObjectView::removeSpecialObjects(ObjectViewConstants::ObjectType objT)
+{
+    m_pScene->removeSpecialObjects(objT);
 }
 
 QGraphicsItem *ObjectView::getGrabObject() const
@@ -101,7 +106,7 @@ void ObjectView::setGrabObject(QGraphicsItem *pItem)
         m_grabObjectId = std::nullopt;
         return;
     }
-    m_grabObjectId = pItem->data(ObjectSceneConstants::ObjectField::OBJECTFIELD_ID).toLongLong();
+    m_grabObjectId = pItem->data(ObjectViewConstants::ObjectField::OBJECTFIELD_ID).toLongLong();
     m_grabObjectPos = pItem->pos();
 }
 

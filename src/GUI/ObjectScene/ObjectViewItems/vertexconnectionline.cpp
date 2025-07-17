@@ -22,7 +22,7 @@ VertexConnectionLine::VertexConnectionLine(QGraphicsItem *parent) :
 {
     setName("Vertex connection line");
 
-    setType(ObjectSceneConstants::OBJECTTYPE_VERTEX_CONNECTION);
+    setType(ObjectViewConstants::OBJECTTYPE_VERTEX_CONNECTION);
 
     m_penSelectedGradient.setColorAt(0, QColor("#fff09c"));
     m_penSelectedGradient.setColorAt(1, QColor("#ffbc20"));

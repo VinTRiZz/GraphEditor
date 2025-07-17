@@ -12,7 +12,7 @@ namespace ObjectViewItems
 ArrowedLine::ArrowedLine(QGraphicsItem *parent)
     : ItemBase(parent) {
     setName("Arrowed line");
-    setType(ObjectSceneConstants::OBJECTTYPE_ARROWLINE);
+    setType(ObjectViewConstants::OBJECTTYPE_ARROWLINE);
     m_line = new QGraphicsLineItem(this);
 }
 

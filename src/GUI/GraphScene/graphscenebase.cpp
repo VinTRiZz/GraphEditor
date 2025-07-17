@@ -72,12 +72,12 @@ void GraphSceneBase::writeChangesToGraph()
             continue;
         }
 
-        if (pCastedObject->getType() == ObjectSceneConstants::OBJECTTYPE_VERTEX) {
+        if (pCastedObject->getType() == ObjectViewConstants::OBJECTTYPE_VERTEX) {
             vertices.push_back(pCastedObject);
             continue;
         }
 
-        if (pCastedObject->getType() == ObjectSceneConstants::OBJECTTYPE_VERTEX_CONNECTION) {
+        if (pCastedObject->getType() == ObjectViewConstants::OBJECTTYPE_VERTEX_CONNECTION) {
             connections.push_back(pCastedObject);
         }
     }
@@ -115,8 +115,9 @@ void GraphSceneBase::updateGraph()
         return;
     }
 
-    // TODO: Вместо удаления, обновить
-    removeAllObjects();
+    removeSpecialObjects(ObjectViewConstants::OBJECTTYPE_VERTEX);
+    removeSpecialObjects(ObjectViewConstants::OBJECTTYPE_VERTEX_CONNECTION);
+    removeSpecialObjects(ObjectViewConstants::OBJECTTYPE_ARROWLINE);
 
     auto& sceneConfig = GraphSceneConfiguration::getInstance();
     double labelHeight {0};
@@ -178,7 +179,7 @@ void GraphSceneBase::updateGraph()
     }
 }
 
-ObjectViewItems::VertexConnectionLine *GraphSceneBase::createConnectionLine(ObjectSceneConstants::objectId_t idFrom, ObjectSceneConstants::objectId_t idTo)
+ObjectViewItems::VertexConnectionLine *GraphSceneBase::createConnectionLine(ObjectViewConstants::objectId_t idFrom, ObjectViewConstants::objectId_t idTo)
 {
     auto pConnection = new ObjectViewItems::VertexConnectionLine;
     pConnection->setObjectId(idFrom << 16 | idTo); // TODO: Придумать чёт с соединениями
@@ -188,7 +189,7 @@ ObjectViewItems::VertexConnectionLine *GraphSceneBase::createConnectionLine(Obje
     return pConnection;
 }
 
-ObjectViewItems::VertexObject *GraphSceneBase::createVertex(ObjectSceneConstants::objectId_t vertexId)
+ObjectViewItems::VertexObject *GraphSceneBase::createVertex(ObjectViewConstants::objectId_t vertexId)
 {
     auto pVertexItem = new ObjectViewItems::VertexObject;
     pVertexItem->setObjectId(vertexId);

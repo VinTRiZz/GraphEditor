@@ -13,12 +13,12 @@ class ItemBase : public QGraphicsItem
 public:
     explicit ItemBase(QGraphicsItem* parent = nullptr);
 
-    void setType(ObjectSceneConstants::ObjectType objType);
-    ObjectSceneConstants::ObjectType getType() const;
+    void setType(ObjectViewConstants::ObjectType objType);
+    ObjectViewConstants::ObjectType getType() const;
 
     void setSystemId();
-    void setObjectId(ObjectSceneConstants::objectId_t id);
-    ObjectSceneConstants::objectId_t getObjectId() const;
+    void setObjectId(ObjectViewConstants::objectId_t id);
+    ObjectViewConstants::objectId_t getObjectId() const;
 
     virtual void setShortName(const QString& text);
     QString getShortName() const;

@@ -37,7 +37,7 @@ VertexObject::VertexObject(QGraphicsItem *parent) :
 {
     setName("Vertex object");
 
-    setType(ObjectSceneConstants::OBJECTTYPE_VERTEX);
+    setType(ObjectViewConstants::OBJECTTYPE_VERTEX);
 
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setFlag(QGraphicsItem::ItemClipsToShape, true);

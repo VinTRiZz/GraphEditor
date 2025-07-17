@@ -40,19 +40,20 @@ public:
 
     void init();
     void clearScene();
+    void removeSpecialObjects(ObjectViewConstants::ObjectType objT);
 
     void addObject(ObjectViewItems::ItemBase* pItem);
-    ObjectViewItems::ItemBase* getObject(ObjectSceneConstants::objectId_t objectId);
+    ObjectViewItems::ItemBase* getObject(ObjectViewConstants::objectId_t objectId);
     QList<ObjectViewItems::ItemBase*> getAllObjects() const;
-    [[nodiscard]] QList<ObjectSceneConstants::objectId_t> getAllObjectIds() const;
-    void removeObject(ObjectSceneConstants::objectId_t itemId);
+    [[nodiscard]] QList<ObjectViewConstants::objectId_t> getAllObjectIds() const;
+    void removeObject(ObjectViewConstants::objectId_t itemId);
 
     void setBackgroundColor(const QColor& bgrColor);
     void setBorderColor(const QColor& borderColor);
 
 private:
     ObjectViewItems::DynamicAreaItem* m_pNullItem {nullptr};  //! Объект, который являет собой пространство сцены (как бы ограниченная плоскость для расположения объектов)
-    QHash<ObjectSceneConstants::objectId_t, ObjectViewItems::ItemBase*> m_objectsMap; //! Словарь для сохранения ID объектов
+    QHash<ObjectViewConstants::objectId_t, ObjectViewItems::ItemBase*> m_objectsMap; //! Словарь для сохранения ID объектов
 };
 
 #endif // OBJECTSINTERNALSCENE_H

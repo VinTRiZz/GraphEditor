@@ -18,8 +18,10 @@ namespace PredefinedObjects
 {
 
 VertexConnectionLine::VertexConnectionLine(QGraphicsItem *parent) :
-    QGraphicsItem(parent)
+    PredefinedObjectBase(parent)
 {
+    setType(ObjectSceneConstants::OBJECTTYPE_VERTEX_CONNECTION);
+
     m_penSelectedGradient.setColorAt(0, QColor("#fff09c"));
     m_penSelectedGradient.setColorAt(1, QColor("#ffbc20"));
     m_selectedPen.setWidth(8);
@@ -146,11 +148,6 @@ void VertexConnectionLine::setArrowSize(qreal size)
 qreal VertexConnectionLine::getArrowSize() const
 {
     return m_arrowSize;
-}
-
-void VertexConnectionLine::paint([[maybe_unused]] QPainter *painter, [[maybe_unused]] const QStyleOptionGraphicsItem *option, [[maybe_unused]] QWidget *widget)
-{
-
 }
 
 void VertexConnectionLine::updatePolygon()

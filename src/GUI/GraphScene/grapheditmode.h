@@ -45,13 +45,16 @@ private:
 
     PredefinedObjects::VertexObject*            m_movingVertex {nullptr};
     PredefinedObjects::VertexConnectionLine*    m_movingConnectionLine {nullptr};
-    void toggleMovingItem(QGraphicsItem* pItem);
+    void toggleMovingItem(PredefinedObjects::PredefinedObjectBase* pItem);
     void clearMovingMode();
 
     PredefinedObjects::VertexConnectionLine* m_pendingConnectionLine {nullptr};
-    bool m_isAddingConnection {false};
-    void setPendingConnection(QGraphicsItem* pTargetVertexItem);
+    void setPendingConnection(PredefinedObjects::PredefinedObjectBase* pTargetVertexItem);
     void clearConnectionAddMode();
+
+    PredefinedObjects::VertexObject* m_pendingVertex {nullptr};
+    void setPendingVertex(PredefinedObjects::PredefinedObjectBase* pItem);
+    void clearVertexAddMode();
 };
 
 }

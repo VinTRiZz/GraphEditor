@@ -128,6 +128,8 @@ void ObjectView::mousePressEvent(QMouseEvent *e)
         if (!m_pScene->isNullItem(targetItem)) {
             targetItem = m_pScene->getParentOfComplex(targetItem);
             emit pressedOnItem(targetItem);
+        } else {
+            emit pressedOnItem(nullptr);
         }
     }
 
@@ -170,6 +172,8 @@ void ObjectView::mouseReleaseEvent(QMouseEvent *e)
             targetItem = m_pScene->getParentOfComplex(targetItem);
             emit releasedOnItem(targetItem);
             emit clickedOnItem(targetItem);
+        } else {
+            emit releasedOnItem(nullptr);
         }
     }
 

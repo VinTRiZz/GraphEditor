@@ -33,9 +33,9 @@ QPixmap loadImageWithAlpha(const QString& path) {
 
 
 VertexObject::VertexObject(QGraphicsItem *parent) :
-    QGraphicsRectItem(parent)
+    PredefinedObjectBase(parent)
 {
-    setPen(QPen(Qt::black));
+    setType(ObjectSceneConstants::OBJECTTYPE_VERTEX);
 
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setFlag(QGraphicsItem::ItemClipsToShape, true);
@@ -74,10 +74,10 @@ void VertexObject::setImage(const QImage &img)
     m_vertexEllipse->hide();
 }
 
-void VertexObject::setText(const QString &text)
+void VertexObject::setShortName(const QString &iText)
 {
-    m_vertexText->setPlainText(text);
-    setToolTip(data(ObjectSceneConstants::OBJECTFIELD_NAME).toString());
+    m_vertexText->setPlainText(iText);
+    PredefinedObjectBase::setShortName(iText);
 }
 
 void VertexObject::setNodeColor(const QColor &borderColor, const QBrush &backgroundBrush)
@@ -104,7 +104,7 @@ void VertexObject::setVertexBrush(const QBrush &mainBackground, const QBrush &te
 void VertexObject::setRect(const QRectF &iRect)
 {
     // Задаю прямоугольник, чтобы boundingRect() подхватил область определения вершины
-    QGraphicsRectItem::setRect(iRect);
+    setBoundingRect(iRect);
     auto itemRect = iRect;
     itemRect.setX(0); itemRect.setY(0); itemRect.setWidth(iRect.width()); itemRect.setHeight(iRect.height());
 
@@ -217,7 +217,7 @@ QVariant VertexObject::itemChange(GraphicsItemChange change, const QVariant &val
         }
     }
 
-    return QGraphicsRectItem::itemChange(change, value);
+    return PredefinedObjectBase::itemChange(change, value);
 }
 
 void VertexObject::setupTextItem()
@@ -250,7 +250,7 @@ void VertexObject::setupTextItem()
 void VertexObject::updateConnectionLines()
 {
     unsigned connectionNumber {0};
-    auto vertexRadius = static_cast<double>(rect().width()) / 2.0;
+    auto vertexRadius = static_cast<double>(boundingRect().width()) / 2.0;
 
     for (auto pConFrom : m_connectionsFromThis) {
         auto fromPos = QPointF(x() + vertexRadius,

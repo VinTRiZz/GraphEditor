@@ -10,7 +10,19 @@ namespace PredefinedObjects
 {
 
 ArrowedLine::ArrowedLine(QGraphicsItem *parent)
-    : QGraphicsLineItem(parent) {}
+    : PredefinedObjectBase(parent) {
+    setType(ObjectSceneConstants::OBJECTTYPE_ARROWLINE);
+}
+
+void ArrowedLine::setLine(const QLineF &iLine)
+{
+    m_straightLine = iLine;
+}
+
+QLineF ArrowedLine::getLine() const
+{
+    return m_straightLine;
+}
 
 void ArrowedLine::setArrowSize(qreal arrowSize) { m_arrowSize = arrowSize; }
 
@@ -18,21 +30,18 @@ qreal ArrowedLine::getArrowSize() const { return m_arrowSize; }
 
 void ArrowedLine::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    // Сначала рисуем саму линию
-    QGraphicsLineItem::paint(painter, option, widget);
-
-    // Затем рисуем стрелку
+    painter->drawLine(m_straightLine);
     drawArrow(painter);
 }
 
 void ArrowedLine::drawArrow(QPainter *painter)
 {
-    QLineF line = this->line();
+    QLineF line = getLine();
     if (line.length() == 0)
         return;
 
     // Угол линии
-    double angle = (this->line().angle() + 180) * M_PI / 180.0;
+    double angle = (getLine().angle() + 180) * M_PI / 180.0;
 
     static auto PI_DELIM_3 = M_PI / 3;
     static auto PI_2_DELIM_3 = M_PI * 2 / 3;

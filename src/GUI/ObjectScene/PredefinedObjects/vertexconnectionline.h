@@ -9,12 +9,14 @@
 #include <QGraphicsLineItem>
 #include <QGraphicsPolygonItem>
 
+#include "predefinedobjectbase.h"
+
 namespace PredefinedObjects
 {
 
 class VertexObject;
 
-class VertexConnectionLine : public QGraphicsItem
+class VertexConnectionLine : public PredefinedObjectBase
 {
 public:
     explicit VertexConnectionLine(QGraphicsItem *parent = nullptr);
@@ -43,9 +45,6 @@ public:
     QRectF boundingRect() const override;
     bool contains(const QPointF& p) const override;
     QPainterPath shape() const override;
-
-protected:
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget*widget) override;
 
 private:
     VertexObject*   m_fromVertex {nullptr};

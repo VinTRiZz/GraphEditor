@@ -85,14 +85,12 @@ void GraphSceneBase::updateGraph()
     // TODO: Вместо удаления, обновить
     removeAllObjects();
 
-    auto& conversionConfig = GraphSceneConfiguration::getInstance();
-
-    const double vertexRadius = 50;
+    auto& sceneConfig = GraphSceneConfiguration::getInstance();
     double labelHeight {0};
 
     QRect vertexRect;
-    vertexRect.setWidth(vertexRadius * 2);
-    vertexRect.setHeight(vertexRadius * 2);
+    vertexRect.setWidth(sceneConfig.vertexWidth);
+    vertexRect.setHeight(sceneConfig.vertexWidth);
 
     auto vertices = m_pGraph->getAllVertices();
     std::unordered_map<uint, PredefinedObjects::VertexObject*> vertexObjects;
@@ -104,18 +102,16 @@ void GraphSceneBase::updateGraph()
             pVertexItem->setImage(vert.image);
         }
 
-        pVertexItem->setText(vert.shortName);
+        pVertexItem->setShortName(vert.shortName);
+        pVertexItem->setName(vert.name);
+        pVertexItem->setDescription(vert.description);
+        pVertexItem->setCustomProperties(vert.customProperties);
+
         pVertexItem->setPos(vert.posX, vert.posY);
         pVertexItem->setRect(vertexRect);
-        pVertexItem->setZValue(conversionConfig.vertexLayer);
+        pVertexItem->setZValue(sceneConfig.vertexLayer);
 
         pVertexItem->setNodeColor(vert.borderColor, vert.backgroundColor);
-
-        pVertexItem->setData(ObjectSceneConstants::OBJECTFIELD_NAME_SHORT,      vert.shortName);
-        pVertexItem->setData(ObjectSceneConstants::OBJECTFIELD_NAME,            vert.name);
-        pVertexItem->setData(ObjectSceneConstants::OBJECTFIELD_DESCRIPTION,     vert.description);
-        pVertexItem->setData(ObjectSceneConstants::OBJECTFIELD_PROPERTY_JSON,   vert.customProperties);
-        pVertexItem->setData(ObjectSceneConstants::OBJECTFIELD_OBJECTTYPE,      OBJECT_TYPE_VERTEX);
 
         addObject(pVertexItem);
         vertexObjects[vert.id] = pVertexItem;
@@ -140,10 +136,9 @@ void GraphSceneBase::updateGraph()
         auto pConnection = new PredefinedObjects::VertexConnectionLine;
 
         pConnection->setPen(con.lineColor);
-        pConnection->setZValue(conversionConfig.connectionLineLayer);
+        pConnection->setZValue(sceneConfig.connectionLineLayer);
 
-        pConnection->setData(ObjectSceneConstants::OBJECTFIELD_NAME, con.name);
-        pConnection->setData(ObjectSceneConstants::OBJECTFIELD_OBJECTTYPE, OBJECT_TYPE_CONNECTION);
+        pConnection->setName(con.name);
         pConnection->setToolTip(con.name);
         addObject(pConnection);
 
@@ -158,8 +153,7 @@ PredefinedObjects::VertexConnectionLine *GraphSceneBase::createConnectionLine()
 
     pConnection->setZValue(GraphSceneConfiguration::getInstance().connectionLineLayer);
 
-    pConnection->setData(ObjectSceneConstants::OBJECTFIELD_NAME, {});
-    pConnection->setData(ObjectSceneConstants::OBJECTFIELD_OBJECTTYPE, OBJECT_TYPE_CONNECTION);
+    pConnection->setName({});
     addObject(pConnection);
 
     return pConnection;
@@ -169,13 +163,20 @@ PredefinedObjects::VertexObject *GraphSceneBase::createVertex()
 {
     auto pVertexItem = new PredefinedObjects::VertexObject;
 
-    pVertexItem->setData(ObjectSceneConstants::OBJECTFIELD_NAME_SHORT,      "My node");
-    pVertexItem->setData(ObjectSceneConstants::OBJECTFIELD_NAME,            "My node template");
-    pVertexItem->setData(ObjectSceneConstants::OBJECTFIELD_DESCRIPTION,     {});
-    pVertexItem->setData(ObjectSceneConstants::OBJECTFIELD_PROPERTY_JSON,   {});
-    pVertexItem->setData(ObjectSceneConstants::OBJECTFIELD_OBJECTTYPE,      OBJECT_TYPE_VERTEX);
+    pVertexItem->setShortName("My node");
+    pVertexItem->setName("My node template");
+    pVertexItem->setDescription("My example description");
+
+    auto& sceneConfig = GraphSceneConfiguration::getInstance();
+    pVertexItem->setZValue(sceneConfig.vertexLayer);
+
+    QRect vertexRect;
+    vertexRect.setWidth(sceneConfig.vertexWidth);
+    vertexRect.setHeight(sceneConfig.vertexWidth);
+    pVertexItem->setRect(vertexRect);
 
     addObject(pVertexItem);
+
     return pVertexItem;
 }
 

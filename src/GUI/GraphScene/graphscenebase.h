@@ -22,6 +22,8 @@ struct GraphSceneConfiguration : boost::noncopyable
     uint connectionLineLayer = 10;   //! Уровень линий соединения вершин
     uint vertexLayer         = 20;   //! Уровень вершин
 
+    double vertexWidth       = 100;  //! Ширина и высота вершины
+
     static GraphSceneConfiguration& getInstance() {
         static GraphSceneConfiguration inst;
         return inst;
@@ -31,12 +33,6 @@ struct GraphSceneConfiguration : boost::noncopyable
 class GraphSceneBase : public ObjectView
 {
 public:
-    enum ObjectType : int {
-        OBJECT_TYPE_UNKNOWN,
-        OBJECT_TYPE_VERTEX,
-        OBJECT_TYPE_CONNECTION,
-    };
-
     GraphSceneBase(QWidget* parent = nullptr);
     ~GraphSceneBase();
 

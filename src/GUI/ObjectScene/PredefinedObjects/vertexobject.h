@@ -2,29 +2,24 @@
 #define VERTEXOBJECT_H
 
 #include <QGraphicsItem>
-
 #include <QPen>
-
-#include <QLabel>
-
 #include <set>
+
+#include "predefinedobjectbase.h"
 
 namespace PredefinedObjects
 {
 
 class VertexConnectionLine;
 
-class VertexObject : public QGraphicsRectItem
+class VertexObject : public PredefinedObjectBase
 {
-    // Запрещаем, т.к. надо чтобы было прозрачно.
-    using QGraphicsRectItem::setBrush;
-
 public:
     explicit VertexObject(QGraphicsItem *parent = nullptr);
 
     void setImage(const QImage& img);
 
-    void setText(const QString& text);
+    void setShortName(const QString& iText) override;
 
     void setNodeColor(const QColor& borderColor, const QBrush &backgroundBrush);
     void setVertexBrush(const QBrush& mainBackground, const QBrush& textBackground);

@@ -91,14 +91,19 @@ void GraphEditMode::stop()
 
 void GraphEditMode::processPress(QGraphicsItem *pItem)
 {
+    auto pCastedItem = dynamic_cast<PredefinedObjects::PredefinedObjectBase*>(pItem);
     switch (m_currentEditMode)
     {
     case CEM_MOVING:
-        toggleMovingItem(pItem);
+        toggleMovingItem(pCastedItem);
+        break;
+
+    case CEM_ADD_VERTEX:
+        setPendingVertex(pCastedItem);
         break;
 
     case CEM_ADD_CONNECTION:
-        setPendingConnection(pItem);
+        setPendingConnection(pCastedItem);
         break;
     }
 }
@@ -121,18 +126,26 @@ void GraphEditMode::clearMode()
         clearMovingMode();
         break;
 
+    case CEM_ADD_VERTEX:
+        clearVertexAddMode();
+        break;
+
     case CEM_ADD_CONNECTION:
         clearConnectionAddMode();
         break;
     }
 }
 
-void GraphEditMode::toggleMovingItem(QGraphicsItem *pItem)
+void GraphEditMode::toggleMovingItem(PredefinedObjects::PredefinedObjectBase *pItem)
 {
+    if (pItem == nullptr) {
+        return;
+    }
+
     auto pScene = getScene();
 
     // Если соединение, перемещаем точку целевую
-    if (pItem->data(ObjectSceneConstants::OBJECTFIELD_OBJECTTYPE).toInt() == GraphSceneBase::OBJECT_TYPE_CONNECTION &&
+    if (pItem->getType() == ObjectSceneConstants::OBJECTTYPE_VERTEX_CONNECTION &&
         pItem != m_movingConnectionLine) {
         m_movingConnectionLine = static_cast<PredefinedObjects::VertexConnectionLine*>(pItem);
         pScene->setMovingCallback([this](const QPointF& p) {
@@ -144,7 +157,7 @@ void GraphEditMode::toggleMovingItem(QGraphicsItem *pItem)
     // Для соединений -- применить изменения
     if (nullptr != m_movingConnectionLine) {
         // Отменяем если не вершина
-        if (pItem->data(ObjectSceneConstants::OBJECTFIELD_OBJECTTYPE).toInt() != GraphSceneBase::OBJECT_TYPE_VERTEX ||
+        if (pItem->getType() != ObjectSceneConstants::OBJECTTYPE_VERTEX ||
             pItem == m_movingConnectionLine->getVertexFrom()) {
             m_movingConnectionLine->resetPositions();
             clearMovingMode();
@@ -160,7 +173,7 @@ void GraphEditMode::toggleMovingItem(QGraphicsItem *pItem)
     }
 
     // Если вершина, прикрепляем её к курсору
-    if (pItem->data(ObjectSceneConstants::OBJECTFIELD_OBJECTTYPE).toInt() == GraphSceneBase::OBJECT_TYPE_VERTEX &&
+    if (pItem->getType() == ObjectSceneConstants::OBJECTTYPE_VERTEX &&
         pItem != m_movingVertex) {
         if (nullptr != m_movingVertex) {
             pScene->rejectGrabObject();
@@ -198,11 +211,16 @@ void GraphEditMode::clearMovingMode()
     pScene->rejectGrabObject();
 }
 
-void GraphEditMode::setPendingConnection(QGraphicsItem *pTargetVertexItem)
+void GraphEditMode::setPendingConnection(PredefinedObjects::PredefinedObjectBase *pTargetVertexItem)
 {
+    if (pTargetVertexItem == nullptr) {
+        return;
+    }
+
     auto pScene = getScene();
 
-    if (pTargetVertexItem->data(ObjectSceneConstants::OBJECTFIELD_OBJECTTYPE).toInt() != GraphSceneBase::OBJECT_TYPE_VERTEX) {
+    if (pTargetVertexItem->getType() != ObjectSceneConstants::OBJECTTYPE_VERTEX) {
+        qDebug() << "ITEM TYPE:" << static_cast<int>(pTargetVertexItem->getType());
         clearConnectionAddMode();
         return;
     }
@@ -231,6 +249,33 @@ void GraphEditMode::clearConnectionAddMode()
     getScene()->setMovingCallback({});
     delete m_pendingConnectionLine;
     m_pendingConnectionLine = nullptr;
+}
+
+void GraphEditMode::setPendingVertex(PredefinedObjects::PredefinedObjectBase *pItem)
+{
+    if (pItem != nullptr && pItem != m_pendingVertex) {
+        return;
+    }
+
+    auto pScene = getScene();
+
+    if (nullptr != m_pendingVertex) {
+        pScene->acceptGrabObject();
+        m_pendingVertex = nullptr;
+        return;
+    }
+
+    m_pendingVertex = pScene->createVertex();
+    m_pendingVertex->setPos(pScene->mapToScene(pScene->cursor().pos()));
+    pScene->setGrabObject(m_pendingVertex);
+}
+
+void GraphEditMode::clearVertexAddMode()
+{
+    if (nullptr == m_pendingVertex) {
+        return;
+    }
+    getScene()->removeObject(m_pendingVertex->getObjectId());
 }
 
 }

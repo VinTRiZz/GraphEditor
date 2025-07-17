@@ -3,13 +3,18 @@
 
 #include <QGraphicsLineItem>
 
+#include "predefinedobjectbase.h"
+
 namespace PredefinedObjects
 {
 
-class ArrowedLine : public QGraphicsLineItem
+class ArrowedLine : public PredefinedObjectBase
 {
 public:
     explicit ArrowedLine(QGraphicsItem *parent = nullptr);
+
+    void setLine(const QLineF& iLine);
+    QLineF getLine() const;
 
     /**
      * @brief setArrowSize  Задать размер стрелки
@@ -30,6 +35,8 @@ private:
     void drawArrow(QPainter *painter);
 
     qreal m_arrowSize {10}; // Размер стрелки
+
+    QLineF m_straightLine;
 };
 
 }

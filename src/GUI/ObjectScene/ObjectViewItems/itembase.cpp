@@ -4,6 +4,8 @@
 
 #include <boost/core/demangle.hpp>
 
+#include "dynamicareaitem.h"
+
 using namespace ObjectViewConstants;
 
 namespace ObjectViewItems
@@ -18,6 +20,18 @@ ItemBase::ItemBase(QGraphicsItem *parent) :
     QGraphicsItem(parent)
 {
     setName(QString("Unchanged name of: \"%0\"").arg(boost::core::demangle(typeid(this).name()).c_str()));
+}
+
+ItemBase::~ItemBase()
+{
+
+}
+
+void ItemBase::unregister()
+{
+    if (dynamic_cast<DynamicAreaItem*>(parentItem()) != nullptr) {
+        static_cast<DynamicAreaItem*>(parentItem())->removeRegisteredItem(this);
+    }
 }
 
 void ItemBase::setType(ObjectType objType)
@@ -92,26 +106,10 @@ QString ItemBase::getDescription() const
 void ItemBase::setCustomProperties(const QJsonObject &props)
 {
     setData(OBJECTFIELD_PROPERTY_JSON, props);
-
-    if (props.contains(CustomPropertyName::PROPERTY_MAIN_COLOR)) {
-        m_mainColor = props.value(CustomPropertyName::PROPERTY_MAIN_COLOR).toString();
-    }
-
-    if (props.contains(CustomPropertyName::PROPERTY_BACKGROUND_COLOR)) {
-        m_backgroundColor = props.value(CustomPropertyName::PROPERTY_BACKGROUND_COLOR).toString();
-    }
-
-    if (props.contains(CustomPropertyName::PROPERTY_SELECTED_COLOR)) {
-        m_selectedColor = props.value(CustomPropertyName::PROPERTY_SELECTED_COLOR).toString();
-    }
 }
 
 QJsonObject ItemBase::getCustomProperties() const
 {
-    QJsonObject res;
-    res[CustomPropertyName::PROPERTY_MAIN_COLOR] = m_mainColor.name();
-    res[CustomPropertyName::PROPERTY_BACKGROUND_COLOR] = m_backgroundColor.name();
-    res[CustomPropertyName::PROPERTY_SELECTED_COLOR] = m_selectedColor.name();
     return data(OBJECTFIELD_PROPERTY_JSON).toJsonObject();
 }
 

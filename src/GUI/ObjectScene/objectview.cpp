@@ -39,6 +39,11 @@ bool ObjectView::isInited() const
     return (nullptr != m_pScene);
 }
 
+bool ObjectView::isIdAvailable(ObjectViewConstants::objectId_t itemId) const
+{
+    return m_pScene->isIdAvailable(itemId);
+}
+
 void ObjectView::setContextMenu(QMenu *pMenu)
 {
     m_pContextMenu = pMenu;

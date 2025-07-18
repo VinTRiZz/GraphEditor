@@ -23,6 +23,9 @@ public:
     void clearRegisteredItems();
 
     void removeRegisteredItems(ObjectViewConstants::ObjectType objT);
+    void removeRegisteredItem(ItemBase* pItem);
+
+    bool isIdAvailable(ObjectViewConstants::objectId_t itemId) const;
 
 private:
 

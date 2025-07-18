@@ -37,7 +37,10 @@ public:
     void resetPositions();
 
     void setPen(const QColor &penColor);
+    QColor getPenColor() const;
+
     void setSelectedPen(const QColor &penColor);
+    QColor getSelectedPenColor() const;
 
     void setArrowSize(qreal size);
     qreal getArrowSize() const;
@@ -47,7 +50,6 @@ public:
     QPainterPath shape() const override;
 
     void setCustomProperties(const QJsonObject& props) override;
-    QJsonObject getCustomProperties() const override;
 
 private:
     VertexObject*   m_fromVertex {nullptr};

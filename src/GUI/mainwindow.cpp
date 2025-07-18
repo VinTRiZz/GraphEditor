@@ -31,6 +31,5 @@ MainWindow::~MainWindow()
 void MainWindow::startValidanceTest()
 {
     ui->graphEditorForm->startValidanceTest();
-    SaveMaster::testValidance();
 }
 

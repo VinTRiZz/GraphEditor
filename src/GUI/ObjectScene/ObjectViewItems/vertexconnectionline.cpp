@@ -16,6 +16,8 @@
 #include "vertexobject.h"
 #include "../objectsceneconstants.h"
 
+using namespace ObjectViewConstants;
+
 namespace ObjectViewItems
 {
 
@@ -138,6 +140,11 @@ void VertexConnectionLine::setPen(const QColor &penColor)
     m_pArrowHeadPolygon->setPen(currentPen);
 }
 
+QColor VertexConnectionLine::getPenColor() const
+{
+    return m_mainColor;
+}
+
 void VertexConnectionLine::setSelectedPen(const QColor &penColor)
 {
     m_selectedColor = penColor;
@@ -146,6 +153,11 @@ void VertexConnectionLine::setSelectedPen(const QColor &penColor)
     m_lineSelected->setPen(m_selectedColor);
     auto currentPen = isSelected() ? m_selectedPen : m_drawPen;
     m_pArrowHeadPolygon->setPen(currentPen);
+}
+
+QColor VertexConnectionLine::getSelectedPenColor() const
+{
+    return m_selectedColor;
 }
 
 void VertexConnectionLine::setArrowSize(qreal size)
@@ -296,13 +308,6 @@ void VertexConnectionLine::setCustomProperties(const QJsonObject &props)
     ItemBase::setCustomProperties(props);
     setPen(m_mainColor);
     setSelectedPen(m_selectedColor);
-}
-
-QJsonObject VertexConnectionLine::getCustomProperties() const
-{
-    auto res = ItemBase::getCustomProperties();
-
-    return res;
 }
 
 }

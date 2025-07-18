@@ -26,28 +26,16 @@ public:
 
     bool operator !=(const GraphObject& gObj_) const;
 
-    /**
-     * @brief setIdGenerator Установить генератор ID для вершин
-     * @param fGen функтор генератора ID
-     */
-    void setIdGenerator(const std::function<GraphCommon::graphId_t (bool)> &fGen);
-
-    /**
-     * @brief getNextId Получить ID, который будет следующим для вершины
-     * @return          ID
-     */
-    GraphCommon::graphId_t getNextId() const;
-
     // ============================================================== //
     // ================= Работа с вершинами графа =================== //
     // ============================================================== //
 
     /**
      * @brief addVertex Добавить вершину в граф
-     * @param iVert Структура с описанием свойств вершины
-     * @return ID добавленной вершины
+     * @param iVert     Структура с описанием свойств вершины
+     * @return          true если добавление успешно
      */
-    GraphCommon::graphId_t addVertex(const GVertex& iVert);
+    bool addVertex(const GVertex& iVert);
 
     /**
      * @brief updateVertex Заменить свойства вершины на другие
@@ -67,7 +55,13 @@ public:
      * @brief getAllVertices Получить все вершины графа
      * @return вектор вершин графа
      */
-    std::vector<GVertex> getAllVertices() const;
+    std::list<GVertex> getAllVertices() const;
+
+    /**
+     * @brief getVerticesCount  Получить количество вершин графа
+     * @return                  Количество вершин
+     */
+    std::size_t getVerticesCount() const;
 
     /**
      * @brief removeVertex Удалить вершину по ID
@@ -107,6 +101,12 @@ public:
      * @return вектор рёбер графа
      */
     std::vector<GConnection> getAllConnections() const;
+
+    /**
+     * @brief getConnectionsCount   Получить количество соединений графа
+     * @return                      Количество соединений
+     */
+    std::size_t getConnectionsCount() const;
 
     /**
      * @brief removeConnection Удалить ребро
@@ -198,7 +198,7 @@ private:
     std::function<GraphCommon::graphId_t(bool)>   m_idGenerator; //! Генератор ID для вершин
 
     // Через STL векторы для удобства работы с алгоритмами
-    std::vector<GVertex>                m_vertices;     //! Вершины графа
+    std::list<GVertex>  m_vertices;     //! Вершины графа
     std::multimap<GraphCommon::graphId_t, GConnection>    m_connections;  //! Рёбра графа. Ключ -- целевой ID вершины (в которую "входит" стрелка связи)
 
     // Основные параметры графа

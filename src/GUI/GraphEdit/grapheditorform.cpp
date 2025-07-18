@@ -35,7 +35,7 @@ void GraphEditorForm::init()
     m_currentGraph = new Graph::GraphExtendedObject(this);
     ui->graphScene->setCurrentGraph(m_currentGraph);
 
-    *m_currentGraph = TestGraphGenerator::generateGraph(10);
+//    *m_currentGraph = TestGraphGenerator::generateGraph(10);
 
     setupWidget();
     setupSignals();
@@ -47,7 +47,8 @@ void GraphEditorForm::init()
 
 void GraphEditorForm::startValidanceTest()
 {
-    LOG_WARNING("Validance test not written");
+    SaveMaster::testValidance();
+    LOG_WARNING("GraphEditorForm: Validance test not written");
 }
 
 bool GraphEditorForm::isGraphPathSet()
@@ -103,6 +104,7 @@ void GraphEditorForm::loadGraph()
     }
 
     ui->propertyEditForm->updateGraphInfo();
+    ui->graphScene->updateGraph();
 }
 
 void GraphEditorForm::setupSignals()

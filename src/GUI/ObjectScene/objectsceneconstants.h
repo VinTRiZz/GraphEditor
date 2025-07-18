@@ -65,11 +65,7 @@ enum ObjectType : int
  */
 namespace CustomPropertyName
 {
-const QString PROPERTY_MAIN_COLOR           {"mainColor"};
-const QString PROPERTY_BACKGROUND_COLOR     {"backgroundColor"};
-const QString PROPERTY_SELECTED_COLOR       {"selectedColor"};
-const QString PROPERTY_BOUNDINGRECT         {"boundingRect"};
-const QString PROPERTY_ICON                 {"icon"};
+const QString PROPERTY_BOUNDINGRECT     {"boundingRect"};
 }
 
 }

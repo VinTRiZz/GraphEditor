@@ -31,6 +31,10 @@ void ObjectPropertyEditorForm::setTargetItem(ObjectViewItems::ItemBase *pTargetI
     ui->name_lineEdit->setText(m_pTargetItem->getName());
     ui->shortName_lineEdit->setText(m_pTargetItem->getShortName());
     ui->description_plainTextEdit->setPlainText(m_pTargetItem->getDescription());
+
+    auto isConnectionEditing = pTargetItem->getType() == ObjectViewConstants::OBJECTTYPE_VERTEX_CONNECTION;
+    ui->shortName_lineEdit->setEnabled(!isConnectionEditing);
+    ui->description_plainTextEdit->setEnabled(!isConnectionEditing);
 }
 
 void ObjectPropertyEditorForm::acceptChanges()

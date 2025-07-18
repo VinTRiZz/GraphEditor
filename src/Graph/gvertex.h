@@ -29,8 +29,8 @@ struct GVertex
     QJsonObject customProperties    {};                 //! JSON с пользовательскими свойствами
 
     // Отрисовка
-    QColor  borderColor;        //! Цвет границы
-    QColor  backgroundColor;    //! Цвет фона
+    QColor  borderColor     {Qt::black}; //! Цвет границы
+    QColor  backgroundColor {Qt::white}; //! Цвет фона
     QImage  image;              //! Изображение с альфа-каналом
 
     /**
@@ -57,17 +57,13 @@ struct GVertex
      */
     template <typename OperatorT>
     bool tieFields(const GVertex& vert, OperatorT&& vertOperator) const {
-        auto img1 = image.constBits();
-        auto img2 = vert.image.constBits();
-
         return vertOperator(
-            std::tie(id, posX, posY,
-                     shortName, name, description,
-                     customProperties,
-                     borderColor, backgroundColor, img1),
-            std::tie(vert.id, vert.posX, vert.posY,
-                     vert.shortName, vert.name, vert.description,
-                     vert.customProperties, vert.borderColor, vert.backgroundColor, img2));
+            std::tie(id, shortName, name, description,
+                     customProperties, borderColor,
+                     backgroundColor),
+            std::tie(vert.id, vert.shortName, vert.name, vert.description,
+                     vert.customProperties, vert.borderColor,
+                     vert.backgroundColor));
     }
 
     /**
@@ -76,7 +72,9 @@ struct GVertex
      * @return              true если вершина совпадает с этой
      */
     bool operator ==(const GVertex& oVert_) const {
-        return tieFields(oVert_, std::equal_to<>{});
+        return  tieFields(oVert_, std::equal_to<>{}) &&
+                (std::fabs(posX - oVert_.posX) < std::numeric_limits<double>::epsilon()) &&
+                (std::fabs(posY - oVert_.posY) < std::numeric_limits<double>::epsilon());
     }
 
     /**
@@ -85,7 +83,9 @@ struct GVertex
      * @return              true если вершина НЕ совпадает с этой
      */
     bool operator !=(const GVertex& oVert_) const {
-        return tieFields(oVert_, std::not_equal_to<>{});
+        return  tieFields(oVert_, std::not_equal_to<>{}) ||
+                (std::fabs(posX - oVert_.posX) > std::numeric_limits<double>::epsilon()) ||
+                (std::fabs(posY - oVert_.posY) > std::numeric_limits<double>::epsilon());
     }
 };
 

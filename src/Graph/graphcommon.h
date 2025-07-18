@@ -49,8 +49,8 @@ CREATE TABLE IF NOT EXISTS %0 (
     name            TEXT,
     description     TEXT,
     custom_props    TEXT,
-    color_rgba      TEXT, -- R-G-B-A in hex, example: 255 003 166 130 -> ff 03 a6 82
-    bgr_color_rgba  TEXT, -- R-G-B-A in hex, example: 255 003 166 130 -> ff 03 a6 82
+    color_rgb       TEXT, -- R-G-B in hex, example: 255 003 166 -> ff 03 a6
+    bgr_color_rgb   TEXT, -- R-G-B in hex, example: 255 003 166 -> ff 03 a6
     pxmap           TEXT  -- Pixmap as PNG
 );
 )").arg(DB_GRAPH_VERTICES_TABLENAME);
@@ -63,8 +63,7 @@ CREATE TABLE IF NOT EXISTS %0 (
     idTo        INTEGER NOT NULL,
     weight      FLOAT DEFAULT 0,
     name        TEXT,
-    color_rgba  TEXT, -- R-G-B-A in hex, example: 255 003 166 130 -> ff 03 a6 82
-    is_directed BOOLEAN DEFAULT FALSE,
+    color_rgb   TEXT, -- R-G-B in hex, example: 255 003 166 -> ff 03 a6
 
     FOREIGN KEY (idFrom) REFERENCES %1(id) ON DELETE CASCADE,
     FOREIGN KEY (idTo) REFERENCES %1(id) ON DELETE CASCADE

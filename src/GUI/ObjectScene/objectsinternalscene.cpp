@@ -19,6 +19,11 @@ ObjectsInternalScene::~ObjectsInternalScene()
 
 }
 
+bool ObjectsInternalScene::isIdAvailable(ObjectViewConstants::objectId_t itemId) const
+{
+    return m_pNullItem->isIdAvailable(itemId);
+}
+
 ObjectViewItems::ItemBase *ObjectsInternalScene::getParentOfComplex(QGraphicsItem *pItem)
 {
     auto itemParentIdVariant = pItem->data(ObjectViewConstants::OBJECTFIELD_PARENTITEM_ID);
@@ -96,7 +101,7 @@ void ObjectsInternalScene::removeObject(ObjectViewConstants::objectId_t itemId)
     auto pItem = m_objectsMap.value(itemId, nullptr);
     if (pItem != nullptr) {
         m_objectsMap.remove(itemId);
-        removeItem(pItem);
+        m_pNullItem->removeRegisteredItem(pItem);
     }
 }
 

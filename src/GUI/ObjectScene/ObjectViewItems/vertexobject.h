@@ -7,6 +7,8 @@
 
 #include "itembase.h"
 
+#include "dynamicareaitem.h"
+
 namespace ObjectViewItems
 {
 
@@ -19,7 +21,6 @@ public:
     ~VertexObject();
 
     void setImage(const QImage& img);
-
     void setShortName(const QString& iText) override;
 
     void setNodeColor(const QColor& borderColor, const QBrush &backgroundBrush);

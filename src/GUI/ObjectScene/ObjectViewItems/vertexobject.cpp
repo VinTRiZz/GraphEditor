@@ -95,12 +95,12 @@ VertexObject::~VertexObject()
 {
     for (auto pLine : m_connectionsToThis) {
         pLine->setVertexTo(nullptr);
-        delete pLine;
+        pLine->unregister();
     }
 
     for (auto pLine : m_connectionsFromThis) {
         pLine->setVertexFrom(nullptr);
-        delete pLine;
+        pLine->unregister();
     }
 }
 
@@ -120,20 +120,19 @@ void VertexObject::setShortName(const QString &iText)
 
 void VertexObject::setNodeColor(const QColor &borderColor, const QBrush &backgroundBrush)
 {
-    m_mainColor = borderColor;
-    m_backgroundColor = backgroundBrush.color();
-
     if (borderColor.isValid()) {
         m_vertexEllipse->setPen(QPen(borderColor, 5));
     } else {
         m_vertexEllipse->setPen(QPen(GraphCommon::DEFAULT_VERTEX_BORDER_COLOR, 5));
     }
+    m_mainColor = m_vertexEllipse->pen().color();
 
     if (backgroundBrush.color().isValid()) {
         m_vertexEllipse->setBrush(backgroundBrush);
     } else {
         m_vertexEllipse->setBrush(GraphCommon::DEFAULT_VERTEX_COLOR);
     }
+    m_backgroundColor = m_vertexEllipse->brush().color();
 }
 
 void VertexObject::setTextBackgroundBrush(const QBrush &textBackground)
@@ -337,13 +336,6 @@ void VertexObject::updateConnectionLines()
 
 void VertexObject::setCustomProperties(const QJsonObject &props)
 {
-    if (props.contains(CustomPropertyName::PROPERTY_ICON)) {
-        auto iconBytes = props.value(CustomPropertyName::PROPERTY_ICON).toVariant().toByteArray();
-        QPixmap p;
-        p.loadFromData(iconBytes, "PNG");
-        setImage(p.toImage());
-    }
-
     if (props.contains(CustomPropertyName::PROPERTY_BOUNDINGRECT)) {
         setBoundingRect(rectFromString(props[CustomPropertyName::PROPERTY_BOUNDINGRECT].toString()));
     }
@@ -354,18 +346,6 @@ void VertexObject::setCustomProperties(const QJsonObject &props)
 QJsonObject VertexObject::getCustomProperties() const
 {
     auto res = ItemBase::getCustomProperties();
-
-    auto vertexIcon = m_vertexImage->pixmap();
-    res[CustomPropertyName::PROPERTY_ICON] = {};
-    if (!vertexIcon.isNull()) {
-        QByteArray bytesBuffer;
-        QBuffer buf(&bytesBuffer);
-        if (vertexIcon.save(&buf, "PNG")) {
-            res[CustomPropertyName::PROPERTY_ICON] = bytesBuffer.data();
-        } else {
-            LOG_WARNING("Error converting pixmap to PNG format");
-        }
-    }
 
     res[CustomPropertyName::PROPERTY_BOUNDINGRECT] = rectToString(boundingRect());
 

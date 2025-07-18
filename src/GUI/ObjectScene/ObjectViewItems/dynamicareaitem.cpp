@@ -77,6 +77,26 @@ void DynamicAreaItem::removeRegisteredItems(ObjectViewConstants::ObjectType objT
     m_registeredItems.erase(removedBeginIt, m_registeredItems.end());
 }
 
+void DynamicAreaItem::removeRegisteredItem(ItemBase *pItem)
+{
+    for (auto pRegItem : m_registeredItems) {
+        if (pRegItem == pItem) {
+            delete pRegItem;
+        }
+    }
+    m_registeredItems.erase(std::find(m_registeredItems.begin(), m_registeredItems.end(), pItem));
+}
+
+bool DynamicAreaItem::isIdAvailable(ObjectViewConstants::objectId_t itemId) const
+{
+    for (auto pItem : m_registeredItems) {
+        if (pItem->getObjectId() == itemId) {
+            return false;
+        }
+    }
+    return true;
+}
+
 void DynamicAreaItem::setFieldRect(int minX, int minY, int maxX, int maxY)
 {
     m_matrixMin.first  = minX;

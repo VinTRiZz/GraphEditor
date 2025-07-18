@@ -11,10 +11,16 @@
 namespace ObjectViewItems
 {
 
+/**
+ * @brief The ItemBase class Основа для каждого класса объекта на сцене
+ */
 class ItemBase : public QGraphicsItem
 {
 public:
     explicit ItemBase(QGraphicsItem* parent = nullptr);
+    ~ItemBase();
+
+    void unregister();
 
     void setType(ObjectViewConstants::ObjectType objType);
     ObjectViewConstants::ObjectType getType() const;

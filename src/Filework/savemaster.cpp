@@ -96,8 +96,7 @@ bool SaveMaster::save(const QString &oFilePath, const Graph::GraphObject &iGraph
         queryText += QString::number(con.idTo) + ",";
         queryText += QString::number(con.connectionWeight) + ",";
         queryText += "'" + con.name + "',";
-        queryText += "'" + getEncoded(con.lineColor) + "',";
-        queryText += QString(con.isDirected ? "true" : "false");
+        queryText += "'" + getEncoded(con.lineColor) + "'";
 
         queryText += ")";
         if (!executeQuery(q, queryText)) { return false; }
@@ -217,7 +216,6 @@ bool SaveMaster::load(const QString &iFilePath, Graph::GraphObject &oGraphObject
         con.connectionWeight    = q.value(valPos++).toDouble();
         con.name                = q.value(valPos++).toString();
         con.lineColor           = getDecodedColor(q.value(valPos++).toByteArray());
-        con.isDirected          = q.value(valPos++).toBool();
 
         oGraphObject.addConnection(con);
     }
@@ -332,7 +330,11 @@ QByteArray SaveMaster::getEncoded(const QByteArray &iStr)
 
 QByteArray SaveMaster::getEncoded(const QColor &iCol)
 {
-    return iCol.name().toUtf8().data();
+    return QString("#%1%2%3")
+            .arg(iCol.red(), 2, 16, QLatin1Char('0'))
+            .arg(iCol.green(), 2, 16, QLatin1Char('0'))
+            .arg(iCol.blue(), 2, 16, QLatin1Char('0'))
+            .toUpper().toUtf8().data();
 }
 
 QByteArray SaveMaster::getEncoded(const QPixmap &iPxmap)
@@ -359,5 +361,9 @@ QPixmap SaveMaster::getDecodedPixmap(const QByteArray &iBytes)
 
 QColor SaveMaster::getDecodedColor(const QByteArray &iBytes)
 {
-    return QColor(iBytes.data()); // From name
+    if (iBytes.length() != 7) {
+        LOG_WARNING("Invalid color string:", iBytes);
+        return {};
+    }
+    return QColor(iBytes.data());
 }

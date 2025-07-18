@@ -33,6 +33,8 @@ public:
     void init();
     bool isInited() const;
 
+    bool isIdAvailable(ObjectViewConstants::objectId_t itemId) const;
+
     void setContextMenu(QMenu* pMenu);
     QGraphicsItem* getContextMenuItem();
 

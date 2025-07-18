@@ -1,36 +1,27 @@
 #include "graphobject.h"
-
 #include "graphcommon.h"
 
 #include <QDateTime>
 
+#include "logging.h"
+
 namespace Graph
 {
 
-
 GraphObject::GraphObject()
 {
-    GraphCommon::graphId_t currentId {1};
-    m_idGenerator = [currentId](bool needIncrement) mutable {
-        return (needIncrement ? currentId++ : currentId);
-    };
+
 }
 
 bool GraphObject::operator ==(const GraphObject &gObj_) const
 {
     if (!std::equal(m_vertices.begin(), m_vertices.end(),
-                              gObj_.m_vertices.begin(), gObj_.m_vertices.end(),
-        [](const Graph::GVertex& v1, const Graph::GVertex& v2) {
-        return (v1 == v2);
-    })) {
+                              gObj_.m_vertices.begin(), gObj_.m_vertices.end())) {
         return false;
     }
 
     if (!std::equal(m_connections.begin(), m_connections.end(),
-                              gObj_.m_connections.begin(), gObj_.m_connections.end(),
-        [](const auto& c1, const auto& c2) {
-        return (c1.first == c2.first) && (c2.second == c2.second);
-    })) {
+                              gObj_.m_connections.begin(), gObj_.m_connections.end())) {
         return false;
     }
 
@@ -61,28 +52,20 @@ bool GraphObject::operator !=(const GraphObject &gObj_) const
     return !(*this == gObj_);
 }
 
-void GraphObject::setIdGenerator(const std::function<GraphCommon::graphId_t (bool)> &fGen)
-{
-    if (!fGen) {
-        throw std::invalid_argument("GraphObject: invalid id generator passed into setIdGenerator");
-    }
-
-    m_idGenerator = fGen;
-}
-
-GraphCommon::graphId_t GraphObject::getNextId() const
-{
-    return m_idGenerator(false);
-}
-
-GraphCommon::graphId_t GraphObject::addVertex(const GVertex &iVert)
+bool GraphObject::addVertex(const GVertex &iVert)
 {
     if (!iVert.isShortnameValid()) {
         throw std::invalid_argument("GraphObject::addVertex: invalid size of short name");
     }
+
+    for (auto& vert : m_vertices) {
+        if (vert.id == iVert.id) {
+            return false;
+        }
+    }
+
     m_vertices.push_back(iVert);
-    GraphCommon::graphId_t resId = m_vertices.back().id = m_idGenerator(true);
-    return resId;
+    return true;
 }
 
 bool GraphObject::updateVertex(const GVertex &iVert)
@@ -111,9 +94,14 @@ std::optional<GVertex> GraphObject::getVertex(GraphCommon::graphId_t vertexId) c
     return *targetVertex;
 }
 
-std::vector<GVertex> GraphObject::getAllVertices() const
+std::list<GVertex> GraphObject::getAllVertices() const
 {
     return m_vertices;
+}
+
+std::size_t GraphObject::getVerticesCount() const
+{
+    return m_vertices.size();
 }
 
 void GraphObject::removeVertex(GraphCommon::graphId_t vertexId)
@@ -190,6 +178,11 @@ std::vector<GConnection> GraphObject::getAllConnections() const
         res.push_back(connection);
     }
     return res;
+}
+
+std::size_t GraphObject::getConnectionsCount() const
+{
+    return m_connections.size();
 }
 
 void GraphObject::removeConnection(GraphCommon::graphId_t conFrom, GraphCommon::graphId_t conTo)

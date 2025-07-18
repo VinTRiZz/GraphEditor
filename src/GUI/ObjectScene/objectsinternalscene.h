@@ -31,6 +31,8 @@ public:
     explicit ObjectsInternalScene(QObject *parent = nullptr);
     ~ObjectsInternalScene();
 
+    bool isIdAvailable(ObjectViewConstants::objectId_t itemId) const;
+
     ObjectViewItems::ItemBase* getParentOfComplex(QGraphicsItem *pItem);
     bool isNullItem(QGraphicsItem *pItem) const;
 

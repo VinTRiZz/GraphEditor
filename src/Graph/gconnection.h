@@ -4,6 +4,8 @@
 #include <QString>
 #include <QColor>
 
+#include <QJsonObject>
+
 #include "graphcommon.h"
 
 namespace Graph
@@ -16,10 +18,10 @@ struct GConnection
 {
     GraphCommon::graphId_t    idFrom              {0};            //! ID из которого исходит ребро
     GraphCommon::graphId_t    idTo                {0};            //! ID в которое входит ребро
-    double  connectionWeight    {0};            //! Вес ребра
-    QString name                {};             //! Название ребра
-    QColor  lineColor           {Qt::black};    //! Цвет ребра
-    bool    isDirected          {false};        //! Флаг наличия направления у ребра
+    double      connectionWeight    {0};            //! Вес ребра
+    QString     name                {};             //! Название ребра
+    QColor      lineColor           {Qt::black};    //! Цвет ребра
+    QJsonObject customProperties;
 
     /**
      * @brief isValid Проверка на корректность данных структуры
@@ -39,9 +41,9 @@ struct GConnection
     bool tieFields(const GConnection& cCon_, OperatorT&& vertOperator) const {
         return vertOperator(
             std::tie(idFrom, idTo,
-                     name, lineColor, isDirected),
+                     name, lineColor),
             std::tie(cCon_.idFrom, cCon_.idTo,
-                     cCon_.name, cCon_.lineColor, cCon_.isDirected));
+                     cCon_.name, cCon_.lineColor));
     }
 
     /**

@@ -162,7 +162,10 @@ void GraphEditMode::processPress(QGraphicsItem *pItem)
         break;
 
     case CEM_REMOVING:
-        delete pCastedItem;
+        if (nullptr == pCastedItem) {
+            return;
+        }
+        getScene()->removeObject(pCastedItem->getObjectId());
         break;
 
     case CEM_EDIT_PROPERTIES:
@@ -327,7 +330,9 @@ void GraphEditMode::setPendingConnection(ObjectViewItems::ItemBase *pTargetVerte
 void GraphEditMode::clearConnectionAddMode()
 {
     getScene()->setMovingCallback({});
-    delete m_pendingConnectionLine;
+    if (nullptr != m_pendingConnectionLine) {
+        getScene()->removeObject(m_pendingConnectionLine->getObjectId());
+    }
     m_pendingConnectionLine = nullptr;
 }
 
@@ -342,7 +347,7 @@ void GraphEditMode::setPendingVertex(ObjectViewItems::ItemBase *pItem)
         m_pendingVertex = nullptr;
         return;
     }
-    m_pendingVertex = pScene->createVertex(pScene->getCurrentGraph()->getNextId());
+    m_pendingVertex = pScene->createVertex();
     m_pendingVertex->setPos(pScene->mapToScene(pScene->cursor().pos()));
     pScene->setGrabObject(m_pendingVertex);
 }
@@ -357,6 +362,7 @@ void GraphEditMode::clearVertexAddMode()
         pScene->rejectGrabObject();
     }
     pScene->removeObject(m_pendingVertex->getObjectId());
+    m_pendingVertex = nullptr;
 }
 
 void GraphEditMode::setTargetForPropertyEditor(ObjectViewItems::ItemBase *pItem)

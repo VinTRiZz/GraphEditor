@@ -20,7 +20,15 @@ GraphEditorForm::GraphEditorForm(QWidget *parent) :
     ui(new Ui::GraphEditorForm)
 {
     ui->setupUi(this);
+}
 
+GraphEditorForm::~GraphEditorForm()
+{
+    delete ui;
+}
+
+void GraphEditorForm::init()
+{
     ui->graphScene->init();
     ui->graphScene->startEditMode();
 
@@ -35,11 +43,6 @@ GraphEditorForm::GraphEditorForm(QWidget *parent) :
     ui->graphScene->setCurrentGraph(m_currentGraph);
     ui->propertyEditForm->setCurrentGraph(m_currentGraph);
     ui->propertyEditForm->hide();
-}
-
-GraphEditorForm::~GraphEditorForm()
-{
-    delete ui;
 }
 
 void GraphEditorForm::startValidanceTest()

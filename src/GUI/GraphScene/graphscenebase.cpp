@@ -1,6 +1,7 @@
 #include "graphscenebase.h"
 
 #include "Graph/graphcommon.h"
+#include "GUI/ObjectScene/objectsceneconstants.h"
 #include "logging.h"
 
 namespace Graph
@@ -119,7 +120,7 @@ void GraphSceneBase::updateGraph()
     removeSpecialObjects(ObjectViewConstants::OBJECTTYPE_VERTEX_CONNECTION);
     removeSpecialObjects(ObjectViewConstants::OBJECTTYPE_ARROWLINE);
 
-    auto& sceneConfig = GraphSceneConfiguration::getInstance();
+    auto& sceneConfig = ObjectViewConstants::ObjectSceneConfiguration::getInstance();
     double labelHeight {0};
 
     QRect vertexRect;
@@ -183,7 +184,7 @@ ObjectViewItems::VertexConnectionLine *GraphSceneBase::createConnectionLine(Obje
 {
     auto pConnection = new ObjectViewItems::VertexConnectionLine;
     pConnection->setObjectId(idFrom << 16 | idTo); // TODO: Придумать чёт с соединениями
-    pConnection->setZValue(GraphSceneConfiguration::getInstance().connectionLineLayer);
+    pConnection->setZValue(ObjectViewConstants::ObjectSceneConfiguration::getInstance().connectionLineLayer);
     addObject(pConnection);
 
     return pConnection;
@@ -198,7 +199,7 @@ ObjectViewItems::VertexObject *GraphSceneBase::createVertex(ObjectViewConstants:
     pVertexItem->setName("My node template");
     pVertexItem->setDescription("My example description");
 
-    auto& sceneConfig = GraphSceneConfiguration::getInstance();
+    auto& sceneConfig = ObjectViewConstants::ObjectSceneConfiguration::getInstance();
     pVertexItem->setZValue(sceneConfig.vertexLayer);
 
     QRect vertexRect;

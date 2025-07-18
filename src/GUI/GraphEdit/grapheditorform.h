@@ -27,6 +27,11 @@ public:
     ~GraphEditorForm();
 
     /**
+     * @brief init Инициализация формы. Необходимо вызвать до использования для корректной работы
+     */
+    void init();
+
+    /**
      * @brief startValidanceTest Запуск тестирования формы на валидность работы
      */
     void startValidanceTest();

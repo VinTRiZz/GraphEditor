@@ -5,6 +5,5 @@
 #include "ObjectViewItems/arrowline.h"
 #include "ObjectViewItems/vertexobject.h"
 #include "ObjectViewItems/vertexconnectionline.h"
-#include "ObjectViewItems/propertyedititem.h"
 
 #endif // PREDEFINEDOBJECTS_H

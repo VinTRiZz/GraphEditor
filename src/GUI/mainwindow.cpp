@@ -19,6 +19,8 @@ MainWindow::MainWindow(QWidget *parent)
     }
     setStyleSheet(stylesFile.readAll());
     LOG_OK("Styles set");
+
+    ui->graphEditorForm->init();
 }
 
 MainWindow::~MainWindow()
@@ -28,7 +30,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::startValidanceTest()
 {
-    ui->objectScene->startValidanceTest();
+    ui->graphEditorForm->startValidanceTest();
     SaveMaster::testValidance();
 }
 

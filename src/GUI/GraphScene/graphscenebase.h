@@ -12,23 +12,6 @@
 namespace Graph
 {
 
-/**
- * @brief The GraphConversionConfiguration class Структура для настройки конверсий графов
- */
-struct GraphSceneConfiguration : boost::noncopyable
-{
-    // Уровни расположения объектов на сцене по их типу
-    GraphCommon::graphId_t connectionLineLayer = 10;   //! Уровень линий соединения вершин
-    GraphCommon::graphId_t vertexLayer         = 20;   //! Уровень вершин
-
-    double vertexWidth       = 100;  //! Ширина и высота вершины
-
-    static GraphSceneConfiguration& getInstance() {
-        static GraphSceneConfiguration inst;
-        return inst;
-    }
-};
-
 class GraphSceneBase : public ObjectView
 {
 public:

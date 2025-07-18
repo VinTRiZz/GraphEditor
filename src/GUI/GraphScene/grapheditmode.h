@@ -3,7 +3,7 @@
 
 #include "graphmodebase.h"
 
-#include "GUI/ObjectScene/predefinedobjects.h"
+#include "GUI/GraphEdit/propertyedititem.h"
 
 namespace Graph
 {
@@ -13,6 +13,7 @@ class GraphEditMode : public GraphModeBase
     Q_OBJECT
 public:
     GraphEditMode(QWidget* parent = nullptr);
+    ~GraphEditMode();
 
     void init() override;
 
@@ -56,7 +57,8 @@ private:
     void setPendingVertex(ObjectViewItems::ItemBase* pItem);
     void clearVertexAddMode();
 
-    ObjectViewItems::PropertyEditItem* m_propertyEditor {nullptr};
+    PropertyEditItem*           m_propertyEditor {nullptr};
+    ObjectPropertyEditorForm*   m_vertexEditorForm {nullptr};
     void setTargetForPropertyEditor(ObjectViewItems::ItemBase* pItem);
     void clearPropertyEditMode();
 };

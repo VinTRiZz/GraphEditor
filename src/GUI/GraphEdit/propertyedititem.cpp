@@ -8,22 +8,10 @@
 
 #include <QJsonObject>
 
-namespace ObjectViewItems
-{
-
-struct PropertyEditItem::Impl
-{
-    QWidget hostWidget;
-    QLabel  nameLabel;
-    QLabel  shortNameLabel;
-    QLabel  descriptionLabel;
-
-    PropertyEditWidget* customPropertyWidget {nullptr};
-};
+using namespace ObjectViewItems;
 
 PropertyEditItem::PropertyEditItem(QGraphicsItem* parent) :
-    ItemBase(parent),
-    d {new Impl}
+    ItemBase(parent)
 {
     setName("Property editor");
 
@@ -35,7 +23,6 @@ PropertyEditItem::PropertyEditItem(QGraphicsItem* parent) :
     m_targetLocatorItem->setPen(QPen(Qt::black, 4));
 
     m_editorForm = new QGraphicsProxyWidget(this);
-    m_editorForm->setWidget(&d->hostWidget);
 }
 
 PropertyEditItem::~PropertyEditItem()
@@ -43,26 +30,17 @@ PropertyEditItem::~PropertyEditItem()
 
 }
 
-void PropertyEditItem::setCustomPropertyEditor(PropertyEditWidget *pWidget)
+void PropertyEditItem::setPropertyEditor(ObjectPropertyEditorForm *pWidget)
 {
-    if (nullptr != d->customPropertyWidget) {
-        throw std::runtime_error("Can not set property editor if already set one");
-    }
-    d->customPropertyWidget = pWidget;
-    d->customPropertyWidget->setParent(&d->hostWidget);
-}
-
-PropertyEditWidget *PropertyEditItem::getCustomPropertyEditor() const
-{
-    return d->customPropertyWidget;
+    m_editorForm->setWidget(pWidget);
 }
 
 void PropertyEditItem::setTargetItem(ItemBase *pTargetItem)
 {
     m_pTargetItem = pTargetItem;
 
-    if (nullptr != d->customPropertyWidget) {
-        d->customPropertyWidget->setCustomProperties(m_pTargetItem->getCustomProperties());
+    if (nullptr != m_propertyEditorWidget) {
+        m_propertyEditorWidget->setTargetItem(pTargetItem);
     }
 }
 
@@ -78,6 +56,4 @@ QVariant PropertyEditItem::itemChange(GraphicsItemChange change, const QVariant 
     }
 
     return QGraphicsItem::itemChange(change, value);
-}
-
 }

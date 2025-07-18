@@ -23,7 +23,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="GraphEditorForm" name="objectScene" native="true"/>
+     <widget class="GraphEditorForm" name="graphEditorForm" native="true"/>
     </item>
    </layout>
   </widget>

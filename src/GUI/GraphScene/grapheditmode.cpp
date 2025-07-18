@@ -321,14 +321,17 @@ void GraphEditMode::setPendingConnection(ObjectViewItems::ItemBase *pTargetVerte
         return;
     }
 
+    auto pCastedVertex = static_cast<ObjectViewItems::VertexObject*>(pTargetVertexItem);
+
     // Нельзя соединять с самой собой
-    if (pTargetVertexItem == m_pendingConnectionLine->getVertexFrom()) {
+    if (pCastedVertex == m_pendingConnectionLine->getVertexFrom() ||
+        pCastedVertex->isLineSubscribed(m_pendingConnectionLine)) {
         clearConnectionAddMode();
         return;
     }
 
     // Соединяем
-    static_cast<ObjectViewItems::VertexObject*>(pTargetVertexItem)->subscribeAsConnectionTo(m_pendingConnectionLine);
+    pCastedVertex->subscribeAsConnectionTo(m_pendingConnectionLine);
     m_pendingConnectionLine = nullptr; // Теперь эта линия не удалится
     clearConnectionAddMode();
 }

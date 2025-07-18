@@ -215,6 +215,18 @@ QPainterPath VertexObject::shape() const
     return res;
 }
 
+bool VertexObject::isLineSubscribed(VertexConnectionLine *pLine)
+{
+    // Нет смысла проверять исходящие, т.к. нельзя регистрировать вершину саму на себя
+    for (auto pLineTo : m_connectionsToThis) {
+        if (pLineTo->getVertexFrom()->getObjectId() ==
+                pLine->getVertexFrom()->getObjectId()) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void VertexObject::subscribeAsConnectionFrom(VertexConnectionLine *pLine)
 {
     if (this == pLine->getVertexTo()) {

@@ -34,6 +34,8 @@ public:
 
     QPainterPath shape() const override;
 
+    bool isLineSubscribed(VertexConnectionLine* pLine);
+
     void subscribeAsConnectionFrom(VertexConnectionLine* pLine);
     void unsubscribeConnectionFrom(VertexConnectionLine* pLine);
 

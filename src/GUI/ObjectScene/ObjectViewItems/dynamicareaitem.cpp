@@ -67,13 +67,6 @@ void DynamicAreaItem::removeRegisteredItems(ObjectViewConstants::ObjectType objT
         }
         return res;
     });
-
-    auto currentIt = removedBeginIt;
-    while (currentIt != m_registeredItems.end()) {
-        delete *currentIt;
-        *currentIt = nullptr;
-        currentIt++;
-    }
     m_registeredItems.erase(removedBeginIt, m_registeredItems.end());
 }
 

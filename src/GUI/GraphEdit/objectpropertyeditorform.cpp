@@ -27,7 +27,6 @@ ObjectPropertyEditorForm::~ObjectPropertyEditorForm()
 
 void ObjectPropertyEditorForm::setTargetItem(ObjectViewItems::ItemBase *pTargetItem)
 {
-    LOG_INFO("Changing target item");
     m_pTargetItem = pTargetItem;
     ui->name_lineEdit->setText(m_pTargetItem->getName());
     ui->shortName_lineEdit->setText(m_pTargetItem->getShortName());

@@ -31,7 +31,7 @@ struct ButtonConfig
 
 
 /**
- * @brief The HeadButton class "Главная" кнопка, которая обрабатывает все внутренние
+ * @brief The HeadButton class "Главная" кнопка, которая обрабатывает все внутренние. Нельзя скрыть (вынужденная мера)
  */
 class HeadButton : public QPushButton
 {
@@ -44,6 +44,11 @@ class HeadButton : public QPushButton
 public:
     HeadButton(QWidget* parent = nullptr);
     ~HeadButton();
+
+    /**
+     * @brief fixPositions Позволяет избежать багов при переводе в полноэкранный режим и обратно
+     */
+    void fixPositions();
 
     /**
      * @brief addButton Добавление кнопки

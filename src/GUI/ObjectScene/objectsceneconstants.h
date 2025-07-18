@@ -2,8 +2,8 @@
 #define ObjectViewConstants_H
 
 #include <stdint.h>
-
 #include <boost/noncopyable.hpp>
+#include <QString>
 
 namespace ObjectViewConstants
 {
@@ -59,6 +59,18 @@ enum ObjectType : int
     OBJECTTYPE_VERTEX,
     OBJECTTYPE_VERTEX_CONNECTION,
 };
+
+/**
+ *  @brief Свойства, которые могут встречаться в CustomPropertyJson
+ */
+namespace CustomPropertyName
+{
+const QString PROPERTY_MAIN_COLOR           {"mainColor"};
+const QString PROPERTY_BACKGROUND_COLOR     {"backgroundColor"};
+const QString PROPERTY_SELECTED_COLOR       {"selectedColor"};
+const QString PROPERTY_BOUNDINGRECT         {"boundingRect"};
+const QString PROPERTY_ICON                 {"icon"};
+}
 
 }
 

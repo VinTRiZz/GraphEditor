@@ -46,6 +46,9 @@ public:
     bool contains(const QPointF& p) const override;
     QPainterPath shape() const override;
 
+    void setCustomProperties(const QJsonObject& props) override;
+    QJsonObject getCustomProperties() const override;
+
 private:
     VertexObject*   m_fromVertex {nullptr};
     VertexObject*   m_toVertex {nullptr};

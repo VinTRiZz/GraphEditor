@@ -45,6 +45,9 @@ public:
     ObjectViewItems::VertexConnectionLine* createConnectionLine(ObjectViewConstants::objectId_t idFrom, ObjectViewConstants::objectId_t idTo);
     ObjectViewItems::VertexObject* createVertex(ObjectViewConstants::objectId_t vertexId);
 
+private:
+    void resizeEvent(QResizeEvent* e) override;
+
 protected:
     Graph::GraphExtendedObject* m_pGraph {nullptr};
     GraphModeBase*              m_pCurrentMode {nullptr};

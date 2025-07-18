@@ -211,5 +211,11 @@ ObjectViewItems::VertexObject *GraphSceneBase::createVertex(ObjectViewConstants:
     return pVertexItem;
 }
 
+void GraphSceneBase::resizeEvent(QResizeEvent *e)
+{
+    m_buttonMatrixHead->fixPositions();
+    ObjectView::resizeEvent(e);
+}
+
 
 }

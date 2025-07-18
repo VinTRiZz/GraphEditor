@@ -5,6 +5,9 @@
 
 #include "../objectsceneconstants.h"
 
+#include <QBrush>
+#include <QPen>
+
 namespace ObjectViewItems
 {
 
@@ -17,20 +20,20 @@ public:
     ObjectViewConstants::ObjectType getType() const;
 
     void setSystemId();
-    void setObjectId(ObjectViewConstants::objectId_t id);
-    ObjectViewConstants::objectId_t getObjectId() const;
+    virtual void setObjectId(ObjectViewConstants::objectId_t id);
+    virtual ObjectViewConstants::objectId_t getObjectId() const;
 
     virtual void setShortName(const QString& text);
-    QString getShortName() const;
+    virtual QString getShortName() const;
 
     virtual void setName(const QString& text);
-    QString getName() const;
+    virtual QString getName() const;
 
     virtual void setDescription(const QString& text);
-    QString getDescription() const;
+    virtual QString getDescription() const;
 
     virtual void setCustomProperties(const QJsonObject& props);
-    QJsonObject getCustomProperties() const;
+    virtual QJsonObject getCustomProperties() const;
 
     QRectF boundingRect() const override;
 
@@ -41,6 +44,10 @@ private:
 
 protected:
     void setBoundingRect(const QRectF& bRect);
+
+    QColor  m_mainColor         {Qt::black};
+    QColor  m_backgroundColor   {Qt::transparent};
+    QColor  m_selectedColor     {Qt::darkYellow};
 };
 
 }

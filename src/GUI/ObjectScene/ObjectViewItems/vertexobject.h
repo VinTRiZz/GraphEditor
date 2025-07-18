@@ -41,9 +41,11 @@ public:
 
     void updateConnectionLines();
 
+    void setCustomProperties(const QJsonObject& props) override;
+    QJsonObject getCustomProperties() const override;
+
 private:
     QPen   m_selectedPen;
-    QLineF m_straightLine;
 
     QGraphicsPathItem*      m_selectedRectItem  {nullptr};
     QGraphicsPixmapItem*    m_vertexImage       {nullptr};

@@ -19,6 +19,16 @@ HeadButton::~HeadButton()
 
 }
 
+void HeadButton::fixPositions()
+{
+    moveSelf();
+    if (m_isButtonsExpanded) {
+        expand(false);
+    } else {
+        collapse(false);
+    }
+}
+
 bool HeadButton::addButton(const ButtonConfig &bConfig)
 {
     if (!isValid(bConfig.positionX, bConfig.positionY)) {
@@ -330,6 +340,5 @@ void HeadButton::moveEvent(QMoveEvent *event)
     }
     QPushButton::moveEvent(event);
 }
-
 
 }

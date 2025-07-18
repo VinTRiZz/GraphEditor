@@ -9,12 +9,16 @@
 #include <QFileInfo>
 #include <QImageReader>
 
+#include <QBuffer>
+
 #include "vertexconnectionline.h"
 #include "../objectsceneconstants.h"
 
 #include "logging.h"
 
 #include "Graph/graphcommon.h"
+
+using namespace ObjectViewConstants;
 
 namespace ObjectViewItems
 {
@@ -31,6 +35,28 @@ QPixmap loadImageWithAlpha(const QString& path) {
     return QPixmap(path);  // Для PNG/JPEG/BMP/etc
 }
 
+QString rectToString(const QRectF& iRect) {
+    QString res;
+
+    res = QString("%0:%1:%2:%3").arg(QString::number(iRect.left()), QString::number(iRect.top()),
+                                     QString::number(iRect.width()), QString::number(iRect.height()));
+
+    return res;
+}
+
+QRectF rectFromString(const QString& iString) {
+    auto valuesSplitted = iString.split(":");
+    if (valuesSplitted.count() < 4) {
+        LOG_WARNING("Invalid format of rect save:", iString);
+        return {};
+    }
+
+    QRectF res;
+    res.setTopLeft(QPointF(valuesSplitted[0].toDouble(), valuesSplitted[1].toDouble()));
+    res.setWidth(valuesSplitted[2].toDouble());
+    res.setHeight(valuesSplitted[3].toDouble());
+    return res;
+}
 
 VertexObject::VertexObject(QGraphicsItem *parent) :
     ItemBase(parent)
@@ -55,15 +81,12 @@ VertexObject::VertexObject(QGraphicsItem *parent) :
 
     m_vertexImage   = new QGraphicsPixmapItem(this);
     m_vertexImage->hide();
-    m_vertexImage->setZValue(0);
 
     m_vertexEllipse = new QGraphicsEllipseItem(this);
-    m_vertexEllipse->setBrush(GraphCommon::DEFAULT_VERTEX_COLOR);
-    m_vertexEllipse->setZValue(0);
-
     m_vertexTextRect = new QGraphicsRectItem(this);
-    m_vertexTextRect->setZValue(0);
-    m_vertexTextRect->setBrush(GraphCommon::DEFAULT_VERTEX_TEXT_BGR_COLOR);
+
+    setNodeColor(GraphCommon::DEFAULT_VERTEX_BORDER_COLOR, GraphCommon::DEFAULT_VERTEX_COLOR);
+    setTextBackgroundBrush(GraphCommon::DEFAULT_VERTEX_TEXT_BGR_COLOR);
 
     setupTextItem();
 }
@@ -85,7 +108,6 @@ void VertexObject::setImage(const QImage &img)
 {
     m_vertexImage->setPixmap(QPixmap::fromImage(img));
     m_vertexImage->show();
-
     m_vertexEllipse->hide();
 }
 
@@ -98,6 +120,9 @@ void VertexObject::setShortName(const QString &iText)
 
 void VertexObject::setNodeColor(const QColor &borderColor, const QBrush &backgroundBrush)
 {
+    m_mainColor = borderColor;
+    m_backgroundColor = backgroundBrush.color();
+
     if (borderColor.isValid()) {
         m_vertexEllipse->setPen(QPen(borderColor, 5));
     } else {
@@ -308,6 +333,43 @@ void VertexObject::updateConnectionLines()
         pConTo->setPositionTo(toPos);
         connectionNumber++;
     }
+}
+
+void VertexObject::setCustomProperties(const QJsonObject &props)
+{
+    if (props.contains(CustomPropertyName::PROPERTY_ICON)) {
+        auto iconBytes = props.value(CustomPropertyName::PROPERTY_ICON).toVariant().toByteArray();
+        QPixmap p;
+        p.loadFromData(iconBytes, "PNG");
+        setImage(p.toImage());
+    }
+
+    if (props.contains(CustomPropertyName::PROPERTY_BOUNDINGRECT)) {
+        setBoundingRect(rectFromString(props[CustomPropertyName::PROPERTY_BOUNDINGRECT].toString()));
+    }
+
+    ItemBase::setCustomProperties(props);
+}
+
+QJsonObject VertexObject::getCustomProperties() const
+{
+    auto res = ItemBase::getCustomProperties();
+
+    auto vertexIcon = m_vertexImage->pixmap();
+    res[CustomPropertyName::PROPERTY_ICON] = {};
+    if (!vertexIcon.isNull()) {
+        QByteArray bytesBuffer;
+        QBuffer buf(&bytesBuffer);
+        if (vertexIcon.save(&buf, "PNG")) {
+            res[CustomPropertyName::PROPERTY_ICON] = bytesBuffer.data();
+        } else {
+            LOG_WARNING("Error converting pixmap to PNG format");
+        }
+    }
+
+    res[CustomPropertyName::PROPERTY_BOUNDINGRECT] = rectToString(boundingRect());
+
+    return res;
 }
 
 }

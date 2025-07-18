@@ -44,16 +44,17 @@ VertexConnectionLine::VertexConnectionLine(QGraphicsItem *parent) :
 
     m_line = new QGraphicsPathItem(this);
     m_line->setBrush(Qt::NoBrush);
-    m_line->setPen(m_drawPen);
     m_line->setZValue(1);
 
     m_lineSelected = new QGraphicsPathItem(this);
     m_lineSelected->setBrush(Qt::NoBrush);
-    m_lineSelected->setPen(m_selectedPen);
     m_lineSelected->setZValue(0);
     m_lineSelected->hide();
 
     m_pArrowHeadPolygon = new QGraphicsPolygonItem(this);
+
+    setPen(QColor("#2a8d7c"));
+    setSelectedPen(m_selectedPen.color());
 }
 
 VertexConnectionLine::~VertexConnectionLine()

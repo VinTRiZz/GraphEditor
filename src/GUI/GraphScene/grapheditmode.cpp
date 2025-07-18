@@ -321,9 +321,15 @@ void GraphEditMode::setPendingConnection(ObjectViewItems::ItemBase *pTargetVerte
         return;
     }
 
+    // Нельзя соединять с самой собой
+    if (pTargetVertexItem == m_pendingConnectionLine->getVertexFrom()) {
+        clearConnectionAddMode();
+        return;
+    }
+
     // Соединяем
     static_cast<ObjectViewItems::VertexObject*>(pTargetVertexItem)->subscribeAsConnectionTo(m_pendingConnectionLine);
-    m_pendingConnectionLine = nullptr;
+    m_pendingConnectionLine = nullptr; // Теперь эта линия не удалится
     clearConnectionAddMode();
 }
 

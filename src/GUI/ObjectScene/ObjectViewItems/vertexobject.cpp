@@ -93,6 +93,7 @@ void VertexObject::setShortName(const QString &iText)
 {
     m_vertexText->setPlainText(iText);
     ItemBase::setShortName(iText);
+    setRect(boundingRect());
 }
 
 void VertexObject::setNodeColor(const QColor &borderColor, const QBrush &backgroundBrush)

@@ -28,13 +28,9 @@ public:
     void setTargetItem(ItemBase* pTargetItem);
 
 private:
-    ItemBase*                       m_pTargetItem {nullptr};
-    ObjectViewItems::ArrowedLine*   m_targetLocatorItem {nullptr};
-
+    ItemBase*                   m_pTargetItem {nullptr};
     ObjectPropertyEditorForm*   m_propertyEditorWidget {nullptr};
     QGraphicsProxyWidget*       m_editorForm {nullptr};
-
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 };
 
 

@@ -18,6 +18,14 @@ public:
 
     void setTargetItem(ObjectViewItems::ItemBase* pTargetItem);
 
+public slots:
+    void acceptChanges();
+    void cancelChanges();
+
+signals:
+    void changedItemData();
+    void editCanceled();
+
 private:
     Ui::ObjectPropertyEditorForm *ui;
 

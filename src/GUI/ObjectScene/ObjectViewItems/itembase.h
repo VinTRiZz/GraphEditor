@@ -41,6 +41,15 @@ public:
     virtual void setCustomProperties(const QJsonObject& props);
     virtual QJsonObject getCustomProperties() const;
 
+    virtual void setMainColor(const QColor &penColor);
+    virtual QColor getMainColor() const;
+
+    virtual void setBackgroundColor(const QColor &penColor);
+    virtual QColor getBackgroundColor() const;
+
+    virtual void setSelectedColor(const QColor &penColor);
+    virtual QColor getSelectedColor() const;
+
     QRectF boundingRect() const override;
 
 private:
@@ -50,10 +59,6 @@ private:
 
 protected:
     void setBoundingRect(const QRectF& bRect);
-
-    QColor  m_mainColor         {Qt::black};
-    QColor  m_backgroundColor   {Qt::transparent};
-    QColor  m_selectedColor     {Qt::darkYellow};
 };
 
 }

@@ -69,14 +69,8 @@ VertexObject::VertexObject(QGraphicsItem *parent) :
     setFlag(QGraphicsItem::ItemClipsToShape, true);
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges, true);
 
-    m_selectedPen = QPen(Qt::black, 4, Qt::SolidLine, Qt::RoundCap);
-    QRadialGradient gradient (0, 0, 100);
-    gradient.setColorAt(0, QColor("#c5ffb3"));
-    gradient.setColorAt(0.5, QColor("#a3ff8a"));
-    gradient.setColorAt(1, QColor("#5cff37"));
-    m_selectedPen.setBrush(gradient);
     m_selectedRectItem = new QGraphicsPathItem(this);
-    m_selectedRectItem->setPen(m_selectedPen);
+    setSelectedColor(QColor("#5cff37"));
     m_selectedRectItem->hide();
 
     m_vertexImage   = new QGraphicsPixmapItem(this);
@@ -118,6 +112,19 @@ void VertexObject::setShortName(const QString &iText)
     setRect(boundingRect());
 }
 
+void VertexObject::setSelectedColor(const QColor &penColor)
+{
+    ItemBase::setSelectedColor(penColor);
+
+    auto selectedPen = QPen(Qt::black, 4, Qt::SolidLine, Qt::RoundCap);
+    QRadialGradient gradient (0, 0, 100);
+    gradient.setColorAt(0, QColor("#c5ffb3"));
+    gradient.setColorAt(0.5, QColor("#a3ff8a"));
+    gradient.setColorAt(1, getSelectedColor());
+    selectedPen.setBrush(gradient);
+    m_selectedRectItem->setPen(selectedPen);
+}
+
 void VertexObject::setNodeColor(const QColor &borderColor, const QBrush &backgroundBrush)
 {
     if (borderColor.isValid()) {
@@ -125,29 +132,19 @@ void VertexObject::setNodeColor(const QColor &borderColor, const QBrush &backgro
     } else {
         m_vertexEllipse->setPen(QPen(GraphCommon::DEFAULT_VERTEX_BORDER_COLOR, 5));
     }
-    m_mainColor = m_vertexEllipse->pen().color();
+    setMainColor(m_vertexEllipse->pen().color());
 
     if (backgroundBrush.color().isValid()) {
         m_vertexEllipse->setBrush(backgroundBrush);
     } else {
         m_vertexEllipse->setBrush(GraphCommon::DEFAULT_VERTEX_COLOR);
     }
-    m_backgroundColor = m_vertexEllipse->brush().color();
+    setBackgroundColor(m_vertexEllipse->brush().color());
 }
 
 void VertexObject::setTextBackgroundBrush(const QBrush &textBackground)
 {
     m_vertexTextRect->setBrush(textBackground);
-}
-
-QColor VertexObject::getBorderColor() const
-{
-    return m_vertexEllipse->pen().color();
-}
-
-QColor VertexObject::getBackgroundColor() const
-{
-    return m_vertexEllipse->brush().color();
 }
 
 QImage VertexObject::getImage() const

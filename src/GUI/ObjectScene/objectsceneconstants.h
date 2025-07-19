@@ -45,6 +45,10 @@ enum ObjectField : int
     OBJECTFIELD_NAME,               //! Полное имя объекта
     OBJECTFIELD_DESCRIPTION,        //! Описание объекта
 
+    OBJECTFIELD_COLOR_MAIN,         //! Основной цвет (цвет пера)
+    OBJECTFIELD_COLOR_BACKGROUND,   //! Фоновый цвет (заполнения в объекте)
+    OBJECTFIELD_COLOR_SELECTED,     //! Цвет индикации выбора
+
     OBJECTFIELD_PROPERTY_JSON,      //! JSON с кастомными (не универсальными) свойствами объекта
 };
 

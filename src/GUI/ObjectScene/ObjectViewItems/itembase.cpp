@@ -113,6 +113,36 @@ QJsonObject ItemBase::getCustomProperties() const
     return data(OBJECTFIELD_PROPERTY_JSON).toJsonObject();
 }
 
+void ItemBase::setMainColor(const QColor &penColor)
+{
+    setData(OBJECTFIELD_COLOR_MAIN, penColor);
+}
+
+QColor ItemBase::getMainColor() const
+{
+    return QColor(data(OBJECTFIELD_COLOR_MAIN).toString());
+}
+
+void ItemBase::setBackgroundColor(const QColor &penColor)
+{
+    setData(OBJECTFIELD_COLOR_BACKGROUND, penColor);
+}
+
+QColor ItemBase::getBackgroundColor() const
+{
+    return QColor(data(OBJECTFIELD_COLOR_BACKGROUND).toString());
+}
+
+void ItemBase::setSelectedColor(const QColor &penColor)
+{
+    setData(OBJECTFIELD_COLOR_SELECTED, penColor);
+}
+
+QColor ItemBase::getSelectedColor() const
+{
+    return QColor(data(OBJECTFIELD_COLOR_SELECTED).toString());
+}
+
 QRectF ItemBase::boundingRect() const
 {
     return m_boundingRect;

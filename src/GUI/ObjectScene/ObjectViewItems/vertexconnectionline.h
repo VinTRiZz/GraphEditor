@@ -36,11 +36,8 @@ public:
     void setPositionTo(const QPointF& posTo);
     void resetPositions();
 
-    void setPen(const QColor &penColor);
-    QColor getPenColor() const;
-
-    void setSelectedPen(const QColor &penColor);
-    QColor getSelectedPenColor() const;
+    void setMainColor(const QColor &penColor) override;
+    void setSelectedColor(const QColor &penColor) override;
 
     void setArrowSize(qreal size);
     qreal getArrowSize() const;
@@ -48,8 +45,6 @@ public:
     QRectF boundingRect() const override;
     bool contains(const QPointF& p) const override;
     QPainterPath shape() const override;
-
-    void setCustomProperties(const QJsonObject& props) override;
 
 private:
     VertexObject*   m_fromVertex {nullptr};

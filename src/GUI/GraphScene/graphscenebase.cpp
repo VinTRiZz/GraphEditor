@@ -101,7 +101,7 @@ void GraphSceneBase::writeChangesToGraph()
         tmpVertex.shortName = vertCasted->getShortName();
         tmpVertex.description = vertCasted->getDescription();
 
-        tmpVertex.borderColor = vertCasted->getBorderColor();
+        tmpVertex.borderColor = vertCasted->getMainColor();
         tmpVertex.backgroundColor = vertCasted->getBackgroundColor();
 
         tmpVertex.image = vertCasted->getImage();
@@ -129,7 +129,7 @@ void GraphSceneBase::writeChangesToGraph()
         tmpConnection.idTo = conCasted->getVertexTo()->getObjectId();
 
         tmpConnection.name = conCasted->getName();
-        tmpConnection.lineColor = conCasted->getPenColor();
+        tmpConnection.lineColor = conCasted->getMainColor();
 
         tmpConnection.customProperties = conCasted->getCustomProperties();
 
@@ -214,7 +214,7 @@ void GraphSceneBase::updateGraph()
 
         auto pConnection = createConnectionLine(con.idFrom, con.idTo);
 
-        pConnection->setPen(con.lineColor);
+        pConnection->setMainColor(con.lineColor);
         pConnection->setZValue(sceneConfig.connectionLineLayer);
 
         pConnection->setName(con.name);

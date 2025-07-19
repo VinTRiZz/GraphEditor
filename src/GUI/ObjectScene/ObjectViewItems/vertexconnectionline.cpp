@@ -53,8 +53,8 @@ VertexConnectionLine::VertexConnectionLine(QGraphicsItem *parent) :
 
     m_pArrowHeadPolygon = new QGraphicsPolygonItem(this);
 
-    setPen(QColor("#2a8d7c"));
-    setSelectedPen(m_selectedPen.color());
+    setMainColor(QColor("#2a8d7c"));
+    setSelectedColor(m_selectedPen.color());
 }
 
 VertexConnectionLine::~VertexConnectionLine()
@@ -130,35 +130,25 @@ void VertexConnectionLine::resetPositions()
     m_toVertex->updateConnectionLines();
 }
 
-void VertexConnectionLine::setPen(const QColor &penColor)
+void VertexConnectionLine::setMainColor(const QColor &penColor)
 {
-    m_mainColor = penColor;
+    ItemBase::setMainColor(penColor);
 
-    m_penGradient.setColorAt(1, m_mainColor);
+    m_penGradient.setColorAt(1, getMainColor());
     m_drawPen.setBrush(m_penGradient);
     m_line->setPen(m_drawPen);
     auto currentPen = isSelected() ? m_selectedPen : m_drawPen;
     m_pArrowHeadPolygon->setPen(currentPen);
 }
 
-QColor VertexConnectionLine::getPenColor() const
+void VertexConnectionLine::setSelectedColor(const QColor &penColor)
 {
-    return m_mainColor;
-}
+    ItemBase::setSelectedColor(penColor);
 
-void VertexConnectionLine::setSelectedPen(const QColor &penColor)
-{
-    m_selectedColor = penColor;
-
-    m_selectedPen = QPen(m_selectedColor, 5);
-    m_lineSelected->setPen(m_selectedColor);
+    auto selectedPen = QPen(getSelectedColor(), 5);
+    m_lineSelected->setPen(selectedPen);
     auto currentPen = isSelected() ? m_selectedPen : m_drawPen;
     m_pArrowHeadPolygon->setPen(currentPen);
-}
-
-QColor VertexConnectionLine::getSelectedPenColor() const
-{
-    return m_selectedColor;
 }
 
 void VertexConnectionLine::setArrowSize(qreal size)
@@ -302,13 +292,6 @@ QPainterPath VertexConnectionLine::shape() const
     res.addPath(m_line->shape());
     res.addPath(m_pArrowHeadPolygon->shape());
     return res;
-}
-
-void VertexConnectionLine::setCustomProperties(const QJsonObject &props)
-{
-    ItemBase::setCustomProperties(props);
-    setPen(m_mainColor);
-    setSelectedPen(m_selectedColor);
 }
 
 }

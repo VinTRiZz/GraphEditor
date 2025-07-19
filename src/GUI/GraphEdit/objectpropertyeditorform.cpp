@@ -5,6 +5,13 @@
 
 #include "Graph/gvertex.h"
 
+#include <QColorDialog>
+
+#include <QPainter>
+#include <QImage>
+
+static const auto LABEL_COLOR_PROPERTY_NAME = "labelDisplayColor";
+
 ObjectPropertyEditorForm::ObjectPropertyEditorForm(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ObjectPropertyEditorForm)
@@ -16,6 +23,55 @@ ObjectPropertyEditorForm::ObjectPropertyEditorForm(QWidget *parent) :
 
     connect(ui->cancel_pushButton, &QPushButton::clicked,
             this, &ObjectPropertyEditorForm::cancelChanges);
+
+    auto callColorDialog = [this](QLabel* pLabel){
+        auto currentColorName = pLabel->property(LABEL_COLOR_PROPERTY_NAME).toString();
+        auto userDefinedColor = QColorDialog::getColor(currentColorName, nullptr, "Выберите цвет");
+        if (!userDefinedColor.isValid()) { // Пользователь не выбрал цвет
+            return;
+        }
+
+        QImage labelImage(pLabel->width(), pLabel->height(), QImage::Format_RGBA64);
+        labelImage.fill(userDefinedColor);
+        QPainter p(&labelImage);
+
+        auto negativeColor = QColor(userDefinedColor.red() > 125 ? 0 : 255,
+                                    userDefinedColor.green() > 125 ? 0 : 255,
+                                    userDefinedColor.blue() > 125 ? 0 : 255);
+        p.setPen(negativeColor);
+        p.setBrush(Qt::transparent);
+        auto drawRect = labelImage.rect();
+        drawRect.setWidth(drawRect.width() - 6);
+        drawRect.setHeight(drawRect.height() - 6);
+        drawRect.moveTo(drawRect.x() + 3, drawRect.y() + 3);
+        p.drawRect(drawRect);
+
+        auto displayColorName = QString("#%1%2%3")
+                .arg(userDefinedColor.red(), 2, 16, QLatin1Char('0'))
+                .arg(userDefinedColor.green(), 2, 16, QLatin1Char('0'))
+                .arg(userDefinedColor.blue(), 2, 16, QLatin1Char('0'))
+                .toUpper();
+
+        p.drawText(drawRect, Qt::AlignHCenter, displayColorName);
+
+        pLabel->setPixmap(QPixmap::fromImage(labelImage));
+        pLabel->setProperty(LABEL_COLOR_PROPERTY_NAME, displayColorName);
+    };
+
+    connect(ui->selectMainColor_pushButton, &QPushButton::clicked,
+            this, [callColorDialog, this](){
+        callColorDialog(ui->mainColor_label);
+    });
+
+    connect(ui->selectBgrColor_pushButton, &QPushButton::clicked,
+            this, [callColorDialog, this](){
+        callColorDialog(ui->bgrColor_label);
+    });
+
+    connect(ui->selectSelectionColor_pushButton, &QPushButton::clicked,
+            this, [callColorDialog, this](){
+        callColorDialog(ui->selectedColor_label);
+    });
 
     ui->shortName_lineEdit->setMaxLength(Graph::GRAPH_MAX_SHORTNAME_SIZE);
 }
@@ -42,7 +98,7 @@ void ObjectPropertyEditorForm::acceptChanges()
     LOG_INFO("Changing data of object");
     m_pTargetItem->setShortName(ui->shortName_lineEdit->text());
     m_pTargetItem->setName(ui->name_lineEdit->text());
-    m_pTargetItem->setDescription(ui->description_plainTextEdit->toPlainText());
+    m_pTargetItem->setDescription(ui->description_plainTextEdit->toPlainText());    
     emit changedItemData();
 }
 

@@ -22,12 +22,11 @@ public:
 
     void setImage(const QImage& img);
     void setShortName(const QString& iText) override;
+    void setSelectedColor(const QColor &penColor) override;
 
     void setNodeColor(const QColor& borderColor, const QBrush &backgroundBrush);
     void setTextBackgroundBrush(const QBrush& textBackground);
 
-    QColor getBorderColor() const;
-    QColor getBackgroundColor() const;
     QImage getImage() const;
 
     void setRect(const QRectF& iRect);
@@ -48,8 +47,6 @@ public:
     QJsonObject getCustomProperties() const override;
 
 private:
-    QPen   m_selectedPen;
-
     QGraphicsPathItem*      m_selectedRectItem  {nullptr};
     QGraphicsPixmapItem*    m_vertexImage       {nullptr};
     QGraphicsEllipseItem*   m_vertexEllipse     {nullptr};

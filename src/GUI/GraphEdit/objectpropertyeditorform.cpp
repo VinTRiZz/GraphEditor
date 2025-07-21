@@ -6,6 +6,9 @@
 #include "Graph/gvertex.h"
 
 #include <QColorDialog>
+#include <QFileDialog>
+
+#include <QImageReader>
 
 #include <QPainter>
 #include <QImage>
@@ -73,7 +76,32 @@ ObjectPropertyEditorForm::ObjectPropertyEditorForm(QWidget *parent) :
         callColorDialog(ui->selectedColor_label);
     });
 
+    connect(ui->selectIcon_pushButton, &QPushButton::clicked,
+            this, [this](){
+        auto targetPath = QFileDialog::getOpenFileName(nullptr, "Выберите изображение", QDir::currentPath());
+
+        if (targetPath.isEmpty()) {
+            ui->iconPreview_label->setText("Предпросмотр");
+            ui->iconPath_lineEdit->clear();
+            return;
+        }
+
+        QImageReader imgReader;
+        imgReader.setAutoDetectImageFormat(true);
+        imgReader.setAutoTransform(true);
+        imgReader.setDecideFormatFromContent(true);
+        imgReader.setFileName(targetPath);
+
+        if (imgReader.imageCount() == 0) {
+            LOG_WARNING("Not an image:", targetPath);
+            return;
+        }
+
+        ui->iconPreview_label->setPixmap(QPixmap::fromImage(imgReader.read().scaled(ui->iconPreview_label->size())));
+    });
+
     ui->shortName_lineEdit->setMaxLength(Graph::GRAPH_MAX_SHORTNAME_SIZE);
+    ui->property_tabWidget->setCurrentIndex(0);
 }
 
 ObjectPropertyEditorForm::~ObjectPropertyEditorForm()
@@ -88,6 +116,15 @@ void ObjectPropertyEditorForm::setTargetItem(ObjectViewItems::ItemBase *pTargetI
     ui->shortName_lineEdit->setText(m_pTargetItem->getShortName());
     ui->description_plainTextEdit->setPlainText(m_pTargetItem->getDescription());
 
+    auto pVertex = dynamic_cast<ObjectViewItems::VertexObject*>(m_pTargetItem);
+    if (nullptr != pVertex) {
+        ui->iconPreview_label->setPixmap(QPixmap::fromImage(pVertex->getImage()));
+        if (ui->iconPreview_label->pixmap().isNull()) {
+            ui->iconPreview_label->setText("Предпросмотр");
+        }
+    }
+    ui->property_tabWidget->setTabEnabled(1, nullptr != pVertex);
+
     auto isConnectionEditing = pTargetItem->getType() == ObjectViewConstants::OBJECTTYPE_VERTEX_CONNECTION;
     ui->shortName_lineEdit->setEnabled(!isConnectionEditing);
     ui->description_plainTextEdit->setEnabled(!isConnectionEditing);
@@ -98,7 +135,20 @@ void ObjectPropertyEditorForm::acceptChanges()
     LOG_INFO("Changing data of object");
     m_pTargetItem->setShortName(ui->shortName_lineEdit->text());
     m_pTargetItem->setName(ui->name_lineEdit->text());
-    m_pTargetItem->setDescription(ui->description_plainTextEdit->toPlainText());    
+    m_pTargetItem->setDescription(ui->description_plainTextEdit->toPlainText());
+
+    if (auto pVertex = dynamic_cast<ObjectViewItems::VertexObject*>(m_pTargetItem);
+        nullptr != pVertex) {
+        auto pxmap = ui->iconPreview_label->pixmap();
+        pVertex->setImage(pxmap.toImage());
+    }
+
+    if (auto pConnection = dynamic_cast<ObjectViewItems::VertexConnectionLine*>(m_pTargetItem);
+        nullptr != pConnection) {
+        // TODO: Do something with styles
+//        pConnection
+    }
+
     emit changedItemData();
 }
 

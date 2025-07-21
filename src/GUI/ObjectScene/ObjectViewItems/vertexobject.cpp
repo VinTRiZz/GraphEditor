@@ -100,9 +100,13 @@ VertexObject::~VertexObject()
 
 void VertexObject::setImage(const QImage &img)
 {
-    m_vertexImage->setPixmap(QPixmap::fromImage(img));
+    auto newImage = QPixmap::fromImage(img);
+    newImage = newImage.scaled(m_vertexEllipse->boundingRect().width(), m_vertexEllipse->boundingRect().height());
+    m_vertexImage->setPixmap(newImage);
     m_vertexImage->show();
     m_vertexEllipse->hide();
+
+    setRect(boundingRect());
 }
 
 void VertexObject::setShortName(const QString &iText)

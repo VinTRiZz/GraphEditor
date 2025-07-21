@@ -139,6 +139,8 @@ void ObjectView::wheelEvent(QWheelEvent *e)
 
 void ObjectView::mousePressEvent(QMouseEvent *e)
 {
+    setCursor(Qt::ArrowCursor);
+
     m_isHoldingLeftButton   = (e->button() == Qt::LeftButton);
     if (m_isHoldingLeftButton) {
         auto targetItem = itemAt(e->pos());
@@ -183,6 +185,8 @@ void ObjectView::mouseMoveEvent(QMouseEvent *e)
 
 void ObjectView::mouseReleaseEvent(QMouseEvent *e)
 {
+    setCursor(Qt::ArrowCursor);
+
     if (m_isHoldingLeftButton) {
         auto targetItem = itemAt(e->pos());
         if (!m_pScene->isNullItem(targetItem)) {
@@ -192,10 +196,6 @@ void ObjectView::mouseReleaseEvent(QMouseEvent *e)
         } else {
             emit releasedOnItem(nullptr);
         }
-    }
-
-    if (m_isHoldingMiddleButton) {
-        setCursor(Qt::ArrowCursor);
     }
 
     m_isHoldingLeftButton = false;

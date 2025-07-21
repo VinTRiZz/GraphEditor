@@ -6,8 +6,7 @@
 #include <set>
 
 #include "itembase.h"
-
-#include "dynamicareaitem.h"
+#include "labelitem.h"
 
 namespace ObjectViewItems
 {
@@ -20,12 +19,14 @@ public:
     explicit VertexObject(QGraphicsItem *parent = nullptr);
     ~VertexObject();
 
+    LabelItem* getLabel() const;
+
     void setImage(const QImage& img);
     void setShortName(const QString& iText) override;
+    void setName(const QString& iText) override;
     void setSelectedColor(const QColor &penColor) override;
 
     void setNodeColor(const QColor& borderColor, const QBrush &backgroundBrush);
-    void setTextBackgroundBrush(const QBrush& textBackground);
 
     QImage getImage() const;
 
@@ -50,15 +51,12 @@ private:
     QGraphicsPathItem*      m_selectedRectItem  {nullptr};
     QGraphicsPixmapItem*    m_vertexImage       {nullptr};
     QGraphicsEllipseItem*   m_vertexEllipse     {nullptr};
-    QGraphicsRectItem*      m_vertexTextRect    {nullptr};
-    QGraphicsTextItem*      m_vertexText        {nullptr};
+    LabelItem*              m_nameItem          {nullptr};
 
     std::set<VertexConnectionLine*> m_connectionsFromThis;
     std::set<VertexConnectionLine*> m_connectionsToThis;
 
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
-
-    void setupTextItem();
 };
 
 }

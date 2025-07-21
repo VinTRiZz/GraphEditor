@@ -109,7 +109,6 @@ void GraphSceneBase::writeChangesToGraph()
         tmpVertex.customProperties = vertCasted->getCustomProperties();
 
         pGraph->addVertex(tmpVertex);
-        LOG_DEBUG("Added vertex", tmpVertex.name);
     }
     LOG_OK("Loaded", pGraph->getVerticesCount(), "vertices from scene");
 
@@ -128,13 +127,12 @@ void GraphSceneBase::writeChangesToGraph()
         tmpConnection.idFrom = conCasted->getVertexFrom()->getObjectId();
         tmpConnection.idTo = conCasted->getVertexTo()->getObjectId();
 
-        tmpConnection.name = conCasted->getName();
+        tmpConnection.name = conCasted->getShortName();
         tmpConnection.lineColor = conCasted->getMainColor();
 
         tmpConnection.customProperties = conCasted->getCustomProperties();
 
         pGraph->addConnection(tmpConnection);
-        LOG_DEBUG("Added connection", tmpConnection.idFrom, tmpConnection.idTo, tmpConnection.lineColor.name());
     }
     LOG_OK("Loaded", pGraph->getConnectionsCount(), "connections from scene");
 }
@@ -217,7 +215,7 @@ void GraphSceneBase::updateGraph()
         pConnection->setMainColor(con.lineColor);
         pConnection->setZValue(sceneConfig.connectionLineLayer);
 
-        pConnection->setName(con.name);
+        pConnection->setShortName(con.name);
         pConnection->setToolTip(con.name);
 
         pConFrom->second->subscribeAsConnectionFrom(pConnection);

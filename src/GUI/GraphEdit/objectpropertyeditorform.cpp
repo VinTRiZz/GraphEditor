@@ -126,7 +126,7 @@ void ObjectPropertyEditorForm::setTargetItem(ObjectViewItems::ItemBase *pTargetI
     ui->property_tabWidget->setTabEnabled(1, nullptr != pVertex);
 
     auto isConnectionEditing = pTargetItem->getType() == ObjectViewConstants::OBJECTTYPE_VERTEX_CONNECTION;
-    ui->shortName_lineEdit->setEnabled(!isConnectionEditing);
+    ui->name_lineEdit->setEnabled(!isConnectionEditing);
     ui->description_plainTextEdit->setEnabled(!isConnectionEditing);
 }
 

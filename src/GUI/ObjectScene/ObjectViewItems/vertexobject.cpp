@@ -61,7 +61,7 @@ QRectF rectFromString(const QString& iString) {
 VertexObject::VertexObject(QGraphicsItem *parent) :
     ItemBase(parent)
 {
-    setName("Vertex object");
+    ItemBase::setName("Vertex object");
 
     setType(ObjectViewConstants::OBJECTTYPE_VERTEX);
 
@@ -70,19 +70,20 @@ VertexObject::VertexObject(QGraphicsItem *parent) :
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges, true);
 
     m_selectedRectItem = new QGraphicsPathItem(this);
-    setSelectedColor(QColor("#5cff37"));
+    VertexObject::setSelectedColor(QColor("#5cff37"));
     m_selectedRectItem->hide();
+    m_selectedRectItem->setZValue(1);
 
     m_vertexImage   = new QGraphicsPixmapItem(this);
     m_vertexImage->hide();
 
     m_vertexEllipse = new QGraphicsEllipseItem(this);
-    m_vertexTextRect = new QGraphicsRectItem(this);
 
     setNodeColor(GraphCommon::DEFAULT_VERTEX_BORDER_COLOR, GraphCommon::DEFAULT_VERTEX_COLOR);
-    setTextBackgroundBrush(GraphCommon::DEFAULT_VERTEX_TEXT_BGR_COLOR);
 
-    setupTextItem();
+    m_nameItem = new LabelItem(this);
+    m_nameItem->setBackgroundColor(GraphCommon::DEFAULT_VERTEX_TEXT_BGR_COLOR);
+    m_nameItem->setZValue(0);
 }
 
 VertexObject::~VertexObject()
@@ -98,8 +99,17 @@ VertexObject::~VertexObject()
     }
 }
 
+LabelItem *VertexObject::getLabel() const
+{
+    return m_nameItem;
+}
+
 void VertexObject::setImage(const QImage &img)
 {
+    if (img.isNull()) {
+        return;
+    }
+
     auto newImage = QPixmap::fromImage(img);
     newImage = newImage.scaled(m_vertexEllipse->boundingRect().width(), m_vertexEllipse->boundingRect().height());
     m_vertexImage->setPixmap(newImage);
@@ -111,9 +121,14 @@ void VertexObject::setImage(const QImage &img)
 
 void VertexObject::setShortName(const QString &iText)
 {
-    m_vertexText->setPlainText(iText);
+    m_nameItem->setShortName(iText);
     ItemBase::setShortName(iText);
-    setRect(boundingRect());
+}
+
+void VertexObject::setName(const QString &iText)
+{
+    m_nameItem->setName(iText);
+    ItemBase::setName(iText);
 }
 
 void VertexObject::setSelectedColor(const QColor &penColor)
@@ -146,11 +161,6 @@ void VertexObject::setNodeColor(const QColor &borderColor, const QBrush &backgro
     setBackgroundColor(m_vertexEllipse->brush().color());
 }
 
-void VertexObject::setTextBackgroundBrush(const QBrush &textBackground)
-{
-    m_vertexTextRect->setBrush(textBackground);
-}
-
 QImage VertexObject::getImage() const
 {
     return m_vertexImage->pixmap().toImage();
@@ -176,7 +186,6 @@ void VertexObject::setRect(const QRectF &iRect)
 
     const double maxParts   = 5.0;
     const double imageParts = 4.0;
-    const double textParts  = maxParts - imageParts - 0.2;
     const double minSize    = 25.0;
 
     // Изображение
@@ -190,14 +199,7 @@ void VertexObject::setRect(const QRectF &iRect)
     m_vertexImage->setPos({(boundingRect().width() - m_vertexImage->boundingRect().width()) / 2.0, 0});
 
     // Текст
-    auto textSize = std::max(itemRect.height() * textParts * 0.95 / maxParts, minSize);
-    auto textRect = itemRect;
-    textRect.setHeight(textSize * 0.8);
-    textRect.moveTo(0, imageRect.height() * 1.05);
-    m_vertexTextRect->setRect(textRect);
-    textRect.setHeight(textSize * 1.05);
-    textRect.moveTo(0, imageRect.height() * 0.95);
-    m_vertexText->setPos((textRect.width() - m_vertexText->boundingRect().width()) / 2, imageRect.height() * 1.05 - textRect.height() / 5);
+    m_nameItem->setPos(0, boundingRect().height() - m_nameItem->boundingRect().height());
 }
 
 QPainterPath VertexObject::shape() const
@@ -212,7 +214,7 @@ QPainterPath VertexObject::shape() const
         res.addPath(m_vertexEllipse->shape());
     }
 
-    res.addPath(m_vertexTextRect->shape());
+    res.addPath(m_nameItem->shape());
     return res;
 }
 
@@ -285,33 +287,6 @@ QVariant VertexObject::itemChange(GraphicsItemChange change, const QVariant &val
     }
 
     return ItemBase::itemChange(change, value);
-}
-
-void VertexObject::setupTextItem()
-{
-    m_vertexText    = new QGraphicsTextItem(this);
-    m_vertexText->setDefaultTextColor(Qt::black);
-    m_vertexText->setZValue(0);
-
-    QFont font = m_vertexText->font();
-    font.setPixelSize(14);
-    font.setStyle(QFont::StyleItalic);
-    m_vertexText->setFont(font);
-    m_vertexText->setDefaultTextColor(Qt::black);
-
-    QTextDocument* doc = m_vertexText->document();
-    doc->setDefaultStyleSheet(QString(
-        "body {"
-        "   background-color: #FFFF00;"  // Желтый фон
-        "   padding: 5px;"
-        "   margin: 0px;"
-        "   border: 2px solid black;"
-        "}"
-    ));
-
-    QTextOption option = doc->defaultTextOption();
-    option.setAlignment(Qt::AlignCenter);
-    doc->setDefaultTextOption(option);
 }
 
 void VertexObject::updateConnectionLines()

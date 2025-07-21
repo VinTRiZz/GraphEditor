@@ -11,6 +11,8 @@
 
 #include "logging.h"
 
+#include "Graph/graphcommon.h"
+
 #include <QJsonObject>
 
 #include "vertexobject.h"
@@ -24,7 +26,7 @@ namespace ObjectViewItems
 VertexConnectionLine::VertexConnectionLine(QGraphicsItem *parent) :
     ItemBase(parent)
 {
-    setName("Vertex connection line");
+    ItemBase::setName("Vertex connection line");
 
     setType(ObjectViewConstants::OBJECTTYPE_VERTEX_CONNECTION);
 
@@ -53,8 +55,12 @@ VertexConnectionLine::VertexConnectionLine(QGraphicsItem *parent) :
 
     m_pArrowHeadPolygon = new QGraphicsPolygonItem(this);
 
-    setMainColor(QColor("#2a8d7c"));
-    setSelectedColor(m_selectedPen.color());
+    VertexConnectionLine::setMainColor(QColor("#2a8d7c"));
+    VertexConnectionLine::setSelectedColor(m_selectedPen.color());
+
+    m_labelItem = new LabelItem(this);
+    m_labelItem->setZValue(1);
+    m_labelItem->setBackgroundColor(GraphCommon::DEFAULT_VERTEX_TEXT_BGR_COLOR);
 }
 
 VertexConnectionLine::~VertexConnectionLine()
@@ -151,6 +157,12 @@ void VertexConnectionLine::setSelectedColor(const QColor &penColor)
     m_pArrowHeadPolygon->setPen(currentPen);
 }
 
+void VertexConnectionLine::setName(const QString &iText)
+{
+    m_labelItem->setName(iText);
+    ItemBase::setName(iText);
+}
+
 void VertexConnectionLine::setArrowSize(qreal size)
 {
     m_arrowSize = size;
@@ -165,7 +177,11 @@ void VertexConnectionLine::updatePolygon()
 {
     m_boundingRect = {};
     m_line->setPath(createLinePath());
-    m_lineSelected->setPath(createLinePath());
+    m_lineSelected->setPath(m_line->path());
+
+    auto labelPos = m_line->boundingRect().center();
+    labelPos.setX(labelPos.x() - m_labelItem->boundingRect().width());
+    m_labelItem->setPos(labelPos);
 
     m_penSelectedGradient.setStart(m_straightLine.p1());
     m_penSelectedGradient.setFinalStop(m_straightLine.p2());

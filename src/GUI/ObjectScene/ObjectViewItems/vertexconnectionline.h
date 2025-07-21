@@ -10,6 +10,7 @@
 #include <QGraphicsPolygonItem>
 
 #include "itembase.h"
+#include "labelitem.h"
 
 namespace ObjectViewItems
 {
@@ -39,6 +40,8 @@ public:
     void setMainColor(const QColor &penColor) override;
     void setSelectedColor(const QColor &penColor) override;
 
+    void setName(const QString& iText) override;
+
     void setArrowSize(qreal size);
     qreal getArrowSize() const;
 
@@ -61,6 +64,7 @@ private:
     QGraphicsPathItem*      m_line              {nullptr};
     QGraphicsPathItem*      m_lineSelected      {nullptr};
     QGraphicsPolygonItem*   m_pArrowHeadPolygon {nullptr};
+    LabelItem*              m_labelItem         {nullptr};
 
     bool  m_prevSelectedState {false};
     qreal m_arrowSize {8};

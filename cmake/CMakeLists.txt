@@ -22,7 +22,7 @@ function(CONFIGURE_LIBRARY_NOQT LIBRARY_NAME)
         ${LIBRARY_NAME} PROPERTIES
         BUILD_WITH_INSTALL_RPATH TRUE
         INSTALL_RPATH_USE_LINK_PATH TRUE
-        INSTALL_RPATH "."
+        INSTALL_RPATH "./lib"
     )
 
     # Build flag configuration
@@ -118,6 +118,13 @@ function(CONFIGURE_LIBRARY LIBRARY_NAME)
 
     target_include_directories(${LIBRARY_NAME} PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/src"
+    )
+
+    install(TARGETS ${LIBRARY_NAME}
+        RUNTIME     DESTINATION ${INSTALL_DESTINATION_PREFIX}
+        LIBRARY     DESTINATION ${INSTALL_DESTINATION_PREFIX}/lib
+        ARCHIVE     DESTINATION ${INSTALL_DESTINATION_PREFIX}/lib/static
+        INCLUDES    DESTINATION ${INSTALL_DESTINATION_PREFIX}/include
     )
 
     # Add library to added list

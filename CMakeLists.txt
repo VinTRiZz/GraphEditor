@@ -12,8 +12,15 @@ project(
     LANGUAGES C CXX
 )
 
+# Versions
 add_compile_definitions(
     GRAPH_EDITOR_VERSION="${PROJECT_VERSION}"
+)
+
+# Install prefix
+set(
+    INSTALL_DESTINATION_PREFIX
+    "${CMAKE_CURRENT_SOURCE_DIR}/BIN/install"
 )
 
 # For LTO
@@ -69,20 +76,17 @@ message(STATUS "Searching for apps...")
 add_subdirectory(App)
 
 message(STATUS "Searching for tests...")
-add_subdirectory(Testing)
+add_subdirectory(Testing EXCLUDE_FROM_ALL)
 
 
 # ======================================== #
 # Installation
-set(
-    INSTALL_DESTINATION_PREFIX
-    "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/install"
-)
 
 install(TARGETS ${PROJECT_NAME}
-    RUNTIME DESTINATION ${INSTALL_DESTINATION_PREFIX}/bin
-    LIBRARY DESTINATION ${INSTALL_DESTINATION_PREFIX}/lib
-    ARCHIVE DESTINATION ${INSTALL_DESTINATION_PREFIX}/lib/static
+    RUNTIME     DESTINATION ${INSTALL_DESTINATION_PREFIX}
+    LIBRARY     DESTINATION ${INSTALL_DESTINATION_PREFIX}/lib
+    ARCHIVE     DESTINATION ${INSTALL_DESTINATION_PREFIX}/lib/static
+    INCLUDES    DESTINATION ${INSTALL_DESTINATION_PREFIX}/include
 )
 
 # Packet creation

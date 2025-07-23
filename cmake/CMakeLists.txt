@@ -80,7 +80,7 @@ function(CONFIGURE_LIBRARY LIBRARY_NAME)
         ${LIBRARY_NAME} PROPERTIES
         BUILD_WITH_INSTALL_RPATH TRUE
         INSTALL_RPATH_USE_LINK_PATH TRUE
-        INSTALL_RPATH "."
+        INSTALL_RPATH "./lib"
     )
 
     # Target linking
@@ -179,14 +179,6 @@ function(ADD_EDITOR_TEST EDITOR_TESTNAME)
 
     include(GoogleTest)
     gtest_discover_tests(${EDITOR_TESTNAME})
-
-    # Runtime linking of testing target
-#    set_target_properties(
-#        ${EDITOR_TESTNAME} PROPERTIES
-#        BUILD_WITH_INSTALL_RPATH TRUE
-#        INSTALL_RPATH_USE_LINK_PATH TRUE
-#        INSTALL_RPATH "lib"
-#    )
 
     # Add test to added list
     set(

@@ -61,7 +61,7 @@ QRectF rectFromString(const QString& iString) {
 VertexObject::VertexObject(QGraphicsItem *parent) :
     ItemBase(parent)
 {
-    ItemBase::setName("Vertex object");
+    setSystemName("Vertex object");
 
     setType(ObjectViewConstants::OBJECTTYPE_VERTEX);
 

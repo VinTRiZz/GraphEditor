@@ -26,7 +26,7 @@ namespace ObjectViewItems
 VertexConnectionLine::VertexConnectionLine(QGraphicsItem *parent) :
     ItemBase(parent)
 {
-    ItemBase::setName("Vertex connection line");
+    setSystemName("Vertex connection line");
 
     setType(ObjectViewConstants::OBJECTTYPE_VERTEX_CONNECTION);
 
@@ -157,10 +157,10 @@ void VertexConnectionLine::setSelectedColor(const QColor &penColor)
     m_pArrowHeadPolygon->setPen(currentPen);
 }
 
-void VertexConnectionLine::setName(const QString &iText)
+void VertexConnectionLine::setShortName(const QString &iText)
 {
-    m_labelItem->setName(iText);
-    ItemBase::setName(iText);
+    m_labelItem->setShortName(iText);
+    ItemBase::setShortName(iText);
 }
 
 void VertexConnectionLine::setArrowSize(qreal size)

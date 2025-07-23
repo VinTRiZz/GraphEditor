@@ -21,6 +21,7 @@ public:
     ~ItemBase();
 
     void unregister();
+    QString getSystemName() const;
 
     void setType(ObjectViewConstants::ObjectType objType);
     ObjectViewConstants::ObjectType getType() const;
@@ -59,6 +60,8 @@ private:
 
 protected:
     void setBoundingRect(const QRectF& bRect);
+
+    void setSystemName(const QString& iText);
 };
 
 }

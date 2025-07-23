@@ -8,7 +8,7 @@ namespace ObjectViewItems
 DynamicAreaItem::DynamicAreaItem(QGraphicsItem* parent) :
     ItemBase(parent)
 {
-    setName("Dynamic area");
+    setSystemName("Dynamic area");
 
     auto fieldSize = 1024;
     m_fieldRect.setWidth(fieldSize);

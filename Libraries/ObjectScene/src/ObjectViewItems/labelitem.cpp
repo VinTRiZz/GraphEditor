@@ -3,6 +3,7 @@
 #include <QTextDocument>
 #include <QTextOption>
 
+#include <Common/Logging.h>
 
 namespace ObjectViewItems
 {
@@ -11,6 +12,8 @@ namespace ObjectViewItems
 LabelItem::LabelItem(QGraphicsItem* parent) :
     ItemBase(parent)
 {
+    setSystemName("Label item");
+
     m_vertexTextRect = new QGraphicsRectItem(this);
 
     m_vertexText    = new QGraphicsTextItem(this);
@@ -36,6 +39,7 @@ void LabelItem::setName(const QString &iText)
     setToolTip(iText);
     ItemBase::setName(iText);
     m_vertexTextRect->setRect(m_vertexText->boundingRect());
+    setVisible(!getShortName().isEmpty());
 }
 
 void LabelItem::setShortName(const QString &iText)
@@ -43,6 +47,7 @@ void LabelItem::setShortName(const QString &iText)
     m_vertexText->setPlainText(iText);
     ItemBase::setShortName(iText);
     m_vertexTextRect->setRect(m_vertexText->boundingRect());
+    setVisible(!iText.isEmpty());
 }
 
 void LabelItem::setMainColor(const QColor &iColor)

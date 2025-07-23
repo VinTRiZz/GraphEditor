@@ -41,6 +41,8 @@ enum ObjectField : int
     OBJECTFIELD_ID,                 //! Короткое имя объекта для отображения
     OBJECTFIELD_OBJECTTYPE,         //! Специальное поле для идентификации типа объекта (желательно к использованию при сложной логике)
 
+    OBJECTFIELD_NAME_SYSTEM,        //! Имя объекта в системе (изменять только в конструкторе)
+
     OBJECTFIELD_NAME_SHORT,         //! Короткое имя объекта
     OBJECTFIELD_NAME,               //! Полное имя объекта
     OBJECTFIELD_DESCRIPTION,        //! Описание объекта

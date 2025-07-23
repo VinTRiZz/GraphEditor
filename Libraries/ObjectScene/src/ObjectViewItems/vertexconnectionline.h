@@ -40,7 +40,7 @@ public:
     void setMainColor(const QColor &penColor) override;
     void setSelectedColor(const QColor &penColor) override;
 
-    void setName(const QString& iText) override;
+    void setShortName(const QString& iText) override;
 
     void setArrowSize(qreal size);
     qreal getArrowSize() const;

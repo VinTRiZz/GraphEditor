@@ -19,7 +19,7 @@ static objectId_t getSystemId() {
 ItemBase::ItemBase(QGraphicsItem *parent) :
     QGraphicsItem(parent)
 {
-    setName(QString("Unchanged name of: \"%0\"").arg(boost::core::demangle(typeid(this).name()).c_str()));
+    setSystemName(QString("Unchanged name of: \"%0\"").arg(boost::core::demangle(typeid(this).name()).c_str()));
 }
 
 ItemBase::~ItemBase()
@@ -32,6 +32,11 @@ void ItemBase::unregister()
     if (dynamic_cast<DynamicAreaItem*>(parentItem()) != nullptr) {
         static_cast<DynamicAreaItem*>(parentItem())->removeRegisteredItem(this);
     }
+}
+
+QString ItemBase::getSystemName() const
+{
+    return data(OBJECTFIELD_NAME_SYSTEM).toString();
 }
 
 void ItemBase::setType(ObjectType objType)
@@ -70,6 +75,11 @@ void ItemBase::paint([[maybe_unused]] QPainter *painter, [[maybe_unused]] const 
 void ItemBase::setBoundingRect(const QRectF &bRect)
 {
     m_boundingRect = bRect;
+}
+
+void ItemBase::setSystemName(const QString &iText)
+{
+    setData(OBJECTFIELD_NAME_SYSTEM, iText);
 }
 
 void ItemBase::setShortName(const QString &text)

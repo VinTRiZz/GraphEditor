@@ -1,0 +1,4 @@
+CONFIGURE_LIBRARY(ObjectScene)
+
+LINK_TARGET_LIBRARY(ObjectScene Common)
+LINK_TARGET_LIBRARY(ObjectScene GraphObject)

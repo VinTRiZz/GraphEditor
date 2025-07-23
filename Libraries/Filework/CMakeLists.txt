@@ -1,0 +1,4 @@
+CONFIGURE_LIBRARY(Filework)
+
+LINK_TARGET_LIBRARY(Filework Common)
+LINK_TARGET_LIBRARY(Filework GraphObject)

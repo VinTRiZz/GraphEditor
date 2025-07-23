@@ -31,7 +31,8 @@ else()
    message(WARNING "LTO not supported: ${ipo_error}")
 endif()
 
-# Build binary directory
+
+# Build configuration
 set(
     CMAKE_RUNTIME_OUTPUT_DIRECTORY
     ${CMAKE_CURRENT_SOURCE_DIR}/BIN
@@ -47,9 +48,15 @@ set(
     ${CMAKE_CURRENT_SOURCE_DIR}/build
 )
 
+
 # Qt
 find_package(QT NAMES Qt5 REQUIRED COMPONENTS Widgets Core Gui Sql)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core Gui Sql)
+
+# Qt configuration
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 
 # Common things include (functions, etc.)
 include(cmake/CMakeLists.txt)
@@ -64,9 +71,22 @@ add_subdirectory(App)
 message(STATUS "Searching for tests...")
 add_subdirectory(Testing)
 
-add_custom_target(
-    APPLICATION_WITH_TESTS DEPENDS
-    ALL_LIBRARIES
-    ${PROJECT_NAME}
-    ${ADDED_EDITOR_TESTS}
+
+# ======================================== #
+# Installation
+set(
+    INSTALL_DESTINATION_PREFIX
+    "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/install"
 )
+
+install(TARGETS ${PROJECT_NAME}
+    RUNTIME DESTINATION ${INSTALL_DESTINATION_PREFIX}/bin
+    LIBRARY DESTINATION ${INSTALL_DESTINATION_PREFIX}/lib
+    ARCHIVE DESTINATION ${INSTALL_DESTINATION_PREFIX}/lib/static
+)
+
+# Packet creation
+set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
+set(CPACK_PACKAGE_VERSION ${GRAPH_EDITOR_VERSION})
+set(CPACK_PACKAGE_DIRECTORY ${INSTALL_DESTINATION_PREFIX})
+include(CPack)

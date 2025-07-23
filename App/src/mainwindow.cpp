@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    QFile stylesFile("://DATA/styles/mainstyles.qss");
+    QFile stylesFile(":/common/styles/mainstyles.qss");
     if (!stylesFile.open(QIODevice::ReadOnly)) {
         LOG_ERROR("Error opening styles:", stylesFile.errorString());
         return;

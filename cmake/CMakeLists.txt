@@ -1,3 +1,13 @@
+# Constants
+
+set(
+    RESOURCES_COMMONFILE
+    "${CMAKE_CURRENT_SOURCE_DIR}/DATA/common.qrc"
+)
+
+
+
+
 function(CONFIGURE_LIBRARY_NOQT LIBRARY_NAME)
     # Files
     file(GLOB_RECURSE HEADERS "src/*.hpp" "src/*.h")
@@ -63,7 +73,7 @@ function(CONFIGURE_LIBRARY LIBRARY_NAME)
 
     # Library target
     add_library(${LIBRARY_NAME} SHARED)
-    target_sources(${LIBRARY_NAME} PRIVATE ${HEADERS} ${SOURCES} ${UIFILES} ${RCC_SOURCES})
+    target_sources(${LIBRARY_NAME} PRIVATE ${HEADERS} ${SOURCES} ${UIFILES} ${RESOURCES_COMMONFILE})
 
     # Runtime linking of target
     set_target_properties(
@@ -155,7 +165,7 @@ endfunction()
 function(ADD_EDITOR_TEST EDITOR_TESTNAME)
     add_executable(${EDITOR_TESTNAME})
 
-    file(GLOB TESTING_SOURCES "${EDITOR_TESTNAME}.cpp")
+    file(GLOB TESTING_SOURCES "${EDITOR_TESTNAME}.cpp" ${RESOURCES_COMMONFILE})
     target_sources(${EDITOR_TESTNAME} PRIVATE ${TESTING_SOURCES})
 
     target_link_libraries(${EDITOR_TESTNAME} PRIVATE
@@ -170,20 +180,19 @@ function(ADD_EDITOR_TEST EDITOR_TESTNAME)
     include(GoogleTest)
     gtest_discover_tests(${EDITOR_TESTNAME})
 
+    # Runtime linking of testing target
+#    set_target_properties(
+#        ${EDITOR_TESTNAME} PROPERTIES
+#        BUILD_WITH_INSTALL_RPATH TRUE
+#        INSTALL_RPATH_USE_LINK_PATH TRUE
+#        INSTALL_RPATH "lib"
+#    )
+
     # Add test to added list
     set(
         ADDED_EDITOR_TESTS
         ${ADDED_EDITOR_TESTS}
         ${EDITOR_TESTNAME}
-    )
-
-    # Runtime linking of testing target
-    set_target_properties(
-        ${EDITOR_TESTNAME} PROPERTIES
-        BUILD_WITH_INSTALL_RPATH TRUE
-        INSTALL_RPATH_USE_LINK_PATH TRUE
-        SKIP_BUILD_RPATH FALSE
-        INSTALL_RPATH "./lib"
     )
     message(STATUS "Added test: " ${EDITOR_TESTNAME})
 endfunction()

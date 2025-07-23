@@ -23,8 +23,8 @@ void GraphEditMode::init()
     ButtonMatrix::ButtonConfig buttonConf;
 
     buttonConf = {};
-    buttonConf.icon         = QIcon("://DATA/images/icons/editmode/mode_edit_move.svg");
-    buttonConf.secondIcon   = QIcon("://DATA/images/icons/editmode/mode_edit_move_active.svg");
+    buttonConf.icon         = QIcon(":/common/images/icons/editmode/mode_edit_move.svg");
+    buttonConf.secondIcon   = QIcon(":/common/images/icons/editmode/mode_edit_move_active.svg");
     buttonConf.tooltip = "Перемещение вершин графа";
     buttonConf.action = [this, buttonConf](QPushButton* pButton) -> void {
         clearMode();
@@ -38,8 +38,8 @@ void GraphEditMode::init()
 
 
     buttonConf = {};
-    buttonConf.icon = QIcon("://DATA/images/icons/editmode/mode_edit_add_vertex.svg");
-    buttonConf.secondIcon   = QIcon("://DATA/images/icons/editmode/mode_edit_add_vertex_active.svg");
+    buttonConf.icon = QIcon(":/common/images/icons/editmode/mode_edit_add_vertex.svg");
+    buttonConf.secondIcon   = QIcon(":/common/images/icons/editmode/mode_edit_add_vertex_active.svg");
     buttonConf.tooltip = "Добавление вершин графа";
     buttonConf.action = [this, buttonConf](QPushButton* pButton) -> void {
         clearMode();
@@ -54,8 +54,8 @@ void GraphEditMode::init()
 
 
     buttonConf = {};
-    buttonConf.icon = QIcon("://DATA/images/icons/editmode/mode_edit_add_connection.svg");
-    buttonConf.secondIcon   = QIcon("://DATA/images/icons/editmode/mode_edit_add_connection_active.svg");
+    buttonConf.icon = QIcon(":/common/images/icons/editmode/mode_edit_add_connection.svg");
+    buttonConf.secondIcon   = QIcon(":/common/images/icons/editmode/mode_edit_add_connection_active.svg");
     buttonConf.tooltip = "Добавление соединений";
     buttonConf.action = [this, buttonConf](QPushButton* pButton) -> void {
         clearMode();
@@ -69,8 +69,8 @@ void GraphEditMode::init()
 
 
     buttonConf = {};
-    buttonConf.icon = QIcon("://DATA/images/icons/editmode/mode_edit_remove.svg");
-    buttonConf.secondIcon   = QIcon("://DATA/images/icons/editmode/mode_edit_remove_active.svg");
+    buttonConf.icon = QIcon(":/common/images/icons/editmode/mode_edit_remove.svg");
+    buttonConf.secondIcon   = QIcon(":/common/images/icons/editmode/mode_edit_remove_active.svg");
     buttonConf.tooltip = "Удаление элементов графа";
     buttonConf.action = [this, buttonConf](QPushButton* pButton) -> void {
         clearMode();
@@ -84,8 +84,8 @@ void GraphEditMode::init()
 
 
     buttonConf = {};
-    buttonConf.icon = QIcon("://DATA/images/icons/editmode/mode_edit_properties.svg");
-    buttonConf.secondIcon   = QIcon("://DATA/images/icons/editmode/mode_edit_properties_active.svg");
+    buttonConf.icon = QIcon(":/common/images/icons/editmode/mode_edit_properties.svg");
+    buttonConf.secondIcon   = QIcon(":/common/images/icons/editmode/mode_edit_properties_active.svg");
     buttonConf.tooltip = "Изменение свойств вершины";
     buttonConf.action = [this, buttonConf](QPushButton* pButton) -> void {
         clearMode();
@@ -106,7 +106,7 @@ void GraphEditMode::init()
     m_propertyEditor->hide();
 
     // Из-за приколов с наследованием
-    QFile stylesFile("://DATA/styles/mainstyles.qss");
+    QFile stylesFile(":/common/styles/mainstyles.qss");
     if (!stylesFile.open(QIODevice::ReadOnly)) {
         LOG_ERROR("Error opening styles:", stylesFile.errorString());
         return;

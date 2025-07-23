@@ -1,8 +1,3 @@
-# Qt configuration
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-
 # Subdirectories
 add_subdirectory(Common)
 add_subdirectory(CustomWidgets)

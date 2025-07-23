@@ -1,0 +1,27 @@
+<RCC>
+    <qresource prefix="/common">
+        <file>styles/mainstyles.qss</file>
+        <file>images/icons/common/edit_properties.svg</file>
+        <file>images/icons/common/graph_cancel_changes.svg</file>
+        <file>images/icons/common/graph_new.svg</file>
+        <file>images/icons/common/graph_open.svg</file>
+        <file>images/icons/common/graph_save_as.svg</file>
+        <file>images/icons/common/graph_save.svg</file>
+        <file>images/icons/common/mode_change.svg</file>
+        <file>images/icons/common/tools_close.svg</file>
+        <file>images/icons/common/tools_open.svg</file>
+        <file>images/icons/editmode/mode_edit_add_connection.svg</file>
+        <file>images/icons/editmode/mode_edit_add_connection_active.svg</file>
+        <file>images/icons/editmode/mode_edit_add_vertex.svg</file>
+        <file>images/icons/editmode/mode_edit_add_vertex_active.svg</file>
+        <file>images/icons/editmode/mode_edit_move.svg</file>
+        <file>images/icons/editmode/mode_edit_move_active.svg</file>
+        <file>images/icons/editmode/mode_edit_properties.svg</file>
+        <file>images/icons/editmode/mode_edit_remove.svg</file>
+        <file>images/icons/editmode/mode_edit_remove_active.svg</file>
+        <file>images/iconbase.svg</file>
+        <file>images/vertexicons/person/green.svg</file>
+        <file>images/vertexicons/person/red.svg</file>
+        <file>images/icons/editmode/mode_edit_properties_active.svg</file>
+    </qresource>
+</RCC>

@@ -1,18 +1,9 @@
-# Qt configuration
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-
 # Project files
-file(GLOB_RECURSE HEADERS "src/*.hpp" "src/*.h")
-file(GLOB_RECURSE SOURCES "src/*.cpp")
-file(GLOB_RECURSE UIFILES "src/*.ui")
-file(GLOB_RECURSE RESOURCES "*.qrc")
+file(GLOB HEADERS "src/*.hpp" "src/*.h")
+file(GLOB SOURCES "src/*.cpp")
+file(GLOB UIFILES "src/*.ui")
 
 source_group("Ui Files" FILES ${UIFILES})
-
-# Resources
-qt_add_resources(RCC_SOURCES ${RESOURCES})
 
 # Main target
 add_executable( ${PROJECT_NAME} )
@@ -21,7 +12,7 @@ target_sources(${PROJECT_NAME} PRIVATE
     ${HEADERS}
     ${SOURCES}
     ${UIFILES}
-    ${RCC_SOURCES}
+    ${RESOURCES_COMMONFILE}
 )
 
 # Runtime linking of target

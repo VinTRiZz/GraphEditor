@@ -15,14 +15,6 @@ target_sources(${PROJECT_NAME} PRIVATE
     ${RESOURCES_COMMONFILE}
 )
 
-# Runtime linking of target
-set_target_properties(
-    ${PROJECT_NAME} PROPERTIES
-    BUILD_WITH_INSTALL_RPATH TRUE
-    INSTALL_RPATH_USE_LINK_PATH TRUE
-    INSTALL_RPATH "./lib"
-)
-
 # Target linking
 target_link_libraries(
     ${PROJECT_NAME}

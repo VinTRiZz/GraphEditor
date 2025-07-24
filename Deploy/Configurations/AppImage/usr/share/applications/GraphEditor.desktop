@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=MyApp
+Exec=GraphEditor.bin
+Icon=GraphEditor
+Type=Application
+Categories=Utility;

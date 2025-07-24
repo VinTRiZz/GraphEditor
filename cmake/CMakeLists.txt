@@ -6,64 +6,6 @@ set(
 )
 
 
-
-
-function(CONFIGURE_LIBRARY_NOQT LIBRARY_NAME)
-    # Files
-    file(GLOB_RECURSE HEADERS "src/*.hpp" "src/*.h")
-    file(GLOB_RECURSE SOURCES "src/*.cpp")
-
-    # Library target
-    add_library(${LIBRARY_NAME} SHARED)
-    target_sources(${LIBRARY_NAME} PRIVATE ${HEADERS} ${SOURCES})
-
-    # Runtime linking of target
-    set_target_properties(
-        ${LIBRARY_NAME} PROPERTIES
-        BUILD_WITH_INSTALL_RPATH TRUE
-        INSTALL_RPATH_USE_LINK_PATH TRUE
-        INSTALL_RPATH "./lib"
-    )
-
-    # Build flag configuration
-    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        target_compile_definitions(${LIBRARY_NAME} PRIVATE DEBUG_MODE)
-        target_compile_options(${LIBRARY_NAME} PRIVATE -g)
-        set_target_properties(
-            ${LIBRARY_NAME}
-            PROPERTIES
-            SUFFIX ".DEBUG"
-        )
-    elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-        target_compile_definitions(${LIBRARY_NAME} PRIVATE NDEBUG)
-        target_compile_options(${LIBRARY_NAME} PRIVATE -O3)
-        set_target_properties(
-            ${LIBRARY_NAME}
-            PROPERTIES
-            SUFFIX ".bin"
-        )
-    endif()
-
-    if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src")
-        message(FATAL_ERROR "Error configuring library! Not found sources dir: " "${CMAKE_CURRENT_SOURCE_DIR}/src")
-    endif()
-
-    target_include_directories(${LIBRARY_NAME} PRIVATE
-        "${CMAKE_CURRENT_SOURCE_DIR}/src"
-    )
-
-    # Add library to added list
-    set(
-        ADDED_LIBRARIES_NOQT
-        ${ADDED_LIBRARIES_NOQT}
-        ${LIBRARY_NAME}
-    )
-
-    message(STATUS "Configured library " ${LIBRARY_NAME})
-endfunction()
-
-
-
 function(CONFIGURE_LIBRARY LIBRARY_NAME)
     # Files
     file(GLOB_RECURSE HEADERS "src/*.hpp" "src/*.h")
@@ -76,12 +18,12 @@ function(CONFIGURE_LIBRARY LIBRARY_NAME)
     target_sources(${LIBRARY_NAME} PRIVATE ${HEADERS} ${SOURCES} ${UIFILES} ${RESOURCES_COMMONFILE})
 
     # Runtime linking of target
-    set_target_properties(
-        ${LIBRARY_NAME} PROPERTIES
-        BUILD_WITH_INSTALL_RPATH TRUE
-        INSTALL_RPATH_USE_LINK_PATH TRUE
-        INSTALL_RPATH "./lib"
-    )
+#    set_target_properties(
+#        ${LIBRARY_NAME} PROPERTIES
+#        BUILD_WITH_INSTALL_RPATH TRUE
+#        INSTALL_RPATH_USE_LINK_PATH TRUE
+#        INSTALL_RPATH "./lib"
+#    )
 
     # Target linking
     target_link_libraries(

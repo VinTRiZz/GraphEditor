@@ -206,11 +206,6 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="tab_style">
-         <attribute name="title">
-          <string>Стиль</string>
-         </attribute>
-        </widget>
        </widget>
       </item>
       <item>

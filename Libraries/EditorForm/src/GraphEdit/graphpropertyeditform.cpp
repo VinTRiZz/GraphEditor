@@ -118,7 +118,6 @@ void GraphPropertyEditForm::setupSignals()
         pItem->setColumnCount(2);
         pItem->setChild(1, new QStandardItem("Моё значение"));
         m_pUserGraphInfoModel->appendRow(pItem);
-        updateEditTime();
     });
 
     connect(ui->propertyRemove_pushButton, &QPushButton::clicked,
@@ -129,7 +128,6 @@ void GraphPropertyEditForm::setupSignals()
         auto rowCount = selectedItems.front().height();
 
         m_pUserGraphInfoModel->removeRows(firstRow, rowCount);
-        updateEditTime();
     });
 
     ui->propertyRemove_pushButton->setDisabled(true);
@@ -141,18 +139,20 @@ void GraphPropertyEditForm::setupSignals()
     connect(m_pCommonGraphInfoModel, &QAbstractItemModel::dataChanged,
             this, [this](const QModelIndex &topLeft, const QModelIndex &) {
         auto changedString = topLeft.data(Qt::DisplayRole).toString();
+        LOG_DEBUG("Called change:", changedString);
 
         switch (topLeft.row())
         {
         case NAMEROW:
             m_currentGraph->setName(changedString);
+            LOG_DEBUG("Changed name");
             break;
 
         case DESCRIPTIONROW:
             m_currentGraph->setDescription(changedString);
+            LOG_DEBUG("Changed descr");
             break;
         }
-        updateEditTime();
     });
 
     connect(m_pUserGraphInfoModel, &QAbstractItemModel::dataChanged,
@@ -163,7 +163,6 @@ void GraphPropertyEditForm::setupSignals()
             m_currentGraph->setCustomValue(m_pUserGraphInfoModel->index(row, userPropNameCol).data().toString(),
                                             m_pUserGraphInfoModel->index(row, userPropDataCol).data());
         }
-        updateEditTime();
     });
 }
 

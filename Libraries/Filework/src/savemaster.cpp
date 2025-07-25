@@ -16,7 +16,7 @@
 #include <GraphObject/Object.h>
 #include <Common/Logging.h>
 
-bool SaveMaster::save(const QString &oFilePath, const Graph::GraphObject &iGraphObject)
+bool SaveMaster::save(const QString &oFilePath, Graph::GraphObject *iGraphObject)
 {
     auto targetFileInfo = QFileInfo(oFilePath);
     auto targetFileDirInfo = QFileInfo(targetFileInfo.dir().absolutePath());
@@ -25,7 +25,7 @@ bool SaveMaster::save(const QString &oFilePath, const Graph::GraphObject &iGraph
         return false;
     }
 
-    LOG_INFO("Saving data of graph", iGraphObject.getName(), "to file", oFilePath);
+    LOG_INFO("Saving data of graph", iGraphObject->getName(), "to file", oFilePath);
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(oFilePath);
 
@@ -52,13 +52,13 @@ bool SaveMaster::save(const QString &oFilePath, const Graph::GraphObject &iGraph
     LOG_INFO("Inserting common data as properties...");
     queryText = QString("INSERT INTO %0%1").arg(GraphCommon::DB_GRAPH_PROPS_TABLENAME, QString("(prop_name, prop_value) VALUES ('%1', '%2')"));
 
-    if (!executeQuery(q, queryText.arg("name",          iGraphObject.getName()))) { return false; }
-    if (!executeQuery(q, queryText.arg("description",   iGraphObject.getDescription()))) { return false; }
-    if (!executeQuery(q, queryText.arg("create time",   iGraphObject.getCreateTime().toString(GraphCommon::DATE_CONVERSION_FORMAT)))) { return false; }
-    if (!executeQuery(q, queryText.arg("edit time",     iGraphObject.getEditTime().toString(GraphCommon::DATE_CONVERSION_FORMAT)))) { return false; }
+    if (!executeQuery(q, queryText.arg("name",          iGraphObject->getName()))) { return false; }
+    if (!executeQuery(q, queryText.arg("description",   iGraphObject->getDescription()))) { return false; }
+    if (!executeQuery(q, queryText.arg("create time",   iGraphObject->getCreateTime().toString(GraphCommon::DATE_CONVERSION_FORMAT)))) { return false; }
+    if (!executeQuery(q, queryText.arg("edit time",     iGraphObject->getEditTime().toString(GraphCommon::DATE_CONVERSION_FORMAT)))) { return false; }
 
     LOG_INFO("Inserting user data as properties...");
-    for (auto& userProp : iGraphObject.getCustomValueMap()) {
+    for (auto& userProp : iGraphObject->getCustomValueMap()) {
         if (!executeQuery(q, queryText.arg(userProp.first, userProp.second.toString()))) {
             return false;
         }
@@ -67,7 +67,7 @@ bool SaveMaster::save(const QString &oFilePath, const Graph::GraphObject &iGraph
     // Загрузка вершин в таблицу
     LOG_INFO("Inserting vertices info...");
     auto queryTextBase = QString("INSERT INTO %0 VALUES (").arg(GraphCommon::DB_GRAPH_VERTICES_TABLENAME);
-    for (auto& vert : iGraphObject.getAllVertices()) {
+    for (auto& vert : iGraphObject->getAllVertices()) {
         queryText = queryTextBase;
 
         queryText += QString::number(vert.id) + ",";
@@ -87,7 +87,7 @@ bool SaveMaster::save(const QString &oFilePath, const Graph::GraphObject &iGraph
 
     LOG_INFO("Inserting connections info...");
     queryTextBase = QString("INSERT INTO %0 VALUES (").arg(GraphCommon::DB_GRAPH_CONNECTIONS_TABLENAME);
-    for (auto& con : iGraphObject.getAllConnections()) {
+    for (auto& con : iGraphObject->getAllConnections()) {
         queryText = queryTextBase;
 
         queryText += "NULL,";
@@ -107,9 +107,9 @@ bool SaveMaster::save(const QString &oFilePath, const Graph::GraphObject &iGraph
     return true;
 }
 
-bool SaveMaster::load(const QString &iFilePath, Graph::GraphObject &oGraphObject)
+bool SaveMaster::load(const QString &iFilePath, Graph::GraphObject *oGraphObject)
 {
-    oGraphObject = Graph::GraphObject(); // Обнулить перед записью, чтобы не было артефактов
+    *oGraphObject = Graph::GraphObject(); // Обнулить перед записью, чтобы не было артефактов
 
     auto targetFileInfo = QFileInfo(iFilePath);
     if (!targetFileInfo.exists() || !targetFileInfo.isFile()) {
@@ -169,16 +169,16 @@ bool SaveMaster::load(const QString &iFilePath, Graph::GraphObject &oGraphObject
         return false;
     }
 
-    oGraphObject.setName(commonValues["name"].toString());
-    oGraphObject.setDescription(commonValues["description"].toString());
-    oGraphObject.setCreateTime(QDateTime::fromString(commonValues["create time"].toString(), GraphCommon::DATE_CONVERSION_FORMAT));
-    oGraphObject.setEditTime(QDateTime::fromString(commonValues["edit time"].toString(), GraphCommon::DATE_CONVERSION_FORMAT));
+    oGraphObject->setName(commonValues["name"].toString());
+    oGraphObject->setDescription(commonValues["description"].toString());
+    oGraphObject->setCreateTime(QDateTime::fromString(commonValues["create time"].toString(), GraphCommon::DATE_CONVERSION_FORMAT));
+    oGraphObject->setEditTime(QDateTime::fromString(commonValues["edit time"].toString(), GraphCommon::DATE_CONVERSION_FORMAT));
 
     LOG_INFO("Loading user data as properties...");
     queryText = QString("SELECT prop_name, prop_value FROM %0 WHERE prop_name NOT IN ('name', 'description', 'create time', 'edit time') ORDER BY prop_name ASC").arg(GraphCommon::DB_GRAPH_PROPS_TABLENAME);
     if (!executeQuery(q, queryText)) { return false; }
     while (q.next()) {
-        oGraphObject.setCustomValue(q.value(0).toString(), q.value(1));
+        oGraphObject->setCustomValue(q.value(0).toString(), q.value(1));
     }
 
     // Загрузка вершин
@@ -199,7 +199,7 @@ bool SaveMaster::load(const QString &iFilePath, Graph::GraphObject &oGraphObject
         vert.borderColor        = getDecodedColor(q.value(valPos++).toByteArray());
         vert.backgroundColor    = getDecodedColor(q.value(valPos++).toByteArray());
         vert.image              = getDecodedPixmap(q.value(valPos++).toByteArray()).toImage();
-        oGraphObject.addVertex(vert);
+        oGraphObject->addVertex(vert);
     }
 
     LOG_INFO("Inserting connections info...");
@@ -216,7 +216,7 @@ bool SaveMaster::load(const QString &iFilePath, Graph::GraphObject &oGraphObject
         con.name                = q.value(valPos++).toString();
         con.lineColor           = getDecodedColor(q.value(valPos++).toByteArray());
 
-        oGraphObject.addConnection(con);
+        oGraphObject->addConnection(con);
     }
 
     db.close();
@@ -290,13 +290,13 @@ bool SaveMaster::testValidance()
     savedGraph.addConnection(con);
 
     auto testTargetPath = "/tmp/GraphEditorSaveTest.gse";
-    if (!save(testTargetPath, savedGraph)) {
+    if (!save(testTargetPath, &savedGraph)) {
         LOG_ERROR("Validance test: save failed");
         return false;
     }
 
     Graph::GraphObject loadedGraph;
-    if (!load(testTargetPath, loadedGraph)) {
+    if (!load(testTargetPath, &loadedGraph)) {
         QFile::remove(testTargetPath);
         LOG_ERROR("Validance test: load failed");
         return false;

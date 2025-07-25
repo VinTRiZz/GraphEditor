@@ -116,6 +116,14 @@ void GraphObject::removeVertex(GraphCommon::graphId_t vertexId)
     m_vertices.erase(targetVertex);
 }
 
+void GraphObject::clearVertices()
+{
+    for (auto& vert : m_vertices) {
+        removeConnections(vert.id);
+    }
+    m_vertices.clear();
+}
+
 bool GraphObject::addConnection(const GConnection &iCon)
 {
     if (!iCon.isValid()) {
@@ -195,6 +203,29 @@ void GraphObject::removeConnection(GraphCommon::graphId_t conFrom, GraphCommon::
             m_connections.erase(con);
         }
     }
+}
+
+void GraphObject::removeConnections(GraphCommon::graphId_t conFrom)
+{
+    m_connections.erase(conFrom);
+
+    std::list<GraphCommon::graphId_t> connectedToTarget;
+    for (auto& con : m_connections) {
+        if (con.second.idFrom == conFrom) {
+            connectedToTarget.push_back(con.first);
+        }
+    }
+
+    for (auto& con : connectedToTarget) {
+        auto range = m_connections.equal_range(con);
+        while (range.first->second.idFrom != conFrom) { range.first = std::next(range.first); }
+        m_connections.erase(range.first);
+    }
+}
+
+void GraphObject::clearConnections()
+{
+    m_connections.clear();
 }
 
 void GraphObject::setName(const QString &iName)

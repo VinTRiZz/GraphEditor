@@ -86,8 +86,8 @@ void GraphSceneBase::writeChangesToGraph()
     LOG_OK("Found", vertices.size(), "vertices and", connections.size(), "connections");
 
     auto pGraph = getCurrentGraph();
-    *pGraph = Graph::GraphObject();
 
+    pGraph->clearVertices();
     LOG_INFO("Loading vertices from scene...");
     Graph::GVertex tmpVertex;
     for (auto vert : vertices) {
@@ -112,6 +112,7 @@ void GraphSceneBase::writeChangesToGraph()
     }
     LOG_OK("Loaded", pGraph->getVerticesCount(), "vertices from scene");
 
+    pGraph->clearConnections();
     LOG_INFO("Loading connections from scene...");
     Graph::GConnection tmpConnection;
     for (auto con : connections) {

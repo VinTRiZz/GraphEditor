@@ -30,6 +30,7 @@ void GraphEditorForm::init()
     ui->graphScene->startEditMode();
 
     m_currentGraph = new Graph::GraphExtendedObject(this);
+    m_currentGraph->setCreateTime(QDateTime::currentDateTime());
     ui->graphScene->setCurrentGraph(m_currentGraph);
 
     setupWidget();
@@ -76,7 +77,7 @@ void GraphEditorForm::saveGraph()
 
     ui->graphScene->writeChangesToGraph();
 
-    auto saveSucceed = SaveMaster::save(m_currentGraphFilePath, *m_currentGraph);
+    auto saveSucceed = SaveMaster::save(m_currentGraphFilePath, m_currentGraph);
     if (!saveSucceed) {
         GraphCommon::showError("Ошибка сохранения графа");
         return;
@@ -92,7 +93,7 @@ void GraphEditorForm::loadGraph()
         return;
     }
 
-    auto loadSucceed = SaveMaster::load(m_currentGraphFilePath, *m_currentGraph);
+    auto loadSucceed = SaveMaster::load(m_currentGraphFilePath, m_currentGraph);
     if (!loadSucceed) {
         GraphCommon::showError("Ошибка загрузки графа");
         return;

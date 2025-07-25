@@ -67,6 +67,11 @@ public:
      */
     void removeVertex(GraphCommon::graphId_t vertexId);
 
+    /**
+     * @brief clearVertices Удалить все вершины. Также удаляет соединения, связанные с ними
+     */
+    void clearVertices();
+
 
     // ============================================================== //
     // ============== Работа с соединениями вершин графа ============ //
@@ -112,6 +117,17 @@ public:
      * @param conTo Вершина к которой исходит ребро
      */
     void removeConnection(GraphCommon::graphId_t conFrom, GraphCommon::graphId_t conTo);
+
+    /**
+     * @brief removeConnections Удалить все рёбра, соединённые с этой вершиной
+     * @param conFrom           Вершина, от которой исходит ребро
+     */
+    void removeConnections(GraphCommon::graphId_t conFrom);
+
+    /**
+     * @brief clearConnections  Полное удаление всех рёбер в графе
+     */
+    void clearConnections();
 
 
     // ============================================================== //

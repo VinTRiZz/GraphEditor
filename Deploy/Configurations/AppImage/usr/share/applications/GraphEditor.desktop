@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=MyApp
+Name=GraphEditor
 Exec=GraphEditor.bin
 Icon=GraphEditor
 Type=Application

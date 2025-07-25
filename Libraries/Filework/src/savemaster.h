@@ -18,7 +18,8 @@ public:
      * @param iGraphObject Объект графа для сохранения
      * @return false если не удалось сохранить файл. В логах будет указано, почему
      */
-    static bool save(const QString& oFilePath, const Graph::GraphObject& iGraphObject);
+    [[deprecated("Use save in format instead of this")]]
+    static bool save(const QString& oFilePath, Graph::GraphObject *iGraphObject);
 
     /**
      * @brief load Выгрузить граф из файла
@@ -26,7 +27,8 @@ public:
      * @param oGraphObject Объект графа для записи выгруженных данных
      * @return false если не удалось выгрузить граф. В логах будет указано, почему
      */
-    static bool load(const QString& iFilePath, Graph::GraphObject& oGraphObject);
+    [[deprecated("Use load in format instead of this")]]
+    static bool load(const QString& iFilePath, Graph::GraphObject* oGraphObject);
 
     /**
      * @brief testValidance Проверка системы сохранений на корректность работы (для юнит-тестов)

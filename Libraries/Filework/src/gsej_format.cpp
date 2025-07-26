@@ -14,12 +14,12 @@ GSEJ_Format::~GSEJ_Format()
 
 }
 
-bool GSEJ_Format::fromJson(const QJsonObject &iJson)
+bool GSEJ_Format::fromDataJson(const QJsonObject &iJson)
 {
 
 }
 
-QJsonObject GSEJ_Format::toJson() const
+QJsonObject GSEJ_Format::toDataJson() const
 {
 
 }

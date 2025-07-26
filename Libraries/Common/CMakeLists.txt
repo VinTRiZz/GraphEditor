@@ -1,2 +1,4 @@
 CONFIGURE_LIBRARY(Common)
-set_target_properties(Common PROPERTIES LINKER_LANGUAGE CXX)
+
+ADD_EDITOR_TEST(encrypt_test)
+LINK_TARGET_LIBRARY(encrypt_test Common)

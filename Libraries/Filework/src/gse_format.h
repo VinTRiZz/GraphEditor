@@ -8,6 +8,9 @@
 namespace Filework
 {
 
+/**
+ * @brief The GSE_Format class  Старый формат сохранения графов, поддерживает только базовые вершины и соединения
+ */
 class GSE_Format : public AbstractSaveFormat
 {
 public:

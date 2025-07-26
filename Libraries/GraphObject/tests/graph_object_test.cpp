@@ -69,8 +69,11 @@ TEST(GraphObject, AddRemoveTest) {
     for (auto& vert : testVertices) {
         EXPECT_EQ(result.addVertex(vert), true);
     }
+    GTEST_LOG_(INFO) << "Vertices add complete";
+
     auto addedVertices = result.getAllVertices();
     EXPECT_EQ(addedVertices.size(), testVertices.size());
+    GTEST_LOG_(INFO) << "Added vertices are same size to test values";
 
     // На всякий
     auto vertSortPredicate = [](auto& con1, auto& con2){
@@ -80,6 +83,7 @@ TEST(GraphObject, AddRemoveTest) {
     testVertices.sort(vertSortPredicate);
 
     EXPECT_EQ(addedVertices, testVertices);
+    GTEST_LOG_(INFO) << "Added vertices are same to test values";
 
     // Vector cuz return type is vector
     std::vector<Graph::GConnection> testConnections;
@@ -137,8 +141,11 @@ TEST(GraphObject, AddRemoveTest) {
     for (auto& con : testConnections) {
         EXPECT_EQ(result.addConnection(con), true);
     }
+    GTEST_LOG_(INFO) << "Connections add complete";
+
     auto addedConnections = result.getAllConnections();
     EXPECT_EQ(addedConnections.size(), testConnections.size());
+    GTEST_LOG_(INFO) << "Connections added are same size as test values";
 
     // На всякий
     auto conSortPredicate = [](auto& con1, auto& con2){
@@ -154,4 +161,5 @@ TEST(GraphObject, AddRemoveTest) {
     std::stable_sort(testConnections.begin(), testConnections.end(), conSortPredicate);
 
     EXPECT_EQ(addedConnections, testConnections);
+    GTEST_LOG_(INFO) << "Connections added are same as test values";
 }

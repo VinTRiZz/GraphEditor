@@ -2,7 +2,6 @@
 #define ABSTRACTSAVEFORMAT_H
 
 #include <QString>
-#include <QJsonObject>
 
 #include <GraphObject/Object.h>
 
@@ -13,17 +12,18 @@ class AbstractSaveFormat
 {
 public:
     AbstractSaveFormat();
+    virtual ~AbstractSaveFormat();
 
-    bool fromJson(const QJsonObject& obj);
-    QJsonObject toJson() const;
-
-    bool setGraph(Graph::GraphObject* pGraph);
+    void setGraph(Graph::GraphObject* pGraph);
     Graph::GraphObject* getGraph() const;
 
     virtual bool save(const QString& targetPath) const = 0;
     virtual bool load(const QString& targetPath) = 0;
 
     virtual bool isFileValid(const QString& targetPath) const = 0;
+
+private:
+    Graph::GraphObject* m_pGraph {nullptr};
 };
 
 }

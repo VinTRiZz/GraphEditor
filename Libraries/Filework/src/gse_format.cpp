@@ -1,0 +1,306 @@
+#include "gse_format.h"
+
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlRecord>
+#include <QSqlError>
+
+#include <QBuffer>
+#include <QFileInfo>
+#include <QDir>
+
+#include <QJsonDocument>
+
+#include <boost/algorithm/hex.hpp>
+
+#include <GraphObject/Object.h>
+#include <Common/Logging.h>
+
+namespace Filework
+{
+
+GSE_Format::GSE_Format()
+{
+
+}
+
+GSE_Format::~GSE_Format()
+{
+
+}
+
+bool GSE_Format::save(const QString &targetPath) const
+{
+    if (!isFileValid(targetPath)) {
+        LOG_ERROR("GSE_Format::save: Invalid path to object file (directory not exist or target is not a file)");
+        return false;
+    }
+
+    auto iGraphObject = getGraph();
+
+    LOG_INFO("Saving data of graph", iGraphObject->getName(), "to file", targetPath);
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(targetPath);
+
+    if (!db.open()) {
+        LOG_ERROR("Error opening savefile:", db.lastError().text());
+        return false;
+    }
+
+    // Настройка таблиц
+    QSqlQuery q(db);
+
+    LOG_INFO("Setting up tables...");
+    auto queryText = QString("DELETE FROM %0");
+    if (!executeQuery(q, GraphCommon::DB_GRAPH_PROPS_CREATEQUERY))                      { return false; }
+    if (!executeQuery(q, queryText.arg(GraphCommon::DB_GRAPH_PROPS_TABLENAME)))         { return false; }
+
+    if (!executeQuery(q, GraphCommon::DB_GRAPH_VERTICES_CREATEQUERY))                   { return false; }
+    if (!executeQuery(q, queryText.arg(GraphCommon::DB_GRAPH_VERTICES_TABLENAME)))      { return false; }
+
+    if (!executeQuery(q, GraphCommon::DB_GRAPH_CONNECTIONS_CREATEQUERY))                { return false; }
+    if (!executeQuery(q, queryText.arg(GraphCommon::DB_GRAPH_CONNECTIONS_TABLENAME)))   { return false; }
+
+    // Загрузка информации о графе
+    LOG_INFO("Inserting common data as properties...");
+    queryText = QString("INSERT INTO %0%1").arg(GraphCommon::DB_GRAPH_PROPS_TABLENAME, QString("(prop_name, prop_value) VALUES ('%1', '%2')"));
+
+    if (!executeQuery(q, queryText.arg("name",          iGraphObject->getName()))) { return false; }
+    if (!executeQuery(q, queryText.arg("description",   iGraphObject->getDescription()))) { return false; }
+    if (!executeQuery(q, queryText.arg("create time",   iGraphObject->getCreateTime().toString(GraphCommon::DATE_CONVERSION_FORMAT)))) { return false; }
+    if (!executeQuery(q, queryText.arg("edit time",     iGraphObject->getEditTime().toString(GraphCommon::DATE_CONVERSION_FORMAT)))) { return false; }
+
+    LOG_INFO("Inserting user data as properties...");
+    for (auto& userProp : iGraphObject->getCustomValueMap()) {
+        if (!executeQuery(q, queryText.arg(userProp.first, userProp.second.toString()))) {
+            return false;
+        }
+    }
+
+    // Загрузка вершин в таблицу
+    LOG_INFO("Inserting vertices info...");
+    auto queryTextBase = QString("INSERT INTO %0 VALUES (").arg(GraphCommon::DB_GRAPH_VERTICES_TABLENAME);
+    for (auto& vert : iGraphObject->getAllVertices()) {
+        queryText = queryTextBase;
+
+        queryText += QString::number(vert.id) + ",";
+        queryText += QString::number(vert.posX) + ",";
+        queryText += QString::number(vert.posY) + ",";
+        queryText += "'" + vert.shortName + "',";
+        queryText += "'" + vert.name + "',";
+        queryText += "'" + vert.description + "',";
+        queryText += "'" + QJsonDocument(vert.customProperties).toJson().toHex() + "',";
+        queryText += "'" + getEncoded(vert.borderColor) + "',";
+        queryText += "'" + getEncoded(vert.backgroundColor) + "',";
+        queryText += "'" + getEncoded(QPixmap::fromImage(vert.image)) + "'";
+
+        queryText += ")";
+        if (!executeQuery(q, queryText)) { return false; }
+    }
+
+    LOG_INFO("Inserting connections info...");
+    queryTextBase = QString("INSERT INTO %0 VALUES (").arg(GraphCommon::DB_GRAPH_CONNECTIONS_TABLENAME);
+    for (auto& con : iGraphObject->getAllConnections()) {
+        queryText = queryTextBase;
+
+        queryText += "NULL,";
+        queryText += QString::number(con.idFrom) + ",";
+        queryText += QString::number(con.idTo) + ",";
+        queryText += QString::number(con.connectionWeight) + ",";
+        queryText += "'" + con.name + "',";
+        queryText += "'" + getEncoded(con.lineColor) + "'";
+
+        queryText += ")";
+        if (!executeQuery(q, queryText)) { return false; }
+    }
+
+    db.close();
+    db.removeDatabase(db.connectionName());
+    LOG_OK("Graph saved");
+    return true;
+}
+
+bool GSE_Format::load(const QString &targetPath)
+{
+    auto oGraphObject = getGraph();
+    *oGraphObject = Graph::GraphObject(); // Обнулить перед записью, чтобы не было артефактов
+
+    if (!isFileValid(targetPath)) {
+        LOG_ERROR("GSE_Format::load: Invalid path to object file (file not exist or target is not a file)");
+        return false;
+    }
+
+    LOG_INFO("Loading data of from file", targetPath);
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(targetPath);
+
+    if (!db.open()) {
+        LOG_ERROR("Error opening savefile:", db.lastError().text());
+        return false;
+    }
+
+    QSqlQuery q(db);
+
+    // Проверка, все ли таблицы на месте
+    LOG_INFO("Checking required tables...");
+    if (!executeQuery(q, "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name ASC")) { return false; }
+
+    bool containProps {false};
+    bool containVertices {false};
+    bool containConnections {false};
+    while (q.next()) {
+        auto tableName = q.value(0).toString();
+        containProps        |= tableName == GraphCommon::DB_GRAPH_PROPS_TABLENAME;
+        containVertices     |= tableName == GraphCommon::DB_GRAPH_VERTICES_TABLENAME;
+        containConnections  |= tableName == GraphCommon::DB_GRAPH_CONNECTIONS_TABLENAME;
+
+        if (containProps && containVertices && containConnections) {
+            break;
+        }
+    }
+
+    if (!containProps || !containVertices || !containConnections) {
+        LOG_ERROR("Did not found one of required tables in savefile");
+        return false;
+    }
+
+    // Загрузка информации о графе
+    LOG_INFO("Loading common data as properties...");
+    auto queryText = QString("SELECT prop_name, prop_value FROM %0 WHERE prop_name IN ('name', 'description', 'create time', 'edit time') ORDER BY id ASC").arg(GraphCommon::DB_GRAPH_PROPS_TABLENAME);
+    if (!executeQuery(q, queryText)) { return false; }
+
+    std::map<QString, QVariant> commonValues;
+    while (q.next()) {
+        commonValues[q.value(0).toString()] = q.value(1);
+    }
+    bool containName        = (commonValues.find("name") != commonValues.end());
+    bool containDescription = (commonValues.find("description") != commonValues.end());
+    bool containCreateDate  = (commonValues.find("create time") != commonValues.end());
+    bool containEditDate    = (commonValues.find("edit time") != commonValues.end());
+    if (!containName || !containDescription || !containCreateDate || !containEditDate) {
+        LOG_ERROR("Did not found some of common values in savefile");
+        return false;
+    }
+
+    oGraphObject->setName(commonValues["name"].toString());
+    oGraphObject->setDescription(commonValues["description"].toString());
+    oGraphObject->setCreateTime(QDateTime::fromString(commonValues["create time"].toString(), GraphCommon::DATE_CONVERSION_FORMAT));
+    oGraphObject->setEditTime(QDateTime::fromString(commonValues["edit time"].toString(), GraphCommon::DATE_CONVERSION_FORMAT));
+
+    LOG_INFO("Loading user data as properties...");
+    queryText = QString("SELECT prop_name, prop_value FROM %0 WHERE prop_name NOT IN ('name', 'description', 'create time', 'edit time') ORDER BY prop_name ASC").arg(GraphCommon::DB_GRAPH_PROPS_TABLENAME);
+    if (!executeQuery(q, queryText)) { return false; }
+    while (q.next()) {
+        oGraphObject->setCustomValue(q.value(0).toString(), q.value(1));
+    }
+
+    // Загрузка вершин
+    LOG_INFO("Loading vertices info...");
+    queryText = QString("SELECT * FROM %0").arg(GraphCommon::DB_GRAPH_VERTICES_TABLENAME);
+    if (!executeQuery(q, queryText)) { return false; }
+    while (q.next()) {
+        Graph::GVertex vert;
+        int valPos {0};
+
+        vert.id                 = q.value(valPos++).toLongLong();
+        vert.posX               = q.value(valPos++).toLongLong();
+        vert.posY               = q.value(valPos++).toLongLong();
+        vert.shortName          = q.value(valPos++).toString();
+        vert.name               = q.value(valPos++).toString();
+        vert.description        = q.value(valPos++).toString();
+        vert.customProperties   = QJsonDocument::fromJson(getDecoded(q.value(valPos++).toByteArray())).object();
+        vert.borderColor        = getDecodedColor(q.value(valPos++).toByteArray());
+        vert.backgroundColor    = getDecodedColor(q.value(valPos++).toByteArray());
+        vert.image              = getDecodedPixmap(q.value(valPos++).toByteArray()).toImage();
+        oGraphObject->addVertex(vert);
+    }
+
+    LOG_INFO("Inserting connections info...");
+    queryText = QString("SELECT * FROM %0").arg(GraphCommon::DB_GRAPH_CONNECTIONS_TABLENAME);
+    if (!executeQuery(q, queryText)) { return false; }
+    while (q.next()) {
+        Graph::GConnection con;
+        int valPos {0};
+        valPos++; // Skip ID
+
+        con.idFrom              = q.value(valPos++).toLongLong();
+        con.idTo                = q.value(valPos++).toLongLong();
+        con.connectionWeight    = q.value(valPos++).toDouble();
+        con.name                = q.value(valPos++).toString();
+        con.lineColor           = getDecodedColor(q.value(valPos++).toByteArray());
+
+        oGraphObject->addConnection(con);
+    }
+
+    db.close();
+    db.removeDatabase(db.connectionName());
+    LOG_OK("Graph loaded");
+    return true;
+}
+
+bool GSE_Format::isFileValid(const QString &targetPath) const
+{
+    auto targetFileInfo = QFileInfo(targetPath);
+    auto targetFileDirInfo = QFileInfo(targetFileInfo.dir().absolutePath());
+    if (!targetFileDirInfo.exists() || (targetFileInfo.exists() && !targetFileInfo.isFile())) {
+        return false;
+    }
+    return true;
+}
+
+bool GSE_Format::executeQuery(QSqlQuery &q, const QString &queryText) const
+{
+    if (!q.exec(queryText)) {
+        LOG_ERROR("Error executing query with text:");
+        LOG_ERROR(q.lastError().text());
+        return false;
+    }
+    return true;
+}
+
+QByteArray GSE_Format::getEncoded(const QByteArray &iStr) const
+{
+    return iStr.toHex();
+}
+
+QByteArray GSE_Format::getEncoded(const QColor &iCol) const
+{
+    return QString("#%1%2%3")
+            .arg(iCol.red(), 2, 16, QLatin1Char('0'))
+            .arg(iCol.green(), 2, 16, QLatin1Char('0'))
+            .arg(iCol.blue(), 2, 16, QLatin1Char('0'))
+            .toUpper().toUtf8().data();
+}
+
+QByteArray GSE_Format::getEncoded(const QPixmap &iPxmap) const
+{
+    QByteArray bytes;
+    QBuffer byteBuff(&bytes);
+    if (iPxmap.save(&byteBuff, "PNG")) {
+        return bytes.toHex();
+    }
+    return {};
+}
+
+QByteArray GSE_Format::getDecoded(const QByteArray &iBytes) const
+{
+    return QByteArray::fromHex(iBytes);
+}
+
+QPixmap GSE_Format::getDecodedPixmap(const QByteArray &iBytes) const
+{
+    QPixmap pxmap;
+    pxmap.loadFromData(QByteArray::fromHex(iBytes), "PNG");
+    return pxmap;
+}
+
+QColor GSE_Format::getDecodedColor(const QByteArray &iBytes) const
+{
+    if (iBytes.length() != 7) {
+        LOG_WARNING("Invalid color string:", iBytes);
+        return {};
+    }
+    return QColor(iBytes.data());
+}
+
+}

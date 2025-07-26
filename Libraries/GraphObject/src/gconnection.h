@@ -9,6 +9,8 @@
 
 #include "graphcommon.h"
 
+#include <Common/Logging.h>
+
 namespace Graph
 {
 
@@ -54,7 +56,8 @@ struct GConnection
      */
     bool operator ==(const GConnection& oCon_) const {
         auto weightEquality = (fabs(oCon_.connectionWeight - connectionWeight) < 1e-6);
-        return tieFields(oCon_, std::equal_to<>{}) && weightEquality;
+        auto res = tieFields(oCon_, std::equal_to<>{}) && weightEquality;
+        return res;
     }
 
     /**

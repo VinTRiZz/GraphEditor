@@ -28,8 +28,3 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::startValidanceTest()
-{
-    ui->graphEditorForm->startValidanceTest();
-}
-

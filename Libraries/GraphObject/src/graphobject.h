@@ -85,11 +85,11 @@ public:
     bool addConnection(const GConnection& iCon);
 
     /**
-     * @brief getConnectionsToVertex Получить все соединения, входящие в вершину с ID = vertexId
+     * @brief getConnectionsFromVertex Получить все соединения, исходящие из вершины с ID = vertexId
      * @param vertexId ID вершины
      * @return Вектор входящих соединений
      */
-    std::vector<GConnection> getConnectionsToVertex(GraphCommon::graphId_t vertexId) const;
+    std::vector<GConnection> getConnectionsFromVertex(GraphCommon::graphId_t vertexId) const;
 
     /**
      * @brief getConnection Получить соединение по ID вершин, от и к которой оно идёт
@@ -213,7 +213,7 @@ private:
 
     // Через STL векторы для удобства работы с алгоритмами
     std::list<GVertex>  m_vertices;     //! Вершины графа
-    std::multimap<GraphCommon::graphId_t, GConnection>    m_connections;  //! Рёбра графа. Ключ -- целевой ID вершины (в которую "входит" стрелка связи)
+    std::multimap<GraphCommon::graphId_t, GConnection>  m_connections; //! Рёбра графа. Ключ -- ID из которого исходит ребро
 
     // Основные параметры графа
     QString     m_name;

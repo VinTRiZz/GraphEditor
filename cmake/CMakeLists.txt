@@ -114,7 +114,7 @@ endfunction()
 function(ADD_EDITOR_TEST EDITOR_TESTNAME)
     add_executable(${EDITOR_TESTNAME})
 
-    file(GLOB TESTING_SOURCES "${EDITOR_TESTNAME}.cpp" ${RESOURCES_COMMONFILE})
+    file(GLOB TESTING_SOURCES "tests/${EDITOR_TESTNAME}.cpp" ${RESOURCES_COMMONFILE})
     target_sources(${EDITOR_TESTNAME} PRIVATE ${TESTING_SOURCES})
 
     target_link_libraries(${EDITOR_TESTNAME} PRIVATE
@@ -124,6 +124,7 @@ function(ADD_EDITOR_TEST EDITOR_TESTNAME)
         Qt${QT_VERSION_MAJOR}::Core
         Qt${QT_VERSION_MAJOR}::Widgets
         Qt${QT_VERSION_MAJOR}::Gui
+        Qt${QT_VERSION_MAJOR}::Sql
     )
 
     include(GoogleTest)

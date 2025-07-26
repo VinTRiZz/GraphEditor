@@ -31,11 +31,6 @@ public:
      */
     void init();
 
-    /**
-     * @brief startValidanceTest Запуск тестирования формы на валидность работы
-     */
-    void startValidanceTest();
-
 private:
     Ui::GraphEditorForm *ui;
 

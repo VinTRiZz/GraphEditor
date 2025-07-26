@@ -4,8 +4,7 @@
 
 #include <QGuiApplication>
 
-TEST(GraphObject, VertexWork) {
-
+TEST(GraphObject, AddRemoveTest) {
     int argc = 0;
     char** argv = nullptr;
     QGuiApplication app(argc, argv);
@@ -18,6 +17,8 @@ TEST(GraphObject, VertexWork) {
     auto greenPersonIcon = QIcon(":/common/images/vertexicons/person/green.svg");
     auto greenPersonImage = greenPersonIcon.pixmap(500).toImage();
 
+    std::list<Graph::GVertex> testVertices;
+
     Graph::GVertex vert;
     vert.id = 50;
     vert.shortName = "Нода 1";
@@ -26,7 +27,7 @@ TEST(GraphObject, VertexWork) {
     vert.image = greenPersonImage;
     vert.posX = 200;
     vert.posY = 200;
-    EXPECT_EQ(result.addVertex(vert), true);
+    testVertices.push_back(vert);
 
     vert.id = 51;
     vert.shortName = "Нода 2";
@@ -35,7 +36,7 @@ TEST(GraphObject, VertexWork) {
     vert.image = redPersonImage;
     vert.posX = 500;
     vert.posY = 200;
-    EXPECT_EQ(result.addVertex(vert), true);
+    testVertices.push_back(vert);
 
     vert.id = 52;
     vert.shortName = "Нода 3";
@@ -44,7 +45,7 @@ TEST(GraphObject, VertexWork) {
     vert.image = {};
     vert.posX = 300;
     vert.posY = 500;
-    EXPECT_EQ(result.addVertex(vert), true);
+    testVertices.push_back(vert);
 
     vert.id = 53;
     vert.shortName = "Нода 4";
@@ -53,7 +54,7 @@ TEST(GraphObject, VertexWork) {
     vert.image = {};
     vert.posX = 100;
     vert.posY = 400;
-    EXPECT_EQ(result.addVertex(vert), true);
+    testVertices.push_back(vert);
 
     vert.id = 54;
     vert.shortName = "Тест нода";
@@ -63,7 +64,25 @@ TEST(GraphObject, VertexWork) {
     vert.image = {};
     vert.posX = 900;
     vert.posY = 400;
-    EXPECT_EQ(result.addVertex(vert), true);
+    testVertices.push_back(vert);
+
+    for (auto& vert : testVertices) {
+        EXPECT_EQ(result.addVertex(vert), true);
+    }
+    auto addedVertices = result.getAllVertices();
+    EXPECT_EQ(addedVertices.size(), testVertices.size());
+
+    // На всякий
+    auto vertSortPredicate = [](auto& con1, auto& con2){
+        return con1.id < con2.id;
+    };
+    addedVertices.sort(vertSortPredicate);
+    testVertices.sort(vertSortPredicate);
+
+    EXPECT_EQ(addedVertices, testVertices);
+
+    // Vector cuz return type is vector
+    std::vector<Graph::GConnection> testConnections;
 
     Graph::GConnection con;
 
@@ -71,50 +90,68 @@ TEST(GraphObject, VertexWork) {
     con.idFrom = 50;
     con.idTo = 51;
     con.lineColor = Qt::green;
-    EXPECT_EQ(result.addConnection(con), true);
+    testConnections.push_back(con);
 
     con.name = "1-3";
     con.idFrom = 50;
     con.idTo = 52;
     con.lineColor = Qt::green;
-    EXPECT_EQ(result.addConnection(con), true);
+    testConnections.push_back(con);
 
     con.name = "2-3";
     con.idFrom = 51;
     con.idTo = 52;
     con.lineColor = Qt::red;
-    EXPECT_EQ(result.addConnection(con), true);
+    testConnections.push_back(con);
 
     con.name = "3-2";
     con.idFrom = 52;
     con.idTo = 51;
     con.lineColor = Qt::black;
-    EXPECT_EQ(result.addConnection(con), true);
+    testConnections.push_back(con);
 
     con.name = "3-4";
     con.idFrom = 52;
     con.idTo = 53;
     con.lineColor = Qt::black;
-    EXPECT_EQ(result.addConnection(con), true);
+    testConnections.push_back(con);
 
     con.name = "4-1";
     con.idFrom = 53;
     con.idTo = 50;
     con.lineColor = Qt::magenta;
-    EXPECT_EQ(result.addConnection(con), true);
+    testConnections.push_back(con);
 
     con.name = "4-2";
     con.idFrom = 53;
     con.idTo = 51;
     con.lineColor = Qt::magenta;
-    EXPECT_EQ(result.addConnection(con), true);
+    testConnections.push_back(con);
 
     con.name = "5-1";
     con.idFrom = 54;
     con.idTo = 50;
     con.lineColor = Qt::cyan;
-    EXPECT_EQ(result.addConnection(con), true);
+    testConnections.push_back(con);
 
-    EXPECT_EQ(result.getAllVertices().size(), 5);
-    EXPECT_EQ(result.getAllConnections().size(), 8);
+    for (auto& con : testConnections) {
+        EXPECT_EQ(result.addConnection(con), true);
+    }
+    auto addedConnections = result.getAllConnections();
+    EXPECT_EQ(addedConnections.size(), testConnections.size());
+
+    // На всякий
+    auto conSortPredicate = [](auto& con1, auto& con2){
+        return con1.idFrom > con2.idFrom;
+    };
+    auto conSortPredicate2 = [](auto& con1, auto& con2){
+        return con1.idTo > con2.idTo;
+    };
+    std::sort(addedConnections.begin(), addedConnections.end(), conSortPredicate2);
+    std::stable_sort(addedConnections.begin(), addedConnections.end(), conSortPredicate);
+
+    std::sort(testConnections.begin(), testConnections.end(), conSortPredicate2);
+    std::stable_sort(testConnections.begin(), testConnections.end(), conSortPredicate);
+
+    EXPECT_EQ(addedConnections, testConnections);
 }

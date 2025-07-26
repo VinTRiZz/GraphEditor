@@ -146,11 +146,11 @@ bool GraphObject::addConnection(const GConnection &iCon)
         return false;
     }
 
-    m_connections.emplace(iCon.idTo, iCon);
+    m_connections.emplace(iCon.idFrom, iCon);
     return true;
 }
 
-std::vector<GConnection> GraphObject::getConnectionsToVertex(GraphCommon::graphId_t vertexId) const
+std::vector<GConnection> GraphObject::getConnectionsFromVertex(GraphCommon::graphId_t vertexId) const
 {
     std::vector<GConnection> res;
     auto targetConnections = m_connections.equal_range(vertexId);
@@ -183,7 +183,7 @@ std::vector<GConnection> GraphObject::getAllConnections() const
 {
     std::vector<GConnection> res;
     res.reserve(m_connections.size());
-    for (const auto& [idTo, connection] : m_connections) {
+    for (const auto& [idFrom, connection] : m_connections) {
         res.push_back(connection);
     }
     return res;
@@ -196,11 +196,12 @@ std::size_t GraphObject::getConnectionsCount() const
 
 void GraphObject::removeConnection(GraphCommon::graphId_t conFrom, GraphCommon::graphId_t conTo)
 {
-    auto targetConnections = m_connections.equal_range(conTo);
+    auto targetConnections = m_connections.equal_range(conFrom);
 
     for (auto con = targetConnections.first; con != targetConnections.second; ++con) {
-        if (con->second.idFrom == conFrom) {
+        if (con->second.idTo == conTo) {
             m_connections.erase(con);
+            break;
         }
     }
 }
@@ -217,8 +218,8 @@ void GraphObject::removeConnections(GraphCommon::graphId_t conFrom)
     }
 
     for (auto& con : connectedToTarget) {
-        auto range = m_connections.equal_range(con);
-        while (range.first->second.idFrom != conFrom) { range.first = std::next(range.first); }
+        auto range = m_connections.equal_range(conFrom);
+        while (range.first->second.idTo != con) { range.first = std::next(range.first); }
         m_connections.erase(range.first);
     }
 }
@@ -295,6 +296,5 @@ std::map<QString, QVariant> GraphObject::getCustomValueMap() const
 {
     return m_customDataValues;
 }
-
 
 }

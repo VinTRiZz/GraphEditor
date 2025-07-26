@@ -9,6 +9,3 @@ endif()
 
 enable_testing()
 add_subdirectory(${TESTING_GTEST_DIR})
-
-ADD_EDITOR_TEST(graph_object_test)
-LINK_TARGET_LIBRARY(graph_object_test GraphObject)

@@ -41,12 +41,6 @@ void GraphEditorForm::init()
     ui->propertyEditForm->hide();
 }
 
-void GraphEditorForm::startValidanceTest()
-{
-    SaveMaster::testValidance();
-    LOG_WARNING("GraphEditorForm: Validance test not written");
-}
-
 bool GraphEditorForm::isGraphPathSet()
 {
     if (!m_currentGraphFilePath.isEmpty() && QFileInfo(m_currentGraphFilePath).exists()) {

@@ -3,11 +3,23 @@
 #include <GraphObject/Object.h>
 
 #include <QGuiApplication>
+#include <QFile>
 
-TEST(GraphObject, AddRemoveTest) {
+#include "../src/gse_format.h"
+TEST(FormatSaving, GSE_Format) {
+    Graph::GraphObject savedGraph;
+
     int argc = 0;
     char** argv = nullptr;
     QGuiApplication app(argc, argv);
+
+    savedGraph.setName("Test example graph");
+    savedGraph.setDescription("Example description");
+    savedGraph.setCreateTime(QDateTime::currentDateTime());
+    savedGraph.setEditTime(QDateTime::currentDateTime());
+
+    savedGraph.setCustomValue("Test value", "test data");
+    savedGraph.setCustomValue("Test value 2", "test data 2");
 
     Graph::GraphObject result;
 
@@ -67,20 +79,8 @@ TEST(GraphObject, AddRemoveTest) {
     testVertices.push_back(vert);
 
     for (auto& vert : testVertices) {
-        EXPECT_EQ(result.addVertex(vert), true);
+        result.addVertex(vert);
     }
-
-    auto addedVertices = result.getAllVertices();
-    EXPECT_EQ(addedVertices.size(), testVertices.size());
-
-    // На всякий
-    auto vertSortPredicate = [](auto& con1, auto& con2){
-        return con1.id < con2.id;
-    };
-    addedVertices.sort(vertSortPredicate);
-    testVertices.sort(vertSortPredicate);
-
-    EXPECT_EQ(addedVertices, testVertices);
 
     // Vector cuz return type is vector
     std::vector<Graph::GConnection> testConnections;
@@ -136,24 +136,25 @@ TEST(GraphObject, AddRemoveTest) {
     testConnections.push_back(con);
 
     for (auto& con : testConnections) {
-        EXPECT_EQ(result.addConnection(con), true);
+        result.addConnection(con);
     }
 
-    auto addedConnections = result.getAllConnections();
-    EXPECT_EQ(addedConnections.size(), testConnections.size());
+    Filework::GSE_Format gseFormat;
 
-    // На всякий
-    auto conSortPredicate = [](auto& con1, auto& con2){
-        return con1.idFrom > con2.idFrom;
-    };
-    auto conSortPredicate2 = [](auto& con1, auto& con2){
-        return con1.idTo > con2.idTo;
-    };
-    std::sort(addedConnections.begin(), addedConnections.end(), conSortPredicate2);
-    std::stable_sort(addedConnections.begin(), addedConnections.end(), conSortPredicate);
+    auto graphCopy = savedGraph; // Для чистоты исследований (проверка бага на затирание данных)
+    gseFormat.setGraph(&graphCopy);
 
-    std::sort(testConnections.begin(), testConnections.end(), conSortPredicate2);
-    std::stable_sort(testConnections.begin(), testConnections.end(), conSortPredicate);
+    QString testTargetPath = "/tmp/GraphEditorSaveTest.gse";
 
-    EXPECT_EQ(addedConnections, testConnections);
+    // С расширением
+    EXPECT_EQ(gseFormat.save(testTargetPath), true);
+
+    EXPECT_EQ(graphCopy, savedGraph);
+
+    Graph::GraphObject loadedGraph;
+    gseFormat.setGraph(&loadedGraph);
+    EXPECT_EQ(gseFormat.load(testTargetPath), true);
+
+    QFile::remove(testTargetPath);
+    EXPECT_EQ(loadedGraph, graphCopy);
 }

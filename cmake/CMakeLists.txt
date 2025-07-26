@@ -113,30 +113,39 @@ endfunction()
 
 
 
-function(ADD_EDITOR_TEST EDITOR_TESTNAME)
-    add_executable(${EDITOR_TESTNAME})
+function(ADD_EDITOR_TEST EDITOR_MODULENAME)
+    set(EDITOR_MODULENAME_TEST ${EDITOR_MODULENAME}_TEST)
 
-    file(GLOB TESTING_SOURCES "tests/${EDITOR_TESTNAME}.cpp" ${RESOURCES_COMMONFILE})
-    target_sources(${EDITOR_TESTNAME} PRIVATE ${TESTING_SOURCES})
+    add_executable(${EDITOR_MODULENAME_TEST})
 
-    target_link_libraries(${EDITOR_TESTNAME} PRIVATE
+    file(GLOB TESTING_SOURCES "tests/*.cpp" ${RESOURCES_COMMONFILE})
+    target_sources(${EDITOR_MODULENAME_TEST} PRIVATE ${TESTING_SOURCES})
+
+    get_target_property(EDITOR_MODULE_LIBS ${EDITOR_MODULENAME} LINK_LIBRARIES)
+    target_link_libraries(
+        ${EDITOR_MODULENAME_TEST} PRIVATE
         GTest::gtest_main
         GTest::gtest
+        ${EDITOR_MODULE_LIBS}
+    )
 
-        Qt${QT_VERSION_MAJOR}::Core
-        Qt${QT_VERSION_MAJOR}::Widgets
-        Qt${QT_VERSION_MAJOR}::Gui
-        Qt${QT_VERSION_MAJOR}::Sql
+    get_target_property(EDITOR_MODULE_INCLUDES ${EDITOR_MODULENAME} INCLUDE_DIRECTORIES)
+    target_include_directories(
+        ${EDITOR_MODULENAME_TEST} PUBLIC
+        ${EDITOR_MODULE_INCLUDES}
     )
 
     include(GoogleTest)
-    gtest_discover_tests(${EDITOR_TESTNAME})
+    gtest_discover_tests(${EDITOR_MODULENAME_TEST})
+
+    # Надо же ему что-то использовать из модуля
+    LINK_TARGET_LIBRARY(${EDITOR_MODULENAME_TEST} ${EDITOR_MODULENAME})
 
     # Add test to added list
     set(
         ADDED_EDITOR_TESTS
         ${ADDED_EDITOR_TESTS}
-        ${EDITOR_TESTNAME}
+        ${EDITOR_MODULENAME_TEST}
     )
-    message(STATUS "Added test: " ${EDITOR_TESTNAME})
+    message(STATUS "Added test: " ${EDITOR_MODULENAME_TEST})
 endfunction()

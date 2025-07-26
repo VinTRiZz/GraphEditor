@@ -15,21 +15,17 @@ TEST(Common, EncryptionShortKey) {
 
     auto encryptedText = Encryption::encryptAes256Cbc(testStringShort.toUtf8(), keyString.toUtf8());
     auto decryptedText = Encryption::decryptAes256Cbc(encryptedText, keyString.toUtf8());
-
     EXPECT_EQ(testStringShort.toUtf8(), decryptedText);
-    GTEST_LOG_(INFO) << "Short string passed";
 
     encryptedText = decryptedText = {};
     encryptedText = Encryption::encryptAes256Cbc(testStringAverage.toUtf8(), keyString.toUtf8());
     decryptedText = Encryption::decryptAes256Cbc(encryptedText, keyString.toUtf8());
     EXPECT_EQ(testStringAverage.toUtf8(), decryptedText);
-    GTEST_LOG_(INFO) << "Normal string passed";
 
     encryptedText = decryptedText = {};
     encryptedText = Encryption::encryptAes256Cbc(testStringLong.toUtf8(), keyString.toUtf8());
     decryptedText = Encryption::decryptAes256Cbc(encryptedText, keyString.toUtf8());
     EXPECT_EQ(testStringLong.toUtf8(), decryptedText);
-    GTEST_LOG_(INFO) << "Long string passed:";
 }
 
 
@@ -43,21 +39,17 @@ TEST(Common, EncryptionRegularKey) {
 
     auto encryptedText = Encryption::encryptAes256Cbc(testStringShort.toUtf8(), keyString.toUtf8());
     auto decryptedText = Encryption::decryptAes256Cbc(encryptedText, keyString.toUtf8());
-
     EXPECT_EQ(testStringShort.toUtf8(), decryptedText);
-    GTEST_LOG_(INFO) << "Short string passed";
 
     encryptedText = decryptedText = {};
     encryptedText = Encryption::encryptAes256Cbc(testStringAverage.toUtf8(), keyString.toUtf8());
     decryptedText = Encryption::decryptAes256Cbc(encryptedText, keyString.toUtf8());
     EXPECT_EQ(testStringAverage.toUtf8(), decryptedText);
-    GTEST_LOG_(INFO) << "Normal string passed";
 
     encryptedText = decryptedText = {};
     encryptedText = Encryption::encryptAes256Cbc(testStringLong.toUtf8(), keyString.toUtf8());
     decryptedText = Encryption::decryptAes256Cbc(encryptedText, keyString.toUtf8());
     EXPECT_EQ(testStringLong.toUtf8(), decryptedText);
-    GTEST_LOG_(INFO) << "Long string passed";
 }
 
 
@@ -71,19 +63,15 @@ TEST(Common, EncryptionLongKey) {
 
     auto encryptedText = Encryption::encryptAes256Cbc(testStringShort.toUtf8(), keyString.toUtf8());
     auto decryptedText = Encryption::decryptAes256Cbc(encryptedText, keyString.toUtf8());
-
     EXPECT_EQ(testStringShort.toUtf8(), decryptedText);
-    GTEST_LOG_(INFO) << "Short string passed";
 
     encryptedText = decryptedText = {};
     encryptedText = Encryption::encryptAes256Cbc(testStringAverage.toUtf8(), keyString.toUtf8());
     decryptedText = Encryption::decryptAes256Cbc(encryptedText, keyString.toUtf8());
     EXPECT_EQ(testStringAverage.toUtf8(), decryptedText);
-    GTEST_LOG_(INFO) << "Normal string passed";
 
     encryptedText = decryptedText = {};
     encryptedText = Encryption::encryptAes256Cbc(testStringLong.toUtf8(), keyString.toUtf8());
     decryptedText = Encryption::decryptAes256Cbc(encryptedText, keyString.toUtf8());
     EXPECT_EQ(testStringLong.toUtf8(), decryptedText);
-    GTEST_LOG_(INFO) << "Long string passed";
 }

@@ -64,9 +64,9 @@ void GraphPropertyEditForm::updateGraphInfo()
     LOG_INFO("Current graph data update");
 }
 
-void GraphPropertyEditForm::setCurrentGraph(GraphExtendedObject *pGraph)
+void GraphPropertyEditForm::setCurrentGraph(const PMaintainer &pGraphMaintaner)
 {
-    m_currentGraph = pGraph;
+    m_currentGraph = pGraphMaintaner;
     updateGraphInfo();
 }
 

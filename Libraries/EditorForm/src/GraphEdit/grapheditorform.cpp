@@ -30,15 +30,15 @@ void GraphEditorForm::init()
     ui->graphScene->init();
     ui->graphScene->startEditMode();
 
-    m_currentGraph = Graph::GraphMaintaner::createInstance();
+    m_currentGraph = Graph::GraphMaintainer::createInstance();
 
-    m_currentGraph->getObject()->setCreateTime(QDateTime::currentDateTime());
+    m_currentGraph->setCreateTime(QDateTime::currentDateTime());
 
     setupWidget();
     setupSignals();
 
     ui->graphScene->setGraphMaintaner(m_currentGraph);
-    ui->propertyEditForm->setCurrentGraph(m_currentGraph->getExtendedObject());
+    ui->propertyEditForm->setCurrentGraph(m_currentGraph);
     ui->propertyEditForm->hide();
 }
 
@@ -64,7 +64,7 @@ void GraphEditorForm::saveGraph()
         return;
     }
 
-    m_currentGraph->getExtendedObject()->setEditTime(QDateTime::currentDateTime());
+    m_currentGraph->setEditTime(QDateTime::currentDateTime());
 
     if (QFileInfo(m_currentGraphFilePath).suffix() != "gse") {
         m_currentGraphFilePath += ".gse";

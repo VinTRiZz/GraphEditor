@@ -1,7 +1,7 @@
 #ifndef TESTGENERATORS_H
 #define TESTGENERATORS_H
 
-#include "graphobject.h"
+#include "graphmaintaner.h"
 
 namespace Graph::TestGenerators
 {
@@ -10,7 +10,7 @@ namespace Graph::TestGenerators
  * @brief createTestGraph   Создаёт вполне конкретный граф для тестов
  * @return                  Тестовый граф
  */
-GraphObject createTestGraph();
+PMaintainer createTestGraph();
 
 }
 

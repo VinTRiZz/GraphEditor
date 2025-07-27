@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QStandardItemModel>
 
-#include <GraphObject/ExtendedObject.h>
+#include <GraphObject/Maintainer.h>
 
 namespace Ui {
 class GraphPropertyEditForm;
@@ -26,7 +26,11 @@ public:
      */
     void updateGraphInfo();
 
-    void setCurrentGraph(Graph::GraphExtendedObject* pGraph);
+    /**
+     * @brief setCurrentGraph   Задать мейнтейнера данных графа
+     * @param pGraphMaintaner   Указатель на инстанцию мейнтейнера
+     */
+    void setCurrentGraph(const Graph::PMaintainer& pGraphMaintaner);
 
 public slots:
     void showAnimated();
@@ -42,7 +46,7 @@ private:
 
     unsigned m_showWidth {400}; //! Значение ширины, которой будет окно после появления. Нужно для анимаций
 
-    Graph::GraphExtendedObject* m_currentGraph; //! Текущий граф
+    Graph::PMaintainer m_currentGraph; //! Текущий майнтейнер графа
 
     enum GraphCommonPropertyRows : int
     {

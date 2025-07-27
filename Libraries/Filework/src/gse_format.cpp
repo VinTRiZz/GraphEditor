@@ -77,9 +77,10 @@ bool GSE_Format::save(const QString &targetPath) const
         return false;
     }
 
-    auto iGraphObject = getGraph();
+    auto& iGraphObject = getGraph();
+    auto graphMaintaner = getGraphMaintaner();
 
-    LOG_INFO("Saving data of graph", iGraphObject->getName(), "to file", targetPath);
+    LOG_INFO("Saving data of graph", graphMaintaner->getName(), "to file", targetPath);
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(targetPath);
 
@@ -106,13 +107,13 @@ bool GSE_Format::save(const QString &targetPath) const
     LOG_INFO("Inserting common data as properties...");
     queryText = QString("INSERT INTO %0%1").arg(DB_GRAPH_PROPS_TABLENAME, QString("(prop_name, prop_value) VALUES ('%1', '%2')"));
 
-    if (!executeQuery(q, queryText.arg("name",          iGraphObject->getName()))) { return false; }
-    if (!executeQuery(q, queryText.arg("description",   iGraphObject->getDescription()))) { return false; }
-    if (!executeQuery(q, queryText.arg("create time",   iGraphObject->getCreateTime().toString(GraphCommon::DATE_CONVERSION_FORMAT)))) { return false; }
-    if (!executeQuery(q, queryText.arg("edit time",     iGraphObject->getEditTime().toString(GraphCommon::DATE_CONVERSION_FORMAT)))) { return false; }
+    if (!executeQuery(q, queryText.arg("name",          graphMaintaner->getName()))) { return false; }
+    if (!executeQuery(q, queryText.arg("description",   graphMaintaner->getDescription()))) { return false; }
+    if (!executeQuery(q, queryText.arg("create time",   graphMaintaner->getCreateTime().toString(GraphCommon::DATE_CONVERSION_FORMAT)))) { return false; }
+    if (!executeQuery(q, queryText.arg("edit time",     graphMaintaner->getEditTime().toString(GraphCommon::DATE_CONVERSION_FORMAT)))) { return false; }
 
     LOG_INFO("Inserting user data as properties...");
-    for (auto& userProp : iGraphObject->getCustomValueMap()) {
+    for (auto& userProp : graphMaintaner->getCustomValueMap()) {
         if (!executeQuery(q, queryText.arg(userProp.first, userProp.second.toString()))) {
             return false;
         }
@@ -122,7 +123,7 @@ bool GSE_Format::save(const QString &targetPath) const
     LOG_INFO("Inserting vertices info...");
     auto queryTextBase = QString("INSERT INTO %0 VALUES (").arg(DB_GRAPH_VERTICES_TABLENAME);
     uint totalInsertedVertices {0};
-    for (auto& vert : iGraphObject->getAllVertices()) {
+    for (auto& vert : iGraphObject.getAllVertices()) {
         queryText = queryTextBase;
 
         queryText += QString::number(vert.id) + ",";
@@ -145,7 +146,7 @@ bool GSE_Format::save(const QString &targetPath) const
     LOG_INFO("Inserting connections info...");
     queryTextBase = QString("INSERT INTO %0 VALUES (").arg(DB_GRAPH_CONNECTIONS_TABLENAME);
     auto totalInsertedConnections {0};
-    for (auto& con : iGraphObject->getAllConnections()) {
+    for (auto& con : iGraphObject.getAllConnections()) {
         queryText = queryTextBase;
 
         queryText += "NULL,";
@@ -169,8 +170,11 @@ bool GSE_Format::save(const QString &targetPath) const
 
 bool GSE_Format::load(const QString &targetPath)
 {
-    auto oGraphObject = getGraph();
-    *oGraphObject = Graph::GraphObject(); // Обнулить перед записью, чтобы не было артефактов
+    auto& oGraphObject = getGraph();
+    oGraphObject = Graph::GraphObject(); // Обнулить перед записью, чтобы не было артефактов
+
+    auto graphMaintaner = getGraphMaintaner();
+    graphMaintaner->resetMaintainer();
 
     if (!isFileValid(targetPath)) {
         LOG_ERROR("GSE_Format::load: Invalid path to object file (file not exist or target is not a file)");
@@ -229,17 +233,17 @@ bool GSE_Format::load(const QString &targetPath)
         return false;
     }
 
-    oGraphObject->setName(commonValues["name"].toString());
-    oGraphObject->setDescription(commonValues["description"].toString());
-    oGraphObject->setCreateTime(QDateTime::fromString(commonValues["create time"].toString(), GraphCommon::DATE_CONVERSION_FORMAT));
-    oGraphObject->setEditTime(QDateTime::fromString(commonValues["edit time"].toString(), GraphCommon::DATE_CONVERSION_FORMAT));
+    graphMaintaner->setName(commonValues["name"].toString());
+    graphMaintaner->setDescription(commonValues["description"].toString());
+    graphMaintaner->setCreateTime(QDateTime::fromString(commonValues["create time"].toString(), GraphCommon::DATE_CONVERSION_FORMAT));
+    graphMaintaner->setEditTime(QDateTime::fromString(commonValues["edit time"].toString(), GraphCommon::DATE_CONVERSION_FORMAT));
 
     LOG_INFO("Loading user data as properties...");
     queryText = QString("SELECT prop_name, prop_value FROM %0 WHERE prop_name NOT IN ('name', 'description', 'create time', 'edit time') ORDER BY prop_name ASC").arg(DB_GRAPH_PROPS_TABLENAME);
     if (!executeQuery(q, queryText)) { return false; }
     auto totalLoadedData {0};
     while (q.next()) {
-        oGraphObject->setCustomValue(q.value(0).toString(), q.value(1));
+        graphMaintaner->setCustomValue(q.value(0).toString(), q.value(1));
         totalLoadedData++;
     }
     LOG_OK("Loaded", totalLoadedData, "custom graph properties");
@@ -263,7 +267,7 @@ bool GSE_Format::load(const QString &targetPath)
         vert.borderColor        = GraphCommon::decodeColor(q.value(valPos++).toByteArray());
         vert.backgroundColor    = GraphCommon::decodeColor(q.value(valPos++).toByteArray());
         vert.image              = getDecodedPixmap(q.value(valPos++).toByteArray()).toImage();
-        oGraphObject->addVertex(vert);
+        oGraphObject.addVertex(vert);
         totalLoadedData++;
     }
     LOG_OK("Loaded", totalLoadedData, "vertices");
@@ -283,7 +287,7 @@ bool GSE_Format::load(const QString &targetPath)
         con.name                = q.value(valPos++).toString();
         con.lineColor           = GraphCommon::decodeColor(q.value(valPos++).toByteArray());
 
-        oGraphObject->addConnection(con);
+        oGraphObject.addConnection(con);
         totalLoadedData++;
     }
     LOG_OK("Loaded", totalLoadedData, "connections");

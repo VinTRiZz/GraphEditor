@@ -4,6 +4,16 @@
 
 #include <QGuiApplication>
 
+TEST(GraphObject, ColorConversion) {
+    QColor testColor (130, 224, 99, 32);
+
+    auto encodedColor = GraphCommon::encodeColor(testColor);
+    EXPECT_EQ(encodedColor.size(), 9);
+
+    auto decodedColor = GraphCommon::decodeColor(encodedColor);
+    EXPECT_EQ(testColor, decodedColor);
+}
+
 TEST(GraphObject, AddRemoveTest) {
     int argc = 0;
     char** argv = nullptr;

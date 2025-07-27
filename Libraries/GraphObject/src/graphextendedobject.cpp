@@ -57,40 +57,4 @@ void GraphExtendedObject::removeConnection(GraphCommon::graphId_t conFrom, Graph
     emit connectionRemoved(conFrom, conTo);
 }
 
-void GraphExtendedObject::setName(const QString &iName)
-{
-    GraphObject::setName(iName);
-    emit graphPropertyChanged();
-}
-
-void GraphExtendedObject::setDescription(const QString &iDescr)
-{
-    GraphObject::setDescription(iDescr);
-    emit graphPropertyChanged();
-}
-
-void GraphExtendedObject::setCreateTime(const QDateTime &iDateTime)
-{
-    GraphObject::setCreateTime(iDateTime);
-    emit graphPropertyChanged();
-}
-
-void GraphExtendedObject::setEditTime(const QDateTime &iDateTime)
-{
-    GraphObject::setEditTime(iDateTime);
-    emit graphPropertyChanged();
-}
-
-void GraphExtendedObject::setCustomValue(const QString &key, const QVariant &value)
-{
-    GraphObject::setCustomValue(key, value);
-    emit graphPropertyChanged();
-}
-
-void GraphExtendedObject::removeCustomValue(const QString &key)
-{
-    GraphObject::removeCustomValue(key);
-    emit graphPropertyChanged();
-}
-
 }

@@ -138,13 +138,13 @@ void GraphSceneBase::writeChangesToGraph()
     LOG_OK("Loaded", pGraph->getConnectionsCount(), "connections from scene");
 }
 
-void GraphSceneBase::setGraphMaintaner(const std::shared_ptr<Graph::GraphMaintaner>& pGraphMaintaner)
+void GraphSceneBase::setGraphMaintaner(const Graph::PMaintainer& pGraphMaintaner)
 {
     m_pGraphMaintaner = pGraphMaintaner;
     updateGraph();
 }
 
-std::shared_ptr<Graph::GraphMaintaner> GraphSceneBase::getGraphMaintaner() const
+Graph::PMaintainer GraphSceneBase::getGraphMaintaner() const
 {
     return m_pGraphMaintaner;
 }

@@ -16,60 +16,17 @@ GraphObject::GraphObject()
 
 bool GraphObject::operator ==(const GraphObject &gObj_) const
 {
-    if (!std::equal(m_vertices.begin(), m_vertices.end(),
-                              gObj_.m_vertices.begin(), gObj_.m_vertices.end())) {
+    if (m_vertices != gObj_.m_vertices) {
         // Закомментил на будущее
-//        LOG_DEBUG("GraphObject::equal vertices are not equal");
+        LOG_DEBUG("GraphObject::equal vertices are not equal");
         return false;
     }
 
-    if (!std::equal(m_connections.begin(), m_connections.end(),
-                              gObj_.m_connections.begin(), gObj_.m_connections.end())) {
+    if (m_connections != gObj_.m_connections) {
         // Закомментил на будущее
-//        LOG_DEBUG("GraphObject::equal connections are not equal");
+        LOG_DEBUG("GraphObject::equal connections are not equal");
         return false;
     }
-
-    for (const auto& customProp : m_customDataValues) {
-        auto gObjValue = gObj_.m_customDataValues.find(customProp.first);
-        if (gObjValue == gObj_.m_customDataValues.end()) {
-            // Закомментил на будущее
-//            LOG_DEBUG("GraphObject::equal custom value not exist");
-            return false;
-        }
-
-        if (customProp.second != gObjValue->second) {
-            // Закомментил на будущее
-//            LOG_DEBUG("GraphObject::equal custom values not equal:", customProp.first);
-            return false;
-        }
-    }
-
-    if ((m_name         != gObj_.m_name) ||
-        (m_description  != gObj_.m_description) ||
-        (m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT) != gObj_.m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT)) ||
-        (m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT)   != gObj_.m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT))
-        ) {
-
-        // Закомментил на будущее
-//        LOG_DEBUG("GraphObject::equal common", m_name != gObj_.m_name, m_description != gObj_.m_description,
-//                               m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT) != gObj_.m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT),
-//                               m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT) != gObj_.m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT));
-
-//        LOG_DEBUG("GraphObject::equal common data my:",
-//                  m_name,
-//                  m_description,
-//                  m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT),
-//                  m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT));
-
-//        LOG_DEBUG("GraphObject::equal common data other:",
-//                  gObj_.m_name,
-//                  gObj_.m_description,
-//                  gObj_.m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT),
-//                  gObj_.m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT));
-        return false;
-    }
-
     return true;
 }
 
@@ -252,74 +209,6 @@ void GraphObject::removeConnections(GraphCommon::graphId_t conFrom)
 void GraphObject::clearConnections()
 {
     m_connections.clear();
-}
-
-void GraphObject::setName(const QString &iName)
-{
-    m_name = iName;
-}
-
-QString GraphObject::getName() const
-{
-    return m_name;
-}
-
-void GraphObject::setDescription(const QString &iDescr)
-{
-    m_description = iDescr;
-}
-
-QString GraphObject::getDescription() const
-{
-    return m_description;
-}
-
-void GraphObject::setCreateTime(const QDateTime &iDateTime)
-{
-    m_createTime = iDateTime;
-}
-
-QDateTime GraphObject::getCreateTime() const
-{
-    return m_createTime;
-}
-
-void GraphObject::setEditTime(const QDateTime &iDateTime)
-{
-    m_editTime = iDateTime;
-}
-
-QDateTime GraphObject::getEditTime() const
-{
-    return m_editTime;
-}
-
-void GraphObject::setCustomValue(const QString &key, const QVariant &value)
-{
-    m_customDataValues[key] = value;
-}
-
-void GraphObject::removeCustomValue(const QString &key)
-{
-    auto targetValIt = m_customDataValues.find(key);
-    if (targetValIt == m_customDataValues.end()) {
-        return;
-    }
-    m_customDataValues.erase(targetValIt);
-}
-
-QVariant GraphObject::getCustomValue(const QString &key) const
-{
-    auto targetValIt = m_customDataValues.find(key);
-    if (targetValIt == m_customDataValues.end()) {
-        return {};
-    }
-    return targetValIt->second;
-}
-
-std::map<QString, QVariant> GraphObject::getCustomValueMap() const
-{
-    return m_customDataValues;
 }
 
 }

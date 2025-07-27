@@ -29,7 +29,7 @@ public:
      * @param iGraphMaintaner   Поставщик графа для сохранения
      * @return false            если не удалось сохранить файл, например, при неверном расширении. В логах будет указано, почему
      */
-    static bool save(const QString& oFilePath, std::shared_ptr<Graph::GraphMaintaner> iGraphMaintaner);
+    static bool save(const QString& oFilePath, Graph::PMaintainer iGraphMaintaner);
 
     /**
      * @brief load              Выгрузить граф из файла
@@ -37,7 +37,7 @@ public:
      * @param oGraphMaintaner   Поставщик графа для записи выгруженных данных
      * @return false            если не удалось выгрузить граф, например, при неверном расширении. В логах будет указано, почему
      */
-    static bool load(const QString& iFilePath, std::shared_ptr<Graph::GraphMaintaner> oGraphMaintaner);
+    static bool load(const QString& iFilePath, Graph::PMaintainer oGraphMaintaner);
 
     /**
      * @brief getFormat     Получить указатель на формат, соответствующий файлу

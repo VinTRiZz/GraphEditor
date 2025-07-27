@@ -3,18 +3,17 @@
 namespace Graph::TestGenerators
 {
 
-GraphObject createTestGraph()
+PMaintainer createTestGraph()
 {
-    Graph::GraphObject testGeneratedGraph;
-    testGeneratedGraph.setName("Test example graph");
-    testGeneratedGraph.setDescription("Example description");
-    testGeneratedGraph.setCreateTime(QDateTime::currentDateTime());
-    testGeneratedGraph.setEditTime(QDateTime::currentDateTime());
+    auto testGeneratedGraph = Graph::GraphMaintainer::createInstance();
 
-    testGeneratedGraph.setCustomValue("Test value", "test data");
-    testGeneratedGraph.setCustomValue("Test value 2", "test data 2");
+    testGeneratedGraph->setName("Test example graph");
+    testGeneratedGraph->setDescription("Example description");
+    testGeneratedGraph->setCreateTime(QDateTime::currentDateTime());
+    testGeneratedGraph->setEditTime(QDateTime::currentDateTime());
 
-    Graph::GraphObject result;
+    testGeneratedGraph->setCustomValue("Test value", "test data");
+    testGeneratedGraph->setCustomValue("Test value 2", "test data 2");
 
     auto redPersonIcon = QIcon(":/common/images/vertexicons/person/red.svg");
     auto redPersonImage = redPersonIcon.pixmap(500).toImage();
@@ -72,64 +71,64 @@ GraphObject createTestGraph()
     testVertices.push_back(vert);
 
     for (auto& vert : testVertices) {
-        result.addVertex(vert);
+        testGeneratedGraph->getObject().addVertex(vert);
     }
 
     // Vector cuz return type is vector
     std::vector<Graph::GConnection> testConnections;
 
-    Graph::GConnection con;
+    Graph::GConnection tmpCon;
 
-    con.name = "1-2";
-    con.idFrom = 50;
-    con.idTo = 51;
-    con.lineColor = Qt::green;
-    testConnections.push_back(con);
+    tmpCon.name = "1-2";
+    tmpCon.idFrom = 50;
+    tmpCon.idTo = 51;
+    tmpCon.lineColor = Qt::green;
+    testConnections.push_back(tmpCon);
 
-    con.name = "1-3";
-    con.idFrom = 50;
-    con.idTo = 52;
-    con.lineColor = Qt::green;
-    testConnections.push_back(con);
+    tmpCon.name = "1-3";
+    tmpCon.idFrom = 50;
+    tmpCon.idTo = 52;
+    tmpCon.lineColor = Qt::green;
+    testConnections.push_back(tmpCon);
 
-    con.name = "2-3";
-    con.idFrom = 51;
-    con.idTo = 52;
-    con.lineColor = Qt::red;
-    testConnections.push_back(con);
+    tmpCon.name = "2-3";
+    tmpCon.idFrom = 51;
+    tmpCon.idTo = 52;
+    tmpCon.lineColor = Qt::red;
+    testConnections.push_back(tmpCon);
 
-    con.name = "3-2";
-    con.idFrom = 52;
-    con.idTo = 51;
-    con.lineColor = Qt::black;
-    testConnections.push_back(con);
+    tmpCon.name = "3-2";
+    tmpCon.idFrom = 52;
+    tmpCon.idTo = 51;
+    tmpCon.lineColor = Qt::black;
+    testConnections.push_back(tmpCon);
 
-    con.name = "3-4";
-    con.idFrom = 52;
-    con.idTo = 53;
-    con.lineColor = Qt::black;
-    testConnections.push_back(con);
+    tmpCon.name = "3-4";
+    tmpCon.idFrom = 52;
+    tmpCon.idTo = 53;
+    tmpCon.lineColor = Qt::black;
+    testConnections.push_back(tmpCon);
 
-    con.name = "4-1";
-    con.idFrom = 53;
-    con.idTo = 50;
-    con.lineColor = Qt::magenta;
-    testConnections.push_back(con);
+    tmpCon.name = "4-1";
+    tmpCon.idFrom = 53;
+    tmpCon.idTo = 50;
+    tmpCon.lineColor = Qt::magenta;
+    testConnections.push_back(tmpCon);
 
-    con.name = "4-2";
-    con.idFrom = 53;
-    con.idTo = 51;
-    con.lineColor = Qt::magenta;
-    testConnections.push_back(con);
+    tmpCon.name = "4-2";
+    tmpCon.idFrom = 53;
+    tmpCon.idTo = 51;
+    tmpCon.lineColor = Qt::magenta;
+    testConnections.push_back(tmpCon);
 
-    con.name = "5-1";
-    con.idFrom = 54;
-    con.idTo = 50;
-    con.lineColor = Qt::cyan;
-    testConnections.push_back(con);
+    tmpCon.name = "5-1";
+    tmpCon.idFrom = 54;
+    tmpCon.idTo = 50;
+    tmpCon.lineColor = Qt::cyan;
+    testConnections.push_back(tmpCon);
 
     for (auto& con : testConnections) {
-        result.addConnection(con);
+        testGeneratedGraph->getObject().addConnection(con);
     }
     return testGeneratedGraph;
 }

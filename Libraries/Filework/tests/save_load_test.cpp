@@ -13,17 +13,16 @@ TEST(FormatSaving, InterfaceSaveTest) {
 
     SaveMaster saver;
 
-    auto gMaintaner = Graph::GraphMaintaner::createInstance();
-    *gMaintaner->getObject() = Graph::TestGenerators::createTestGraph();
-    auto graphCopy = *gMaintaner->getObject(); // Для чистоты исследований (проверка бага на затирание данных)
+    auto gMaintaner = Graph::TestGenerators::createTestGraph();
+    auto graphCopy = gMaintaner->getObject(); // Для чистоты исследований (проверка бага на затирание данных)
 
     QString testTargetPathEmptyExtension = "/tmp/GraphEditorSaveTest";
     EXPECT_EQ(saver.save(testTargetPathEmptyExtension, gMaintaner), true);
-    EXPECT_EQ(graphCopy, *gMaintaner->getObject());
+    EXPECT_EQ(graphCopy, gMaintaner->getObject());
 
-    auto gMaintanerLoaded = Graph::GraphMaintaner::createInstance();
+    auto gMaintanerLoaded = Graph::GraphMaintainer::createInstance();
     EXPECT_EQ(saver.load(saver.formatToDefaultPath(testTargetPathEmptyExtension), gMaintanerLoaded), true);
 
     QFile::remove(saver.formatToDefaultPath(testTargetPathEmptyExtension));
-    EXPECT_EQ(*gMaintanerLoaded->getObject(), *gMaintaner->getObject());
+    EXPECT_EQ(gMaintanerLoaded->getObject(), gMaintaner->getObject());
 }

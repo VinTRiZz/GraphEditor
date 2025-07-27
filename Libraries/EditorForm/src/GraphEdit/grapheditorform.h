@@ -36,7 +36,7 @@ public:
 private:
     Ui::GraphEditorForm *ui;
 
-    std::shared_ptr<Graph::GraphMaintaner>  m_currentGraph;         //! Текущий граф
+    Graph::PMaintainer  m_currentGraph;         //! Текущий граф
     QString                                 m_currentGraphFilePath; //! Путь для сохранения графа в файл
 
     /**

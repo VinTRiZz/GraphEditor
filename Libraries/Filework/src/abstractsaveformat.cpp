@@ -13,20 +13,20 @@ AbstractSaveFormat::~AbstractSaveFormat()
 
 }
 
-void AbstractSaveFormat::setGraphMaintaner(std::shared_ptr<Graph::GraphMaintaner> pGraphMaintaner)
+void AbstractSaveFormat::setGraphMaintaner(Graph::PMaintainer pGraphMaintaner)
 {
     m_pGraphMaintaner = pGraphMaintaner;
 }
 
-std::shared_ptr<Graph::GraphMaintaner> AbstractSaveFormat::getGraphMaintaner() const
+Graph::PMaintainer AbstractSaveFormat::getGraphMaintaner() const
 {
     return m_pGraphMaintaner;
 }
 
-Graph::GraphObject *AbstractSaveFormat::getGraph() const
+Graph::GraphObject& AbstractSaveFormat::getGraph() const
 {
     if (!m_pGraphMaintaner) {
-        return nullptr;
+        throw std::runtime_error("SaveFormat: Did not set graph maintaner, requested graph (invalid operation)");
     }
     return m_pGraphMaintaner->getObject();
 }

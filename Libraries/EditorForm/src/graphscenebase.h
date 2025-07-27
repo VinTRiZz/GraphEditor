@@ -41,7 +41,7 @@ public:
      * @brief setCurrentGraph   Задать текущий граф
      * @param pGraphMaintaner   Указатель на поставщика текущего графа
      */
-    virtual void setGraphMaintaner(const std::shared_ptr<Graph::GraphMaintaner>& pGraphMaintaner);
+    virtual void setGraphMaintaner(const Graph::PMaintainer& pGraphMaintaner);
 
     /**
      * @brief updateGraph Считать данные из текущего графа. Вызывается также при установке графа
@@ -52,7 +52,7 @@ public:
      * @brief getCurrentGraph   Получить текущий граф
      * @return                  nullptr если не задан или заданный граф
      */
-    std::shared_ptr<Graph::GraphMaintaner> getGraphMaintaner() const;
+    Graph::PMaintainer getGraphMaintaner() const;
 
     /**
      * @brief getButtonMatrixHead   Получить головную кнопку матрицы кнопок
@@ -80,7 +80,7 @@ private:
 
     ObjectViewConstants::objectId_t         m_currentItemId {1};            //! Текущий идентификатор объекта сцены. Используется для создания объектов
     GraphModeBase*                          m_pCurrentMode {nullptr};       //! Текущий режим работы
-    std::shared_ptr<Graph::GraphMaintaner>  m_pGraphMaintaner;              //! Текущий граф
+    Graph::PMaintainer  m_pGraphMaintaner;              //! Текущий граф
     ButtonMatrix::HeadButton*               m_buttonMatrixHead {nullptr};   //! Указатель на кнопку-матрицу (инструментарий)
 };
 

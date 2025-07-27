@@ -30,7 +30,7 @@ void GraphEditView::init()
 }
 
 
-void GraphEditView::setGraphMaintaner(const std::shared_ptr<GraphMaintaner> &pGraphMaintaner)
+void GraphEditView::setGraphMaintaner(const PMaintainer &pGraphMaintaner)
 {
     // TODO: Connect graph
     GraphSceneBase::setGraphMaintaner(pGraphMaintaner);

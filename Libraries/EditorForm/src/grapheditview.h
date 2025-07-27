@@ -17,7 +17,7 @@ public:
 
     void init() override;
 
-    void setGraphMaintaner(const std::shared_ptr<Graph::GraphMaintaner>& pGraphMaintaner) override;
+    void setGraphMaintaner(const Graph::PMaintainer& pGraphMaintaner) override;
 
     void startViewMode();
     void startEditMode();

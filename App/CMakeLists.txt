@@ -2,23 +2,13 @@
 file(GLOB HEADERS "src/*.hpp" "src/*.h")
 file(GLOB SOURCES "src/*.cpp")
 file(GLOB UIFILES "src/*.ui")
-
-source_group("Ui Files" FILES ${UIFILES})
-
-# Main target
-add_executable( ${PROJECT_NAME} )
-
-target_sources(${PROJECT_NAME} PRIVATE
-    ${HEADERS}
-    ${SOURCES}
-    ${UIFILES}
-    ${RESOURCES_COMMONFILE}
+set(
+    PROJECT_FILES
+    ${HEADERS} ${SOURCES} ${UIFILES} ${RESOURCES_COMMONFILE}
 )
 
-# Target linking
-target_link_libraries(
-    ${PROJECT_NAME}
-    PRIVATE
+set(
+    PROJECT_LINK_LIBS
     Qt${QT_VERSION_MAJOR}::Core
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Gui
@@ -27,34 +17,31 @@ target_link_libraries(
     -lboost_program_options
 )
 
-# Link to required libraries
+# Main target
+add_executable( ${PROJECT_NAME} )
+target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_FILES})
+target_link_libraries( ${PROJECT_NAME} PRIVATE ${PROJECT_LINK_LIBS} )
 LINK_TARGET_LIBRARY(${PROJECT_NAME} Common)
 LINK_TARGET_LIBRARY(${PROJECT_NAME} EditorForm)
+CONFIGURE_SUFFIX(${PROJECT_NAME} ".bin.DEBUG" ".bin")
+set_target_properties(
+    ${PROJECT_NAME} PROPERTIES
+    BUILD_WITH_INSTALL_RPATH TRUE
+    INSTALL_RPATH_USE_LINK_PATH TRUE
+    INSTALL_RPATH "./lib"
+)
 
-
-# ====================================================== #
-# ETC CONFIGURATION
-
-# Build flag configuration
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    target_compile_definitions(${PROJECT_NAME} PRIVATE DEBUG_MODE)
-    target_compile_options(${PROJECT_NAME} PRIVATE -g)
-elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    target_compile_definitions(${PROJECT_NAME} PRIVATE RELEASE_MODE)
-    target_compile_options(${PROJECT_NAME} PRIVATE -O3)
-endif()
-
-# Build suffixes
-if (NOT RELEASE)
-    set_target_properties(
-        ${PROJECT_NAME}
-        PROPERTIES
-        SUFFIX ".DEBUG"
-    )
-else()
-    set_target_properties(
-        ${PROJECT_NAME}
-        PROPERTIES
-        SUFFIX ".bin"
-    )
-endif()
+add_executable( ${INSTALL_BINARY_NAME} )
+target_sources(${INSTALL_BINARY_NAME} PRIVATE ${PROJECT_FILES})
+target_link_libraries( ${INSTALL_BINARY_NAME} PRIVATE ${PROJECT_LINK_LIBS} )
+LINK_TARGET_LIBRARY(${INSTALL_BINARY_NAME} Common)
+LINK_TARGET_LIBRARY(${INSTALL_BINARY_NAME} EditorForm)
+target_compile_definitions(${INSTALL_BINARY_NAME} PRIVATE NDEBUG)
+target_compile_options(${INSTALL_BINARY_NAME} PRIVATE -O3)
+set_target_properties(${INSTALL_BINARY_NAME} PROPERTIES SUFFIX ".bin")
+set_target_properties(
+    ${INSTALL_BINARY_NAME} PROPERTIES
+    BUILD_WITH_INSTALL_RPATH TRUE
+    INSTALL_RPATH_USE_LINK_PATH TRUE
+    INSTALL_RPATH "../lib"
+)

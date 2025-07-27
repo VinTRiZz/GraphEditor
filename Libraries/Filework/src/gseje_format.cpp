@@ -2,7 +2,11 @@
 
 #include <QJsonDocument>
 
+#include <Common/Logging.h>
 #include <Common/Encryption.h>
+
+#include <QFile>
+#include <QFileInfo>
 
 namespace Filework
 {
@@ -29,6 +33,10 @@ QString GSEJE_Format::getKey() const
 
 bool GSEJE_Format::save(const QString &targetPath) const
 {
+    if (!isFileValid(targetPath)) {
+        return false;
+    }
+
     auto resultData = QJsonDocument(toDataJson()).toJson();
     auto encryptedData = Encryption::encryptAes256Cbc(resultData, getKey().toUtf8());
 
@@ -38,6 +46,10 @@ bool GSEJE_Format::save(const QString &targetPath) const
 
 bool GSEJE_Format::load(const QString &targetPath)
 {
+    if (!isFileValid(targetPath) || !QFileInfo(targetPath).exists()) {
+        return false;
+    }
+
     // TODO: read data
     return false;
 }

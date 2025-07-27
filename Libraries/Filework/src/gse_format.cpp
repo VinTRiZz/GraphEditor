@@ -72,7 +72,9 @@ GSE_Format::~GSE_Format()
 
 bool GSE_Format::save(const QString &targetPath) const
 {
-    if (!isFileValid(targetPath)) {
+    auto targetFileInfo = QFileInfo(targetPath);
+    auto targetFileDirInfo = QFileInfo(targetFileInfo.dir().absolutePath());
+    if (!targetFileDirInfo.exists() || (targetFileInfo.exists() && !targetFileInfo.isFile())) {
         LOG_ERROR("GSE_Format::save: Invalid path to object file (directory not exist or target is not a file)");
         return false;
     }
@@ -177,7 +179,7 @@ bool GSE_Format::load(const QString &targetPath)
     graphMaintaner->resetMaintainer();
 
     if (!isFileValid(targetPath)) {
-        LOG_ERROR("GSE_Format::load: Invalid path to object file (file not exist or target is not a file)");
+        LOG_ERROR("GSE_Format::load: Invalid path to object file (file not exist, invalid or target is not a file)");
         return false;
     }
 
@@ -300,9 +302,19 @@ bool GSE_Format::load(const QString &targetPath)
 
 bool GSE_Format::isFileValid(const QString &targetPath) const
 {
+    // Precheck
     auto targetFileInfo = QFileInfo(targetPath);
     auto targetFileDirInfo = QFileInfo(targetFileInfo.dir().absolutePath());
     if (!targetFileDirInfo.exists() || (targetFileInfo.exists() && !targetFileInfo.isFile())) {
+        return false;
+    }
+
+    // Targeted check
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(targetPath);
+
+    if (!db.open()) {
+        LOG_ERROR("Error opening savefile:", db.lastError().text());
         return false;
     }
     return true;

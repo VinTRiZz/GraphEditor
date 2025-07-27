@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Project configuration
 project(
     GraphEditor
-    VERSION 1.0.0
+    VERSION 1.1.3
     LANGUAGES C CXX
 )
 
@@ -21,6 +21,11 @@ add_compile_definitions(
 set(
     INSTALL_DESTINATION_PREFIX
     "${CMAKE_CURRENT_SOURCE_DIR}/BIN/Package"
+)
+
+set(
+    INSTALL_BINARY_NAME
+    ${PROJECT_NAME}-${PROJECT_VERSION}
 )
 
 # For LTO
@@ -78,19 +83,14 @@ add_subdirectory(App)
 message(STATUS "Searching for tests...")
 add_subdirectory(Testing EXCLUDE_FROM_ALL)
 
-# ======================================== #
-# Runtime linking of target
-#set_target_properties(
-#    ${PROJECT_NAME} PROPERTIES
-#    BUILD_WITH_INSTALL_RPATH TRUE
-#    INSTALL_RPATH_USE_LINK_PATH TRUE
-#    INSTALL_RPATH "./lib"
-#)
+# ====================================================== #
+# ETC CONFIGURATION
 
+source_group("Ui Files" FILES ${UIFILES})
 
 # ======================================== #
 # Installation
-install(TARGETS ${PROJECT_NAME}
+install(TARGETS ${INSTALL_BINARY_NAME}
     RUNTIME     DESTINATION ${INSTALL_DESTINATION_PREFIX}
     LIBRARY     DESTINATION ${INSTALL_DESTINATION_PREFIX}/lib
     ARCHIVE     DESTINATION ${INSTALL_DESTINATION_PREFIX}/lib/static
@@ -107,7 +107,7 @@ include(InstallRequiredSystemLibraries)
 set(
     GRAPH_EDITOR_INSTALL_APPIMAGE ON
 )
-set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
+set(CPACK_PACKAGE_NAME ${INSTALL_BINARY_NAME})
 set(CPACK_PACKAGE_VERSION ${GRAPH_EDITOR_VERSION})
 
 if (GRAPH_EDITOR_INSTALL_APPIMAGE)

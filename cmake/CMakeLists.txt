@@ -5,6 +5,18 @@ set(
     "${CMAKE_CURRENT_SOURCE_DIR}/DATA/common.qrc"
 )
 
+function(CONFIGURE_SUFFIX TARGET_NAME TARGET_DBG_SUFF TARGET_REL_SUFF)
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        target_compile_definitions(${TARGET_NAME} PRIVATE DEBUG_MODE)
+        target_compile_options(${TARGET_NAME} PRIVATE -g)
+        set_target_properties(${TARGET_NAME} PROPERTIES SUFFIX ${TARGET_DBG_SUFF})
+    elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+        target_compile_definitions(${TARGET_NAME} PRIVATE NDEBUG)
+        target_compile_options(${TARGET_NAME} PRIVATE -O3)
+        set_target_properties(${TARGET_NAME} PROPERTIES SUFFIX ${TARGET_REL_SUFF})
+    endif()
+endfunction()
+
 
 function(CONFIGURE_LIBRARY LIBRARY_NAME)
     # Files
@@ -17,18 +29,8 @@ function(CONFIGURE_LIBRARY LIBRARY_NAME)
     add_library(${LIBRARY_NAME} SHARED)
     target_sources(${LIBRARY_NAME} PRIVATE ${HEADERS} ${SOURCES} ${UIFILES} ${RESOURCES_COMMONFILE})
 
-    # Runtime linking of target
-#    set_target_properties(
-#        ${LIBRARY_NAME} PROPERTIES
-#        BUILD_WITH_INSTALL_RPATH TRUE
-#        INSTALL_RPATH_USE_LINK_PATH TRUE
-#        INSTALL_RPATH "./lib"
-#    )
-
-    # Target linking
-    target_link_libraries(
-        ${LIBRARY_NAME}
-        PRIVATE
+    set(
+        TARGET_LINKED_LIBS
         Qt${QT_VERSION_MAJOR}::Core
         Qt${QT_VERSION_MAJOR}::Widgets
         Qt${QT_VERSION_MAJOR}::Gui
@@ -37,47 +39,16 @@ function(CONFIGURE_LIBRARY LIBRARY_NAME)
         -lcrypto
     )
 
-    # Build flag configuration
-    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        target_compile_definitions(${LIBRARY_NAME} PRIVATE DEBUG_MODE)
-        target_compile_options(${LIBRARY_NAME} PRIVATE -g)
-        set_target_properties(
-            ${LIBRARY_NAME}
-            PROPERTIES
-            SUFFIX ".DEBUG"
-        )
-    elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-        target_compile_definitions(${LIBRARY_NAME} PRIVATE NDEBUG)
-        target_compile_options(${LIBRARY_NAME} PRIVATE -O3)
-        set_target_properties(
-            ${LIBRARY_NAME}
-            PROPERTIES
-            SUFFIX ".bin"
-        )
-    endif()
+    # Target linking
+    target_link_libraries(${LIBRARY_NAME} PRIVATE ${TARGET_LINKED_LIBS} )
+
+    CONFIGURE_SUFFIX(${LIBRARY_NAME} ".so.DEBUG" ".so")
 
     if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src")
         message(FATAL_ERROR "Error configuring library! Not found sources dir: " "${CMAKE_CURRENT_SOURCE_DIR}/src")
     endif()
 
-    target_include_directories(${LIBRARY_NAME} PRIVATE
-        "${CMAKE_CURRENT_SOURCE_DIR}/src"
-    )
-
-    install(TARGETS ${LIBRARY_NAME}
-        RUNTIME     DESTINATION ${INSTALL_DESTINATION_PREFIX}
-        LIBRARY     DESTINATION ${INSTALL_DESTINATION_PREFIX}/lib
-        ARCHIVE     DESTINATION ${INSTALL_DESTINATION_PREFIX}/lib/static
-        INCLUDES    DESTINATION ${INSTALL_DESTINATION_PREFIX}/include
-    )
-
-    # Add library to added list
-    set(
-        ADDED_LIBRARIES
-        ${ADDED_LIBRARIES}
-        ${LIBRARY_NAME}
-    )
-
+    target_include_directories(${LIBRARY_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
     message(STATUS "Configured library " ${LIBRARY_NAME})
 endfunction()
 
@@ -89,7 +60,6 @@ set(
     ${CMAKE_CURRENT_SOURCE_DIR}/Libraries
 )
 function(LINK_TARGET_LIBRARY TARGET_NAME LIBRARY_NAME)
-
     set(
         LTL_LIBRARY_INCLUDE_DIR
         "${LIBRARIES_BASEDIR}/${LIBRARY_NAME}/include"

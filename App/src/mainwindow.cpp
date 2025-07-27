@@ -21,6 +21,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->graphEditorForm->init();
 
     setWindowTitle(QString("Редактор графов (версия %0)").arg(GRAPH_EDITOR_VERSION));
+    QIcon windowIcon(":/common/images/icons/app/grapheditor.svg");
+    setWindowIcon(windowIcon);
 }
 
 MainWindow::~MainWindow()

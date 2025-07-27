@@ -59,13 +59,15 @@ struct GVertex
      */
     template <typename OperatorT>
     bool tieFields(const GVertex& vert, OperatorT&& vertOperator) const {
+
+        auto borderColorCompare = vertOperator(GraphCommon::encodeColor(borderColor), GraphCommon::encodeColor(vert.borderColor));
+        auto bgrColorCompare = vertOperator(GraphCommon::encodeColor(backgroundColor), GraphCommon::encodeColor(vert.backgroundColor));
+
         return vertOperator(
             std::tie(id, shortName, name, description,
-                     customProperties, borderColor,
-                     backgroundColor),
+                     customProperties),
             std::tie(vert.id, vert.shortName, vert.name, vert.description,
-                     vert.customProperties, vert.borderColor,
-                     vert.backgroundColor));
+                     vert.customProperties)) && borderColorCompare && bgrColorCompare;
     }
 
     /**

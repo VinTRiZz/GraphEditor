@@ -42,11 +42,13 @@ struct GConnection
      */
     template <typename OperatorT>
     bool tieFields(const GConnection& cCon_, OperatorT&& vertOperator) const {
+        auto lineColorCompare = vertOperator(GraphCommon::encodeColor(lineColor), GraphCommon::encodeColor(cCon_.lineColor));
+
         return vertOperator(
             std::tie(idFrom, idTo,
-                     name, lineColor),
+                     name),
             std::tie(cCon_.idFrom, cCon_.idTo,
-                     cCon_.name, cCon_.lineColor));
+                     cCon_.name)) && lineColorCompare;
     }
 
     /**

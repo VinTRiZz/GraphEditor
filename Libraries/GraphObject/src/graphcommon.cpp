@@ -7,7 +7,7 @@ namespace GraphCommon
 
 QByteArray encodeColor(const QColor &iCol)
 {
-    return QString("#%1%2%3")
+    return QString("#%1%2%3%4")
             .arg(iCol.red(), 2, 16, QLatin1Char('0'))
             .arg(iCol.green(), 2, 16, QLatin1Char('0'))
             .arg(iCol.blue(), 2, 16, QLatin1Char('0'))

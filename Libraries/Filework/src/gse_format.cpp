@@ -121,6 +121,7 @@ bool GSE_Format::save(const QString &targetPath) const
     // Загрузка вершин в таблицу
     LOG_INFO("Inserting vertices info...");
     auto queryTextBase = QString("INSERT INTO %0 VALUES (").arg(DB_GRAPH_VERTICES_TABLENAME);
+    uint totalInsertedVertices {0};
     for (auto& vert : iGraphObject->getAllVertices()) {
         queryText = queryTextBase;
 
@@ -137,10 +138,13 @@ bool GSE_Format::save(const QString &targetPath) const
 
         queryText += ")";
         if (!executeQuery(q, queryText)) { return false; }
+        totalInsertedVertices++;
     }
+    LOG_OK("Added", totalInsertedVertices, "vertices");
 
     LOG_INFO("Inserting connections info...");
     queryTextBase = QString("INSERT INTO %0 VALUES (").arg(DB_GRAPH_CONNECTIONS_TABLENAME);
+    auto totalInsertedConnections {0};
     for (auto& con : iGraphObject->getAllConnections()) {
         queryText = queryTextBase;
 
@@ -153,7 +157,9 @@ bool GSE_Format::save(const QString &targetPath) const
 
         queryText += ")";
         if (!executeQuery(q, queryText)) { return false; }
+        totalInsertedConnections++;
     }
+    LOG_OK("Added", totalInsertedConnections, "connections");
 
     db.close();
     db.removeDatabase(db.connectionName());
@@ -231,14 +237,18 @@ bool GSE_Format::load(const QString &targetPath)
     LOG_INFO("Loading user data as properties...");
     queryText = QString("SELECT prop_name, prop_value FROM %0 WHERE prop_name NOT IN ('name', 'description', 'create time', 'edit time') ORDER BY prop_name ASC").arg(DB_GRAPH_PROPS_TABLENAME);
     if (!executeQuery(q, queryText)) { return false; }
+    auto totalLoadedData {0};
     while (q.next()) {
         oGraphObject->setCustomValue(q.value(0).toString(), q.value(1));
+        totalLoadedData++;
     }
+    LOG_OK("Loaded", totalLoadedData, "custom graph properties");
 
     // Загрузка вершин
     LOG_INFO("Loading vertices info...");
     queryText = QString("SELECT * FROM %0").arg(DB_GRAPH_VERTICES_TABLENAME);
     if (!executeQuery(q, queryText)) { return false; }
+    totalLoadedData = 0;
     while (q.next()) {
         Graph::GVertex vert;
         int valPos {0};
@@ -254,11 +264,14 @@ bool GSE_Format::load(const QString &targetPath)
         vert.backgroundColor    = GraphCommon::decodeColor(q.value(valPos++).toByteArray());
         vert.image              = getDecodedPixmap(q.value(valPos++).toByteArray()).toImage();
         oGraphObject->addVertex(vert);
+        totalLoadedData++;
     }
+    LOG_OK("Loaded", totalLoadedData, "vertices");
 
     LOG_INFO("Inserting connections info...");
     queryText = QString("SELECT * FROM %0").arg(DB_GRAPH_CONNECTIONS_TABLENAME);
     if (!executeQuery(q, queryText)) { return false; }
+    totalLoadedData = 0;
     while (q.next()) {
         Graph::GConnection con;
         int valPos {0};
@@ -271,7 +284,9 @@ bool GSE_Format::load(const QString &targetPath)
         con.lineColor           = GraphCommon::decodeColor(q.value(valPos++).toByteArray());
 
         oGraphObject->addConnection(con);
+        totalLoadedData++;
     }
+    LOG_OK("Loaded", totalLoadedData, "connections");
 
     db.close();
     db.removeDatabase(db.connectionName());

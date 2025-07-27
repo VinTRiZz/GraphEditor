@@ -23,6 +23,8 @@ public:
      */
     static QString formatToDefaultPath(const QString& iPath);
 
+    static QStringList getAvailableFormats();
+
     /**
      * @brief save              Сохранить граф в файл
      * @param oFilePath         Путь до файла для сохранения (файл может не существовать, но его директория -- обязана)

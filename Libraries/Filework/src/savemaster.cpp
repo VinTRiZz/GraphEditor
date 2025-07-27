@@ -3,7 +3,8 @@
 #include "abstractsaveformat.h"
 
 #include "gse_format.h"
-#include "gsej_format.h"
+#include "gsj_format.h"
+#include "gsje_format.h"
 
 #include <Common/Logging.h>
 
@@ -12,10 +13,19 @@
 QString SaveMaster::formatToDefaultPath(const QString &iPath)
 {
     auto fileSuffix = QFileInfo(iPath).completeSuffix();
-    if (fileSuffix == "gsej") {
+    if (fileSuffix == "gsj") {
         return iPath;
     }
-    return iPath + ".gsej";
+    return iPath + ".gsj";
+}
+
+QStringList SaveMaster::getAvailableFormats()
+{
+    QStringList res;
+    res << "Файл графа (.gsj) (*.gsj)";
+    res << "Файл зашифрованного графа (.gsje) (*.gsje)";
+    res << "Старый формат графа (.gse) (*.gse)";
+    return res;
 }
 
 bool SaveMaster::save(const QString &oFilePath, Graph::PMaintainer iGraphMaintaner)
@@ -37,8 +47,13 @@ std::shared_ptr<Filework::AbstractSaveFormat> SaveMaster::getFormat(const QStrin
     std::shared_ptr<Filework::AbstractSaveFormat> pFormat;
     if (fileSuffix == "gse") {
         pFormat = std::make_shared<Filework::GSE_Format>();
-    } else if ((fileSuffix == "gsej") || fileSuffix.isEmpty()) {
-        pFormat = std::make_shared<Filework::GSEJ_Format>();
+
+    } else if (fileSuffix == "gsje") {
+        pFormat = std::make_shared<Filework::GSJE_Format>();
+
+    } if ((fileSuffix == "gsj") || fileSuffix.isEmpty()) {
+        pFormat = std::make_shared<Filework::GSJ_Format>();
+
     } else {
         LOG_ERROR("Unknown format got:", fileSuffix);
     }

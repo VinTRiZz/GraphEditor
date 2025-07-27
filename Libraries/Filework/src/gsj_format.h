@@ -11,11 +11,11 @@ namespace Filework
 /**
  * @brief The GSEJ_Format class Обновлённый формат сохранения данных, представляет из себя JSON
  */
-class GSEJ_Format : public AbstractSaveFormat
+class GSJ_Format : public AbstractSaveFormat
 {
 public:
-    GSEJ_Format();
-    ~GSEJ_Format();
+    GSJ_Format();
+    ~GSJ_Format();
 
     bool fromDataJson(const QJsonObject& iJson);
     QJsonObject toDataJson() const;

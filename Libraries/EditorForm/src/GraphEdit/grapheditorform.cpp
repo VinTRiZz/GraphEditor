@@ -47,13 +47,6 @@ bool GraphEditorForm::isGraphPathSet()
     if (!m_currentGraphFilePath.isEmpty() && QFileInfo(m_currentGraphFilePath).exists()) {
         return true;
     }
-
-    // .gse --> Graph Save Extension
-    m_currentGraphFilePath = QFileDialog::getSaveFileName(this, "Файл для сохранения графа", QDir::homePath(), "Файл графа (*.gse)");
-
-    if (m_currentGraphFilePath.isEmpty()) {
-        return false;
-    }
     return true;
 }
 
@@ -65,10 +58,6 @@ void GraphEditorForm::saveGraph()
     }
 
     m_currentGraph->setEditTime(QDateTime::currentDateTime());
-
-    if (QFileInfo(m_currentGraphFilePath).suffix() != "gse") {
-        m_currentGraphFilePath += ".gse";
-    }
 
     ui->graphScene->writeChangesToGraph();
 

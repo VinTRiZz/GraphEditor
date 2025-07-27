@@ -1,4 +1,4 @@
-#include "gseje_format.h"
+#include "gsje_format.h"
 
 #include <QJsonDocument>
 
@@ -11,27 +11,27 @@
 namespace Filework
 {
 
-GSEJE_Format::GSEJE_Format()
+GSJE_Format::GSJE_Format()
 {
 
 }
 
-GSEJE_Format::~GSEJE_Format()
+GSJE_Format::~GSJE_Format()
 {
 
 }
 
-void GSEJE_Format::setKey(const QString &key)
+void GSJE_Format::setKey(const QString &key)
 {
     m_key = key;
 }
 
-QString GSEJE_Format::getKey() const
+QString GSJE_Format::getKey() const
 {
     return m_key;
 }
 
-bool GSEJE_Format::save(const QString &targetPath) const
+bool GSJE_Format::save(const QString &targetPath) const
 {
     if (!isFileValid(targetPath)) {
         return false;
@@ -44,7 +44,7 @@ bool GSEJE_Format::save(const QString &targetPath) const
     return false;
 }
 
-bool GSEJE_Format::load(const QString &targetPath)
+bool GSJE_Format::load(const QString &targetPath)
 {
     if (!isFileValid(targetPath) || !QFileInfo(targetPath).exists()) {
         return false;
@@ -54,7 +54,7 @@ bool GSEJE_Format::load(const QString &targetPath)
     return false;
 }
 
-bool GSEJE_Format::isFileValid(const QString &targetPath) const
+bool GSJE_Format::isFileValid(const QString &targetPath) const
 {
     return false;
 }

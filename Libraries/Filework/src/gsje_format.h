@@ -1,7 +1,7 @@
 #ifndef GSEJE_FORMAT_H
 #define GSEJE_FORMAT_H
 
-#include "gsej_format.h"
+#include "gsj_format.h"
 
 namespace Filework
 {
@@ -9,11 +9,11 @@ namespace Filework
 /**
  * @brief The GSEJE_Format class Формат gsej с шифрованием
  */
-class GSEJE_Format : public GSEJ_Format
+class GSJE_Format : public GSJ_Format
 {
 public:
-    GSEJE_Format();
-    ~GSEJE_Format();
+    GSJE_Format();
+    ~GSJE_Format();
 
     void setKey(const QString& key);
     QString getKey() const;

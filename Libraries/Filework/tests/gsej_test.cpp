@@ -5,7 +5,7 @@
 #include <QGuiApplication>
 #include <QFile>
 
-#include "../src/gsej_format.h"
+#include "../src/gsj_format.h"
 TEST(FormatSaving, GSE_JSON_Format) {
     int argc = 0;
     char** argv = nullptr;
@@ -14,7 +14,7 @@ TEST(FormatSaving, GSE_JSON_Format) {
     auto gMaintaner = Graph::TestGenerators::createTestGraph();
     auto savedGraph = gMaintaner->getObject();
 
-    Filework::GSEJ_Format saveFormat;
+    Filework::GSJ_Format saveFormat;
 
     auto graphCopy = savedGraph; // Для чистоты исследований (проверка бага на затирание данных)
     saveFormat.setGraphMaintaner(gMaintaner);

@@ -4,6 +4,8 @@
 
 #include <QVariant>
 
+#include <Filework/SaveMaster.h>
+
 GraphToolbar::GraphToolbar(QWidget* parent) :
     ButtonToolbar::HeadWidget(parent)
 {
@@ -63,7 +65,12 @@ void GraphToolbar::init()
     buttonInfo.icon = QIcon(":/common/images/icons/common/graph_open.svg");
     buttonInfo.tooltip = "Открыть файл графа";
     buttonInfo.action = [this, saveChangesChangesPos](QPushButton* pButton) {
-        auto graphPath = QFileDialog::getOpenFileName(this, "Файл сохранённого графа", QDir::homePath(), "Файл графа (*.gse)");
+        auto graphPath =
+                QFileDialog::getOpenFileName(
+                    this,
+                    "Файл для сохранения графа",
+                    QDir::homePath(),
+                    SaveMaster::getAvailableFormats().join(";;"));
         if (graphPath.isEmpty()) {
             return;
         }
@@ -77,7 +84,12 @@ void GraphToolbar::init()
     buttonInfo.icon = QIcon(":/common/images/icons/common/graph_save_as.svg");
     buttonInfo.tooltip = "Сохранить как...";
     buttonInfo.action = [this, saveChangesChangesPos](QPushButton* pButton) {
-        auto graphPath = QFileDialog::getSaveFileName(this, "Файл для сохранения графа", QDir::homePath(), "Файл графа (*.gse)");
+        auto graphPath =
+                QFileDialog::getSaveFileName(
+                    this,
+                    "Файл для сохранения графа",
+                    QDir::homePath(),
+                    SaveMaster::getAvailableFormats().join(";;"));
         if (graphPath.isEmpty()) {
             return;
         }

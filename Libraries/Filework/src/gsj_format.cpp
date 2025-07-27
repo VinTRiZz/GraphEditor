@@ -1,5 +1,5 @@
-#include "gsej_format.h"
-#include "qfileinfo.h"
+#include "gsj_format.h"
+#include <QFileInfo>
 
 #include <QJsonDocument>
 
@@ -9,27 +9,27 @@
 namespace Filework
 {
 
-GSEJ_Format::GSEJ_Format()
+GSJ_Format::GSJ_Format()
 {
 
 }
 
-GSEJ_Format::~GSEJ_Format()
+GSJ_Format::~GSJ_Format()
 {
 
 }
 
-bool GSEJ_Format::fromDataJson(const QJsonObject &iJson)
+bool GSJ_Format::fromDataJson(const QJsonObject &iJson)
 {
     return false;
 }
 
-QJsonObject GSEJ_Format::toDataJson() const
+QJsonObject GSJ_Format::toDataJson() const
 {
     return {};
 }
 
-bool GSEJ_Format::save(const QString &targetPath) const
+bool GSJ_Format::save(const QString &targetPath) const
 {
     if (!isFileValid(targetPath)) {
         return false;
@@ -41,7 +41,7 @@ bool GSEJ_Format::save(const QString &targetPath) const
     return false;
 }
 
-bool GSEJ_Format::load(const QString &targetPath)
+bool GSJ_Format::load(const QString &targetPath)
 {
     if (!isFileValid(targetPath) || !QFileInfo(targetPath).exists()) {
         return false;
@@ -51,7 +51,7 @@ bool GSEJ_Format::load(const QString &targetPath)
     return false;
 }
 
-bool GSEJ_Format::isFileValid(const QString &targetPath) const
+bool GSJ_Format::isFileValid(const QString &targetPath) const
 {
     auto fileInfo = QFileInfo(targetPath);
     if (fileInfo.exists()) {

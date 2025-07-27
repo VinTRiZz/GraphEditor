@@ -59,9 +59,9 @@ GraphViewMode::SearchProxy GraphViewMode::toSearchCache(const GConnection &con) 
 
 void GraphViewMode::registerGraph()
 {
-    connect(getScene()->getCurrentGraph(), &GraphExtendedObject::vertexAdded,
+    connect(getScene()->getGraphMaintaner()->getExtendedObject(), &GraphExtendedObject::vertexAdded,
             this, [this](ObjectViewConstants::objectId_t addedId) {
-        auto addedVertex = getScene()->getCurrentGraph()->getVertex(addedId);
+        auto addedVertex = getScene()->getGraphMaintaner()->getExtendedObject()->getVertex(addedId);
         if (!addedVertex.has_value()) {
             LOG_WARNING_SYNC("Error occured: getVertex() returned no value, but vertex added");
             return;

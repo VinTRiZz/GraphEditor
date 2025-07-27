@@ -1,7 +1,7 @@
 #ifndef SAVEMASTER_H
 #define SAVEMASTER_H
 
-#include <GraphObject/Object.h>
+#include <GraphObject/Maintainer.h>
 
 #include <QSqlQuery>
 
@@ -24,20 +24,20 @@ public:
     static QString formatToDefaultPath(const QString& iPath);
 
     /**
-     * @brief save          Сохранить граф в файл
-     * @param oFilePath     Путь до файла для сохранения (файл может не существовать, но его директория -- обязана)
-     * @param iGraphObject  Объект графа для сохранения
-     * @return false        если не удалось сохранить файл, например, при неверном расширении. В логах будет указано, почему
+     * @brief save              Сохранить граф в файл
+     * @param oFilePath         Путь до файла для сохранения (файл может не существовать, но его директория -- обязана)
+     * @param iGraphMaintaner   Поставщик графа для сохранения
+     * @return false            если не удалось сохранить файл, например, при неверном расширении. В логах будет указано, почему
      */
-    static bool save(const QString& oFilePath, Graph::GraphObject *iGraphObject);
+    static bool save(const QString& oFilePath, std::shared_ptr<Graph::GraphMaintaner> iGraphMaintaner);
 
     /**
-     * @brief load          Выгрузить граф из файла
-     * @param iFilePath     Путь до файла сохранения
-     * @param oGraphObject  Объект графа для записи выгруженных данных
-     * @return false        если не удалось выгрузить граф, например, при неверном расширении. В логах будет указано, почему
+     * @brief load              Выгрузить граф из файла
+     * @param iFilePath         Путь до файла сохранения
+     * @param oGraphMaintaner   Поставщик графа для записи выгруженных данных
+     * @return false            если не удалось выгрузить граф, например, при неверном расширении. В логах будет указано, почему
      */
-    static bool load(const QString& iFilePath, Graph::GraphObject* oGraphObject);
+    static bool load(const QString& iFilePath, std::shared_ptr<Graph::GraphMaintaner> oGraphMaintaner);
 
     /**
      * @brief getFormat     Получить указатель на формат, соответствующий файлу

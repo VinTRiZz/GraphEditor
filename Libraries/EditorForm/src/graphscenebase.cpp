@@ -85,7 +85,7 @@ void GraphSceneBase::writeChangesToGraph()
     }
     LOG_OK("Found", vertices.size(), "vertices and", connections.size(), "connections");
 
-    auto pGraph = getCurrentGraph();
+    auto pGraph = m_pGraphMaintaner->getExtendedObject();
 
     pGraph->clearVertices();
     LOG_INFO("Loading vertices from scene...");
@@ -138,15 +138,15 @@ void GraphSceneBase::writeChangesToGraph()
     LOG_OK("Loaded", pGraph->getConnectionsCount(), "connections from scene");
 }
 
-void GraphSceneBase::setCurrentGraph(Graph::GraphExtendedObject* pGraph)
+void GraphSceneBase::setGraphMaintaner(const std::shared_ptr<Graph::GraphMaintaner>& pGraphMaintaner)
 {
-    m_pGraph = pGraph;
+    m_pGraphMaintaner = pGraphMaintaner;
     updateGraph();
 }
 
-GraphExtendedObject *GraphSceneBase::getCurrentGraph() const
+std::shared_ptr<Graph::GraphMaintaner> GraphSceneBase::getGraphMaintaner() const
 {
-    return m_pGraph;
+    return m_pGraphMaintaner;
 }
 
 ButtonMatrix::HeadButton *GraphSceneBase::getButtonMatrixHead() const
@@ -156,7 +156,7 @@ ButtonMatrix::HeadButton *GraphSceneBase::getButtonMatrixHead() const
 
 void GraphSceneBase::updateGraph()
 {
-    if (!m_pGraph) {
+    if (!m_pGraphMaintaner) {
         return;
     }
 
@@ -171,7 +171,9 @@ void GraphSceneBase::updateGraph()
     vertexRect.setWidth(sceneConfig.vertexWidth);
     vertexRect.setHeight(sceneConfig.vertexWidth);
 
-    auto vertices = m_pGraph->getAllVertices();
+    auto pGraph = m_pGraphMaintaner->getExtendedObject();
+
+    auto vertices = pGraph->getAllVertices();
     std::unordered_map<GraphCommon::graphId_t, ObjectViewItems::VertexObject*> vertexObjects;
 
     for (auto& vert : vertices) {
@@ -201,7 +203,7 @@ void GraphSceneBase::updateGraph()
 
     QHash<GraphCommon::graphId_t, std::vector<GConnection> > connectionHash;
 
-    for (auto& con : m_pGraph->getAllConnections()) {
+    for (auto& con : pGraph->getAllConnections()) {
         auto pConFrom = vertexObjects.find(con.idFrom);
         if (pConFrom == vertexObjects.end()) {
             throw std::runtime_error("Vertex from did not found!");

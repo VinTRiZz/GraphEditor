@@ -11,18 +11,19 @@ TEST(FormatSaving, InterfaceSaveTest) {
     char** argv = nullptr;
     QGuiApplication app(argc, argv);
 
-    auto savedGraph = Graph::TestGenerators::createTestGraph();
-    auto graphCopy = savedGraph; // Для чистоты исследований (проверка бага на затирание данных)
-
     SaveMaster saver;
 
-    QString testTargetPathEmptyExtension = "/tmp/GraphEditorSaveTest";
-    EXPECT_EQ(saver.save(testTargetPathEmptyExtension, &graphCopy), true);
-    EXPECT_EQ(graphCopy, savedGraph);
+    auto gMaintaner = Graph::GraphMaintaner::createInstance();
+    *gMaintaner->getObject() = Graph::TestGenerators::createTestGraph();
+    auto graphCopy = *gMaintaner->getObject(); // Для чистоты исследований (проверка бага на затирание данных)
 
-    Graph::GraphObject loadedGraph;
-    EXPECT_EQ(saver.load(saver.formatToDefaultPath(testTargetPathEmptyExtension), &loadedGraph), true);
+    QString testTargetPathEmptyExtension = "/tmp/GraphEditorSaveTest";
+    EXPECT_EQ(saver.save(testTargetPathEmptyExtension, gMaintaner), true);
+    EXPECT_EQ(graphCopy, *gMaintaner->getObject());
+
+    auto gMaintanerLoaded = Graph::GraphMaintaner::createInstance();
+    EXPECT_EQ(saver.load(saver.formatToDefaultPath(testTargetPathEmptyExtension), gMaintanerLoaded), true);
 
     QFile::remove(saver.formatToDefaultPath(testTargetPathEmptyExtension));
-    EXPECT_EQ(loadedGraph, savedGraph);
+    EXPECT_EQ(*gMaintanerLoaded->getObject(), *gMaintaner->getObject());
 }

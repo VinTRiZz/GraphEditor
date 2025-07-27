@@ -3,7 +3,7 @@
 
 #include <QString>
 
-#include <GraphObject/Object.h>
+#include <GraphObject/Maintainer.h>
 
 namespace Filework
 {
@@ -14,8 +14,9 @@ public:
     AbstractSaveFormat();
     virtual ~AbstractSaveFormat();
 
-    void setGraph(Graph::GraphObject* pGraph);
-    Graph::GraphObject* getGraph() const;
+    void                    setGraphMaintaner(std::shared_ptr<Graph::GraphMaintaner> pGraphMaintaner);
+    std::shared_ptr<Graph::GraphMaintaner>  getGraphMaintaner() const;
+    Graph::GraphObject*     getGraph() const;
 
     virtual bool save(const QString& targetPath) const = 0;
     virtual bool load(const QString& targetPath) = 0;
@@ -23,7 +24,7 @@ public:
     virtual bool isFileValid(const QString& targetPath) const = 0;
 
 private:
-    Graph::GraphObject* m_pGraph {nullptr};
+    std::shared_ptr<Graph::GraphMaintaner> m_pGraphMaintaner;
 };
 
 }

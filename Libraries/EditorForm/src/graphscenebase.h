@@ -3,7 +3,7 @@
 
 #include "graphmodebase.h"
 
-#include <GraphObject/ExtendedObject.h>
+#include <GraphObject/Maintainer.h>
 #include <ObjectScene/ObjectView.h>
 #include <CustomWidgets/ButtonMatrix.h>
 
@@ -39,9 +39,9 @@ public:
 
     /**
      * @brief setCurrentGraph   Задать текущий граф
-     * @param pGraph            Указатель на текущий граф
+     * @param pGraphMaintaner   Указатель на поставщика текущего графа
      */
-    virtual void setCurrentGraph(Graph::GraphExtendedObject* pGraph);
+    virtual void setGraphMaintaner(const std::shared_ptr<Graph::GraphMaintaner>& pGraphMaintaner);
 
     /**
      * @brief updateGraph Считать данные из текущего графа. Вызывается также при установке графа
@@ -52,7 +52,7 @@ public:
      * @brief getCurrentGraph   Получить текущий граф
      * @return                  nullptr если не задан или заданный граф
      */
-    Graph::GraphExtendedObject* getCurrentGraph() const;
+    std::shared_ptr<Graph::GraphMaintaner> getGraphMaintaner() const;
 
     /**
      * @brief getButtonMatrixHead   Получить головную кнопку матрицы кнопок
@@ -78,10 +78,10 @@ private:
     void resizeEvent(QResizeEvent* e) override;
     ObjectViewItems::VertexObject* createVertex(ObjectViewConstants::objectId_t vId);
 
-    ObjectViewConstants::objectId_t m_currentItemId {1};            //! Текущий идентификатор объекта сцены. Используется для создания объектов
-    GraphModeBase*                  m_pCurrentMode {nullptr};       //! Текущий режим работы
-    Graph::GraphExtendedObject*     m_pGraph {nullptr};             //! Текущий граф
-    ButtonMatrix::HeadButton*       m_buttonMatrixHead {nullptr};   //! Указатель на кнопку-матрицу (инструментарий)
+    ObjectViewConstants::objectId_t         m_currentItemId {1};            //! Текущий идентификатор объекта сцены. Используется для создания объектов
+    GraphModeBase*                          m_pCurrentMode {nullptr};       //! Текущий режим работы
+    std::shared_ptr<Graph::GraphMaintaner>  m_pGraphMaintaner;              //! Текущий граф
+    ButtonMatrix::HeadButton*               m_buttonMatrixHead {nullptr};   //! Указатель на кнопку-матрицу (инструментарий)
 };
 
 }

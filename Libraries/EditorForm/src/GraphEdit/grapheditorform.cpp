@@ -5,7 +5,7 @@
 #include <QFileInfo>
 #include <QMessageBox>
 
-#include <GraphObject/Object.h>
+#include <GraphObject/Maintainer.h>
 #include <Filework/SaveMaster.h>
 
 #include <QParallelAnimationGroup>
@@ -30,15 +30,15 @@ void GraphEditorForm::init()
     ui->graphScene->init();
     ui->graphScene->startEditMode();
 
-    m_currentGraph = new Graph::GraphExtendedObject(this);
-    m_currentGraph->setCreateTime(QDateTime::currentDateTime());
-    ui->graphScene->setCurrentGraph(m_currentGraph);
+    m_currentGraph = Graph::GraphMaintaner::createInstance();
+
+    m_currentGraph->getObject()->setCreateTime(QDateTime::currentDateTime());
 
     setupWidget();
     setupSignals();
 
-    ui->graphScene->setCurrentGraph(m_currentGraph);
-    ui->propertyEditForm->setCurrentGraph(m_currentGraph);
+    ui->graphScene->setGraphMaintaner(m_currentGraph);
+    ui->propertyEditForm->setCurrentGraph(m_currentGraph->getExtendedObject());
     ui->propertyEditForm->hide();
 }
 
@@ -64,7 +64,7 @@ void GraphEditorForm::saveGraph()
         return;
     }
 
-    m_currentGraph->setEditTime(QDateTime::currentDateTime());
+    m_currentGraph->getExtendedObject()->setEditTime(QDateTime::currentDateTime());
 
     if (QFileInfo(m_currentGraphFilePath).suffix() != "gse") {
         m_currentGraphFilePath += ".gse";

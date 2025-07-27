@@ -30,10 +30,10 @@ void GraphEditView::init()
 }
 
 
-void GraphEditView::setCurrentGraph(GraphExtendedObject *pGraph)
+void GraphEditView::setGraphMaintaner(const std::shared_ptr<GraphMaintaner> &pGraphMaintaner)
 {
     // TODO: Connect graph
-    GraphSceneBase::setCurrentGraph(pGraph);
+    GraphSceneBase::setGraphMaintaner(pGraphMaintaner);
 }
 
 void GraphEditView::startViewMode()

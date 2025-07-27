@@ -18,17 +18,17 @@ QString SaveMaster::formatToDefaultPath(const QString &iPath)
     return iPath + ".gsej";
 }
 
-bool SaveMaster::save(const QString &oFilePath, Graph::GraphObject *iGraphObject)
+bool SaveMaster::save(const QString &oFilePath, std::shared_ptr<Graph::GraphMaintaner> iGraphMaintaner)
 {
     auto pFormat = getFormat(QFileInfo(oFilePath).completeSuffix());
-    pFormat->setGraph(iGraphObject);
+    pFormat->setGraphMaintaner(iGraphMaintaner);
     return pFormat->save(oFilePath);
 }
 
-bool SaveMaster::load(const QString &iFilePath, Graph::GraphObject *oGraphObject)
+bool SaveMaster::load(const QString &iFilePath, std::shared_ptr<Graph::GraphMaintaner> oGraphMaintaner)
 {
     auto pFormat = getFormat(QFileInfo(iFilePath).completeSuffix());
-    pFormat->setGraph(oGraphObject);
+    pFormat->setGraphMaintaner(oGraphMaintaner);
     return pFormat->load(iFilePath);
 }
 

@@ -11,24 +11,26 @@ TEST(FormatSaving, GSE_Format) {
     char** argv = nullptr;
     QGuiApplication app(argc, argv);
 
-    auto savedGraph = Graph::TestGenerators::createTestGraph();
+    auto gMaintaner = Graph::GraphMaintaner::createInstance();
+    auto savedGraph = gMaintaner->getObject();
+    *savedGraph = Graph::TestGenerators::createTestGraph();
 
     Filework::GSE_Format gseFormat;
 
-    auto graphCopy = savedGraph; // Для чистоты исследований (проверка бага на затирание данных)
-    gseFormat.setGraph(&graphCopy);
+    auto graphCopy = *savedGraph; // Для чистоты исследований (проверка бага на затирание данных)
+    gseFormat.setGraphMaintaner(gMaintaner);
 
     QString testTargetPath = "/tmp/GraphEditorSaveTest.gse";
 
     // С расширением
     EXPECT_EQ(gseFormat.save(testTargetPath), true);
 
-    EXPECT_EQ(graphCopy, savedGraph);
+    EXPECT_EQ(graphCopy, *savedGraph);
 
-    Graph::GraphObject loadedGraph;
-    gseFormat.setGraph(&loadedGraph);
+    auto gMaintanerLoaded = Graph::GraphMaintaner::createInstance();
+    gseFormat.setGraphMaintaner(gMaintanerLoaded);
     EXPECT_EQ(gseFormat.load(testTargetPath), true);
 
     QFile::remove(testTargetPath);
-    EXPECT_EQ(loadedGraph, graphCopy);
+    EXPECT_EQ(*gMaintanerLoaded->getObject(), graphCopy);
 }

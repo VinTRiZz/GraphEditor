@@ -7,6 +7,8 @@
 #include <GraphObject/ExtendedObject.h>
 #include <CustomWidgets/ButtonMatrix.h>
 
+#include <GraphObject/Maintainer.h>
+
 namespace Ui {
 class GraphEditorForm;
 }
@@ -34,8 +36,8 @@ public:
 private:
     Ui::GraphEditorForm *ui;
 
-    Graph::GraphExtendedObject* m_currentGraph;         //! Текущий граф
-    QString                     m_currentGraphFilePath; //! Путь для сохранения графа в файл
+    std::shared_ptr<Graph::GraphMaintaner>  m_currentGraph;         //! Текущий граф
+    QString                                 m_currentGraphFilePath; //! Путь для сохранения графа в файл
 
     /**
      * @brief isGraphPathSet Проверить, задан ли путь для сохранения/загрузки графа. Вызовет диалог и задаст путь, если он пуст или не валидный

@@ -13,14 +13,22 @@ AbstractSaveFormat::~AbstractSaveFormat()
 
 }
 
-void AbstractSaveFormat::setGraph(Graph::GraphObject *pGraph)
+void AbstractSaveFormat::setGraphMaintaner(std::shared_ptr<Graph::GraphMaintaner> pGraphMaintaner)
 {
-    m_pGraph = pGraph;
+    m_pGraphMaintaner = pGraphMaintaner;
+}
+
+std::shared_ptr<Graph::GraphMaintaner> AbstractSaveFormat::getGraphMaintaner() const
+{
+    return m_pGraphMaintaner;
 }
 
 Graph::GraphObject *AbstractSaveFormat::getGraph() const
 {
-    return m_pGraph;
+    if (!m_pGraphMaintaner) {
+        return nullptr;
+    }
+    return m_pGraphMaintaner->getObject();
 }
 
 }

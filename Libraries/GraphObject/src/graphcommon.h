@@ -30,64 +30,20 @@ const QColor DEFAULT_VERTEX_TEXT_BGR_COLOR {QColor("#f3f5dd")}; //! Цвет ф�
 const QString DATE_CONVERSION_FORMAT = "HH:mm:ss_dd.MM.yyyy";          //! Формат конвертирования даты в строку
 const QString DATE_DISPLAY_CONVERSION_FORMAT = "HH:mm:ss dd.MM.yyyy";  //! Формат конвертирования даты в строку на показ
 
-const QString DB_GRAPH_PROPS_TABLENAME          {"graph_properties"};
-const QString DB_GRAPH_PROPS_CREATEQUERY = QString(R"(
-CREATE TABLE IF NOT EXISTS %0 (
-id INTEGER PRIMARY KEY,
-prop_name TEXT UNIQUE NOT NULL,
-prop_value TEXT
-);
-)").arg(DB_GRAPH_PROPS_TABLENAME);
-
-const QString DB_GRAPH_VERTICES_TABLENAME       {"vertices"};
-const QString DB_GRAPH_VERTICES_CREATEQUERY = QString(R"(
-CREATE TABLE IF NOT EXISTS %0 (
-    id              INTEGER PRIMARY KEY,
-    posx            FLOAT NOT NULL,
-    posy            FLOAT NOT NULL,
-    short_name      TEXT NOT NULL,
-    name            TEXT,
-    description     TEXT,
-    custom_props    TEXT,
-    color_rgb       TEXT, -- R-G-B in hex, example: 255 003 166 -> ff 03 a6
-    bgr_color_rgb   TEXT, -- R-G-B in hex, example: 255 003 166 -> ff 03 a6
-    pxmap           TEXT  -- Pixmap as PNG
-);
-)").arg(DB_GRAPH_VERTICES_TABLENAME);
-
-const QString DB_GRAPH_CONNECTIONS_TABLENAME    {"connections"};
-const QString DB_GRAPH_CONNECTIONS_CREATEQUERY = QString(R"(
-CREATE TABLE IF NOT EXISTS %0 (
-    id          INTEGER PRIMARY KEY,
-    idFrom      INTEGER NOT NULL,
-    idTo        INTEGER NOT NULL,
-    weight      FLOAT DEFAULT 0,
-    name        TEXT,
-    color_rgb   TEXT, -- R-G-B in hex, example: 255 003 166 -> ff 03 a6
-
-    FOREIGN KEY (idFrom) REFERENCES %1(id) ON DELETE CASCADE,
-    FOREIGN KEY (idTo) REFERENCES %1(id) ON DELETE CASCADE
-);
-)").arg(DB_GRAPH_CONNECTIONS_TABLENAME, DB_GRAPH_VERTICES_TABLENAME);
-
 
 /**
- * @brief showInfo Функция, показывающая месседж бокс
- * @param text Текст информационного сообщения
+ * @brief encodeColor   Конвертировать цвет во внутренний способ хранения
+ * @param iCol          Входной цвет
+ * @return              Массив байт с кодом цвета
  */
-void showInfo(const QString& text);
+QByteArray encodeColor(const QColor& iCol);
 
 /**
- * @brief showWarning Функция, показывающая месседж бокс
- * @param text Текст сообщения "Внимание"
+ * @brief decodeColor   Получить цвет из массива байт внутреннего способа хранения
+ * @param iBytes        Входной массив байт
+ * @return              Декодированный цвет
  */
-void showWarning(const QString& text);
-
-/**
- * @brief showError  Функция, показывающая месседж бокс
- * @param text Текст ошибки
- */
-void showError(const QString& text);
+QColor decodeColor(const QByteArray &iBytes);
 
 }
 

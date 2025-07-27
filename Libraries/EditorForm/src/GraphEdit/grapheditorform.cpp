@@ -3,6 +3,7 @@
 
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QMessageBox>
 
 #include <GraphObject/Object.h>
 #include <Filework/SaveMaster.h>
@@ -73,7 +74,7 @@ void GraphEditorForm::saveGraph()
 
     auto saveSucceed = SaveMaster::save(m_currentGraphFilePath, m_currentGraph);
     if (!saveSucceed) {
-        GraphCommon::showError("Ошибка сохранения графа");
+        QMessageBox::critical(this, "Ошибка сохранения", "Возникла ошибка при сохранении данных.\nПроверьте: \nПрава доступа к директории;\nФакт её существования");
         return;
     }
 
@@ -89,7 +90,7 @@ void GraphEditorForm::loadGraph()
 
     auto loadSucceed = SaveMaster::load(m_currentGraphFilePath, m_currentGraph);
     if (!loadSucceed) {
-        GraphCommon::showError("Ошибка загрузки графа");
+        QMessageBox::critical(this, "Ошибка загрузки", "Возникла ошибка при сохранении данных.\nПроверьте: \nПрава доступа к директории;\nФакт её существования;\nКорректность формата файла");
         return;
     }
 

@@ -19,6 +19,47 @@
 namespace Filework
 {
 
+const QString DB_GRAPH_PROPS_TABLENAME          {"graph_properties"};
+const QString DB_GRAPH_PROPS_CREATEQUERY = QString(R"(
+CREATE TABLE IF NOT EXISTS %0 (
+id INTEGER PRIMARY KEY,
+prop_name TEXT UNIQUE NOT NULL,
+prop_value TEXT
+);
+)").arg(DB_GRAPH_PROPS_TABLENAME);
+
+const QString DB_GRAPH_VERTICES_TABLENAME       {"vertices"};
+const QString DB_GRAPH_VERTICES_CREATEQUERY = QString(R"(
+CREATE TABLE IF NOT EXISTS %0 (
+    id              INTEGER PRIMARY KEY,
+    posx            FLOAT NOT NULL,
+    posy            FLOAT NOT NULL,
+    short_name      TEXT NOT NULL,
+    name            TEXT,
+    description     TEXT,
+    custom_props    TEXT,
+    color_rgb       TEXT, -- R-G-B in hex, example: 255 003 166 -> ff 03 a6
+    bgr_color_rgb   TEXT, -- R-G-B in hex, example: 255 003 166 -> ff 03 a6
+    pxmap           TEXT  -- Pixmap as PNG
+);
+)").arg(DB_GRAPH_VERTICES_TABLENAME);
+
+const QString DB_GRAPH_CONNECTIONS_TABLENAME    {"connections"};
+const QString DB_GRAPH_CONNECTIONS_CREATEQUERY = QString(R"(
+CREATE TABLE IF NOT EXISTS %0 (
+    id          INTEGER PRIMARY KEY,
+    idFrom      INTEGER NOT NULL,
+    idTo        INTEGER NOT NULL,
+    weight      FLOAT DEFAULT 0,
+    name        TEXT,
+    color_rgb   TEXT, -- R-G-B in hex, example: 255 003 166 -> ff 03 a6
+
+    FOREIGN KEY (idFrom) REFERENCES %1(id) ON DELETE CASCADE,
+    FOREIGN KEY (idTo) REFERENCES %1(id) ON DELETE CASCADE
+);
+)").arg(DB_GRAPH_CONNECTIONS_TABLENAME, DB_GRAPH_VERTICES_TABLENAME);
+
+
 GSE_Format::GSE_Format()
 {
 
@@ -52,18 +93,18 @@ bool GSE_Format::save(const QString &targetPath) const
 
     LOG_INFO("Setting up tables...");
     auto queryText = QString("DELETE FROM %0");
-    if (!executeQuery(q, GraphCommon::DB_GRAPH_PROPS_CREATEQUERY))                      { return false; }
-    if (!executeQuery(q, queryText.arg(GraphCommon::DB_GRAPH_PROPS_TABLENAME)))         { return false; }
+    if (!executeQuery(q, DB_GRAPH_PROPS_CREATEQUERY))                      { return false; }
+    if (!executeQuery(q, queryText.arg(DB_GRAPH_PROPS_TABLENAME)))         { return false; }
 
-    if (!executeQuery(q, GraphCommon::DB_GRAPH_VERTICES_CREATEQUERY))                   { return false; }
-    if (!executeQuery(q, queryText.arg(GraphCommon::DB_GRAPH_VERTICES_TABLENAME)))      { return false; }
+    if (!executeQuery(q, DB_GRAPH_VERTICES_CREATEQUERY))                   { return false; }
+    if (!executeQuery(q, queryText.arg(DB_GRAPH_VERTICES_TABLENAME)))      { return false; }
 
-    if (!executeQuery(q, GraphCommon::DB_GRAPH_CONNECTIONS_CREATEQUERY))                { return false; }
-    if (!executeQuery(q, queryText.arg(GraphCommon::DB_GRAPH_CONNECTIONS_TABLENAME)))   { return false; }
+    if (!executeQuery(q, DB_GRAPH_CONNECTIONS_CREATEQUERY))                { return false; }
+    if (!executeQuery(q, queryText.arg(DB_GRAPH_CONNECTIONS_TABLENAME)))   { return false; }
 
     // Загрузка информации о графе
     LOG_INFO("Inserting common data as properties...");
-    queryText = QString("INSERT INTO %0%1").arg(GraphCommon::DB_GRAPH_PROPS_TABLENAME, QString("(prop_name, prop_value) VALUES ('%1', '%2')"));
+    queryText = QString("INSERT INTO %0%1").arg(DB_GRAPH_PROPS_TABLENAME, QString("(prop_name, prop_value) VALUES ('%1', '%2')"));
 
     if (!executeQuery(q, queryText.arg("name",          iGraphObject->getName()))) { return false; }
     if (!executeQuery(q, queryText.arg("description",   iGraphObject->getDescription()))) { return false; }
@@ -79,7 +120,7 @@ bool GSE_Format::save(const QString &targetPath) const
 
     // Загрузка вершин в таблицу
     LOG_INFO("Inserting vertices info...");
-    auto queryTextBase = QString("INSERT INTO %0 VALUES (").arg(GraphCommon::DB_GRAPH_VERTICES_TABLENAME);
+    auto queryTextBase = QString("INSERT INTO %0 VALUES (").arg(DB_GRAPH_VERTICES_TABLENAME);
     for (auto& vert : iGraphObject->getAllVertices()) {
         queryText = queryTextBase;
 
@@ -90,8 +131,8 @@ bool GSE_Format::save(const QString &targetPath) const
         queryText += "'" + vert.name + "',";
         queryText += "'" + vert.description + "',";
         queryText += "'" + QJsonDocument(vert.customProperties).toJson().toHex() + "',";
-        queryText += "'" + getEncoded(vert.borderColor) + "',";
-        queryText += "'" + getEncoded(vert.backgroundColor) + "',";
+        queryText += "'" + GraphCommon::encodeColor(vert.borderColor) + "',";
+        queryText += "'" + GraphCommon::encodeColor(vert.backgroundColor) + "',";
         queryText += "'" + getEncoded(QPixmap::fromImage(vert.image)) + "'";
 
         queryText += ")";
@@ -99,7 +140,7 @@ bool GSE_Format::save(const QString &targetPath) const
     }
 
     LOG_INFO("Inserting connections info...");
-    queryTextBase = QString("INSERT INTO %0 VALUES (").arg(GraphCommon::DB_GRAPH_CONNECTIONS_TABLENAME);
+    queryTextBase = QString("INSERT INTO %0 VALUES (").arg(DB_GRAPH_CONNECTIONS_TABLENAME);
     for (auto& con : iGraphObject->getAllConnections()) {
         queryText = queryTextBase;
 
@@ -108,7 +149,7 @@ bool GSE_Format::save(const QString &targetPath) const
         queryText += QString::number(con.idTo) + ",";
         queryText += QString::number(con.connectionWeight) + ",";
         queryText += "'" + con.name + "',";
-        queryText += "'" + getEncoded(con.lineColor) + "'";
+        queryText += "'" + GraphCommon::encodeColor(con.lineColor) + "'";
 
         queryText += ")";
         if (!executeQuery(q, queryText)) { return false; }
@@ -150,9 +191,9 @@ bool GSE_Format::load(const QString &targetPath)
     bool containConnections {false};
     while (q.next()) {
         auto tableName = q.value(0).toString();
-        containProps        |= tableName == GraphCommon::DB_GRAPH_PROPS_TABLENAME;
-        containVertices     |= tableName == GraphCommon::DB_GRAPH_VERTICES_TABLENAME;
-        containConnections  |= tableName == GraphCommon::DB_GRAPH_CONNECTIONS_TABLENAME;
+        containProps        |= tableName == DB_GRAPH_PROPS_TABLENAME;
+        containVertices     |= tableName == DB_GRAPH_VERTICES_TABLENAME;
+        containConnections  |= tableName == DB_GRAPH_CONNECTIONS_TABLENAME;
 
         if (containProps && containVertices && containConnections) {
             break;
@@ -166,7 +207,7 @@ bool GSE_Format::load(const QString &targetPath)
 
     // Загрузка информации о графе
     LOG_INFO("Loading common data as properties...");
-    auto queryText = QString("SELECT prop_name, prop_value FROM %0 WHERE prop_name IN ('name', 'description', 'create time', 'edit time') ORDER BY id ASC").arg(GraphCommon::DB_GRAPH_PROPS_TABLENAME);
+    auto queryText = QString("SELECT prop_name, prop_value FROM %0 WHERE prop_name IN ('name', 'description', 'create time', 'edit time') ORDER BY id ASC").arg(DB_GRAPH_PROPS_TABLENAME);
     if (!executeQuery(q, queryText)) { return false; }
 
     std::map<QString, QVariant> commonValues;
@@ -188,7 +229,7 @@ bool GSE_Format::load(const QString &targetPath)
     oGraphObject->setEditTime(QDateTime::fromString(commonValues["edit time"].toString(), GraphCommon::DATE_CONVERSION_FORMAT));
 
     LOG_INFO("Loading user data as properties...");
-    queryText = QString("SELECT prop_name, prop_value FROM %0 WHERE prop_name NOT IN ('name', 'description', 'create time', 'edit time') ORDER BY prop_name ASC").arg(GraphCommon::DB_GRAPH_PROPS_TABLENAME);
+    queryText = QString("SELECT prop_name, prop_value FROM %0 WHERE prop_name NOT IN ('name', 'description', 'create time', 'edit time') ORDER BY prop_name ASC").arg(DB_GRAPH_PROPS_TABLENAME);
     if (!executeQuery(q, queryText)) { return false; }
     while (q.next()) {
         oGraphObject->setCustomValue(q.value(0).toString(), q.value(1));
@@ -196,7 +237,7 @@ bool GSE_Format::load(const QString &targetPath)
 
     // Загрузка вершин
     LOG_INFO("Loading vertices info...");
-    queryText = QString("SELECT * FROM %0").arg(GraphCommon::DB_GRAPH_VERTICES_TABLENAME);
+    queryText = QString("SELECT * FROM %0").arg(DB_GRAPH_VERTICES_TABLENAME);
     if (!executeQuery(q, queryText)) { return false; }
     while (q.next()) {
         Graph::GVertex vert;
@@ -209,14 +250,14 @@ bool GSE_Format::load(const QString &targetPath)
         vert.name               = q.value(valPos++).toString();
         vert.description        = q.value(valPos++).toString();
         vert.customProperties   = QJsonDocument::fromJson(getDecoded(q.value(valPos++).toByteArray())).object();
-        vert.borderColor        = getDecodedColor(q.value(valPos++).toByteArray());
-        vert.backgroundColor    = getDecodedColor(q.value(valPos++).toByteArray());
+        vert.borderColor        = GraphCommon::decodeColor(q.value(valPos++).toByteArray());
+        vert.backgroundColor    = GraphCommon::decodeColor(q.value(valPos++).toByteArray());
         vert.image              = getDecodedPixmap(q.value(valPos++).toByteArray()).toImage();
         oGraphObject->addVertex(vert);
     }
 
     LOG_INFO("Inserting connections info...");
-    queryText = QString("SELECT * FROM %0").arg(GraphCommon::DB_GRAPH_CONNECTIONS_TABLENAME);
+    queryText = QString("SELECT * FROM %0").arg(DB_GRAPH_CONNECTIONS_TABLENAME);
     if (!executeQuery(q, queryText)) { return false; }
     while (q.next()) {
         Graph::GConnection con;
@@ -227,7 +268,7 @@ bool GSE_Format::load(const QString &targetPath)
         con.idTo                = q.value(valPos++).toLongLong();
         con.connectionWeight    = q.value(valPos++).toDouble();
         con.name                = q.value(valPos++).toString();
-        con.lineColor           = getDecodedColor(q.value(valPos++).toByteArray());
+        con.lineColor           = GraphCommon::decodeColor(q.value(valPos++).toByteArray());
 
         oGraphObject->addConnection(con);
     }
@@ -263,15 +304,6 @@ QByteArray GSE_Format::getEncoded(const QByteArray &iStr) const
     return iStr.toHex();
 }
 
-QByteArray GSE_Format::getEncoded(const QColor &iCol) const
-{
-    return QString("#%1%2%3")
-            .arg(iCol.red(), 2, 16, QLatin1Char('0'))
-            .arg(iCol.green(), 2, 16, QLatin1Char('0'))
-            .arg(iCol.blue(), 2, 16, QLatin1Char('0'))
-            .toUpper().toUtf8().data();
-}
-
 QByteArray GSE_Format::getEncoded(const QPixmap &iPxmap) const
 {
     QByteArray bytes;
@@ -292,15 +324,6 @@ QPixmap GSE_Format::getDecodedPixmap(const QByteArray &iBytes) const
     QPixmap pxmap;
     pxmap.loadFromData(QByteArray::fromHex(iBytes), "PNG");
     return pxmap;
-}
-
-QColor GSE_Format::getDecodedColor(const QByteArray &iBytes) const
-{
-    if (iBytes.length() != 7) {
-        LOG_WARNING("Invalid color string:", iBytes);
-        return {};
-    }
-    return QColor(iBytes.data());
 }
 
 }

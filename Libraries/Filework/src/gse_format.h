@@ -39,13 +39,6 @@ private:
     QByteArray getEncoded(const QByteArray& iStr) const;
 
     /**
-     * @brief getEncoded Конвертировать цвет во внутренний способ хранения
-     * @param iCol Входной цвет
-     * @return Массив байт
-     */
-    QByteArray getEncoded(const QColor& iCol) const;
-
-    /**
      * @brief getEncoded Конвертировать pixmap в base64 PNG кодированный набор байт
      * @param iPxmap Входное изображение
      * @return Массив байт
@@ -65,13 +58,6 @@ private:
      * @return Декодированный pixmap
      */
     QPixmap getDecodedPixmap(const QByteArray& iBytes) const;
-
-    /**
-     * @brief getDecodedColor Получить цвет из массива байт внутреннего способа хранения
-     * @param iBytes Входной массив байт
-     * @return Декодированный цвет
-     */
-    QColor getDecodedColor(const QByteArray& iBytes) const;
 };
 
 }

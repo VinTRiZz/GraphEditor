@@ -5,19 +5,22 @@
 namespace GraphCommon
 {
 
-void showInfo(const QString &text)
+QByteArray encodeColor(const QColor &iCol)
 {
-    QMessageBox::information(nullptr, "Информация", text, QMessageBox::StandardButton::Close);
+    return QString("#%1%2%3")
+            .arg(iCol.red(), 2, 16, QLatin1Char('0'))
+            .arg(iCol.green(), 2, 16, QLatin1Char('0'))
+            .arg(iCol.blue(), 2, 16, QLatin1Char('0'))
+            .arg(iCol.alpha(), 2, 16, QLatin1Char('0'))
+            .toUpper().toUtf8().data();
 }
 
-void showWarning(const QString &text)
+QColor decodeColor(const QByteArray &iBytes)
 {
-    QMessageBox::warning(nullptr, "Внимание", text, QMessageBox::StandardButton::Close);
-}
-
-void showError(const QString &text)
-{
-    QMessageBox::critical(nullptr, "Ошибка", text, QMessageBox::StandardButton::Close);
+    if (iBytes.length() != 7) {
+        return {};
+    }
+    return QColor(iBytes.data());
 }
 
 

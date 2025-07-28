@@ -191,7 +191,7 @@ bool GSJ_Format::save(const QString &targetPath) const
         return false;
     }
 
-    auto resultData = QJsonDocument(toDataJson()).toJson();
+    auto resultData = QJsonDocument(toDataJson()).toJson(QJsonDocument::Compact);
     return rewriteFileData(targetPath, resultData);
 }
 

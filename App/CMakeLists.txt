@@ -14,7 +14,6 @@ set(
     Qt${QT_VERSION_MAJOR}::Gui
     Qt${QT_VERSION_MAJOR}::Sql
     -lboost_system
-    -lboost_program_options
 )
 
 # Main target

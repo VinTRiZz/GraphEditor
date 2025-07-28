@@ -23,7 +23,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="GraphEditorForm" name="graphEditorForm" native="true"/>
+     <widget class="GraphTabWidget" name="graphEditorForm" native="true"/>
     </item>
    </layout>
   </widget>
@@ -41,9 +41,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>GraphEditorForm</class>
+   <class>GraphTabWidget</class>
    <extends>QWidget</extends>
-   <header location="global">EditorForm/EditorForm.h</header>
+   <header location="global">EditorForm/TabWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

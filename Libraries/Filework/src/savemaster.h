@@ -30,6 +30,18 @@ public:
     static QStringList getAvailableFormats();
 
     /**
+     * @brief getSavePath   Функция получения пути для сохранения файла графа
+     * @return              NULL QString если путь не был выбран
+     */
+    static QString getSavePath();
+
+    /**
+     * @brief getLoadPath   Функция получения пути для загрузки файла графа
+     * @return              NULL QString если путь не был выбран
+     */
+    static QString getLoadPath();
+
+    /**
      * @brief save              Сохранить граф в файл
      * @param oFilePath         Путь до файла для сохранения (файл может не существовать, но его директория -- обязана)
      * @param iGraphMaintaner   Поставщик графа для сохранения

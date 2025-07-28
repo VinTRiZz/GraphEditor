@@ -18,9 +18,6 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <widget class="GraphToolbar" name="buttonToolbar" native="true"/>
-   </item>
-   <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QGroupBox" name="graphScene_groupBox">
@@ -64,12 +61,6 @@
    <class>Graph::GraphPropertyEditForm</class>
    <extends>QWidget</extends>
    <header>GraphEdit/graphpropertyeditform.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>GraphToolbar</class>
-   <extends>QWidget</extends>
-   <header>GraphEdit/graphtoolbar.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -137,7 +137,7 @@ bool GSE_Format::save(const QString &targetPath) const
         queryText += "'" + QJsonDocument(vert.customProperties).toJson().toHex() + "',";
         queryText += "'" + GraphCommon::encodeColor(vert.borderColor) + "',";
         queryText += "'" + GraphCommon::encodeColor(vert.backgroundColor) + "',";
-        queryText += "'" + getEncoded(QPixmap::fromImage(vert.image)) + "'";
+        queryText += "'" + getEncodedPixmap(QPixmap::fromImage(vert.image)) + "'";
 
         queryText += ")";
         if (!executeQuery(q, queryText)) { return false; }
@@ -328,33 +328,6 @@ bool GSE_Format::executeQuery(QSqlQuery &q, const QString &queryText) const
         return false;
     }
     return true;
-}
-
-QByteArray GSE_Format::getEncoded(const QByteArray &iStr) const
-{
-    return iStr.toHex();
-}
-
-QByteArray GSE_Format::getEncoded(const QPixmap &iPxmap) const
-{
-    QByteArray bytes;
-    QBuffer byteBuff(&bytes);
-    if (iPxmap.save(&byteBuff, "PNG")) {
-        return bytes.toHex();
-    }
-    return {};
-}
-
-QByteArray GSE_Format::getDecoded(const QByteArray &iBytes) const
-{
-    return QByteArray::fromHex(iBytes);
-}
-
-QPixmap GSE_Format::getDecodedPixmap(const QByteArray &iBytes) const
-{
-    QPixmap pxmap;
-    pxmap.loadFromData(QByteArray::fromHex(iBytes), "PNG");
-    return pxmap;
 }
 
 }

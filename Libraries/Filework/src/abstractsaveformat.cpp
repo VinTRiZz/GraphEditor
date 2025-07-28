@@ -1,6 +1,7 @@
 #include "abstractsaveformat.h"
 
 #include <QFile>
+#include <QBuffer>
 
 namespace Filework
 {
@@ -55,6 +56,33 @@ bool AbstractSaveFormat::readFromFile(const QString &filePath, QByteArray &oData
     }
     oData = targetFile.readAll();
     return true;
+}
+
+QByteArray AbstractSaveFormat::getEncoded(const QByteArray &iStr) const
+{
+    return iStr.toHex();
+}
+
+QByteArray AbstractSaveFormat::getEncodedPixmap(const QPixmap &iPxmap) const
+{
+    QByteArray bytes;
+    QBuffer byteBuff(&bytes);
+    if (iPxmap.save(&byteBuff, "PNG")) {
+        return bytes.toHex();
+    }
+    return {};
+}
+
+QByteArray AbstractSaveFormat::getDecoded(const QByteArray &iBytes) const
+{
+    return QByteArray::fromHex(iBytes);
+}
+
+QPixmap AbstractSaveFormat::getDecodedPixmap(const QByteArray &iBytes) const
+{
+    QPixmap pxmap;
+    pxmap.loadFromData(QByteArray::fromHex(iBytes), "PNG");
+    return pxmap;
 }
 
 }

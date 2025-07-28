@@ -12,6 +12,8 @@
 #include <QMessageBox>
 
 #include <QFileInfo>
+#include <QFileDialog>
+#include <QDir>
 
 QString SaveMaster::formatToDefaultPath(const QString &iPath)
 {
@@ -31,27 +33,68 @@ QStringList SaveMaster::getAvailableFormats()
     return res;
 }
 
+QString SaveMaster::getSavePath()
+{
+    return QFileDialog::getSaveFileName(
+                nullptr,
+                "Файл для сохранения графа",
+                QDir::homePath(),
+                getAvailableFormats().join(";;"));
+}
+
+QString SaveMaster::getLoadPath()
+{
+    return QFileDialog::getOpenFileName(
+                nullptr,
+                "Файл для загрузки",
+                QDir::homePath(),
+                getAvailableFormats().join(";;"));
+}
+
 bool SaveMaster::save(const QString &oFilePath, Graph::PMaintainer iGraphMaintaner)
 {
     auto fileSuffix = QFileInfo(oFilePath).completeSuffix();
     auto pFormat = getFormat(fileSuffix);
-    pFormat->setGraphMaintaner(iGraphMaintaner);
-    if (fileSuffix.isEmpty()) {
-        return pFormat->save(formatToDefaultPath(oFilePath));
+    if (!pFormat) {
+        LOG_ERROR("Format did not recognized");
+        return false;
     }
-    return pFormat->save(oFilePath);
+
+    pFormat->setGraphMaintaner(iGraphMaintaner);
+
+    auto res = false;
+    if (fileSuffix.isEmpty()) {
+        res = pFormat->save(formatToDefaultPath(oFilePath));
+    } else {
+        res = pFormat->save(oFilePath);
+    }
+
+    if (res) {
+        LOG_OK("Saved graph by path:", oFilePath);
+    } else {
+        LOG_OK("Graph not saved. Path:", oFilePath);
+    }
+    return res;
 }
 
 bool SaveMaster::load(const QString &iFilePath, Graph::PMaintainer oGraphMaintaner)
 {
     auto fileSuffix = QFileInfo(iFilePath).completeSuffix();
-    if (fileSuffix.isEmpty()) {
-        throw std::runtime_error("No suffix passed into LOAD function");
+    auto pFormat = getFormat(fileSuffix);
+    if (!pFormat) {
+        LOG_ERROR("Format did not recognized");
+        return false;
     }
 
-    auto pFormat = getFormat(fileSuffix);
     pFormat->setGraphMaintaner(oGraphMaintaner);
-    return pFormat->load(iFilePath);
+    auto res = pFormat->load(iFilePath);
+
+    if (res) {
+        LOG_OK("Saved graph by path:", iFilePath);
+    } else {
+        LOG_OK("Graph not saved. Path:", iFilePath);
+    }
+    return res;
 }
 
 std::shared_ptr<Filework::AbstractSaveFormat> SaveMaster::getFormat(const QString &fileSuffix)

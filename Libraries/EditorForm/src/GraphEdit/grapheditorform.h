@@ -29,41 +29,50 @@ public:
     ~GraphEditorForm();
 
     /**
-     * @brief init Инициализация формы. Необходимо вызвать до использования для корректной работы
+     * @brief setGraph      Задать граф
+     * @param saveFilePath  Путь до файла графа
+     * @retval              true при успешном открытии графа
      */
-    void init();
+    bool setGraph(const QString& saveFilePath);
+
+    /**
+     * @brief getGraph  Получить заданный граф
+     * @return          Указатель на мейнтейнер графов
+     */
+    Graph::PMaintainer getGraph() const;
+
+    /**
+     * @brief getIsSavepathValid    Проверка, существует ли файл по целевому пути для сохранения и загрузки
+     * @param targetPath            Целевой путь
+     * @return                      true если граф может быть сохранён
+     */
+    bool getIsSavepathValid() const;
+
+    /**
+     * @brief saveGraph Сохранение текущего графа в файл
+     * @param targetPath    Путь к файлу
+     */
+    void saveGraph(const QString &targetPath = {});
+
+    /**
+     * @brief loadGraph     Выгрузить граф из файла
+     * @param targetPath    Путь к файлу
+     */
+    void loadGraph(const QString &targetPath = {});
+
+    void setEditMode();
+    void setViewMode();
+    void setAlgoMode();
+    void setCrimeMode();
 
 private:
     Ui::GraphEditorForm *ui;
+    Graph::PMaintainer  m_graphMaintainer;  //! Текущий граф
+    QString m_lastSavePath; //! Путь до файла с последним сохранённым графом
 
-    Graph::PMaintainer  m_currentGraph;         //! Текущий граф
-    QString             m_currentGraphFilePath; //! Путь для сохранения графа в файл
-
-    /**
-     * @brief isGraphPathSet Проверить, задан ли путь для сохранения/загрузки графа. Вызовет диалог и задаст путь, если он пуст или не валидный
-     * @return true если путь корректен после ввода пользователем
-     */
-    bool isGraphPathSet();
-
-    /**
-     * @brief saveGraph Сохранение текущего графа в файл m_currentGraphFilePath
-     */
-    void saveGraph();
-
-    /**
-     * @brief loadGraph Выгрузить граф из выбранного в m_currentGraphFilePath пути
-     */
-    void loadGraph();
-
-    /**
-     * @brief setupSignals Настройка сигналов виджета
-     */
-    void setupSignals();
-
-    /**
-     * @brief setupWidget Настройка виджетов формы
-     */
-    void setupWidget();
+public slots:
+    void showProperties();
+    void hideProperties();
 };
 
 #endif // GRAPHEDITORFORM_H

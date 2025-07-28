@@ -40,8 +40,8 @@ bool GSJ_Format::initFromDataJson(const QJsonObject &iJson)
     const QJsonObject common = props["common"].toObject();
     pMaintainer->setName(common["name"].toString());
     pMaintainer->setDescription(common["descr"].toString());
-    pMaintainer->setCreateTime(QDateTime::fromString(common["created"].toString(), Qt::ISODate));
-    pMaintainer->setEditTime(QDateTime::fromString(common["edited"].toString(), Qt::ISODate));
+    pMaintainer->setCreateTime(QDateTime::fromString(common["created"].toString(), GraphCommon::DATE_CONVERSION_FORMAT));
+    pMaintainer->setEditTime(QDateTime::fromString(common["edited"].toString(), GraphCommon::DATE_CONVERSION_FORMAT));
 
     const QJsonObject custom = props["custom"].toObject();
     for (const auto& key : custom.keys()) {
@@ -62,6 +62,7 @@ bool GSJ_Format::initFromDataJson(const QJsonObject &iJson)
         vertex.description = vObj["description"].toString();
         vertex.borderColor = GraphCommon::decodeColor(vObj["borderColor"].toString().toUtf8());
         vertex.backgroundColor = GraphCommon::decodeColor(vObj["backgroundColor"].toString().toUtf8());
+        vertex.image = getDecodedPixmap(vObj["image"].toString().toUtf8().data()).toImage();
 
         if (vObj.contains("customProperties") && vObj["customProperties"].isObject()) {
             vertex.customProperties = vObj["customProperties"].toObject();
@@ -114,8 +115,8 @@ QJsonObject GSJ_Format::toDataJson() const
     QJsonObject commonObj;
     commonObj["name"] = pMaintainer->getName();
     commonObj["descr"] = pMaintainer->getDescription();
-    commonObj["created"] = pMaintainer->getCreateTime().toString(Qt::ISODate);
-    commonObj["edited"] = pMaintainer->getEditTime().toString(Qt::ISODate);
+    commonObj["created"] = pMaintainer->getCreateTime().toString(GraphCommon::DATE_CONVERSION_FORMAT);
+    commonObj["edited"] = pMaintainer->getEditTime().toString(GraphCommon::DATE_CONVERSION_FORMAT);
     propertiesObj["common"] = commonObj;
 
     // Custom properties
@@ -141,6 +142,7 @@ QJsonObject GSJ_Format::toDataJson() const
         vObj["borderColor"] = GraphCommon::encodeColor(vertex.borderColor).data();
         vObj["backgroundColor"] = GraphCommon::encodeColor(vertex.backgroundColor).data();
         vObj["customProperties"] = vertex.customProperties;
+        vObj["image"] = getEncodedPixmap(QPixmap::fromImage(vertex.image)).data();
 
         verticesObj[QString::number(vertex.id)] = vObj;
     }

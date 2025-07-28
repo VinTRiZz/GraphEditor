@@ -9,7 +9,21 @@ class GraphToolbar : public ButtonToolbar::HeadWidget
 public:
     explicit GraphToolbar(QWidget* parent = nullptr);
 
-    void init();
+    void setShowPropertiesEnabled(bool isSaveEnabled);
+
+    enum class GraphEditorMode : int
+    {
+        EditBasicGraph,
+        ViewInteraction,
+        Algorithmic,
+        CrimeInvestigation
+    };
+    void setModeEnabled(GraphEditorMode editorMode, bool isLoadEnabled);
+
+    void setSaveEnabled(bool isSaveEnabled);
+    void setSaveAsEnabled(bool isSaveAsEnabled);
+
+    void setLoadEnabled(bool isLoadEnabled);
 
 signals:
     void showProperties();
@@ -19,6 +33,14 @@ signals:
     void loadGraph(const QString& lPath);
 
     void changeMode();
+
+private:
+    std::map<GraphEditorMode, int> m_modeIndexes;
+    unsigned m_showPropertiesButtonIndex {0};
+    unsigned m_saveButtonIndex {0};
+    unsigned m_saveAsButtonIndex {0};
+    unsigned m_loadButtonIndex {0};
 };
 
 #endif // GRAPHTOOLBAR_H
+

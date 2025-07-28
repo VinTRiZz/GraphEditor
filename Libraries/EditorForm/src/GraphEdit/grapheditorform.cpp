@@ -20,6 +20,17 @@ GraphEditorForm::GraphEditorForm(QWidget *parent) :
     ui(new Ui::GraphEditorForm)
 {
     ui->setupUi(this);
+
+    ui->graphScene->init();
+    ui->graphScene->startEditMode();
+
+    m_graphMaintainer = Graph::GraphMaintainer::createInstance();
+
+    m_graphMaintainer->setCreateTime(QDateTime::currentDateTime());
+
+    ui->graphScene->setGraphMaintaner(m_graphMaintainer);
+    ui->propertyEditForm->setCurrentGraph(m_graphMaintainer);
+    ui->propertyEditForm->hide();
 }
 
 GraphEditorForm::~GraphEditorForm()
@@ -27,44 +38,42 @@ GraphEditorForm::~GraphEditorForm()
     delete ui;
 }
 
-void GraphEditorForm::init()
+bool GraphEditorForm::setGraph(const QString &saveFilePath)
 {
-    ui->graphScene->init();
-    ui->graphScene->startEditMode();
-
-    m_currentGraph = Graph::GraphMaintainer::createInstance();
-
-    m_currentGraph->setCreateTime(QDateTime::currentDateTime());
-
-    setupWidget();
-    setupSignals();
-
-    ui->graphScene->setGraphMaintaner(m_currentGraph);
-    ui->propertyEditForm->setCurrentGraph(m_currentGraph);
-    ui->propertyEditForm->hide();
+    loadGraph(saveFilePath);
+    return getIsSavepathValid();
 }
 
-bool GraphEditorForm::isGraphPathSet()
+Graph::PMaintainer GraphEditorForm::getGraph() const
 {
-    if (!m_currentGraphFilePath.isEmpty() && QFileInfo(m_currentGraphFilePath).exists()) {
-        return true;
+    return m_graphMaintainer;
+}
+
+bool GraphEditorForm::getIsSavepathValid() const
+{
+    if (m_lastSavePath.isEmpty()) {
+        return false;
     }
-    return true;
+    return QFileInfo(m_lastSavePath).exists();
 }
 
-void GraphEditorForm::saveGraph()
+void GraphEditorForm::saveGraph(const QString& targetPath)
 {
-    if (m_currentGraphFilePath.isEmpty()) {
-        LOG_WARNING("Save failed: empty path");
+    // СОГЛАШЕНИЕ: Если путь не задан, то сохранить по последнему заданному
+    if (!targetPath.isEmpty()) {
+        m_lastSavePath = targetPath;
+    }
+    if (!QFileInfo(targetPath).dir().exists()) {
+        LOG_ERROR("Can not saving file with path:", m_lastSavePath);
         return;
     }
 
-    m_currentGraph->setEditTime(QDateTime::currentDateTime());
+    m_graphMaintainer->setEditTime(QDateTime::currentDateTime());
 
     ui->graphScene->writeChangesToGraph();
 
     SaveMaster saveMaster;
-    auto saveSucceed = saveMaster.save(m_currentGraphFilePath, m_currentGraph);
+    auto saveSucceed = saveMaster.save(m_lastSavePath, m_graphMaintainer);
     if (!saveSucceed) {
         QMessageBox::critical(this, "Ошибка сохранения", "Возникла ошибка при сохранении данных.\nПроверьте: \nПрава доступа к директории;\nФакт её существования");
         return;
@@ -73,15 +82,19 @@ void GraphEditorForm::saveGraph()
     ui->propertyEditForm->updateGraphInfo();
 }
 
-void GraphEditorForm::loadGraph()
+void GraphEditorForm::loadGraph(const QString& targetPath)
 {
-    if (m_currentGraphFilePath.isEmpty()) {
-        LOG_WARNING("Load failed: empty path");
+    // СОГЛАШЕНИЕ: Если путь не задан, то загрузить по последнему заданному
+    if (!targetPath.isEmpty()) {
+        m_lastSavePath = targetPath;
+    }
+    if (!getIsSavepathValid()) {
+        LOG_ERROR("Can not loading file with path:", m_lastSavePath);
         return;
     }
 
     SaveMaster saveMaster;
-    auto loadSucceed = saveMaster.load(m_currentGraphFilePath, m_currentGraph);
+    auto loadSucceed = saveMaster.load(m_lastSavePath, m_graphMaintainer);
     if (!loadSucceed) {
         QMessageBox::critical(
                     this,
@@ -99,41 +112,32 @@ R"(Возникла ошибка при сохранении данных.
     ui->graphScene->updateGraph();
 }
 
-void GraphEditorForm::setupSignals()
+void GraphEditorForm::setEditMode()
 {
-    connect(ui->buttonToolbar, &GraphToolbar::showProperties,
-            ui->propertyEditForm, &Graph::GraphPropertyEditForm::showAnimated);
-
-    connect(ui->buttonToolbar, &GraphToolbar::hideProperties,
-            ui->propertyEditForm, &Graph::GraphPropertyEditForm::hideAnimated);
-
-    connect(ui->buttonToolbar, &GraphToolbar::saveGraph,
-            this, [this](const QString& filePath){
-        if (!filePath.isEmpty()) { // Негласное соглашение
-            m_currentGraphFilePath = filePath;
-        }
-        saveGraph();
-    });
-
-    connect(ui->buttonToolbar, &GraphToolbar::loadGraph,
-            this, [this](const QString& filePath){
-        if (!filePath.isEmpty()) { // Негласное соглашение
-            m_currentGraphFilePath = filePath;
-        }
-        loadGraph();
-    });
-
-    connect(ui->buttonToolbar, &GraphToolbar::changeMode,
-            ui->graphScene, [this](){
-        if (ui->graphScene->isEditMode()) {
-            ui->graphScene->startViewMode();
-        } else if (ui->graphScene->isViewMode()) {
-            ui->graphScene->startEditMode();
-        }
-    });
+    ui->graphScene->startEditMode();
 }
 
-void GraphEditorForm::setupWidget()
+void GraphEditorForm::setViewMode()
+{
+    ui->graphScene->startViewMode();
+}
+
+void GraphEditorForm::setAlgoMode()
 {
 
+}
+
+void GraphEditorForm::setCrimeMode()
+{
+
+}
+
+void GraphEditorForm::showProperties()
+{
+    ui->propertyEditForm->showAnimated();
+}
+
+void GraphEditorForm::hideProperties()
+{
+    ui->propertyEditForm->hideAnimated();
 }

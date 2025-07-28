@@ -29,6 +29,22 @@ private:
 protected:
     bool rewriteFileData(const QString& filePath, const QByteArray& iData) const;
     bool readFromFile(const QString& filePath, QByteArray& oData) const;
+
+    /**
+     * @brief getEncoded Транслировать символы, которые могут иметь управляющие символы, в base64
+     * @param iStr Входной массив байт
+     * @return Конвертированный массив байт
+     */
+    QByteArray getEncoded(const QByteArray& iStr) const;
+    QByteArray getDecoded(const QByteArray& iBytes) const;
+
+    /**
+     * @brief getEncodedPixmap  Конвертировать pixmap в base64 PNG кодированный набор байт
+     * @param iPxmap            Входное изображение
+     * @return                  Массив байт
+     */
+    QByteArray getEncodedPixmap(const QPixmap& iPxmap) const;
+    QPixmap getDecodedPixmap(const QByteArray& iBytes) const;
 };
 
 }

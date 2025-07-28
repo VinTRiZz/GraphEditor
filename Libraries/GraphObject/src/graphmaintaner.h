@@ -4,6 +4,8 @@
 #include "graphobject.h"
 #include "graphextendedobject.h"
 
+#include <QObject>
+
 namespace Graph
 {
 
@@ -13,8 +15,9 @@ using PMaintainer = std::shared_ptr<Graph::GraphMaintainer>;
 /**
  * @brief The GraphMaintainer class Мастер данных графа
  */
-class GraphMaintainer
+class GraphMaintainer : public QObject
 {
+    Q_OBJECT
 public:
     GraphMaintainer();
     ~GraphMaintainer();
@@ -120,6 +123,17 @@ public:
      * @return                      Словарь ключ-значение пользовательских данных
      */
     std::map<QString, QVariant> getCustomValueMap() const;
+
+signals:
+    /**
+     * @brief changedCommonProperty Сигналит на изменение имени, описания, времени создания/редактирования
+     */
+    void changedCommonProperty();
+
+    /**
+     * @brief changedCustomProperty Сигналит на любое изменение свойтсв, от удаления до задания и добавления
+     */
+    void changedCustomProperty();
 
 private:
     GraphExtendedObject m_graph;

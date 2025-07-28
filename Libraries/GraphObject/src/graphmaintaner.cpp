@@ -105,6 +105,7 @@ void GraphMaintainer::resetMaintainer()
 void GraphMaintainer::setName(const QString &iName)
 {
     m_name = iName;
+    emit changedCommonProperty();
 }
 
 QString GraphMaintainer::getName() const
@@ -115,6 +116,7 @@ QString GraphMaintainer::getName() const
 void GraphMaintainer::setDescription(const QString &iDescr)
 {
     m_description = iDescr;
+    emit changedCommonProperty();
 }
 
 QString GraphMaintainer::getDescription() const
@@ -125,6 +127,7 @@ QString GraphMaintainer::getDescription() const
 void GraphMaintainer::setCreateTime(const QDateTime &iDateTime)
 {
     m_createTime = iDateTime;
+    emit changedCommonProperty();
 }
 
 QDateTime GraphMaintainer::getCreateTime() const
@@ -135,6 +138,7 @@ QDateTime GraphMaintainer::getCreateTime() const
 void GraphMaintainer::setEditTime(const QDateTime &iDateTime)
 {
     m_editTime = iDateTime;
+    emit changedCommonProperty();
 }
 
 QDateTime GraphMaintainer::getEditTime() const
@@ -145,6 +149,7 @@ QDateTime GraphMaintainer::getEditTime() const
 void GraphMaintainer::setCustomValue(const QString &key, const QVariant &value)
 {
     m_customDataValues[key] = value;
+    emit changedCustomProperty();
 }
 
 void GraphMaintainer::removeCustomValue(const QString &key)
@@ -154,6 +159,7 @@ void GraphMaintainer::removeCustomValue(const QString &key)
         return;
     }
     m_customDataValues.erase(targetValIt);
+    emit changedCustomProperty();
 }
 
 QVariant GraphMaintainer::getCustomValue(const QString &key) const

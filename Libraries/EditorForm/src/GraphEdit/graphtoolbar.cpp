@@ -9,15 +9,12 @@
 GraphToolbar::GraphToolbar(QWidget* parent) :
     ButtonToolbar::HeadWidget(parent)
 {
-    init();
-}
-
-void GraphToolbar::init()
-{
     setButtonSize(QSize(35, 35));
 
     ButtonToolbar::ButtonConfig buttonInfo;
 
+    buttonInfo.buttonPos = 0;
+    m_showPropertiesButtonIndex = buttonInfo.buttonPos;
     buttonInfo.icon = QIcon(":/common/images/icons/common/edit_properties.svg");
     buttonInfo.tooltip = "Показать свойства графа";
     buttonInfo.action = [this](QPushButton* pSender) {
@@ -37,6 +34,7 @@ void GraphToolbar::init()
 
 
     buttonInfo.buttonPos++;
+    m_loadButtonIndex = buttonInfo.buttonPos;
     buttonInfo.icon = QIcon(":/common/images/icons/common/graph_cancel_changes.svg");
     buttonInfo.tooltip = "Отменить изменения";
     buttonInfo.action = [this](QPushButton*) {
@@ -46,55 +44,44 @@ void GraphToolbar::init()
     addButton(buttonInfo);
     buttonInfo.isEnabled = true;
 
-
-    auto cancelChangesPos = buttonInfo.buttonPos;
+    buttonInfo.buttonPos++;
+    m_saveButtonIndex = buttonInfo.buttonPos;
     buttonInfo.icon = QIcon(":/common/images/icons/common/graph_save.svg");
     buttonInfo.tooltip = "Сохранить";
-    buttonInfo.buttonPos++;
-    buttonInfo.action = [this, cancelChangesPos](QPushButton*) mutable {
+    buttonInfo.action = [this](QPushButton*) mutable {
         emit saveGraph({});
-        setButtonEnabled(cancelChangesPos, true);
+        setLoadEnabled(true);
     };
     buttonInfo.isEnabled = false;
     addButton(buttonInfo);
     buttonInfo.isEnabled = true;
 
 
-    auto saveChangesChangesPos = buttonInfo.buttonPos;
     buttonInfo.buttonPos++;
     buttonInfo.icon = QIcon(":/common/images/icons/common/graph_open.svg");
     buttonInfo.tooltip = "Открыть файл графа";
-    buttonInfo.action = [this, saveChangesChangesPos](QPushButton* pButton) {
-        auto graphPath =
-                QFileDialog::getOpenFileName(
-                    this,
-                    "Файл для сохранения графа",
-                    QDir::homePath(),
-                    SaveMaster::getAvailableFormats().join(";;"));
+    buttonInfo.action = [this](QPushButton* pButton) {
+        auto graphPath = SaveMaster::getLoadPath();
         if (graphPath.isEmpty()) {
             return;
         }
         loadGraph(graphPath);
-        setButtonEnabled(saveChangesChangesPos, true);
+        setSaveEnabled(true);
     };
     addButton(buttonInfo);
 
 
     buttonInfo.buttonPos++;
+    m_saveAsButtonIndex = buttonInfo.buttonPos;
     buttonInfo.icon = QIcon(":/common/images/icons/common/graph_save_as.svg");
     buttonInfo.tooltip = "Сохранить как...";
-    buttonInfo.action = [this, saveChangesChangesPos](QPushButton* pButton) {
-        auto graphPath =
-                QFileDialog::getSaveFileName(
-                    this,
-                    "Файл для сохранения графа",
-                    QDir::homePath(),
-                    SaveMaster::getAvailableFormats().join(";;"));
+    buttonInfo.action = [this](QPushButton* pButton) {
+        auto graphPath = SaveMaster::getSavePath();
         if (graphPath.isEmpty()) {
             return;
         }
         emit saveGraph(graphPath);
-        setButtonEnabled(saveChangesChangesPos, true);
+        setSaveEnabled(true);
     };
     addButton(buttonInfo);
 
@@ -106,4 +93,24 @@ void GraphToolbar::init()
 //    };
 
 //    addButton(buttonInfo);
+}
+
+void GraphToolbar::setShowPropertiesEnabled(bool isSaveEnabled)
+{
+    setButtonEnabled(m_showPropertiesButtonIndex, isSaveEnabled);
+}
+
+void GraphToolbar::setSaveEnabled(bool isSaveEnabled)
+{
+    setButtonEnabled(m_saveButtonIndex, isSaveEnabled);
+}
+
+void GraphToolbar::setSaveAsEnabled(bool isSaveAsEnabled)
+{
+    setButtonEnabled(m_saveAsButtonIndex, isSaveAsEnabled);
+}
+
+void GraphToolbar::setLoadEnabled(bool isLoadEnabled)
+{
+    setButtonEnabled(m_loadButtonIndex, isLoadEnabled);
 }

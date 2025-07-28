@@ -16,18 +16,10 @@
 #include <boost/fusion/include/make_tuple.hpp>
 #endif // C++ 17
 
-#ifdef QT_CORE_LIB
 #include <QDebug>
 #include <QFile>
-
+#include <QDir>
 #include <QPoint>
-#endif // QT_CORE_LIB
-
-#ifndef QT_CORE_LIB
-#include  <iostream>
-#include <fstream>
-#endif // ! QT_CORE_LIB
-
 
 namespace Logging
 {
@@ -83,19 +75,14 @@ template <LoggingType LogType> constexpr const char* logTypeString()
     return "";
 }
 
-const std::string LOGFILE_NAME {"app.log"}; //! Путь или название для лог-файла
-
 /**
  * @brief The LoggingMaster class Мастер вывода информации (логов). Синглетон
  */
 class LoggingMaster : boost::noncopyable
 {
-#ifdef QT_CORE_LIB
-    QFile       logfile         {LOGFILE_NAME.c_str()}; //! Логфайл
-    QTextStream logfileStream   {&logfile};             //! Поток ввода в файл данных
-#else
-    std::fstream logfile; //! Логфайл
-#endif // QT_CORE_LIB
+    QFile       logfile;                    //! Логфайл
+    QTextStream logfileStream   {&logfile}; //! Поток ввода в файл данных
+
     std::mutex  logfileMx; //! Мьютекс для единоличной записи данных в файл
 
     /**
@@ -103,9 +90,7 @@ class LoggingMaster : boost::noncopyable
      */
     class LoggingHelper
     {
-#ifdef QT_CORE_LIB
         QDebug m_dbgStream {qDebug()}; //! Поток вывод (для Qt)
-#endif // QT_CORE_LIB
 
     public:
 
@@ -124,11 +109,7 @@ class LoggingMaster : boost::noncopyable
          */
         template <typename T>
         void ostreamWriteOnly(T val) {
-#ifdef QT_CORE_LIB
             m_dbgStream << val;
-#else
-            std::cout << val << " ";
-#endif // QT_CORE_LIB
         }
 
         /**
@@ -166,7 +147,42 @@ class LoggingMaster : boost::noncopyable
         addTaskCV.notify_one();
     }
 
+    std::string getCurrentTimestamp() const {
+        // System time value
+        auto timeValue = std::time(nullptr);
+        auto locTime = std::localtime(&timeValue);
+
+        auto formattedNumber = [](uint8_t iNum) -> std::string {
+            return (iNum > 9 ? std::to_string(iNum) : std::string("0") + std::to_string(iNum));
+        };
+
+        return {
+            formattedNumber(locTime->tm_mday) + "." + formattedNumber(locTime->tm_mon) + ".20" + formattedNumber(locTime->tm_year - 100) + " " +
+            formattedNumber(locTime->tm_hour) + ":" + formattedNumber(locTime->tm_min) + ":" + formattedNumber(locTime->tm_sec)
+        };
+    }
+
+    std::string getCurrentTimestampFormatted() const {
+        // System time value
+        auto timeValue = std::time(nullptr);
+        auto locTime = std::localtime(&timeValue);
+
+        auto formattedNumber = [](uint8_t iNum) -> std::string {
+            return (iNum > 9 ? std::to_string(iNum) : std::string("0") + std::to_string(iNum));
+        };
+
+        return {
+            formattedNumber(locTime->tm_hour) + "-" + formattedNumber(locTime->tm_min) + "-" + formattedNumber(locTime->tm_sec) + "_" +
+            formattedNumber(locTime->tm_mday) + "-" + formattedNumber(locTime->tm_mon) + "-20" + formattedNumber(locTime->tm_year - 100)
+        };
+    }
+
     LoggingMaster() {
+        auto logsDir = QDir::current();
+        logsDir.mkdir("logs");
+        logsDir.cd("logs");
+        logfile.setFileName(logsDir.absolutePath() + QDir::separator() + getCurrentTimestampFormatted().c_str() + ".log");
+
         isWorking = true;
         logThread = std::thread([this](){
             isThreadExited = false;
@@ -216,32 +232,15 @@ public:
     template <LoggingType lt, bool isSync, typename...Args>
     void log(Args...args) {
 
-        // System time value
-        auto timeValue = std::time(nullptr);
-        auto locTime = std::localtime(&timeValue);
-
-        auto formattedNumber = [](uint8_t iNum) -> std::string {
-            return (iNum > 9 ? std::to_string(iNum) : std::string("0") + std::to_string(iNum));
-        };
-
-        std::string timestamp {
-            formattedNumber(locTime->tm_mday) + "." + formattedNumber(locTime->tm_mon) + ".20" + formattedNumber(locTime->tm_year - 100) + " " +
-            formattedNumber(locTime->tm_hour) + ":" + formattedNumber(locTime->tm_min) + ":" + formattedNumber(locTime->tm_sec)
-        };
+        auto timestamp = getCurrentTimestamp();
 
         auto task = [=](){
             logfileMx.lock();
-#ifdef QT_CORE_LIB
+
             logfile.open(QIODevice::Append);
             if (!logfile.isOpen()) {
                 throw std::runtime_error("Error opening logfile");
             }
-#else
-            logfile.open(LOGFILE_NAME, std::ios_base::out | std::ios_base::app);
-            if (!logfile.is_open()) {
-                throw std::runtime_error("Error opening logfile");
-            }
-#endif // QT_CORE_LIB
 
             LoggingHelper logger;
             logger.ostreamWriteOnly(timestamp + " [" + logTypeStringColored<lt>() + "] ");
@@ -253,12 +252,7 @@ public:
             (logger(args), ...);
 #endif // C++ 17
 
-#ifdef QT_CORE_LIB
             logfileStream << Qt::endl;
-#else
-            std::cout << std::endl;
-            logfile << std::endl;
-#endif // QT_CORE_LIB
             logfile.flush();
             logfile.close();
             logfileMx.unlock();
@@ -282,7 +276,7 @@ public:
 // ============================================================================== //
 // ============================================================================== //
 
-#ifdef QT_CORE_LIB
+
 template <>
 inline void LoggingMaster::LoggingHelper::ostreamWriteOnly(std::string val) {
     m_dbgStream << val.c_str();
@@ -348,7 +342,6 @@ template <>
 inline void LoggingMaster::LoggingHelper::fileWriteOnly(QVariant val) {
     LoggingMaster::getInstance().logfileStream << val.toString().toUtf8().data() << " ";
 }
-#endif // QT_CORE_LIB
 
 
 } // namespace Logging

@@ -37,6 +37,7 @@ const QString DATE_DISPLAY_CONVERSION_FORMAT = "HH:mm:ss dd.MM.yyyy";  //! Фо�
  * @return              Массив байт с кодом цвета
  */
 QByteArray encodeColor(const QColor& iCol);
+QByteArray encodeColorGSE(const QColor& iCol);
 
 /**
  * @brief decodeColor   Получить цвет из массива байт внутреннего способа хранения
@@ -44,6 +45,7 @@ QByteArray encodeColor(const QColor& iCol);
  * @return              Декодированный цвет
  */
 QColor decodeColor(const QByteArray &iBytes);
+QColor decodeColorGSE(const QByteArray &iBytes);
 
 }
 

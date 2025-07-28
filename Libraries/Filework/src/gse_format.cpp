@@ -135,8 +135,8 @@ bool GSE_Format::save(const QString &targetPath) const
         queryText += "'" + vert.name + "',";
         queryText += "'" + vert.description + "',";
         queryText += "'" + QJsonDocument(vert.customProperties).toJson().toHex() + "',";
-        queryText += "'" + GraphCommon::encodeColor(vert.borderColor) + "',";
-        queryText += "'" + GraphCommon::encodeColor(vert.backgroundColor) + "',";
+        queryText += "'" + GraphCommon::encodeColorGSE(vert.borderColor) + "',";
+        queryText += "'" + GraphCommon::encodeColorGSE(vert.backgroundColor) + "',";
         queryText += "'" + getEncodedPixmap(QPixmap::fromImage(vert.image)) + "'";
 
         queryText += ")";
@@ -156,7 +156,7 @@ bool GSE_Format::save(const QString &targetPath) const
         queryText += QString::number(con.idTo) + ",";
         queryText += QString::number(con.connectionWeight) + ",";
         queryText += "'" + con.name + "',";
-        queryText += "'" + GraphCommon::encodeColor(con.lineColor) + "'";
+        queryText += "'" + GraphCommon::encodeColorGSE(con.lineColor) + "'";
 
         queryText += ")";
         if (!executeQuery(q, queryText)) { return false; }
@@ -266,8 +266,8 @@ bool GSE_Format::load(const QString &targetPath)
         vert.name               = q.value(valPos++).toString();
         vert.description        = q.value(valPos++).toString();
         vert.customProperties   = QJsonDocument::fromJson(getDecoded(q.value(valPos++).toByteArray())).object();
-        vert.borderColor        = GraphCommon::decodeColor(q.value(valPos++).toByteArray());
-        vert.backgroundColor    = GraphCommon::decodeColor(q.value(valPos++).toByteArray());
+        vert.borderColor        = GraphCommon::decodeColorGSE(q.value(valPos++).toByteArray());
+        vert.backgroundColor    = GraphCommon::decodeColorGSE(q.value(valPos++).toByteArray());
         vert.image              = getDecodedPixmap(q.value(valPos++).toByteArray()).toImage();
         oGraphObject.addVertex(vert);
         totalLoadedData++;
@@ -287,7 +287,7 @@ bool GSE_Format::load(const QString &targetPath)
         con.idTo                = q.value(valPos++).toLongLong();
         con.connectionWeight    = q.value(valPos++).toDouble();
         con.name                = q.value(valPos++).toString();
-        con.lineColor           = GraphCommon::decodeColor(q.value(valPos++).toByteArray());
+        con.lineColor           = GraphCommon::decodeColorGSE(q.value(valPos++).toByteArray());
 
         oGraphObject.addConnection(con);
         totalLoadedData++;

@@ -18,4 +18,17 @@ QColor decodeColor(const QByteArray &iBytes)
     return QColor(iBytes.data());
 }
 
+QByteArray encodeColorGSE(const QColor &iCol)
+{
+    return iCol.name(QColor::HexRgb).toUtf8();
+}
+
+QColor decodeColorGSE(const QByteArray &iBytes)
+{
+    if (iBytes.length() != 7) {
+        return {};
+    }
+    return QColor(iBytes.data());
+}
+
 }

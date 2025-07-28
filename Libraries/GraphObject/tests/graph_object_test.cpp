@@ -1,169 +1,191 @@
-#include <gtest/gtest.h>
-
 #include <GraphObject/Object.h>
+#include <gtest/gtest.h>
+#include <QDateTime>
 
-#include <QGuiApplication>
+using namespace Graph;
 
-TEST(GraphObject, ColorConversion) {
-    QColor testColor (130, 224, 99, 32);
+class GraphObjectTest : public ::testing::Test {
+protected:
+    void SetUp() override {
+        // Подготовка тестовых данных
+        v1.id = 1;
+        v1.shortName = "V1";
+        v1.name = "Vertex 1";
 
-    auto encodedColor = GraphCommon::encodeColor(testColor);
-    EXPECT_EQ(encodedColor.size(), 9);
+        v2.id = 2;
+        v2.shortName = "V2";
+        v2.name = "Vertex 2";
 
-    auto decodedColor = GraphCommon::decodeColor(encodedColor);
-    EXPECT_EQ(testColor, decodedColor);
+        v3.id = 3;
+        v3.shortName = "V3";
+        v3.name = "Vertex 3";
+
+        conn1.idFrom = 1;
+        conn1.idTo = 2;
+        conn1.name = "Edge1-2";
+
+        conn2.idFrom = 2;
+        conn2.idTo = 3;
+        conn2.name = "Edge2-3";
+
+        conn3.idFrom = 1;
+        conn3.idTo = 3;
+        conn3.name = "Edge1-3";
+    }
+
+    GraphObject graph;
+    GVertex v1, v2, v3;
+    GConnection conn1, conn2, conn3;
+};
+
+// Тесты вершин
+TEST_F(GraphObjectTest, AddVertex) {
+    graph.clearConnections();
+    graph.clearVertices();
+
+    EXPECT_TRUE(graph.addVertex(v1));
+    EXPECT_TRUE(graph.addVertex(v2));
+    EXPECT_FALSE(graph.addVertex(v1)); // Дубликат
 }
 
-TEST(GraphObject, AddRemoveTest) {
-    int argc = 0;
-    char** argv = nullptr;
-    QGuiApplication app(argc, argv);
+TEST_F(GraphObjectTest, UpdateVertex) {
+    graph.clearConnections();
+    graph.clearVertices();
 
-    Graph::GraphObject result;
+    graph.addVertex(v1);
 
-    auto redPersonIcon = QIcon(":/common/images/vertexicons/person/red.svg");
-    auto redPersonImage = redPersonIcon.pixmap(500).toImage();
+    GVertex updated = v1;
+    updated.name = "Updated Vertex";
+    EXPECT_TRUE(graph.updateVertex(updated));
 
-    auto greenPersonIcon = QIcon(":/common/images/vertexicons/person/green.svg");
-    auto greenPersonImage = greenPersonIcon.pixmap(500).toImage();
+    auto vert = graph.getVertex(v1.id);
+    ASSERT_TRUE(vert.has_value());
+    EXPECT_EQ(vert->name, "Updated Vertex");
 
-    std::list<Graph::GVertex> testVertices;
+    GVertex newVert;
+    newVert.id = 99;
+    EXPECT_FALSE(graph.updateVertex(newVert)); // Несуществующая вершина
+}
 
-    Graph::GVertex vert;
-    vert.id = 50;
-    vert.shortName = "Нода 1";
-    vert.name = "Соединён с 2 и 3";
-    vert.backgroundColor = Qt::green;
-    vert.image = greenPersonImage;
-    vert.posX = 200;
-    vert.posY = 200;
-    testVertices.push_back(vert);
+TEST_F(GraphObjectTest, GetVertex) {
+    graph.clearConnections();
+    graph.clearVertices();
 
-    vert.id = 51;
-    vert.shortName = "Нода 2";
-    vert.name = "Соединён с 3";
-    vert.backgroundColor = Qt::red;
-    vert.image = redPersonImage;
-    vert.posX = 500;
-    vert.posY = 200;
-    testVertices.push_back(vert);
+    graph.addVertex(v1);
+    graph.addVertex(v2);
 
-    vert.id = 52;
-    vert.shortName = "Нода 3";
-    vert.name = "Соединён с 2 и 4";
-    vert.backgroundColor = Qt::green;
-    vert.image = {};
-    vert.posX = 300;
-    vert.posY = 500;
-    testVertices.push_back(vert);
+    auto vert1 = graph.getVertex(1);
+    ASSERT_TRUE(vert1.has_value());
+    EXPECT_EQ(vert1->id, 1);
 
-    vert.id = 53;
-    vert.shortName = "Нода 4";
-    vert.name = "Соединён с 1 и 2";
-    vert.backgroundColor = Qt::red;
-    vert.image = {};
-    vert.posX = 100;
-    vert.posY = 400;
-    testVertices.push_back(vert);
+    auto vert3 = graph.getVertex(3);
+    EXPECT_FALSE(vert3.has_value());
+}
 
-    vert.id = 54;
-    vert.shortName = "Тест нода";
-    vert.name = "Соединён с 1";
-    vert.backgroundColor = QColor();
-    vert.borderColor     = QColor();
-    vert.image = {};
-    vert.posX = 900;
-    vert.posY = 400;
-    testVertices.push_back(vert);
+TEST_F(GraphObjectTest, GetAllVertices) {
+    graph.clearConnections();
+    graph.clearVertices();
 
-    for (auto& vert : testVertices) {
-        EXPECT_EQ(result.addVertex(vert), true);
-    }
+    graph.addVertex(v1);
+    graph.addVertex(v2);
 
-    auto addedVertices = result.getAllVertices();
-    EXPECT_EQ(addedVertices.size(), testVertices.size());
+    auto vertices = graph.getAllVertices();
+    ASSERT_EQ(vertices.size(), 2);
+    EXPECT_EQ(vertices.front().id, 1);
+    EXPECT_EQ(vertices.back().id, 2);
+}
 
-    // На всякий
-    auto vertSortPredicate = [](auto& con1, auto& con2){
-        return con1.id < con2.id;
-    };
-    addedVertices.sort(vertSortPredicate);
-    testVertices.sort(vertSortPredicate);
+TEST_F(GraphObjectTest, RemoveVertex) {
+    graph.clearConnections();
+    graph.clearVertices();
 
-    EXPECT_EQ(addedVertices, testVertices);
+    graph.addVertex(v1);
+    graph.addVertex(v2);
+    graph.addConnection(conn1);
 
-    // Vector cuz return type is vector
-    std::vector<Graph::GConnection> testConnections;
+    graph.removeVertex(1);
+    EXPECT_FALSE(graph.getVertex(1).has_value());
+    EXPECT_EQ(graph.getVerticesCount(), 1);
 
-    Graph::GConnection con;
+    // Соединения должны быть удалены
+    EXPECT_TRUE(graph.getConnectionsFromVertex(1).empty());
+}
 
-    con.name = "1-2";
-    con.idFrom = 50;
-    con.idTo = 51;
-    con.lineColor = Qt::green;
-    testConnections.push_back(con);
+TEST_F(GraphObjectTest, ClearVertices) {
+    graph.clearConnections();
+    graph.clearVertices();
 
-    con.name = "1-3";
-    con.idFrom = 50;
-    con.idTo = 52;
-    con.lineColor = Qt::green;
-    testConnections.push_back(con);
+    graph.addVertex(v1);
+    graph.addVertex(v2);
+    graph.addConnection(conn1);
 
-    con.name = "2-3";
-    con.idFrom = 51;
-    con.idTo = 52;
-    con.lineColor = Qt::red;
-    testConnections.push_back(con);
+    graph.clearVertices();
+    EXPECT_EQ(graph.getVerticesCount(), 0);
+    EXPECT_TRUE(graph.getAllConnections().empty());
+}
 
-    con.name = "3-2";
-    con.idFrom = 52;
-    con.idTo = 51;
-    con.lineColor = Qt::black;
-    testConnections.push_back(con);
+// Тесты соединений
+TEST_F(GraphObjectTest, AddConnection) {
+    graph.clearConnections();
+    graph.clearVertices();
 
-    con.name = "3-4";
-    con.idFrom = 52;
-    con.idTo = 53;
-    con.lineColor = Qt::black;
-    testConnections.push_back(con);
+    graph.addVertex(v1);
+    graph.addVertex(v2);
 
-    con.name = "4-1";
-    con.idFrom = 53;
-    con.idTo = 50;
-    con.lineColor = Qt::magenta;
-    testConnections.push_back(con);
+    EXPECT_TRUE(graph.addConnection(conn1));
+    EXPECT_FALSE(graph.addConnection(conn1)); // Дубликат
 
-    con.name = "4-2";
-    con.idFrom = 53;
-    con.idTo = 51;
-    con.lineColor = Qt::magenta;
-    testConnections.push_back(con);
+    GConnection invalid;
+    invalid.idFrom = 99;
+    invalid.idTo = 1;
+    EXPECT_FALSE(graph.addConnection(invalid)); // Несуществующие вершины
+}
 
-    con.name = "5-1";
-    con.idFrom = 54;
-    con.idTo = 50;
-    con.lineColor = Qt::cyan;
-    testConnections.push_back(con);
+TEST_F(GraphObjectTest, GetConnectionsFromVertex) {
+    graph.clearConnections();
+    graph.clearVertices();
 
-    for (auto& con : testConnections) {
-        EXPECT_EQ(result.addConnection(con), true);
-    }
+    graph.addVertex(v1);
+    graph.addVertex(v2);
+    graph.addVertex(v3);
+    graph.addConnection(conn1);
+    graph.addConnection(conn3);
 
-    auto addedConnections = result.getAllConnections();
-    EXPECT_EQ(addedConnections.size(), testConnections.size());
+    auto conns = graph.getConnectionsFromVertex(1);
+    ASSERT_EQ(conns.size(), 2);
+    EXPECT_EQ(conns[0].idTo, 2);
+    EXPECT_EQ(conns[1].idTo, 3);
 
-    // На всякий
-    auto conSortPredicate = [](auto& con1, auto& con2){
-        return con1.idFrom > con2.idFrom;
-    };
-    auto conSortPredicate2 = [](auto& con1, auto& con2){
-        return con1.idTo > con2.idTo;
-    };
-    std::sort(addedConnections.begin(), addedConnections.end(), conSortPredicate2);
-    std::stable_sort(addedConnections.begin(), addedConnections.end(), conSortPredicate);
+    EXPECT_TRUE(graph.getConnectionsFromVertex(3).empty());
+}
 
-    std::sort(testConnections.begin(), testConnections.end(), conSortPredicate2);
-    std::stable_sort(testConnections.begin(), testConnections.end(), conSortPredicate);
+TEST_F(GraphObjectTest, GetConnection) {
+    graph.clearConnections();
+    graph.clearVertices();
 
-    EXPECT_EQ(addedConnections, testConnections);
+    graph.addVertex(v1);
+    graph.addVertex(v2);
+    graph.addConnection(conn1);
+
+    auto conn = graph.getConnection(1, 2);
+    ASSERT_TRUE(conn.has_value());
+    EXPECT_EQ(conn->name, "Edge1-2");
+
+    EXPECT_FALSE(graph.getConnection(2, 1).has_value());
+}
+
+TEST_F(GraphObjectTest, GetAllConnections) {
+    graph.clearConnections();
+    graph.clearVertices();
+
+    graph.addVertex(v1);
+    graph.addVertex(v2);
+    graph.addVertex(v3);
+    graph.addConnection(conn1);
+    graph.addConnection(conn2);
+
+    auto conns = graph.getAllConnections();
+    ASSERT_EQ(conns.size(), 2);
+    EXPECT_EQ(conns[0].idFrom, 1);
+    EXPECT_EQ(conns[1].idFrom, 2);
 }

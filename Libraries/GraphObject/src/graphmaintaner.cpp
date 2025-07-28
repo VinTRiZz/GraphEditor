@@ -16,21 +16,19 @@ GraphMaintainer::~GraphMaintainer()
 bool GraphMaintainer::operator ==(const GraphMaintainer &gObj_) const
 {
     if (m_graph != gObj_.m_graph) {
-        LOG_DEBUG("GraphMaintainer::equal objects are not equal");
+        LOG_INFO("GraphMaintainer::equal objects are not equal");
         return false;
     }
 
     for (const auto& customProp : m_customDataValues) {
         auto gObjValue = gObj_.m_customDataValues.find(customProp.first);
         if (gObjValue == gObj_.m_customDataValues.end()) {
-            // Закомментил на будущее
-            LOG_DEBUG("GraphMaintainer::equal custom value not exist");
+            LOG_INFO("GraphMaintainer::equal custom value not exist");
             return false;
         }
 
         if (customProp.second != gObjValue->second) {
-            // Закомментил на будущее
-            LOG_DEBUG("GraphMaintainer::equal custom values not equal:", customProp.first);
+            LOG_INFO("GraphMaintainer::equal custom values not equal:", customProp.first);
             return false;
         }
     }
@@ -42,21 +40,21 @@ bool GraphMaintainer::operator ==(const GraphMaintainer &gObj_) const
         ) {
 
         // Закомментил на будущее
-        LOG_DEBUG("GraphMaintainer::equal common", m_name != gObj_.m_name, m_description != gObj_.m_description,
-                               m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT) != gObj_.m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT),
-                               m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT) != gObj_.m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT));
+//        LOG_DEBUG("GraphMaintainer::equal common", m_name != gObj_.m_name, m_description != gObj_.m_description,
+//                               m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT) != gObj_.m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT),
+//                               m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT) != gObj_.m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT));
 
-        LOG_DEBUG("GraphMaintainer::equal common data my:",
-                  m_name,
-                  m_description,
-                  m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT),
-                  m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT));
+//        LOG_DEBUG("GraphMaintainer::equal common data my:",
+//                  m_name,
+//                  m_description,
+//                  m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT),
+//                  m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT));
 
-        LOG_DEBUG("GraphMaintainer::equal common data other:",
-                  gObj_.m_name,
-                  gObj_.m_description,
-                  gObj_.m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT),
-                  gObj_.m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT));
+//        LOG_DEBUG("GraphMaintainer::equal common data other:",
+//                  gObj_.m_name,
+//                  gObj_.m_description,
+//                  gObj_.m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT),
+//                  gObj_.m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT));
         return false;
     }
     return true;

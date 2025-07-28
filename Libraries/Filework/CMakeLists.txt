@@ -2,5 +2,6 @@ CONFIGURE_LIBRARY(Filework)
 
 LINK_TARGET_LIBRARY(Filework Common)
 LINK_TARGET_LIBRARY(Filework GraphObject)
+LINK_TARGET_LIBRARY(Filework CustomWidgets)
 
 ADD_EDITOR_TEST(Filework)

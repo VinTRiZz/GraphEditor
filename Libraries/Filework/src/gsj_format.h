@@ -9,7 +9,7 @@ namespace Filework
 {
 
 /**
- * @brief The GSEJ_Format class Обновлённый формат сохранения данных, представляет из себя JSON
+ * @brief The GSJ_Format class Обновлённый формат сохранения данных, представляет из себя JSON
  */
 class GSJ_Format : public AbstractSaveFormat
 {
@@ -17,13 +17,20 @@ public:
     GSJ_Format();
     ~GSJ_Format();
 
-    bool fromDataJson(const QJsonObject& iJson);
+    bool initFromDataJson(const QJsonObject& iJson);
     QJsonObject toDataJson() const;
 
     bool save(const QString& targetPath) const override;
     bool load(const QString& targetPath) override;
 
     bool isFileValid(const QString& targetPath) const override;
+    bool isStructureValid(const QJsonObject& iJson) const;
+
+protected:
+    QJsonObject createSystemJson(const QString &formatVersion, bool isEncrypted) const;
+    bool config_getIsEncrypted(const QJsonObject& iJson);
+    QString config_getVersion(const QJsonObject& iJson);
+    QString config_getFormatVersion(const QJsonObject& iJson);
 };
 
 }

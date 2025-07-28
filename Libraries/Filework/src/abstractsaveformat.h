@@ -25,6 +25,10 @@ public:
 
 private:
     Graph::PMaintainer m_pGraphMaintaner;
+
+protected:
+    bool rewriteFileData(const QString& filePath, const QByteArray& iData) const;
+    bool readFromFile(const QString& filePath, QByteArray& oData) const;
 };
 
 }

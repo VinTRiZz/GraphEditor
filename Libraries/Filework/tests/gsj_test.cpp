@@ -5,8 +5,8 @@
 #include <QGuiApplication>
 #include <QFile>
 
-#include "../src/gsje_format.h"
-TEST(FormatSaving, GSE_JSON_Encrypted_Format) {
+#include "../src/gsj_format.h"
+TEST(FormatSaving, GSE_JSON_Format) {
     int argc = 0;
     char** argv = nullptr;
     QGuiApplication app(argc, argv);
@@ -14,22 +14,20 @@ TEST(FormatSaving, GSE_JSON_Encrypted_Format) {
     auto gMaintaner = Graph::TestGenerators::createTestGraph();
     auto savedGraph = gMaintaner->getObject();
 
-    Filework::GSJE_Format saveFormat;
-    saveFormat.setKey("Example key to save with");
+    Filework::GSJ_Format saveFormat;
 
     auto graphCopy = savedGraph; // Для чистоты исследований (проверка бага на затирание данных)
     saveFormat.setGraphMaintaner(gMaintaner);
 
-    QString testTargetPath = "/tmp/GraphEditorSaveTest.gseje";
+    EXPECT_TRUE(saveFormat.isStructureValid(saveFormat.toDataJson()));
 
-    // С расширением
-    EXPECT_EQ(saveFormat.save(testTargetPath), true);
-
+    QString testTargetPath = "/tmp/GraphEditorSaveTest.gsj";
+    EXPECT_TRUE(saveFormat.save(testTargetPath));
     EXPECT_EQ(graphCopy, savedGraph);
 
     auto gMaintanerLoaded = Graph::GraphMaintainer::createInstance();
     saveFormat.setGraphMaintaner(gMaintanerLoaded);
-    EXPECT_EQ(saveFormat.load(testTargetPath), true);
+    EXPECT_TRUE(saveFormat.load(testTargetPath));
 
     QFile::remove(testTargetPath);
     EXPECT_EQ(*gMaintanerLoaded, *gMaintaner);

@@ -37,7 +37,7 @@ private:
     Ui::GraphEditorForm *ui;
 
     Graph::PMaintainer  m_currentGraph;         //! Текущий граф
-    QString                                 m_currentGraphFilePath; //! Путь для сохранения графа в файл
+    QString             m_currentGraphFilePath; //! Путь для сохранения графа в файл
 
     /**
      * @brief isGraphPathSet Проверить, задан ли путь для сохранения/загрузки графа. Вызовет диалог и задаст путь, если он пуст или не валидный

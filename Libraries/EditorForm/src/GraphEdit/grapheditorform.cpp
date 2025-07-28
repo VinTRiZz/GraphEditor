@@ -13,6 +13,8 @@
 
 #include <Common/Logging.h>
 
+#include <CustomWidgets/PasswordInsertDialog.h>
+
 GraphEditorForm::GraphEditorForm(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::GraphEditorForm)
@@ -61,7 +63,8 @@ void GraphEditorForm::saveGraph()
 
     ui->graphScene->writeChangesToGraph();
 
-    auto saveSucceed = SaveMaster::save(m_currentGraphFilePath, m_currentGraph);
+    SaveMaster saveMaster;
+    auto saveSucceed = saveMaster.save(m_currentGraphFilePath, m_currentGraph);
     if (!saveSucceed) {
         QMessageBox::critical(this, "Ошибка сохранения", "Возникла ошибка при сохранении данных.\nПроверьте: \nПрава доступа к директории;\nФакт её существования");
         return;
@@ -77,9 +80,18 @@ void GraphEditorForm::loadGraph()
         return;
     }
 
-    auto loadSucceed = SaveMaster::load(m_currentGraphFilePath, m_currentGraph);
+    SaveMaster saveMaster;
+    auto loadSucceed = saveMaster.load(m_currentGraphFilePath, m_currentGraph);
     if (!loadSucceed) {
-        QMessageBox::critical(this, "Ошибка загрузки", "Возникла ошибка при сохранении данных.\nПроверьте: \nПрава доступа к директории;\nФакт её существования;\nКорректность формата файла");
+        QMessageBox::critical(
+                    this,
+                    "Ошибка загрузки",
+R"(Возникла ошибка при сохранении данных.
+Проверьте:
+Права доступа к директории;
+Факт её существования;
+Корректность формата файла;
+Введённый пароль (если это зашифрованный формат) )");
         return;
     }
 

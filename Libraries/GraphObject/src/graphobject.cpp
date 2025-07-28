@@ -17,14 +17,12 @@ GraphObject::GraphObject()
 bool GraphObject::operator ==(const GraphObject &gObj_) const
 {
     if (m_vertices != gObj_.m_vertices) {
-        // Закомментил на будущее
-        LOG_DEBUG("GraphObject::equal vertices are not equal");
+        LOG_INFO("GraphObject::equal vertices are different");
         return false;
     }
 
     if (m_connections != gObj_.m_connections) {
-        // Закомментил на будущее
-        LOG_DEBUG("GraphObject::equal connections are not equal");
+        LOG_INFO("GraphObject::equal connections are different");
         return false;
     }
     return true;
@@ -96,6 +94,7 @@ void GraphObject::removeVertex(GraphCommon::graphId_t vertexId)
         return;
     }
     m_vertices.erase(targetVertex);
+    removeConnections(vertexId);
 }
 
 void GraphObject::clearVertices()
@@ -109,7 +108,7 @@ void GraphObject::clearVertices()
 bool GraphObject::addConnection(const GConnection &iCon)
 {
     if (!iCon.isValid()) {
-        throw std::invalid_argument("GraphObject::addConnection: Invalid connection");
+        return false;
     }
 
     bool containIdTo {false};
@@ -125,6 +124,14 @@ bool GraphObject::addConnection(const GConnection &iCon)
     }
 
     if (!containIdFrom || !containIdTo) {
+        return false;
+    }
+
+    auto existingConnection = m_connections.equal_range(iCon.idFrom);
+    if (std::any_of(existingConnection.first, existingConnection.second,
+                    [&iCon](const auto& con){
+        return con.second.idTo == iCon.idTo;
+    })) {
         return false;
     }
 

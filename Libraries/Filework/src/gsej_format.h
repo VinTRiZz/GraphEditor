@@ -7,13 +7,13 @@ namespace Filework
 {
 
 /**
- * @brief The GSEJE_Format class Формат gsej с шифрованием
+ * @brief The GSEJ_Format class Формат gsej с шифрованием
  */
-class GSJE_Format : public GSJ_Format
+class GSEJ_Format : public GSJ_Format
 {
 public:
-    GSJE_Format();
-    ~GSJE_Format();
+    GSEJ_Format();
+    ~GSEJ_Format();
 
     void setKey(const QString& key);
     QString getKey() const;

@@ -23,6 +23,10 @@ public:
      */
     static QString formatToDefaultPath(const QString& iPath);
 
+    /**
+     * @brief getAvailableFormats   Получение всех известных форматов
+     * @return                      Список в формате "Описание (.расширение)"
+     */
     static QStringList getAvailableFormats();
 
     /**
@@ -31,7 +35,7 @@ public:
      * @param iGraphMaintaner   Поставщик графа для сохранения
      * @return false            если не удалось сохранить файл, например, при неверном расширении. В логах будет указано, почему
      */
-    static bool save(const QString& oFilePath, Graph::PMaintainer iGraphMaintaner);
+    bool save(const QString& oFilePath, Graph::PMaintainer iGraphMaintaner);
 
     /**
      * @brief load              Выгрузить граф из файла
@@ -39,14 +43,14 @@ public:
      * @param oGraphMaintaner   Поставщик графа для записи выгруженных данных
      * @return false            если не удалось выгрузить граф, например, при неверном расширении. В логах будет указано, почему
      */
-    static bool load(const QString& iFilePath, Graph::PMaintainer oGraphMaintaner);
+    bool load(const QString& iFilePath, Graph::PMaintainer oGraphMaintaner);
 
     /**
      * @brief getFormat     Получить указатель на формат, соответствующий файлу
      * @param fileSuffix    Суффикс файла (его расширение)
      * @return              Если суффикс неизвестен, указатель будет пуст. Иначе - с нужным форматом
      */
-    static std::shared_ptr<Filework::AbstractSaveFormat> getFormat(const QString& fileSuffix);
+    std::shared_ptr<Filework::AbstractSaveFormat> getFormat(const QString& fileSuffix);
 };
 
 #endif // SAVEMASTER_H

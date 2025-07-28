@@ -22,13 +22,12 @@ TEST(FormatSaving, GSE_Format) {
     QString testTargetPath = "/tmp/GraphEditorSaveTest.gse";
 
     // С расширением
-    EXPECT_EQ(saveFormat.save(testTargetPath), true);
-
+    EXPECT_TRUE(saveFormat.save(testTargetPath));
     EXPECT_EQ(graphCopy, savedGraph);
 
     auto gMaintanerLoaded = Graph::GraphMaintainer::createInstance();
     saveFormat.setGraphMaintaner(gMaintanerLoaded);
-    EXPECT_EQ(saveFormat.load(testTargetPath), true);
+    EXPECT_TRUE(saveFormat.load(testTargetPath));
 
     QFile::remove(testTargetPath);
     EXPECT_EQ(*gMaintanerLoaded, *gMaintaner);

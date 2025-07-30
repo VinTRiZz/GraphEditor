@@ -56,6 +56,11 @@ bool GraphEditorForm::getIsSavepathValid() const
     return QFileInfo(m_lastSavePath).exists();
 }
 
+QString GraphEditorForm::getSavefilePath() const
+{
+    return m_lastSavePath;
+}
+
 bool GraphEditorForm::saveGraph(const QString& targetPath)
 {
     // СОГЛАШЕНИЕ: Если путь не задан, то сохранить по последнему заданному

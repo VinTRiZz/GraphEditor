@@ -2,11 +2,15 @@
 #include <QApplication>
 
 #include <Common/Logging.h>
+#include <Common/ApplicationSettings.h>
 
 int main(int argc, char *argv[])
 {
     LOG_INFO_SYNC("Started GraphEditor");
     QApplication a(argc, argv);
+
+    auto& settingsInstance = ApplicationSettings::getInstance();
+    settingsInstance.loadSettings();
 
     QFile stylesFile(":/common/styles/mainstyles.qss");
     if (stylesFile.open(QIODevice::ReadOnly)) {
@@ -18,5 +22,7 @@ int main(int argc, char *argv[])
 
     MainWindow w;
     w.show();
-    return a.exec();
+    auto res = a.exec();
+    settingsInstance.saveSettings();
+    return res;
 }

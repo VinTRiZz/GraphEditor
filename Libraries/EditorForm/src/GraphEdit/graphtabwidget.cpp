@@ -4,6 +4,7 @@
 #include "grapheditorform.h"
 
 #include <Filework/SaveMaster.h>
+#include <Common/ApplicationSettings.h>
 
 #include <QMessageBox>
 
@@ -54,6 +55,11 @@ GraphTabWidget::GraphTabWidget(QWidget *parent) :
 
     connect(ui->buttonToolbar, &GraphToolbar::loadGraph,
             this, &GraphTabWidget::loadVisibleGraph);
+
+    auto& settingsInstance = ApplicationSettings::getInstance();
+    for (auto& recentFile : settingsInstance.getRecentFiles()) {
+        addTab(recentFile);
+    }
 }
 
 GraphTabWidget::~GraphTabWidget()
@@ -88,6 +94,8 @@ void GraphTabWidget::addTab(const QString &filePath)
         ui->editorForms_tabWidget->show();
         ui->placeholder_label->hide();
     }
+
+    ApplicationSettings::getInstance().addRecentFile(filePath);
 }
 
 void GraphTabWidget::removeTab(const QString &graphName)
@@ -119,6 +127,7 @@ void GraphTabWidget::removeTab(const QString &graphName)
         }
     }
     ui->editorForms_tabWidget->removeTab(targetIndex);
+    ApplicationSettings::getInstance().removeRecentFile(pTargetForm->getSavefilePath());
     delete pTargetForm;
 
     if (ui->editorForms_tabWidget->count() == 0) {

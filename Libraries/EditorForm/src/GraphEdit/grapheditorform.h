@@ -49,6 +49,12 @@ public:
     bool getIsSavepathValid() const;
 
     /**
+     * @brief getSavefilePath   Получить текущий путь до файла графа
+     * @return                  Значение пути. может быть NULL если ещё не задано
+     */
+    QString getSavefilePath() const;
+
+    /**
      * @brief saveGraph     Сохранение текущего графа в файл
      * @param targetPath    Путь к файлу
      * @return              true если файл был успешно сохранён

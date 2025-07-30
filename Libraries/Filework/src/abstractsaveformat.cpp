@@ -16,6 +16,11 @@ AbstractSaveFormat::~AbstractSaveFormat()
 
 }
 
+bool AbstractSaveFormat::getIsEncrypted() const
+{
+    return m_isEncrypted;
+}
+
 void AbstractSaveFormat::setGraphMaintaner(Graph::PMaintainer pGraphMaintaner)
 {
     m_pGraphMaintaner = pGraphMaintaner;

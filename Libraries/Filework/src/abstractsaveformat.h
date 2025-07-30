@@ -14,7 +14,15 @@ public:
     AbstractSaveFormat();
     virtual ~AbstractSaveFormat();
 
-    void                    setGraphMaintaner(Graph::PMaintainer pGraphMaintaner);
+    virtual QString getExtension() const = 0;
+    virtual QString getDescription() const = 0;
+    virtual void    setEncryptionKey(const QString& keyString) = 0;
+    virtual QString getEncryptionKey(const QString& keyString) const = 0;
+
+    bool getIsEncrypted() const;
+    QString getVersion() const;
+
+    void                setGraphMaintaner(Graph::PMaintainer pGraphMaintaner);
     Graph::PMaintainer  getGraphMaintaner() const;
     Graph::GraphObject &getGraph() const;
 
@@ -27,6 +35,9 @@ private:
     Graph::PMaintainer m_pGraphMaintaner;
 
 protected:
+    bool m_isEncrypted {false};
+    QString m_formatVersion;
+
     bool rewriteFileData(const QString& filePath, const QByteArray& iData) const;
     bool readFromFile(const QString& filePath, QByteArray& oData) const;
 

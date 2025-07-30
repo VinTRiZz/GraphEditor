@@ -17,6 +17,11 @@ public:
     GSJ_Format();
     ~GSJ_Format();
 
+    QString getExtension() const override;
+    QString getDescription() const override;
+    void    setEncryptionKey(const QString& keyString) override {};
+    QString getEncryptionKey(const QString& keyString) const override { return {}; }
+
     bool initFromDataJson(const QJsonObject& iJson);
     QJsonObject toDataJson() const;
 
@@ -27,7 +32,7 @@ public:
     bool isStructureValid(const QJsonObject& iJson) const;
 
 protected:
-    QJsonObject createSystemJson(const QString &formatVersion, bool isEncrypted) const;
+    QJsonObject createSystemJson() const;
     bool config_getIsEncrypted(const QJsonObject& iJson);
     QString config_getVersion(const QJsonObject& iJson);
     QString config_getFormatVersion(const QJsonObject& iJson);

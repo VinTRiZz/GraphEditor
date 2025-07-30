@@ -15,8 +15,10 @@ public:
     GSEJ_Format();
     ~GSEJ_Format();
 
-    void setKey(const QString& key);
-    QString getKey() const;
+    QString getExtension() const override;
+    QString getDescription() const override;
+    void    setEncryptionKey(const QString& keyString) override;;
+    QString getEncryptionKey(const QString& keyString) const override;
 
     bool save(const QString& targetPath) const override;
     bool load(const QString& targetPath) override;

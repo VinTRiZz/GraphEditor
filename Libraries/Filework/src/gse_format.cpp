@@ -62,12 +62,23 @@ CREATE TABLE IF NOT EXISTS %0 (
 
 GSE_Format::GSE_Format()
 {
-
+    m_isEncrypted = false;
+    m_formatVersion = "1.0.0";
 }
 
 GSE_Format::~GSE_Format()
 {
 
+}
+
+QString GSE_Format::getExtension() const
+{
+    return "gse";
+}
+
+QString GSE_Format::getDescription() const
+{
+    return "Устаревший формат сохранения";
 }
 
 bool GSE_Format::save(const QString &targetPath) const

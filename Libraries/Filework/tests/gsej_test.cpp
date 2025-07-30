@@ -15,7 +15,7 @@ TEST(FormatSaving, GSE_JSON_Encrypted_Format) {
     auto savedGraph = gMaintaner->getObject();
 
     Filework::GSEJ_Format saveFormat;
-    saveFormat.setKey("Example key to save with");
+    saveFormat.setEncryptionKey("Example key to save with");
 
     auto graphCopy = savedGraph; // Для чистоты исследований (проверка бага на затирание данных)
     saveFormat.setGraphMaintaner(gMaintaner);

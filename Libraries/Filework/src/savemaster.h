@@ -15,7 +15,6 @@ class AbstractSaveFormat;
 class SaveMaster
 {
 public:
-
     /**
      * @brief formatToDefaultPath   Форматирует путь в путь по умолчанию
      * @param iPath                 Путь до файла сохранений
@@ -56,13 +55,6 @@ public:
      * @return false            если не удалось выгрузить граф, например, при неверном расширении. В логах будет указано, почему
      */
     bool load(const QString& iFilePath, Graph::PMaintainer oGraphMaintaner);
-
-    /**
-     * @brief getFormat     Получить указатель на формат, соответствующий файлу
-     * @param fileSuffix    Суффикс файла (его расширение)
-     * @return              Если суффикс неизвестен, указатель будет пуст. Иначе - с нужным форматом
-     */
-    std::shared_ptr<Filework::AbstractSaveFormat> getFormat(const QString& fileSuffix);
 };
 
 #endif // SAVEMASTER_H

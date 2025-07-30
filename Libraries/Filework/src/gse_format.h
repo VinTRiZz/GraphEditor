@@ -17,6 +17,11 @@ public:
     GSE_Format();
     ~GSE_Format();
 
+    QString getExtension() const override;
+    QString getDescription() const override;
+    void    setEncryptionKey(const QString& keyString) override {};
+    QString getEncryptionKey(const QString& keyString) const override { return {}; }
+
     bool save(const QString& targetPath) const override;
     bool load(const QString& targetPath) override;
 

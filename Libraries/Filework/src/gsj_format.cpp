@@ -17,12 +17,23 @@ namespace Filework
 
 GSJ_Format::GSJ_Format()
 {
-
+    m_isEncrypted = false;
+    m_formatVersion = "1.0.0";
 }
 
 GSJ_Format::~GSJ_Format()
 {
 
+}
+
+QString GSJ_Format::getExtension() const
+{
+    return "gsj";
+}
+
+QString GSJ_Format::getDescription() const
+{
+    return "Файл сохранения графа";
 }
 
 bool GSJ_Format::initFromDataJson(const QJsonObject &iJson)
@@ -106,7 +117,7 @@ QJsonObject GSJ_Format::toDataJson() const
     QJsonObject root;
 
     // System section
-    root["system"] = createSystemJson("1.0.0", false);
+    root["system"] = createSystemJson();
 
     // Properties section
     QJsonObject propertiesObj;
@@ -278,12 +289,12 @@ bool GSJ_Format::isStructureValid(const QJsonObject &iJson) const
     return true;
 }
 
-QJsonObject GSJ_Format::createSystemJson(const QString& formatVersion, bool isEncrypted) const
+QJsonObject GSJ_Format::createSystemJson() const
 {
     QJsonObject systemObj;
     systemObj["app_version"] = QString(GRAPH_EDITOR_VERSION);
-    systemObj["format_version"] = formatVersion;
-    systemObj["is_encrypted"] = isEncrypted;
+    systemObj["format_version"] = m_formatVersion;
+    systemObj["is_encrypted"] = m_isEncrypted;
     return systemObj;
 }
 

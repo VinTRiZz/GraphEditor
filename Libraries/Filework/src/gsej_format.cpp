@@ -13,7 +13,8 @@ namespace Filework
 
 GSEJ_Format::GSEJ_Format()
 {
-
+    m_isEncrypted = true;
+    m_formatVersion = "1.0.0";
 }
 
 GSEJ_Format::~GSEJ_Format()
@@ -21,12 +22,22 @@ GSEJ_Format::~GSEJ_Format()
 
 }
 
-void GSEJ_Format::setKey(const QString &key)
+QString GSEJ_Format::getExtension() const
 {
-    m_key = key;
+    return "gsej";
 }
 
-QString GSEJ_Format::getKey() const
+QString GSEJ_Format::getDescription() const
+{
+    return "Зашифрованный граф";
+}
+
+void GSEJ_Format::setEncryptionKey(const QString &keyString)
+{
+    m_key = keyString;
+}
+
+QString GSEJ_Format::getEncryptionKey(const QString &keyString) const
 {
     return m_key;
 }
@@ -38,12 +49,12 @@ bool GSEJ_Format::save(const QString &targetPath) const
         return false;
     }
 
-    auto systemJson = createSystemJson("1.0.0", true);
+    auto systemJson = createSystemJson();
     QJsonObject resultJson;
     resultJson["system"] = systemJson;
 
     auto payloadJson = toDataJson();
-    resultJson["payload"] = Encryption::encryptAes256Cbc(QJsonDocument(payloadJson).toJson(QJsonDocument::Compact), getKey().toUtf8()).toHex().data();
+    resultJson["payload"] = Encryption::encryptAes256Cbc(QJsonDocument(payloadJson).toJson(QJsonDocument::Compact), m_key.toUtf8()).toHex().data();
 
     auto resultData = QJsonDocument(resultJson).toJson();
     return rewriteFileData(targetPath, resultData);
@@ -71,7 +82,7 @@ bool GSEJ_Format::load(const QString &targetPath)
     auto payloadSection = inputJson["payload"];
     auto payloadHex = payloadSection.toString().toUtf8();
     auto payloadEncrypted = QByteArray::fromHex(payloadHex);
-    auto decryptedData = Encryption::decryptAes256Cbc(payloadEncrypted, getKey().toUtf8());
+    auto decryptedData = Encryption::decryptAes256Cbc(payloadEncrypted, m_key.toUtf8());
     return initFromDataJson(QJsonDocument::fromJson(decryptedData).object());
 }
 

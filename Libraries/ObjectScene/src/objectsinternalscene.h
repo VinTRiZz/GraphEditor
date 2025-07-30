@@ -50,7 +50,7 @@ public:
     void setBorderColor(const QColor& borderColor);
 
 private:
-    ObjectViewItems::DynamicAreaItem* m_pNullItem {nullptr};  //! Объект, который являет собой пространство сцены (как бы ограниченная плоскость для расположения объектов)
+    ObjectViewItems::SceneFieldItem* m_pNullItem {nullptr};  //! Объект, который являет собой пространство сцены (как бы ограниченная плоскость для расположения объектов)
     QHash<ObjectViewConstants::objectId_t, ObjectViewItems::ItemBase*> m_objectsMap; //! Словарь для сохранения ID объектов
 };
 

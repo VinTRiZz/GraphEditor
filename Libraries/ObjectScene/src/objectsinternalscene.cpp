@@ -33,12 +33,12 @@ ObjectViewItems::ItemBase *ObjectsInternalScene::getParentOfComplex(QGraphicsIte
 
 bool ObjectsInternalScene::isNullItem(QGraphicsItem *pItem) const
 {
-    return (dynamic_cast<ObjectViewItems::DynamicAreaItem*>(pItem) != nullptr);
+    return (dynamic_cast<ObjectViewItems::SceneFieldItem*>(pItem) != nullptr);
 }
 
 void ObjectsInternalScene::init()
 {
-    m_pNullItem = new DynamicAreaItem();
+    m_pNullItem = new SceneFieldItem();
     m_pNullItem->setBrush(QColor(210, 215, 210));
     m_pNullItem->setPen(QPen(QColor(110, 115, 110), 2));
     m_pNullItem->setZValue(0);

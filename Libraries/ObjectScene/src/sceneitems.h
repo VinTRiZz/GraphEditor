@@ -1,5 +1,5 @@
 #include "ObjectViewItems/itembase.h"
-#include "ObjectViewItems/dynamicareaitem.h"
+#include "ObjectViewItems/scenefielditem.h"
 #include "ObjectViewItems/arrowline.h"
 #include "ObjectViewItems/vertexobject.h"
 #include "ObjectViewItems/vertexconnectionline.h"

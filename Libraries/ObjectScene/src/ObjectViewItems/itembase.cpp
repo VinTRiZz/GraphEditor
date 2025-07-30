@@ -4,7 +4,7 @@
 
 #include <boost/core/demangle.hpp>
 
-#include "dynamicareaitem.h"
+#include "scenefielditem.h"
 
 using namespace ObjectViewConstants;
 
@@ -29,8 +29,8 @@ ItemBase::~ItemBase()
 
 void ItemBase::unregister()
 {
-    if (dynamic_cast<DynamicAreaItem*>(parentItem()) != nullptr) {
-        static_cast<DynamicAreaItem*>(parentItem())->removeRegisteredItem(this);
+    if (dynamic_cast<SceneFieldItem*>(parentItem()) != nullptr) {
+        static_cast<SceneFieldItem*>(parentItem())->removeRegisteredItem(this);
     }
 }
 

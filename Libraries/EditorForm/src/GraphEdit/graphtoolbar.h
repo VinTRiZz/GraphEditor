@@ -29,6 +29,7 @@ signals:
     void showProperties();
     void hideProperties();
 
+    void createGraph();
     void saveGraph(const QString& sPath);
     void loadGraph(const QString& lPath);
 

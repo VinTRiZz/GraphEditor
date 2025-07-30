@@ -45,7 +45,11 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>
-          <widget class="QTableView" name="propertyCommon_tableView"/>
+          <widget class="QTableView" name="propertyCommon_tableView">
+           <property name="selectionMode">
+            <enum>QAbstractItemView::SingleSelection</enum>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>

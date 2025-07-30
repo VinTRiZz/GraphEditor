@@ -19,6 +19,7 @@ public slots:
     void addTab(const QString& filePath);
     void removeTab(const QString& graphName);
 
+    void createGraph();
     void saveVisibleGraph(const QString& filePath);
     void loadVisibleGraph(const QString& filePath);
 

@@ -12,23 +12,12 @@ GraphToolbar::GraphToolbar(QWidget* parent) :
     setButtonSize(QSize(35, 35));
 
     ButtonToolbar::ButtonConfig buttonInfo;
-
     buttonInfo.buttonPos = 0;
-    m_showPropertiesButtonIndex = buttonInfo.buttonPos;
-    buttonInfo.icon = QIcon(":/common/images/icons/common/edit_properties.svg");
-    buttonInfo.tooltip = "Показать свойства графа";
-    buttonInfo.action = [this](QPushButton* pSender) {
-        const auto propertyIsHiddenName {"isPropertiesHidden"};
 
-        if (pSender->property(propertyIsHiddenName).toBool()) {
-            pSender->setToolTip("Показать свойства графа");
-            emit hideProperties();
-            pSender->setProperty(propertyIsHiddenName, false);
-            return;
-        }
-        pSender->setToolTip("Скрыть свойства графа");
-        emit showProperties();
-        pSender->setProperty(propertyIsHiddenName, true);
+    buttonInfo.icon = QIcon(":/common/images/icons/common/graph_new.svg");
+    buttonInfo.tooltip = "Создать граф";
+    buttonInfo.action = [this](QPushButton*) {
+        emit createGraph();
     };
     addButton(buttonInfo);
 
@@ -66,7 +55,6 @@ GraphToolbar::GraphToolbar(QWidget* parent) :
             return;
         }
         loadGraph(graphPath);
-        setSaveEnabled(true);
     };
     addButton(buttonInfo);
 
@@ -81,18 +69,27 @@ GraphToolbar::GraphToolbar(QWidget* parent) :
             return;
         }
         emit saveGraph(graphPath);
-        setSaveEnabled(true);
     };
     addButton(buttonInfo);
 
-//    buttonInfo.buttonPos++;
-//    buttonInfo.icon = QIcon(":/common/images/icons/common/mode_change.svg");
-//    buttonInfo.tooltip = "Сменить режим работы";
-//    buttonInfo.action = [this](QPushButton*) {
-//        emit changeMode();
-//    };
+    buttonInfo.buttonPos++;
+    m_showPropertiesButtonIndex = buttonInfo.buttonPos;
+    buttonInfo.icon = QIcon(":/common/images/icons/common/edit_properties.svg");
+    buttonInfo.tooltip = "Показать свойства графа";
+    buttonInfo.action = [this](QPushButton* pSender) {
+        const auto propertyIsHiddenName {"isPropertiesHidden"};
 
-//    addButton(buttonInfo);
+        if (pSender->property(propertyIsHiddenName).toBool()) {
+            pSender->setToolTip("Показать свойства графа");
+            emit hideProperties();
+            pSender->setProperty(propertyIsHiddenName, false);
+            return;
+        }
+        pSender->setToolTip("Скрыть свойства графа");
+        emit showProperties();
+        pSender->setProperty(propertyIsHiddenName, true);
+    };
+    addButton(buttonInfo);
 }
 
 void GraphToolbar::setShowPropertiesEnabled(bool isSaveEnabled)

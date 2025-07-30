@@ -40,8 +40,7 @@ GraphEditorForm::~GraphEditorForm()
 
 bool GraphEditorForm::setGraph(const QString &saveFilePath)
 {
-    loadGraph(saveFilePath);
-    return getIsSavepathValid();
+    return loadGraph(saveFilePath);
 }
 
 Graph::PMaintainer GraphEditorForm::getGraph() const
@@ -57,7 +56,7 @@ bool GraphEditorForm::getIsSavepathValid() const
     return QFileInfo(m_lastSavePath).exists();
 }
 
-void GraphEditorForm::saveGraph(const QString& targetPath)
+bool GraphEditorForm::saveGraph(const QString& targetPath)
 {
     // СОГЛАШЕНИЕ: Если путь не задан, то сохранить по последнему заданному
     if (!targetPath.isEmpty()) {
@@ -65,7 +64,7 @@ void GraphEditorForm::saveGraph(const QString& targetPath)
     }
     if (!QFileInfo(targetPath).dir().exists()) {
         LOG_ERROR("Can not saving file with path:", m_lastSavePath);
-        return;
+        return false;
     }
 
     m_graphMaintainer->setEditTime(QDateTime::currentDateTime());
@@ -76,13 +75,14 @@ void GraphEditorForm::saveGraph(const QString& targetPath)
     auto saveSucceed = saveMaster.save(m_lastSavePath, m_graphMaintainer);
     if (!saveSucceed) {
         QMessageBox::critical(this, "Ошибка сохранения", "Возникла ошибка при сохранении данных.\nПроверьте: \nПрава доступа к директории;\nФакт её существования");
-        return;
+        return false;
     }
 
     ui->propertyEditForm->updateGraphInfo();
+    return true;
 }
 
-void GraphEditorForm::loadGraph(const QString& targetPath)
+bool GraphEditorForm::loadGraph(const QString& targetPath)
 {
     // СОГЛАШЕНИЕ: Если путь не задан, то загрузить по последнему заданному
     if (!targetPath.isEmpty()) {
@@ -90,7 +90,7 @@ void GraphEditorForm::loadGraph(const QString& targetPath)
     }
     if (!getIsSavepathValid()) {
         LOG_ERROR("Can not loading file with path:", m_lastSavePath);
-        return;
+        return false;
     }
 
     SaveMaster saveMaster;
@@ -105,11 +105,12 @@ R"(Возникла ошибка при сохранении данных.
 Факт её существования;
 Корректность формата файла;
 Введённый пароль (если это зашифрованный формат) )");
-        return;
+        return false;
     }
 
     ui->propertyEditForm->updateGraphInfo();
     ui->graphScene->updateGraph();
+    return true;
 }
 
 void GraphEditorForm::setEditMode()

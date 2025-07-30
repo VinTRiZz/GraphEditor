@@ -49,16 +49,18 @@ public:
     bool getIsSavepathValid() const;
 
     /**
-     * @brief saveGraph Сохранение текущего графа в файл
+     * @brief saveGraph     Сохранение текущего графа в файл
      * @param targetPath    Путь к файлу
+     * @return              true если файл был успешно сохранён
      */
-    void saveGraph(const QString &targetPath = {});
+    bool saveGraph(const QString &targetPath = {});
 
     /**
      * @brief loadGraph     Выгрузить граф из файла
      * @param targetPath    Путь к файлу
+     * @return              true если граф был успешно загружен
      */
-    void loadGraph(const QString &targetPath = {});
+    bool loadGraph(const QString &targetPath = {});
 
     void setEditMode();
     void setViewMode();

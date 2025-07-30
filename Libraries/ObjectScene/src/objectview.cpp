@@ -13,6 +13,8 @@
 
 #include <Common/Logging.h>
 
+using namespace ObjectViewItems;
+
 ObjectView::ObjectView(QWidget *parent) :
     QGraphicsView(parent)
 {
@@ -27,19 +29,20 @@ ObjectView::~ObjectView()
 void ObjectView::init()
 {
     m_pScene = new ObjectsInternalScene(this);
-    m_pScene->init();
     setScene(m_pScene);
+
+    m_pNullItem = new SceneFieldItem();
+    m_pNullItem->setBrush(QColor(210, 215, 210));
+    m_pNullItem->setPen(QPen(QColor(110, 115, 110), 2));
+    m_pNullItem->setZValue(0);
+    m_pScene->addItem(m_pNullItem);
+
     scale(0.5, 0.5);
 }
 
 bool ObjectView::isInited() const
 {
     return (nullptr != m_pScene);
-}
-
-bool ObjectView::isIdAvailable(ObjectViewConstants::objectId_t itemId) const
-{
-    return m_pScene->isIdAvailable(itemId);
 }
 
 void ObjectView::setContextMenu(QMenu *pMenu)
@@ -52,47 +55,12 @@ QGraphicsItem *ObjectView::getContextMenuItem()
     return m_contextMenuItem;
 }
 
-void ObjectView::addObject(ObjectViewItems::ItemBase *pItem)
-{
-    m_pScene->addObject(pItem);
-}
-
-QGraphicsItem *ObjectView::getObject(ObjectViewConstants::objectId_t itemId) const
-{
-    return m_pScene->getObject(itemId);
-}
-
-QList<ObjectViewItems::ItemBase *> ObjectView::getAllObjects() const
-{
-    return m_pScene->getAllObjects();
-}
-
-QList<ObjectViewConstants::objectId_t> ObjectView::getAllObjectIds() const
-{
-    return m_pScene->getAllObjectIds();
-}
-
-void ObjectView::removeAllObjects()
-{
-    m_pScene->clearScene();
-}
-
-void ObjectView::removeObject(ObjectViewConstants::objectId_t itemId)
-{
-    return m_pScene->removeObject(itemId);
-}
-
-void ObjectView::removeSpecialObjects(ObjectViewConstants::ObjectType objT)
-{
-    m_pScene->removeSpecialObjects(objT);
-}
-
 QGraphicsItem *ObjectView::getGrabObject() const
 {
     if (!m_grabObjectId.has_value()) {
         return nullptr;
     }
-    return m_pScene->getObject(m_grabObjectId.value());
+    return getObject(m_grabObjectId.value());
 }
 
 void ObjectView::setMovingCallback(const std::function<void (const QPointF &)> &callbackFunc)
@@ -142,8 +110,8 @@ void ObjectView::mousePressEvent(QMouseEvent *e)
     m_isHoldingLeftButton   = (e->button() == Qt::LeftButton);
     if (m_isHoldingLeftButton) {
         auto targetItem = itemAt(e->pos());
-        if (!m_pScene->isNullItem(targetItem)) {
-            targetItem = m_pScene->getParentOfComplex(targetItem);
+        if (!isNullItem(targetItem)) {
+            targetItem = getParentOfComplex(targetItem);
             emit pressedOnItem(targetItem);
         } else {
             emit pressedOnItem(nullptr);
@@ -187,8 +155,8 @@ void ObjectView::mouseReleaseEvent(QMouseEvent *e)
 
     if (m_isHoldingLeftButton) {
         auto targetItem = itemAt(e->pos());
-        if (!m_pScene->isNullItem(targetItem)) {
-            targetItem = m_pScene->getParentOfComplex(targetItem);
+        if (!isNullItem(targetItem)) {
+            targetItem = getParentOfComplex(targetItem);
             emit releasedOnItem(targetItem);
             emit clickedOnItem(targetItem);
         } else {
@@ -209,4 +177,78 @@ void ObjectView::contextMenuEvent(QContextMenuEvent *e)
         m_contextMenuItem = nullptr; // Обнуление во избежание проблем
     }
     QGraphicsView::contextMenuEvent(e);
+}
+
+
+
+bool ObjectView::isIdAvailable(ObjectViewConstants::objectId_t itemId) const
+{
+    return m_pNullItem->isIdAvailable(itemId);
+}
+
+ObjectViewItems::ItemBase *ObjectView::getParentOfComplex(QGraphicsItem *pItem)
+{
+    auto itemParentIdVariant = pItem->data(ObjectViewConstants::OBJECTFIELD_PARENTITEM_ID);
+    if (itemParentIdVariant.isNull()) {
+        return dynamic_cast<ObjectViewItems::ItemBase*>(pItem);
+    }
+    return getObject(itemParentIdVariant.toLongLong());
+}
+
+bool ObjectView::isNullItem(QGraphicsItem *pItem) const
+{
+    return (dynamic_cast<ObjectViewItems::SceneFieldItem*>(pItem) != nullptr);
+}
+
+void ObjectView::removeSpecialObjects(ObjectViewConstants::ObjectType objT)
+{
+    m_pNullItem->removeRegisteredItems(objT);
+}
+
+void ObjectView::addObject(ObjectViewItems::ItemBase *pItem)
+{
+    if (nullptr == pItem ||
+        nullptr == dynamic_cast<ObjectViewItems::ItemBase*>(pItem)) {
+        throw std::invalid_argument("ObjectsScene-internal: invalid (nullptr) item");
+    }
+
+    std::function<void(QGraphicsItem*, ObjectViewConstants::objectId_t)> setChildComplexId =
+        [&setChildComplexId](QGraphicsItem* pItem, ObjectViewConstants::objectId_t parentId){
+        pItem->setData(ObjectViewConstants::OBJECTFIELD_PARENTITEM_ID, parentId);
+        for (auto* pChild : pItem->childItems()) {
+            setChildComplexId(pChild, parentId);
+        }
+    };
+    setChildComplexId(pItem, pItem->getObjectId());
+    pItem->setData(ObjectViewConstants::OBJECTFIELD_PARENTITEM_ID, QVariant()); // Обнуление для сохранения зависимости parent-child
+    m_objectsMap[pItem->getObjectId()] = pItem;
+    m_pNullItem->registerItem(pItem);
+}
+
+ObjectViewItems::ItemBase *ObjectView::getObject(ObjectViewConstants::objectId_t objectId) const
+{
+    auto targetObject = m_objectsMap.find(objectId);
+    if (targetObject == m_objectsMap.end()) {
+        return nullptr;
+    }
+    return targetObject.value();
+}
+
+QList<ObjectViewItems::ItemBase *> ObjectView::getAllObjects() const
+{
+    return m_objectsMap.values();
+}
+
+QList<ObjectViewConstants::objectId_t> ObjectView::getAllObjectIds() const
+{
+    return m_objectsMap.keys();
+}
+
+void ObjectView::removeObject(ObjectViewConstants::objectId_t itemId)
+{
+    auto pItem = m_objectsMap.value(itemId, nullptr);
+    if (pItem != nullptr) {
+        m_objectsMap.remove(itemId);
+        m_pNullItem->removeRegisteredItem(pItem);
+    }
 }

@@ -39,7 +39,7 @@ public:
     QGraphicsItem* getContextMenuItem();
 
     void addObject(ObjectViewItems::ItemBase *pItem);
-    QGraphicsItem* getObject(ObjectViewConstants::objectId_t itemId) const;
+    ObjectViewItems::ItemBase* getObject(ObjectViewConstants::objectId_t itemId) const;
     QList<ObjectViewItems::ItemBase *> getAllObjects() const;
     QList<ObjectViewConstants::objectId_t> getAllObjectIds() const;
     void removeAllObjects();
@@ -60,8 +60,11 @@ private:
     QMenu*                  m_pContextMenu      {nullptr};  //! Контекстное меню
     QGraphicsItem*          m_contextMenuItem   {nullptr};  //! Объект, который находился под указателем мыши во время вызова контекстного меню
 
-    QPointF                                         m_grabObjectPos;    //! Положение объекта до grab
-    std::optional<ObjectViewConstants::objectId_t> m_grabObjectId;     //! ID объекта, который "прикреплён" к указателю мыши
+    QPointF                                                             m_grabObjectPos;    //! Положение объекта до grab
+    std::optional<ObjectViewConstants::objectId_t>                      m_grabObjectId;     //! ID объекта, который "прикреплён" к указателю мыши
+
+    ObjectViewItems::SceneFieldItem* m_pNullItem {nullptr};  //! Объект, который являет собой пространство сцены (как бы ограниченная плоскость для расположения объектов)
+    QHash<ObjectViewConstants::objectId_t, ObjectViewItems::ItemBase*>  m_objectsMap;       //! Словарь для сохранения ID объектов
 
     QPointF m_prevPos;                                      //! Позиция нажатия на графе
     bool    m_isHoldingLeftButton   {false};                //! Флаг факта того, что пользователь кникнул на сцену ЛКМ
@@ -69,6 +72,9 @@ private:
     bool    m_isMovingByUser        {true};                 //! Флаг для перемещений сцены по СКМ
 
     std::function<void(const QPointF&)> m_movingCallback;   //! Колбек для обработки перемещения по сцене
+
+    ObjectViewItems::ItemBase* getParentOfComplex(QGraphicsItem *pItem);
+    bool isNullItem(QGraphicsItem *pItem) const;
 
     // Интерфейс QWidget
     void wheelEvent(QWheelEvent* e) override;

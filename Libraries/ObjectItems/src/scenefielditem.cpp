@@ -25,7 +25,7 @@ SceneFieldItem::SceneFieldItem(QGraphicsItem* parent) :
 void SceneFieldItem::setFieldRect(const QRectF &iRect)
 {
     m_centerRect->setRect(iRect);
-    m_centerPoint->setPos(iRect.center());
+    m_centerPoint->setPos(iRect.center() - m_centerPoint->boundingRect().center());
 }
 
 QRectF SceneFieldItem::getFieldRect() const

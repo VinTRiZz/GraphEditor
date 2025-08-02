@@ -20,7 +20,16 @@ InformationObjectView::InformationObjectView(QWidget *parent) :
     m_pInformationLabel->setFixedSize(500, 23);
 
     // Настройка для отображения
-    m_pInformationLabel->setStyleSheet("color: black; font-size: 14px; background-color: rgba(200, 240, 210, 80); border: 1px solid black;");
+    m_pInformationLabel->setStyleSheet(
+R"(
+    color: black;
+    font-size: 14px;
+    background-color:
+    rgba(200, 240, 210, 80);
+    border: 1px solid black;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+)");
 
     updateInformation();
 

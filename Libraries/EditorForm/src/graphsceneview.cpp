@@ -27,7 +27,7 @@ GraphSceneView::GraphSceneView(QWidget *parent) :
     m_buttonMatrixHead->hide();
 
     setSceneBrush(ApplicationSettings::getInstance().getBackgroundGradient());
-    setCanvasRect(QRectF(0,0, 1920, 1080));
+    setCanvasRect(QRectF(0,0, 2000, 2000));
     customZoom(1.0 / 200.0);
 }
 

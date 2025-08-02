@@ -35,8 +35,9 @@ signals:
     void scaleChanged();
 
 private:
-    QMenu*                          m_pContextMenu      {nullptr};  //! Контекстное меню
-    QGraphicsItem*                  m_contextMenuItem   {nullptr};  //! Объект, который находился под указателем мыши во время вызова контекстного меню
+    QMenu*          m_mainContextMenu   {nullptr};  //! Основное контекстное меню
+    QAction*        m_contextAction     {nullptr};  //! Действие с пометкой "Контекст" в контестном меню
+    QGraphicsItem*  m_contextMenuItem   {nullptr};  //! Объект, который находился под указателем мыши во время вызова контекстного меню
 
     QPointF                                         m_grabObjectPos;    //! Положение объекта до grab
     std::optional<ObjectViewConstants::objectId_t>  m_grabObjectId;     //! ID объекта, который "прикреплён" к указателю мыши

@@ -9,7 +9,11 @@
 InteractiveObjectView::InteractiveObjectView(QWidget *parent) :
     ObjectViewBase(parent)
 {
+    m_mainContextMenu = new QMenu(this);
 
+    m_mainContextMenu->addAction("Переключить сетку", [this](){
+        scene()->setGridEnabled(!scene()->getIsGridEnabled());
+    });
 }
 
 void InteractiveObjectView::zoomIn()
@@ -36,7 +40,7 @@ double InteractiveObjectView::getCurrentScale() const {
 
 void InteractiveObjectView::setContextMenu(QMenu *pMenu)
 {
-    m_pContextMenu = pMenu;
+    m_mainContextMenu->addMenu(pMenu);
 }
 
 QGraphicsItem *InteractiveObjectView::getContextMenuItem()
@@ -164,10 +168,6 @@ void InteractiveObjectView::mouseReleaseEvent(QMouseEvent *e)
 
 void InteractiveObjectView::contextMenuEvent(QContextMenuEvent *e)
 {
-    if (nullptr != m_pContextMenu) {
-        m_contextMenuItem = itemAt(e->pos());
-        m_pContextMenu->exec(e->globalPos());
-        m_contextMenuItem = nullptr; // Обнуление во избежание проблем
-    }
+    m_mainContextMenu->exec(e->globalPos());
     QGraphicsView::contextMenuEvent(e);
 }

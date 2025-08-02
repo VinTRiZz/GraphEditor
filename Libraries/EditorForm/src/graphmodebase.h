@@ -10,7 +10,7 @@
 namespace Graph
 {
 
-class GraphSceneBase;
+class GraphSceneView;
 
 class GraphModeBase : public QObject
 {
@@ -19,7 +19,7 @@ public:
     explicit GraphModeBase(QObject *parent = nullptr);
     ~GraphModeBase();
 
-    void setGraphScene(GraphSceneBase* pScene);
+    void setGraphScene(GraphSceneView* pScene);
 
     virtual void processPress(QGraphicsItem* pItem) = 0;
     virtual void processMove(QGraphicsItem* pItem, const QPointF& currentPos) = 0;
@@ -37,13 +37,13 @@ signals:
 
 private:
     bool m_isModeStarted {false};
-    GraphSceneBase* m_pScene {nullptr};
+    GraphSceneView* m_pScene {nullptr};
 
 protected:
     void setStarted();
     void setStopped();
 
-    GraphSceneBase* getScene() const;
+    GraphSceneView* getScene() const;
 
     std::vector<ButtonMatrix::ButtonConfig> m_modeButtonConfiguration;
 };

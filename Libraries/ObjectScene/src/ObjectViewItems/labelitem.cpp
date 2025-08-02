@@ -12,11 +12,14 @@ namespace ObjectViewItems
 LabelItem::LabelItem(QGraphicsItem* parent) :
     ItemBase(parent)
 {
-    setSystemName("Label item");
+    setSystemName("Текст");
 
     m_vertexTextRect = new QGraphicsRectItem(this);
+    registerSubitem(m_vertexTextRect);
 
     m_vertexText    = new QGraphicsTextItem(this);
+    registerSubitem(m_vertexText);
+
     m_vertexText->setDefaultTextColor(Qt::black);
     m_vertexText->setZValue(0);
 
@@ -32,14 +35,6 @@ LabelItem::LabelItem(QGraphicsItem* parent) :
     doc->setDefaultTextOption(option);
 
     m_vertexText->setTextWidth(100);
-}
-
-void LabelItem::setName(const QString &iText)
-{
-    setToolTip(iText);
-    ItemBase::setName(iText);
-    m_vertexTextRect->setRect(m_vertexText->boundingRect());
-    setVisible(!getShortName().isEmpty());
 }
 
 void LabelItem::setShortName(const QString &iText)
@@ -64,12 +59,16 @@ void LabelItem::setBackgroundColor(const QColor &iColor)
 
 void LabelItem::setTextStyle(QFont::Style fStyle)
 {
-
+    auto textFont = m_vertexText->font();
+    textFont.setStyle(fStyle);
+    m_vertexText->setFont(textFont);
 }
 
 void LabelItem::setTextSize(int pixelSize)
 {
-
+    auto textFont = m_vertexText->font();
+    textFont.setPixelSize(pixelSize);
+    m_vertexText->setFont(textFont);
 }
 
 QRectF LabelItem::boundingRect() const

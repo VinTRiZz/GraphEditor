@@ -61,7 +61,7 @@ QRectF rectFromString(const QString& iString) {
 VertexObject::VertexObject(QGraphicsItem *parent) :
     ItemBase(parent)
 {
-    setSystemName("Vertex object");
+    setSystemName("Вершина");
 
     setType(ObjectViewConstants::OBJECTTYPE_VERTEX);
 
@@ -70,19 +70,23 @@ VertexObject::VertexObject(QGraphicsItem *parent) :
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges, true);
 
     m_selectedRectItem = new QGraphicsPathItem(this);
+    registerSubitem(m_selectedRectItem);
     m_selectedRectItem->hide();
     m_selectedRectItem->setZValue(1);
 
     m_vertexImage   = new QGraphicsPixmapItem(this);
+    registerSubitem(m_vertexImage);
     m_vertexImage->hide();
 
     m_vertexEllipse = new QGraphicsEllipseItem(this);
+    registerSubitem(m_vertexEllipse);
 
     VertexObject::setSelectedColor(QColor("#5cff37"));
     VertexObject::setMainColor(GraphCommon::DEFAULT_VERTEX_BORDER_COLOR);
     VertexObject::setBackgroundColor(GraphCommon::DEFAULT_VERTEX_COLOR);
 
     m_nameItem = new LabelItem(this);
+    registerSubitem(m_nameItem);
     m_nameItem->setBackgroundColor(GraphCommon::DEFAULT_VERTEX_TEXT_BGR_COLOR);
     m_nameItem->setZValue(0);
 }

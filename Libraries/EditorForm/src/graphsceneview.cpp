@@ -1,24 +1,25 @@
-#include "graphscenebase.h"
+#include "graphsceneview.h"
 
 #include <GraphObject/Object.h>
 #include <ObjectScene/Constants.h>
 #include <Common/Logging.h>
+#include <Common/ApplicationSettings.h>
 
 namespace Graph
 {
 
-GraphSceneBase::GraphSceneBase(QWidget *parent) :
+GraphSceneView::GraphSceneView(QWidget *parent) :
     ObjectView(parent)
 {
 
 }
 
-GraphSceneBase::~GraphSceneBase()
+GraphSceneView::~GraphSceneView()
 {
 
 }
 
-void GraphSceneBase::init()
+void GraphSceneView::init()
 {
     if (!isInited()) {
         ObjectView::init();
@@ -34,10 +35,13 @@ void GraphSceneBase::init()
         m_buttonMatrixHead->setButtonPadding(0, 30, 0, 30);
         m_buttonMatrixHead->collapse(false);
         m_buttonMatrixHead->hide();
+
+        setSceneBrush(ApplicationSettings::getInstance().getBackgroundGradient());
+        setCanvasRect(QRectF(0,0, 1920, 1080));
     }
 }
 
-void GraphSceneBase::setMode(GraphModeBase *pMode)
+void GraphSceneView::setMode(GraphModeBase *pMode)
 {
     if (nullptr == pMode) [[unlikely]] {
         throw std::invalid_argument("Invalid mode set (nullptr)");
@@ -60,7 +64,7 @@ void GraphSceneBase::setMode(GraphModeBase *pMode)
     pMode->start();
 }
 
-void GraphSceneBase::writeChangesToGraph()
+void GraphSceneView::writeChangesToGraph()
 {
     auto objects = getAllObjects();
 
@@ -138,23 +142,23 @@ void GraphSceneBase::writeChangesToGraph()
     LOG_OK("Loaded", pGraph->getConnectionsCount(), "connections from scene");
 }
 
-void GraphSceneBase::setGraphMaintaner(const Graph::PMaintainer& pGraphMaintaner)
+void GraphSceneView::setGraphMaintaner(const Graph::PMaintainer& pGraphMaintaner)
 {
     m_pGraphMaintaner = pGraphMaintaner;
     updateGraph();
 }
 
-Graph::PMaintainer GraphSceneBase::getGraphMaintaner() const
+Graph::PMaintainer GraphSceneView::getGraphMaintaner() const
 {
     return m_pGraphMaintaner;
 }
 
-ButtonMatrix::HeadButton *GraphSceneBase::getButtonMatrixHead() const
+ButtonMatrix::HeadButton *GraphSceneView::getButtonMatrixHead() const
 {
     return m_buttonMatrixHead;
 }
 
-void GraphSceneBase::updateGraph()
+void GraphSceneView::updateGraph()
 {
     if (!m_pGraphMaintaner) {
         return;
@@ -220,14 +224,13 @@ void GraphSceneBase::updateGraph()
         pConnection->setZValue(sceneConfig.connectionLineLayer);
 
         pConnection->setShortName(con.name);
-        pConnection->setToolTip(con.name);
 
         pConFrom->second->subscribeAsConnectionFrom(pConnection);
         pConTo->second->subscribeAsConnectionTo(pConnection);
     }
 }
 
-ObjectViewItems::VertexConnectionLine *GraphSceneBase::createConnectionLine(ObjectViewConstants::objectId_t idFrom, ObjectViewConstants::objectId_t idTo)
+ObjectViewItems::VertexConnectionLine *GraphSceneView::createConnectionLine(ObjectViewConstants::objectId_t idFrom, ObjectViewConstants::objectId_t idTo)
 {
     while (!isIdAvailable(m_currentItemId)) {
         m_currentItemId++;
@@ -241,7 +244,7 @@ ObjectViewItems::VertexConnectionLine *GraphSceneBase::createConnectionLine(Obje
     return pConnection;
 }
 
-ObjectViewItems::VertexObject *GraphSceneBase::createVertex()
+ObjectViewItems::VertexObject *GraphSceneView::createVertex()
 {
     while (!isIdAvailable(m_currentItemId)) {
         m_currentItemId++;
@@ -266,7 +269,7 @@ ObjectViewItems::VertexObject *GraphSceneBase::createVertex()
     return pVertexItem;
 }
 
-ObjectViewItems::VertexObject *GraphSceneBase::createVertex(ObjectViewConstants::objectId_t vId)
+ObjectViewItems::VertexObject *GraphSceneView::createVertex(ObjectViewConstants::objectId_t vId)
 {
     if (!isIdAvailable(vId)) {
         LOG_ERROR("Got unavailable id:", vId);
@@ -292,7 +295,7 @@ ObjectViewItems::VertexObject *GraphSceneBase::createVertex(ObjectViewConstants:
     return pVertexItem;
 }
 
-void GraphSceneBase::resizeEvent(QResizeEvent *e)
+void GraphSceneView::resizeEvent(QResizeEvent *e)
 {
     m_buttonMatrixHead->fixPositions();
     ObjectView::resizeEvent(e);

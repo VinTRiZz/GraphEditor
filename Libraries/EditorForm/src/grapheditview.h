@@ -1,7 +1,7 @@
 #ifndef GRAPHEDITVIEW_H
 #define GRAPHEDITVIEW_H
 
-#include "graphscenebase.h"
+#include "graphsceneview.h"
 
 #include "grapheditmode.h"
 #include "graphviewmode.h"
@@ -9,7 +9,7 @@
 namespace Graph
 {
 
-class GraphEditView final : public GraphSceneBase
+class GraphEditView final : public GraphSceneView
 {
     Q_OBJECT
 public:

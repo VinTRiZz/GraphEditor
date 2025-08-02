@@ -80,6 +80,22 @@ public:
     bool minimizeToTray() const;
     QString getDateTimeFormat() const;
 
+    void setNodeSize(NodeSize size);
+    void setCanvasOpacity(int opacity);
+    void setLineThickness(int thickness);
+    void setArrowStyle(ArrowStyle style);
+    void setBackgroundGradient(const QGradient& gradient);
+    void setHasGrid(bool hasGrid);
+    void setGridSize(double size);
+    void setSnapToGrid(bool snap);
+    void setConfirmDeletion(bool confirm);
+    void setAutoSaveInterval(int seconds);
+    void setRemoveMetadata(bool remove);
+    void setCleanupTempFiles(bool cleanup);
+    void setMaxLogFiles(int maxFiles);
+    void setMinimizeToTray(bool minimize);
+    void setDateTimeFormat(const QString& format);
+
     void setTheme(Theme theme);
     void setNodeShape(NodeShape shape);
 

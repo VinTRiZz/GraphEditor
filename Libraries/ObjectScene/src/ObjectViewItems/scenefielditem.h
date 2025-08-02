@@ -14,7 +14,9 @@ class SceneFieldItem : public ItemBase
 public:
     explicit SceneFieldItem(QGraphicsItem* parent = nullptr);
 
-    void setRectSize(const QRectF& iRect);
+    void setFieldRect(const QRectF& iRect);
+    QRectF getFieldRect() const;
+
     void setBrush(const QBrush& iBrush);
     void setPen(const QPen& iPen);
 
@@ -28,10 +30,9 @@ public:
     bool isIdAvailable(ObjectViewConstants::objectId_t itemId) const;
 
 private:
-    QRectF m_fieldRect;
-    QBrush m_fieldBrush;
-    QPen   m_gridPen;
-    std::list<ItemBase*> m_registeredItems;
+    QGraphicsEllipseItem*   m_centerPoint {nullptr};
+    QGraphicsRectItem*      m_centerRect {nullptr};
+    std::list<ItemBase*>    m_registeredItems;
 };
 
 }

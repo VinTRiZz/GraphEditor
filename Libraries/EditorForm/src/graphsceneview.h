@@ -15,11 +15,11 @@ namespace Graph
 /**
  * @brief The GraphSceneBase class Основа класса сцены для отображения графа
  */
-class GraphSceneBase : public ObjectView
+class GraphSceneView : public ObjectView
 {
 public:
-    GraphSceneBase(QWidget* parent = nullptr);
-    ~GraphSceneBase();
+    GraphSceneView(QWidget* parent = nullptr);
+    ~GraphSceneView();
 
     /**
      * @brief init Инициализация сцены. Обязательна к вызову

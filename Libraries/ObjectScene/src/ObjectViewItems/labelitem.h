@@ -13,7 +13,6 @@ class LabelItem : public ItemBase
 public:
     explicit LabelItem(QGraphicsItem* parent = nullptr);
 
-    void setName(const QString& iText) override;
     void setShortName(const QString& iText) override;
 
     void setMainColor(const QColor& iColor) override;

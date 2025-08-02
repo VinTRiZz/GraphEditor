@@ -1,6 +1,6 @@
 #include "graphmodebase.h"
 
-#include "graphscenebase.h"
+#include "graphsceneview.h"
 
 namespace Graph
 {
@@ -17,7 +17,7 @@ GraphModeBase::~GraphModeBase()
 
 }
 
-void GraphModeBase::setGraphScene(GraphSceneBase *pScene)
+void GraphModeBase::setGraphScene(GraphSceneView *pScene)
 {
     m_pScene = pScene;
 }
@@ -39,7 +39,7 @@ void GraphModeBase::setStopped()
     emit stopped();
 }
 
-GraphSceneBase *GraphModeBase::getScene() const
+GraphSceneView *GraphModeBase::getScene() const
 {
     return m_pScene;
 }

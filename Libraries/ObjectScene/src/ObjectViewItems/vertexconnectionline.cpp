@@ -26,7 +26,7 @@ namespace ObjectViewItems
 VertexConnectionLine::VertexConnectionLine(QGraphicsItem *parent) :
     ItemBase(parent)
 {
-    setSystemName("Vertex connection line");
+    setSystemName("Соединение вершин");
 
     setType(ObjectViewConstants::OBJECTTYPE_VERTEX_CONNECTION);
 
@@ -45,20 +45,24 @@ VertexConnectionLine::VertexConnectionLine(QGraphicsItem *parent) :
     setFlag(QGraphicsItem::ItemClipsToShape, true);
 
     m_line = new QGraphicsPathItem(this);
+    registerSubitem(m_line);
     m_line->setBrush(Qt::NoBrush);
     m_line->setZValue(1);
 
     m_lineSelected = new QGraphicsPathItem(this);
+    registerSubitem(m_lineSelected);
     m_lineSelected->setBrush(Qt::NoBrush);
     m_lineSelected->setZValue(0);
     m_lineSelected->hide();
 
     m_pArrowHeadPolygon = new QGraphicsPolygonItem(this);
+    registerSubitem(m_pArrowHeadPolygon);
 
     VertexConnectionLine::setMainColor(QColor("#2a8d7c"));
     VertexConnectionLine::setSelectedColor(m_selectedPen.color());
 
     m_labelItem = new LabelItem(this);
+    registerSubitem(m_labelItem);
     m_labelItem->setZValue(1);
     m_labelItem->setBackgroundColor(GraphCommon::DEFAULT_VERTEX_TEXT_BGR_COLOR);
 }

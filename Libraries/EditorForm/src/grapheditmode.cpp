@@ -1,6 +1,6 @@
 #include "grapheditmode.h"
 
-#include "graphscenebase.h"
+#include "graphsceneview.h"
 
 #include <Common/Logging.h>
 
@@ -348,9 +348,6 @@ void GraphEditMode::clearConnectionAddMode()
 
 void GraphEditMode::setPendingVertex(ObjectViewItems::ItemBase *pItem)
 {
-    if (pItem != nullptr && pItem != m_pendingVertex) {
-        return;
-    }
     auto pScene = getScene();
     if (nullptr != m_pendingVertex) {
         pScene->acceptGrabObject();

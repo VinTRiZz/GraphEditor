@@ -1,4 +1,5 @@
 #include "ObjectViewItems/itembase.h"
+#include "ObjectViewItems/labelitem.h"
 #include "ObjectViewItems/scenefielditem.h"
 #include "ObjectViewItems/arrowline.h"
 #include "ObjectViewItems/vertexobject.h"

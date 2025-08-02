@@ -19,7 +19,7 @@ static objectId_t getSystemId() {
 ItemBase::ItemBase(QGraphicsItem *parent) :
     QGraphicsItem(parent)
 {
-    setSystemName(QString("Unchanged name of: \"%0\"").arg(boost::core::demangle(typeid(this).name()).c_str()));
+    setSystemName("Неизвестный тип");
 }
 
 ItemBase::~ItemBase()
@@ -57,6 +57,10 @@ void ItemBase::setSystemId()
 void ItemBase::setObjectId(objectId_t id)
 {
     setData(OBJECTFIELD_ID, id);
+
+    for (auto pChild : childItems()) {
+        registerSubitem(pChild);
+    }
 }
 
 objectId_t ItemBase::getObjectId() const
@@ -82,6 +86,10 @@ void ItemBase::setSystemName(const QString &iText)
     setData(OBJECTFIELD_NAME_SYSTEM, iText);
 }
 
+void ItemBase::registerSubitem(QGraphicsItem *pItem) {
+    pItem->setData(ObjectViewConstants::OBJECTFIELD_PARENTITEM_ID, getObjectId());
+}
+
 void ItemBase::setShortName(const QString &text)
 {
     setData(OBJECTFIELD_NAME_SHORT, text);
@@ -95,7 +103,6 @@ QString ItemBase::getShortName() const
 void ItemBase::setName(const QString &text)
 {
     setData(OBJECTFIELD_NAME, text);
-    setToolTip(data(OBJECTFIELD_NAME).toString());
 }
 
 QString ItemBase::getName() const

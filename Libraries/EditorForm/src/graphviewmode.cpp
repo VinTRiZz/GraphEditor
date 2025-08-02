@@ -1,6 +1,6 @@
 #include "graphviewmode.h"
 
-#include "graphscenebase.h"
+#include "graphsceneview.h"
 
 #include <Common/Logging.h>
 

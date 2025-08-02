@@ -62,6 +62,8 @@ protected:
     void setBoundingRect(const QRectF& bRect);
 
     void setSystemName(const QString& iText);
+
+    void registerSubitem(QGraphicsItem* pItem);
 };
 
 }

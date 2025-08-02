@@ -41,6 +41,68 @@ bool ApplicationSettings::minimizeToTray() const { return m_minimizeToTray; }
 
 QString ApplicationSettings::getDateTimeFormat() const { return m_dateTimeFormat; }
 
+void ApplicationSettings::setNodeSize(NodeSize size) {
+    m_nodeSize = size;
+}
+
+void ApplicationSettings::setCanvasOpacity(int opacity) {
+    m_canvasOpacity = qBound(0, opacity, 100);
+}
+
+void ApplicationSettings::setLineThickness(int thickness) {
+    m_lineThickness = qBound(1, thickness, 10);
+}
+
+void ApplicationSettings::setArrowStyle(ArrowStyle style) {
+    m_arrowStyle = style;
+}
+
+void ApplicationSettings::setBackgroundGradient(const QGradient& gradient) {
+    m_backgroundGradient = gradient;
+}
+
+void ApplicationSettings::setHasGrid(bool hasGrid) {
+    m_hasGrid = hasGrid;
+}
+
+void ApplicationSettings::setGridSize(double size) {
+    m_gridSize = qBound(5.0, size, 100.0);
+}
+
+void ApplicationSettings::setSnapToGrid(bool snap) {
+    m_snapToGrid = snap;
+}
+
+void ApplicationSettings::setConfirmDeletion(bool confirm) {
+    m_confirmDeletion = confirm;
+}
+
+void ApplicationSettings::setAutoSaveInterval(int seconds) {
+    m_autoSaveInterval = qMax(0, seconds);
+}
+
+void ApplicationSettings::setRemoveMetadata(bool remove) {
+    m_removeMetadata = remove;
+}
+
+void ApplicationSettings::setCleanupTempFiles(bool cleanup) {
+    m_cleanupTempFiles = cleanup;
+}
+
+void ApplicationSettings::setMaxLogFiles(int maxFiles) {
+    m_maxLogFiles = qMax(0, maxFiles);
+}
+
+void ApplicationSettings::setMinimizeToTray(bool minimize) {
+    m_minimizeToTray = minimize;
+}
+
+void ApplicationSettings::setDateTimeFormat(const QString& format) {
+    if (!format.isEmpty()) {
+        m_dateTimeFormat = format;
+    }
+}
+
 void ApplicationSettings::setTheme(Theme theme) { m_theme = theme; }
 
 void ApplicationSettings::setNodeShape(NodeShape shape) { m_nodeShape = shape; }
@@ -75,8 +137,8 @@ void ApplicationSettings::saveSettings() const
 
 ApplicationSettings::ApplicationSettings() {
     // Инициализация градиента по умолчанию
-    m_backgroundGradient.setColorAt(0, QColor(240, 240, 240));
-    m_backgroundGradient.setColorAt(1, QColor(200, 200, 200));
+    m_backgroundGradient.setColorAt(0, QColor(50, 50, 50));
+    m_backgroundGradient.setColorAt(1, QColor(50, 50, 50));
 }
 
 void ApplicationSettings::fixErrors() {
@@ -124,7 +186,7 @@ void ApplicationSettings::fixErrors() {
     if (m_backgroundGradient.stops().isEmpty()) {
         QLinearGradient defaultGradient(0, 0, 100, 100);
         defaultGradient.setColorAt(0, QColor(240, 240, 240));
-        defaultGradient.setColorAt(1, QColor(200, 200, 200));
+        defaultGradient.setColorAt(1, QColor(235, 235, 235));
         m_backgroundGradient = defaultGradient;
     }
 
@@ -228,8 +290,8 @@ void ApplicationSettings::saveSettings(const QString& configPath) const {
     // Сохранение градиента
     // Здесь должна быть конвертация QGradient в строку
     QString gradientStr = QString("linear:%1:%2")
-        .arg(m_backgroundGradient.stops().first().second.name())
-        .arg(m_backgroundGradient.stops().last().second.name());
+            .arg(m_backgroundGradient.stops().first().second.name())
+            .arg(m_backgroundGradient.stops().last().second.name());
     settings.setValue("background_gradient", gradientStr);
     settings.endGroup();
 
@@ -254,9 +316,9 @@ void ApplicationSettings::saveSettings(const QString& configPath) const {
 // Конвертеры для Theme
 QString ApplicationSettings::themeToString(Theme theme) const {
     switch(theme) {
-        case Theme::Light: return "Light";
-        case Theme::Dark: return "Dark";
-        default: return "System";
+    case Theme::Light: return "Light";
+    case Theme::Dark: return "Dark";
+    default: return "System";
     }
 }
 

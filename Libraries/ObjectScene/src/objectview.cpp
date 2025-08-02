@@ -13,6 +13,8 @@
 
 #include <Common/Logging.h>
 
+#include <math.h>
+
 using namespace ObjectViewItems;
 
 ObjectView::ObjectView(QWidget *parent) :
@@ -32,17 +34,37 @@ void ObjectView::init()
     setScene(m_pScene);
 
     m_pNullItem = new SceneFieldItem();
-    m_pNullItem->setBrush(QColor(210, 215, 210));
-    m_pNullItem->setPen(QPen(QColor(110, 115, 110), 2));
-    m_pNullItem->setZValue(0);
+    m_pNullItem->setBrush(QColor(220, 220, 220));
+    m_pNullItem->setPen(QPen(QColor(70, 60, 60), 2));
+    m_pNullItem->setZValue(-1);
     m_pScene->addItem(m_pNullItem);
 
-    scale(0.5, 0.5);
+    m_pCoordinatesItem = new ObjectViewItems::LabelItem();
+    m_pCoordinatesItem->setBackgroundColor(QColor(200, 240, 210, 80));
+    m_pCoordinatesItem->setMainColor(Qt::black);
+    m_pCoordinatesItem->setTextSize(10);
+    m_pCoordinatesItem->setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
+    m_pCoordinatesItem->setZValue(1e6); // Чтобы точно не закрыло
+    m_pScene->addItem(m_pCoordinatesItem);
+
+//    setSceneRect(QRectF(0, 0, 10e3, 10e3));
 }
 
 bool ObjectView::isInited() const
 {
     return (nullptr != m_pScene);
+}
+
+void ObjectView::zoomIn()
+{
+    m_currentZoomValue *= 1.2;
+    scale(1.2, 1.2);
+}
+
+void ObjectView::zoomOut()
+{
+    m_currentZoomValue *= 0.8;
+    scale(0.8, 0.8);
 }
 
 void ObjectView::setContextMenu(QMenu *pMenu)
@@ -71,15 +93,17 @@ void ObjectView::setMovingCallback(const std::function<void (const QPointF &)> &
 void ObjectView::setGrabObject(QGraphicsItem *pItem)
 {
     if (nullptr == pItem) {
-        m_grabObjectId = std::nullopt;
+        throw std::invalid_argument("Can not set grab object to nullptr");
         return;
     }
     m_grabObjectId = pItem->data(ObjectViewConstants::ObjectField::OBJECTFIELD_ID).toLongLong();
+    LOG_DEBUG("Set grab object:", m_grabObjectId.value());
     m_grabObjectPos = pItem->pos();
 }
 
 void ObjectView::acceptGrabObject()
 {
+    centerOn(getObject(m_grabObjectId.value()));
     m_grabObjectId = std::nullopt;
 }
 
@@ -95,9 +119,12 @@ void ObjectView::rejectGrabObject()
 
 void ObjectView::wheelEvent(QWheelEvent *e)
 {
-    double scaleValue = e->angleDelta().ry() > 0 ? 0.8 : 1.2;
     auto cursorPos = mapToScene(mapFromGlobal(QCursor::pos()));
-    scale(scaleValue, scaleValue);
+    if (e->angleDelta().ry() > 0) {
+        zoomOut();
+    } else {
+        zoomIn();
+    }
     centerOn(cursorPos);
     auto nextCursorPos = mapToGlobal(mapFromScene(cursorPos));
     QCursor::setPos(nextCursorPos);
@@ -133,6 +160,29 @@ void ObjectView::mousePressEvent(QMouseEvent *e)
 void ObjectView::mouseMoveEvent(QMouseEvent *e)
 {
     auto currentPos = mapToScene(e->pos());
+
+    // Обновляем координаты и тип объекта
+    {
+        m_pCoordinatesItem->setPos(mapToScene({e->pos().x() + 20, e->pos().y() + 20}));
+
+        QString hoverItemName {};
+        auto hoverItem = itemAt(e->pos());
+        if (nullptr != hoverItem) {
+            auto pHoverItemParent = getParentOfComplex(hoverItem);
+            if (nullptr != pHoverItemParent) {
+                hoverItemName = pHoverItemParent->getSystemName();
+            } else {
+                hoverItemName = hoverItem->data(ObjectViewConstants::OBJECTFIELD_NAME_SYSTEM).toString();
+            }
+        }
+        m_pCoordinatesItem->setShortName(
+            QString("X: %0\nY: %1%2").arg(
+                QString::number(currentPos.x()),
+                QString::number(currentPos.y()),
+                !hoverItemName.isEmpty() ? QString("\n") + hoverItemName : QString())
+        );
+    }
+
     if (m_grabObjectId.has_value()) {
         auto pObject = getGrabObject();
         pObject->setPos(currentPos - pObject->boundingRect().center());
@@ -186,6 +236,29 @@ bool ObjectView::isIdAvailable(ObjectViewConstants::objectId_t itemId) const
     return m_pNullItem->isIdAvailable(itemId);
 }
 
+void ObjectView::setSceneBrush(const QBrush &sceneBrush)
+{
+    m_pScene->setBackgroundBrush(sceneBrush);
+}
+
+void ObjectView::setSceneRect(const QRectF &iRect)
+{
+    QGraphicsView::setSceneRect(iRect);
+    setCanvasRect(m_pNullItem->getFieldRect());
+}
+
+void ObjectView::setCanvasRect(const QRectF &iRect)
+{
+    m_pNullItem->setFieldRect(iRect);
+    m_pNullItem->setPos(sceneRect().center() - iRect.center());
+
+    auto targetWidth = m_pNullItem->boundingRect().width();
+    targetWidth = targetWidth == 0 ? 1 : targetWidth;
+    auto scaleCoeff = viewport()->width() / targetWidth;
+    scale(scaleCoeff, scaleCoeff);
+    centerOn(sceneRect().center());
+}
+
 ObjectViewItems::ItemBase *ObjectView::getParentOfComplex(QGraphicsItem *pItem)
 {
     auto itemParentIdVariant = pItem->data(ObjectViewConstants::OBJECTFIELD_PARENTITEM_ID);
@@ -212,15 +285,18 @@ void ObjectView::addObject(ObjectViewItems::ItemBase *pItem)
         throw std::invalid_argument("ObjectsScene-internal: invalid (nullptr) item");
     }
 
-    std::function<void(QGraphicsItem*, ObjectViewConstants::objectId_t)> setChildComplexId =
-        [&setChildComplexId](QGraphicsItem* pItem, ObjectViewConstants::objectId_t parentId){
-        pItem->setData(ObjectViewConstants::OBJECTFIELD_PARENTITEM_ID, parentId);
-        for (auto* pChild : pItem->childItems()) {
-            setChildComplexId(pChild, parentId);
-        }
-    };
-    setChildComplexId(pItem, pItem->getObjectId());
-    pItem->setData(ObjectViewConstants::OBJECTFIELD_PARENTITEM_ID, QVariant()); // Обнуление для сохранения зависимости parent-child
+    // Закомментировал, т.к. это уже забота классов-наследников ItemBase
+//    std::function<void(QGraphicsItem*, ObjectViewConstants::objectId_t)> setChildComplexId =
+//        [&setChildComplexId](QGraphicsItem* pItem, ObjectViewConstants::objectId_t parentId){
+//        pItem->setData(ObjectViewConstants::OBJECTFIELD_PARENTITEM_ID, parentId);
+//        for (auto* pChild : pItem->childItems()) {
+//            setChildComplexId(pChild, parentId);
+//        }
+//    };
+//    setChildComplexId(pItem, pItem->getObjectId());
+//    pItem->setData(ObjectViewConstants::OBJECTFIELD_PARENTITEM_ID, QVariant()); // Обнуление для сохранения зависимости parent-child
+
+    LOG_DEBUG("Adding item with id:", pItem->getObjectId());
     m_objectsMap[pItem->getObjectId()] = pItem;
     m_pNullItem->registerItem(pItem);
 }

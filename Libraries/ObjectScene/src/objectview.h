@@ -33,7 +33,14 @@ public:
     void init();
     bool isInited() const;
 
+    void zoomIn();
+    void zoomOut();
+
     bool isIdAvailable(ObjectViewConstants::objectId_t itemId) const;
+
+    void setSceneBrush(const QBrush& sceneBrush);
+    void setSceneRect(const QRectF& iRect);
+    void setCanvasRect(const QRectF& iRect);
 
     void setContextMenu(QMenu* pMenu);
     QGraphicsItem* getContextMenuItem();
@@ -56,20 +63,22 @@ public slots:
     void rejectGrabObject();
 
 private:
-    ObjectsInternalScene*   m_pScene            {nullptr};  //! Сцена для отображения объектов (внутренний класс)
-    QMenu*                  m_pContextMenu      {nullptr};  //! Контекстное меню
-    QGraphicsItem*          m_contextMenuItem   {nullptr};  //! Объект, который находился под указателем мыши во время вызова контекстного меню
+    ObjectsInternalScene*           m_pScene            {nullptr};  //! Сцена для отображения объектов (внутренний класс)
+    QMenu*                          m_pContextMenu      {nullptr};  //! Контекстное меню
+    QGraphicsItem*                  m_contextMenuItem   {nullptr};  //! Объект, который находился под указателем мыши во время вызова контекстного меню
+    ObjectViewItems::LabelItem*     m_pCoordinatesItem  {nullptr};  //! Объект, который показывает координаты пользователю
 
-    QPointF                                                             m_grabObjectPos;    //! Положение объекта до grab
-    std::optional<ObjectViewConstants::objectId_t>                      m_grabObjectId;     //! ID объекта, который "прикреплён" к указателю мыши
+    QPointF                                         m_grabObjectPos;    //! Положение объекта до grab
+    std::optional<ObjectViewConstants::objectId_t>  m_grabObjectId;     //! ID объекта, который "прикреплён" к указателю мыши
 
     ObjectViewItems::SceneFieldItem* m_pNullItem {nullptr};  //! Объект, который являет собой пространство сцены (как бы ограниченная плоскость для расположения объектов)
     QHash<ObjectViewConstants::objectId_t, ObjectViewItems::ItemBase*>  m_objectsMap;       //! Словарь для сохранения ID объектов
 
-    QPointF m_prevPos;                                      //! Позиция нажатия на графе
-    bool    m_isHoldingLeftButton   {false};                //! Флаг факта того, что пользователь кникнул на сцену ЛКМ
-    bool    m_isHoldingMiddleButton {false};                //! Флаг факта того, что пользователь кникнул на сцену СКМ
-    bool    m_isMovingByUser        {true};                 //! Флаг для перемещений сцены по СКМ
+    QPointF m_prevPos;                          //! Позиция нажатия на графе
+    bool    m_isHoldingLeftButton   {false};    //! Флаг факта того, что пользователь кникнул на сцену ЛКМ
+    bool    m_isHoldingMiddleButton {false};    //! Флаг факта того, что пользователь кникнул на сцену СКМ
+    bool    m_isMovingByUser        {true};     //! Флаг для перемещений сцены по СКМ
+    double  m_currentZoomValue      {1};        //! Текущий коэффициент увеличения
 
     std::function<void(const QPointF&)> m_movingCallback;   //! Колбек для обработки перемещения по сцене
 

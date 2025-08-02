@@ -8,25 +8,39 @@ namespace ObjectViewItems
 SceneFieldItem::SceneFieldItem(QGraphicsItem* parent) :
     ItemBase(parent)
 {
-    setSystemName("Dynamic area");
+    setSystemName("Плоскость сцены");
+
+    m_centerRect = new QGraphicsRectItem(this);
+    registerSubitem(m_centerRect);
+    m_centerRect->setZValue(-10);
+
+    m_centerPoint = new QGraphicsEllipseItem(this);
+    m_centerPoint->setData(ObjectViewConstants::OBJECTFIELD_NAME_SYSTEM, "Центр сцены");
+    m_centerPoint->setRect(QRectF(0, 0, 5, 5));
+    m_centerPoint->setBrush(QColor(255, 0, 0, 170));
+    m_centerPoint->setFlag(ItemIgnoresTransformations, true);
+    m_centerPoint->setZValue(-9);
 }
 
-void SceneFieldItem::setRectSize(const QRectF &iRect)
+void SceneFieldItem::setFieldRect(const QRectF &iRect)
 {
-    if (iRect.width() == 0 || iRect.height() == 0) {
-        throw std::invalid_argument("Rect width or height is zero");
-    }
-    m_fieldRect = iRect;
+    m_centerRect->setRect(iRect);
+    m_centerPoint->setPos(iRect.center());
+}
+
+QRectF SceneFieldItem::getFieldRect() const
+{
+    return m_centerRect->rect();
 }
 
 void SceneFieldItem::setBrush(const QBrush &iBrush)
 {
-    m_fieldBrush = iBrush;
+    m_centerRect->setBrush(iBrush);
 }
 
 void SceneFieldItem::setPen(const QPen &iPen)
 {
-    m_gridPen = iPen;
+    m_centerRect->setPen(iPen);
 }
 
 void SceneFieldItem::registerItem(ItemBase *pItem)

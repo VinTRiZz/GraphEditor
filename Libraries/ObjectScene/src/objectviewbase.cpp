@@ -48,7 +48,6 @@ void ObjectViewBase::setCanvasRect(const QRectF &iRect)
     targetWidth = targetWidth == 0 ? 1 : targetWidth;
     auto scaleCoeff = viewport()->width() / targetWidth;
     scale(scaleCoeff, scaleCoeff);
-    centerOn(sceneRect().center());
 }
 
 ObjectViewItems::ItemBase *ObjectViewBase::getParentOfComplex(QGraphicsItem *pItem)

@@ -11,6 +11,7 @@ public:
 
     void zoomIn();
     void zoomOut();
+    void customZoom(double scaleCoeff);
 
     double getCurrentScale() const;
 

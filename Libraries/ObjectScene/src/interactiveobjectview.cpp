@@ -24,6 +24,12 @@ void InteractiveObjectView::zoomOut()
     emit scaleChanged();
 }
 
+void InteractiveObjectView::customZoom(double scaleCoeff)
+{
+    scale(scaleCoeff, scaleCoeff);
+    emit scaleChanged();
+}
+
 double InteractiveObjectView::getCurrentScale() const {
     return transform().m11();
 }

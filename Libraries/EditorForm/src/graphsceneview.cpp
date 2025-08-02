@@ -28,6 +28,7 @@ GraphSceneView::GraphSceneView(QWidget *parent) :
 
     setSceneBrush(ApplicationSettings::getInstance().getBackgroundGradient());
     setCanvasRect(QRectF(0,0, 1920, 1080));
+    customZoom(1.0 / 200.0);
 }
 
 GraphSceneView::~GraphSceneView()

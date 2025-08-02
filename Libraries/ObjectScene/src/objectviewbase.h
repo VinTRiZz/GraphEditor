@@ -11,14 +11,19 @@
 
 class ObjectViewBase : public QGraphicsView
 {
+    // Запрет на использование из-за багов
+    using QGraphicsView::setSceneRect;
+
 public:
     explicit ObjectViewBase(QWidget *parent);
 
     bool getIsInited() const;
     bool isIdAvailable(ObjectViewConstants::objectId_t itemId) const;
 
+    void setGridEnabled(bool isGEnabled);
+    bool getIsGridEnabled() const;
+
     void setSceneBrush(const QBrush& sceneBrush);
-    void setSceneRect(const QRectF& iRect);
     void setCanvasRect(const QRectF& iRect);
 
     void addObject(ObjectViewItems::ItemBase *pItem);
@@ -30,7 +35,7 @@ public:
     void removeSpecialObjects(ObjectViewConstants::ObjectType objT);
 
 private:
-    ObjectsInternalScene* m_pScene  {nullptr};  //! Сцена для отображения объектов (внутренний класс)
+    ObjectsInternalScene* m_pScene  {nullptr};              //! Сцена для отображения объектов (внутренний класс)
     ObjectViewItems::SceneFieldItem* m_pNullItem {nullptr}; //! Объект, который являет собой пространство сцены (как бы ограниченная плоскость для расположения объектов)
     QHash<ObjectViewConstants::objectId_t, ObjectViewItems::ItemBase*>  m_objectsMap; //! Словарь для сохранения ID объектов
 

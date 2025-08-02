@@ -12,6 +12,7 @@ public:
 
 private:
     ObjectViewItems::LabelItem* m_pCoordinatesItem  {nullptr};  //! Объект, который показывает координаты пользователю
+    ObjectViewItems::LabelItem* m_combinedInfoItem  {nullptr};  //! Комбинированное инфо слева снизу сцены
 
 protected:
     void mouseMoveEvent(QMouseEvent* e) override;

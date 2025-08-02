@@ -12,6 +12,14 @@ InformationObjectView::InformationObjectView(QWidget *parent) :
     m_pCoordinatesItem->setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
     m_pCoordinatesItem->setZValue(1e6); // Чтобы точно не закрыло
     scene()->addItem(m_pCoordinatesItem);
+
+    m_combinedInfoItem = new ObjectViewItems::LabelItem();
+    m_combinedInfoItem->setBackgroundColor(QColor(200, 240, 210, 80));
+    m_combinedInfoItem->setMainColor(Qt::black);
+    m_combinedInfoItem->setTextSize(10);
+    m_combinedInfoItem->setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
+    m_combinedInfoItem->setZValue(1e6); // Чтобы точно не закрыло
+    scene()->addItem(m_combinedInfoItem);
 }
 
 void InformationObjectView::mouseMoveEvent(QMouseEvent *e)
@@ -36,5 +44,9 @@ void InformationObjectView::mouseMoveEvent(QMouseEvent *e)
             QString::number(currentPos.y()),
             !hoverItemName.isEmpty() ? QString("\n") + hoverItemName : QString())
     );
+
+
+//    m_combinedInfoItem->setPos();
+
     InteractiveObjectView::mouseMoveEvent(e);
 }

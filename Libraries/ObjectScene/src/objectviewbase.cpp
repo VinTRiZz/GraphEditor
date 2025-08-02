@@ -25,21 +25,24 @@ bool ObjectViewBase::isIdAvailable(ObjectViewConstants::objectId_t itemId) const
     return m_pNullItem->isIdAvailable(itemId);
 }
 
+void ObjectViewBase::setGridEnabled(bool isGEnabled)
+{
+    m_pScene->setGridEnabled(isGEnabled);
+}
+
+bool ObjectViewBase::getIsGridEnabled() const
+{
+    return m_pScene->getIsGridEnabled();
+}
+
 void ObjectViewBase::setSceneBrush(const QBrush &sceneBrush)
 {
     m_pScene->setBackgroundBrush(sceneBrush);
 }
 
-void ObjectViewBase::setSceneRect(const QRectF &iRect)
-{
-    QGraphicsView::setSceneRect(iRect);
-    setCanvasRect(m_pNullItem->getFieldRect());
-}
-
 void ObjectViewBase::setCanvasRect(const QRectF &iRect)
 {
     m_pNullItem->setFieldRect(iRect);
-    m_pNullItem->setPos(sceneRect().center() - iRect.center());
 
     auto targetWidth = m_pNullItem->boundingRect().width();
     targetWidth = targetWidth == 0 ? 1 : targetWidth;
@@ -106,6 +109,11 @@ QList<ObjectViewItems::ItemBase *> ObjectViewBase::getAllObjects() const
 QList<ObjectViewConstants::objectId_t> ObjectViewBase::getAllObjectIds() const
 {
     return m_objectsMap.keys();
+}
+
+void ObjectViewBase::removeAllObjects()
+{
+
 }
 
 void ObjectViewBase::removeObject(ObjectViewConstants::objectId_t itemId)

@@ -27,8 +27,21 @@ public:
     explicit ObjectsInternalScene(QObject *parent = nullptr);
     ~ObjectsInternalScene();
 
+    void setGridEnabled(bool enabled);
+    bool getIsGridEnabled() const;
+
+    void setGridSize(int sizePx);
 
     using QGraphicsScene::addItem;
+
+protected:
+    void drawForeground(QPainter* painter, const QRectF& rect) override;
+
+private:
+    bool    m_isGridEnabled = true; //! Вкл/выкл сетки
+    double  m_baseGridSize = 50;    //! Размер ячейки при масштабе 1х1
+
+    QPen    m_gridPen {QColor(15, 90, 180, 100), 1}; //! Перо сетки
 };
 
 #endif // OBJECTSINTERNALSCENE_H

@@ -3,8 +3,8 @@
 
 #include <optional>
 
-#include "../constants.h"
-#include "../sceneitems.h"
+#include <ObjectItems/Constants.h>
+#include <ObjectItems/SceneFieltItem.h>
 #include "objectsinternalscene.h"
 
 #include <QGraphicsView>

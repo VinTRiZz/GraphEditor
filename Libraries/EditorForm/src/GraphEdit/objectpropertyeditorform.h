@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-#include <ObjectScene/SceneItems.h>
+#include <ObjectItems/ItemBase.h>
 
 namespace Ui {
 class ObjectPropertyEditorForm;

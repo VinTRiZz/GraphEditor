@@ -5,6 +5,8 @@
 
 #include "GraphEdit/propertyedititem.h"
 
+#include <ObjectItems/VertexObjectItem.h>
+
 namespace Graph
 {
 

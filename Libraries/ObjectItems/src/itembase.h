@@ -3,7 +3,7 @@
 
 #include <QGraphicsItem>
 
-#include "../constants.h"
+#include "constants.h"
 
 #include <QBrush>
 #include <QPen>

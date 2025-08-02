@@ -2,6 +2,7 @@
 #define DYNAMICAREAITEM_H
 
 #include "itembase.h"
+#include "centeritem.h"
 
 #include <QBrush>
 #include <QPen>

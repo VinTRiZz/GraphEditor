@@ -16,7 +16,7 @@
 #include <QJsonObject>
 
 #include "vertexobject.h"
-#include "../constants.h"
+#include "constants.h"
 
 using namespace ObjectViewConstants;
 

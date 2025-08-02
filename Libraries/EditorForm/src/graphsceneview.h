@@ -6,6 +6,7 @@
 #include <GraphObject/Maintainer.h>
 #include <ObjectScene/ObjectView.h>
 #include <CustomWidgets/ButtonMatrix.h>
+#include <ObjectItems/ConnectionLineItem.h>
 
 #include <boost/noncopyable.hpp>
 

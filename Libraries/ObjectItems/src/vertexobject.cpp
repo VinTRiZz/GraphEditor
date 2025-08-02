@@ -12,7 +12,7 @@
 #include <QBuffer>
 
 #include "vertexconnectionline.h"
-#include "../constants.h"
+#include "constants.h"
 
 #include <Common/Logging.h>
 

@@ -1,9 +1,12 @@
 #include "graphsceneview.h"
 
 #include <GraphObject/Object.h>
-#include <ObjectScene/Constants.h>
+#include <ObjectItems/Constants.h>
 #include <Common/Logging.h>
 #include <Common/ApplicationSettings.h>
+
+#include <ObjectItems/ConnectionLineItem.h>
+#include <ObjectItems/VertexObjectItem.h>
 
 namespace Graph
 {

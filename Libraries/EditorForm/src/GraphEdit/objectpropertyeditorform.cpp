@@ -4,6 +4,9 @@
 #include <Common/Logging.h>
 #include <GraphObject/Components.h>
 
+#include <ObjectItems/ConnectionLineItem.h>
+#include <ObjectItems/VertexObjectItem.h>
+
 #include <QColorDialog>
 #include <QFileDialog>
 

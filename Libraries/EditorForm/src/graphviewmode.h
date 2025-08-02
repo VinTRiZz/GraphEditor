@@ -3,7 +3,7 @@
 
 #include "graphmodebase.h"
 #include <GraphObject/Object.h>
-#include <ObjectScene/Constants.h>
+#include <ObjectItems/Constants.h>
 #include <CustomWidgets/ButtonMatrix.h>
 
 namespace Graph

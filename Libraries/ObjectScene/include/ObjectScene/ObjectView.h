@@ -1,1 +1,1 @@
-#include "../../src/Scenes/objectview.h"
+#include "../../src/objectview.h"

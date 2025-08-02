@@ -9,7 +9,7 @@ namespace ObjectViewConstants
 {
 
 /**
- * @brief The GraphConversionConfiguration class Структура для настройки конверсий графов
+ * @brief The GraphConversionConfiguration class Структура информации по уровням объектов на сцене
  */
 struct ObjectSceneConfiguration : boost::noncopyable
 {

@@ -1,7 +1,7 @@
 #ifndef PROPERTYEDITITEM_H
 #define PROPERTYEDITITEM_H
 
-#include <ObjectScene/SceneItems.h>
+#include <ObjectItems/ItemBase.h>
 
 #include "objectpropertyeditorform.h"
 

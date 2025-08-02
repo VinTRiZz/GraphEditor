@@ -3,6 +3,8 @@
 
 #include "interactiveobjectview.h"
 
+#include <ObjectItems/LabelItem.h>
+
 class InformationObjectView : public InteractiveObjectView
 {
 public:

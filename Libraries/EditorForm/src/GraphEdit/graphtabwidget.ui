@@ -42,7 +42,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Выберите граф для редактирования</string>
+      <string>Выберите или создайте граф для редактирования</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>

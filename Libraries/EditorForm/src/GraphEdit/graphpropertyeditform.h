@@ -56,6 +56,7 @@ private:
         EDITEDROW,
     };
 
+    bool m_isSettingGraph {false}; //! Для задания графов без удаления их свойств (особенности логики)
     QStandardItemModel* m_pCommonGraphInfoModel     {nullptr};  //! Модель с общими данными по графу
     QStandardItemModel* m_pUserGraphInfoModel       {nullptr};  //! Модель с пользовательскими данными по графу
 

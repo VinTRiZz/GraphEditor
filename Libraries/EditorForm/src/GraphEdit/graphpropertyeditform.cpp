@@ -28,6 +28,8 @@ GraphPropertyEditForm::~GraphPropertyEditForm()
 
 void GraphPropertyEditForm::updateGraphInfo()
 {
+    m_isSettingGraph = true;
+
     // Очистка таким образом, чтобы не сбрасывать VIEW
     m_pCommonGraphInfoModel->removeRows(0, m_pCommonGraphInfoModel->rowCount());
     m_pUserGraphInfoModel->removeRows(0, m_pUserGraphInfoModel->rowCount());
@@ -61,6 +63,7 @@ void GraphPropertyEditForm::updateGraphInfo()
         m_pUserGraphInfoModel->appendRow({pItem, pProperyItem});
     }
 
+    m_isSettingGraph = false;
     LOG_INFO("Current graph data update");
 }
 
@@ -139,18 +142,15 @@ void GraphPropertyEditForm::setupSignals()
     connect(m_pCommonGraphInfoModel, &QAbstractItemModel::dataChanged,
             this, [this](const QModelIndex &topLeft, const QModelIndex &) {
         auto changedString = topLeft.data(Qt::DisplayRole).toString();
-        LOG_DEBUG("Called change:", changedString);
 
         switch (topLeft.row())
         {
         case NAMEROW:
             m_currentGraph->setName(changedString);
-            LOG_DEBUG("Changed name");
             break;
 
         case DESCRIPTIONROW:
             m_currentGraph->setDescription(changedString);
-            LOG_DEBUG("Changed descr");
             break;
         }
     });
@@ -162,6 +162,18 @@ void GraphPropertyEditForm::setupSignals()
         for (int row = 0; row < m_pUserGraphInfoModel->rowCount(); ++row) {
             m_currentGraph->setCustomValue(m_pUserGraphInfoModel->index(row, userPropNameCol).data().toString(),
                                             m_pUserGraphInfoModel->index(row, userPropDataCol).data());
+        }
+    });
+
+    connect(m_pUserGraphInfoModel, &QAbstractItemModel::rowsAboutToBeRemoved,
+            this, [this](const QModelIndex& parent, int first, int last) {
+        if (m_isSettingGraph) {
+            return;
+        }
+        const int userPropNameCol = 0;
+        const int userPropDataCol = 1;
+        for (int row = first; row <= last; ++row) {
+            m_currentGraph->removeCustomValue(m_pUserGraphInfoModel->index(row, userPropNameCol).data().toString());
         }
     });
 }

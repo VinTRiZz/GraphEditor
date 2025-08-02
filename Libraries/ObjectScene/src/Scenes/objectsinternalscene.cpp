@@ -4,6 +4,8 @@
 
 #include <Common/Logging.h>
 
+#include "../sceneitems.h"
+
 using namespace ObjectViewItems;
 
 ObjectsInternalScene::ObjectsInternalScene(QObject *parent) :

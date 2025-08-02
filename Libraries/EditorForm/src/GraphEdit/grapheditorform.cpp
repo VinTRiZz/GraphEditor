@@ -21,7 +21,6 @@ GraphEditorForm::GraphEditorForm(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->graphScene->init();
     ui->graphScene->startEditMode();
 
     m_graphMaintainer = Graph::GraphMaintainer::createInstance();

@@ -11,34 +11,25 @@ namespace Graph
 GraphSceneView::GraphSceneView(QWidget *parent) :
     ObjectView(parent)
 {
+    m_buttonMatrixHead = new ButtonMatrix::HeadButton(this);
 
+    m_buttonMatrixHead->setButtonsSize(QSize(50, 50));
+    m_buttonMatrixHead->setButtonMatrix(-10, 0, 0, 10);
+    m_buttonMatrixHead->setButtonMargin(10);
+
+    m_buttonMatrixHead->setAnimationSpeed(0.5);
+    m_buttonMatrixHead->setIcons(QIcon(":/common/images/icons/common/tools_open.svg"), QIcon(":/common/images/icons/common/tools_close.svg"));
+    m_buttonMatrixHead->setButtonPadding(0, 30, 0, 30);
+    m_buttonMatrixHead->collapse(false);
+    m_buttonMatrixHead->hide();
+
+    setSceneBrush(ApplicationSettings::getInstance().getBackgroundGradient());
+    setCanvasRect(QRectF(0,0, 1920, 1080));
 }
 
 GraphSceneView::~GraphSceneView()
 {
 
-}
-
-void GraphSceneView::init()
-{
-    if (!isInited()) {
-        ObjectView::init();
-
-        m_buttonMatrixHead = new ButtonMatrix::HeadButton(this);
-
-        m_buttonMatrixHead->setButtonsSize(QSize(50, 50));
-        m_buttonMatrixHead->setButtonMatrix(-10, 0, 0, 10);
-        m_buttonMatrixHead->setButtonMargin(10);
-
-        m_buttonMatrixHead->setAnimationSpeed(0.5);
-        m_buttonMatrixHead->setIcons(QIcon(":/common/images/icons/common/tools_open.svg"), QIcon(":/common/images/icons/common/tools_close.svg"));
-        m_buttonMatrixHead->setButtonPadding(0, 30, 0, 30);
-        m_buttonMatrixHead->collapse(false);
-        m_buttonMatrixHead->hide();
-
-        setSceneBrush(ApplicationSettings::getInstance().getBackgroundGradient());
-        setCanvasRect(QRectF(0,0, 1920, 1080));
-    }
 }
 
 void GraphSceneView::setMode(GraphModeBase *pMode)

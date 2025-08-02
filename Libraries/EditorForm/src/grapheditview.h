@@ -15,8 +15,6 @@ class GraphEditView final : public GraphSceneView
 public:
     GraphEditView(QWidget* parent = nullptr);
 
-    void init() override;
-
     void setGraphMaintaner(const Graph::PMaintainer& pGraphMaintaner) override;
 
     void startViewMode();

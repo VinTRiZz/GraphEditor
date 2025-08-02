@@ -1,0 +1,118 @@
+#include "objectviewbase.h"
+
+#include <Common/Logging.h>
+
+ObjectViewBase::ObjectViewBase(QWidget *parent) :
+    QGraphicsView(parent)
+{
+    m_pScene = new ObjectsInternalScene(this);
+    setScene(m_pScene);
+
+    m_pNullItem = new ObjectViewItems::SceneFieldItem();
+    m_pNullItem->setBrush(QColor(220, 220, 220));
+    m_pNullItem->setPen(QPen(QColor(70, 60, 60), 2));
+    m_pNullItem->setZValue(-1);
+    m_pScene->addItem(m_pNullItem);
+}
+
+bool ObjectViewBase::getIsInited() const
+{
+    return (nullptr != m_pScene);
+}
+
+bool ObjectViewBase::isIdAvailable(ObjectViewConstants::objectId_t itemId) const
+{
+    return m_pNullItem->isIdAvailable(itemId);
+}
+
+void ObjectViewBase::setSceneBrush(const QBrush &sceneBrush)
+{
+    m_pScene->setBackgroundBrush(sceneBrush);
+}
+
+void ObjectViewBase::setSceneRect(const QRectF &iRect)
+{
+    QGraphicsView::setSceneRect(iRect);
+    setCanvasRect(m_pNullItem->getFieldRect());
+}
+
+void ObjectViewBase::setCanvasRect(const QRectF &iRect)
+{
+    m_pNullItem->setFieldRect(iRect);
+    m_pNullItem->setPos(sceneRect().center() - iRect.center());
+
+    auto targetWidth = m_pNullItem->boundingRect().width();
+    targetWidth = targetWidth == 0 ? 1 : targetWidth;
+    auto scaleCoeff = viewport()->width() / targetWidth;
+    scale(scaleCoeff, scaleCoeff);
+    centerOn(sceneRect().center());
+}
+
+ObjectViewItems::ItemBase *ObjectViewBase::getParentOfComplex(QGraphicsItem *pItem)
+{
+    auto itemParentIdVariant = pItem->data(ObjectViewConstants::OBJECTFIELD_PARENTITEM_ID);
+    if (itemParentIdVariant.isNull()) {
+        return dynamic_cast<ObjectViewItems::ItemBase*>(pItem);
+    }
+    return getObject(itemParentIdVariant.toLongLong());
+}
+
+bool ObjectViewBase::isNullItem(QGraphicsItem *pItem) const
+{
+    return (dynamic_cast<ObjectViewItems::SceneFieldItem*>(pItem) != nullptr);
+}
+
+void ObjectViewBase::removeSpecialObjects(ObjectViewConstants::ObjectType objT)
+{
+    m_pNullItem->removeRegisteredItems(objT);
+}
+
+void ObjectViewBase::addObject(ObjectViewItems::ItemBase *pItem)
+{
+    if (nullptr == pItem ||
+        nullptr == dynamic_cast<ObjectViewItems::ItemBase*>(pItem)) {
+        throw std::invalid_argument("ObjectsScene-internal: invalid (nullptr) item");
+    }
+
+    // Закомментировал, т.к. это уже забота классов-наследников ItemBase
+//    std::function<void(QGraphicsItem*, ObjectViewConstants::objectId_t)> setChildComplexId =
+//        [&setChildComplexId](QGraphicsItem* pItem, ObjectViewConstants::objectId_t parentId){
+//        pItem->setData(ObjectViewConstants::OBJECTFIELD_PARENTITEM_ID, parentId);
+//        for (auto* pChild : pItem->childItems()) {
+//            setChildComplexId(pChild, parentId);
+//        }
+//    };
+//    setChildComplexId(pItem, pItem->getObjectId());
+//    pItem->setData(ObjectViewConstants::OBJECTFIELD_PARENTITEM_ID, QVariant()); // Обнуление для сохранения зависимости parent-child
+
+    m_objectsMap[pItem->getObjectId()] = pItem;
+    m_pNullItem->registerItem(pItem);
+}
+
+ObjectViewItems::ItemBase *ObjectViewBase::getObject(ObjectViewConstants::objectId_t objectId) const
+{
+    auto targetObject = m_objectsMap.find(objectId);
+    if (targetObject == m_objectsMap.end()) {
+        return nullptr;
+    }
+    return targetObject.value();
+}
+
+QList<ObjectViewItems::ItemBase *> ObjectViewBase::getAllObjects() const
+{
+    return m_objectsMap.values();
+}
+
+QList<ObjectViewConstants::objectId_t> ObjectViewBase::getAllObjectIds() const
+{
+    return m_objectsMap.keys();
+}
+
+void ObjectViewBase::removeObject(ObjectViewConstants::objectId_t itemId)
+{
+    auto pItem = m_objectsMap.value(itemId, nullptr);
+    if (pItem != nullptr) {
+        m_objectsMap.remove(itemId);
+        m_pNullItem->removeRegisteredItem(pItem);
+    }
+}

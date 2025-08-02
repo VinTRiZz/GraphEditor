@@ -4,8 +4,6 @@
 #include <QGraphicsScene>
 #include <QHash>
 
-#include "sceneitems.h"
-
 namespace Ui {
 class ObjectsInternalScene;
 }

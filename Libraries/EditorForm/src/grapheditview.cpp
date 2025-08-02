@@ -8,11 +8,6 @@ namespace Graph
 GraphEditView::GraphEditView(QWidget *parent) :
     GraphSceneView(parent)
 {
-
-}
-
-void GraphEditView::init()
-{
     connect(&m_viewMode, &GraphViewMode::started,
             this, &GraphEditView::startedView);
     connect(&m_editMode, &GraphEditMode::started,
@@ -21,14 +16,12 @@ void GraphEditView::init()
     m_viewMode.setGraphScene(this);
     m_editMode.setGraphScene(this);
 
-    GraphSceneView::init();
     m_viewMode.init();
     m_editMode.init();
     LOG_INFO("Inited graph view");
 
     startViewMode();
 }
-
 
 void GraphEditView::setGraphMaintaner(const PMaintainer &pGraphMaintaner)
 {

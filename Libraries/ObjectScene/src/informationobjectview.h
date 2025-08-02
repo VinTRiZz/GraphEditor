@@ -4,18 +4,29 @@
 #include "interactiveobjectview.h"
 
 #include <ObjectItems/LabelItem.h>
+#include <QLabel>
 
 class InformationObjectView : public InteractiveObjectView
 {
 public:
     explicit InformationObjectView(QWidget* parent);
 
+
+public slots:
+    void updateInformation();
+    void updateCursorLabel(const QPoint& currentPos);
+
+    void setCurrentToolName(const QString& toolName);
+
 private:
-    ObjectViewItems::LabelItem* m_pCoordinatesItem  {nullptr};  //! Объект, который показывает координаты пользователю
-    ObjectViewItems::LabelItem* m_combinedInfoItem  {nullptr};  //! Комбинированное инфо слева снизу сцены
+    ObjectViewItems::LabelItem* m_pCursorLabel {nullptr};  //! Объект, который показывает координаты пользователю
+
+    QLabel* m_pInformationLabel {nullptr};
+    QString m_currentToolName;
 
 protected:
     void mouseMoveEvent(QMouseEvent* e) override;
+    void resizeEvent(QResizeEvent* e) override;
 };
 
 #endif // INFORMATIONOBJECTVIEWMX_H

@@ -2,34 +2,56 @@
 
 #include <QMouseEvent>
 
+#include <Common/Logging.h>
+
 InformationObjectView::InformationObjectView(QWidget *parent) :
     InteractiveObjectView(parent)
 {
-    m_pCoordinatesItem = new ObjectViewItems::LabelItem();
-    m_pCoordinatesItem->setBackgroundColor(QColor(200, 240, 210, 80));
-    m_pCoordinatesItem->setMainColor(Qt::black);
-    m_pCoordinatesItem->setTextSize(10);
-    m_pCoordinatesItem->setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
-    m_pCoordinatesItem->setZValue(1e6); // Чтобы точно не закрыло
-    scene()->addItem(m_pCoordinatesItem);
+    m_pCursorLabel = new ObjectViewItems::LabelItem();
+    m_pCursorLabel->setBackgroundColor(QColor(200, 240, 210, 80));
+    m_pCursorLabel->setMainColor(Qt::black);
+    m_pCursorLabel->setTextSize(10);
+    m_pCursorLabel->setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
+    m_pCursorLabel->setZValue(1e6); // Чтобы точно не закрыло
+    scene()->addItem(m_pCursorLabel);
 
-    m_combinedInfoItem = new ObjectViewItems::LabelItem();
-    m_combinedInfoItem->setBackgroundColor(QColor(200, 240, 210, 80));
-    m_combinedInfoItem->setMainColor(Qt::black);
-    m_combinedInfoItem->setTextSize(10);
-    m_combinedInfoItem->setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
-    m_combinedInfoItem->setZValue(1e6); // Чтобы точно не закрыло
-    scene()->addItem(m_combinedInfoItem);
+    m_pInformationLabel = new QLabel(this);
+    m_pInformationLabel->setWordWrap(true);
+    m_pInformationLabel->setFixedSize(500, 23);
+
+    // Настройка для отображения
+    m_pInformationLabel->setStyleSheet("color: black; font-size: 14px; background-color: rgba(200, 240, 210, 80); border: 1px solid black;");
+
+    updateInformation();
+
+    connect(this, &InteractiveObjectView::scaleChanged,
+            this, [this](){
+        updateInformation();
+        updateCursorLabel(mapFromGlobal(cursor().pos()));
+    });
 }
 
-void InformationObjectView::mouseMoveEvent(QMouseEvent *e)
+void InformationObjectView::updateInformation()
 {
-    auto currentPos = mapToScene(e->pos());
+    auto isGridEnabled = scene()->getIsGridEnabled();
+    auto gridSize = scene()->getGridSize();
+    auto infoText = QString("Масштаб: 1:%0   Сетка: %1   Инструмент: %2").arg(
+                QString::number(getCurrentScale(), 'f', 3),
+                isGridEnabled ? QString("%0px").arg(gridSize) : QString("Выкл."),
+                m_currentToolName.isEmpty() ? QString("Нет") : m_currentToolName
+    );
 
-    m_pCoordinatesItem->setPos(mapToScene({e->pos().x() + 20, e->pos().y() + 20}));
+    m_pInformationLabel->setText(infoText);
+}
+
+void InformationObjectView::updateCursorLabel(const QPoint &currentPos)
+{
+    auto currentPosMapped = mapToScene(currentPos);
+
+    m_pCursorLabel->setPos(mapToScene({currentPos.x() + 20, currentPos.y() + 20}));
 
     QString hoverItemName {};
-    auto hoverItem = itemAt(e->pos());
+    auto hoverItem = itemAt(currentPos);
     if (nullptr != hoverItem) {
         auto pHoverItemParent = getParentOfComplex(hoverItem);
         if (nullptr != pHoverItemParent) {
@@ -38,15 +60,29 @@ void InformationObjectView::mouseMoveEvent(QMouseEvent *e)
             hoverItemName = hoverItem->data(ObjectViewConstants::OBJECTFIELD_NAME_SYSTEM).toString();
         }
     }
-    m_pCoordinatesItem->setShortName(
-        QString("X: %0\nY: %1%2").arg(
-            QString::number(currentPos.x()),
-            QString::number(currentPos.y()),
-            !hoverItemName.isEmpty() ? QString("\n") + hoverItemName : QString())
-    );
+    m_pCursorLabel->setShortName(
+                QString("X: %0\nY: %1%2").arg(
+                    QString::number(currentPosMapped.x()),
+                    QString::number(currentPosMapped.y()),
+                    !hoverItemName.isEmpty() ? QString("\n") + hoverItemName : QString())
+                );
+}
 
+void InformationObjectView::setCurrentToolName(const QString &toolName)
+{
+    m_currentToolName = toolName;
+    updateInformation();
+}
 
-//    m_combinedInfoItem->setPos();
-
+void InformationObjectView::mouseMoveEvent(QMouseEvent *e)
+{
+    updateCursorLabel(e->pos());
     InteractiveObjectView::mouseMoveEvent(e);
 }
+
+void InformationObjectView::resizeEvent(QResizeEvent *e)
+{
+    m_pInformationLabel->move(10, height() - m_pInformationLabel->height());
+    InteractiveObjectView::resizeEvent(e);
+}
+

@@ -21,6 +21,7 @@ ObjectsInternalScene::~ObjectsInternalScene()
 void ObjectsInternalScene::setGridEnabled(bool enabled)
 {
     m_isGridEnabled = enabled;
+    emit gridSetEnabled(enabled);
 }
 
 bool ObjectsInternalScene::getIsGridEnabled() const
@@ -31,10 +32,21 @@ bool ObjectsInternalScene::getIsGridEnabled() const
 void ObjectsInternalScene::setGridSize(int sizePx)
 {
     m_baseGridSize = sizePx;
+    emit gridSizeChanged(sizePx);
+}
+
+int ObjectsInternalScene::getGridSize() const
+{
+    return m_baseGridSize;
 }
 
 void ObjectsInternalScene::drawForeground(QPainter* painter, const QRectF& rect) {
     QGraphicsScene::drawForeground(painter, rect);
+    drawGrid(painter, rect);
+}
+
+void ObjectsInternalScene::drawGrid(QPainter *painter, const QRectF &rect)
+{
     if (!m_isGridEnabled) return;
 
     // Настройка пера для сетки

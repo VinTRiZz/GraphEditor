@@ -14,14 +14,18 @@ InteractiveObjectView::InteractiveObjectView(QWidget *parent) :
 
 void InteractiveObjectView::zoomIn()
 {
-    m_currentZoomValue *= 1.2;
     scale(1.2, 1.2);
+    emit scaleChanged();
 }
 
 void InteractiveObjectView::zoomOut()
 {
-    m_currentZoomValue *= 0.8;
     scale(0.8, 0.8);
+    emit scaleChanged();
+}
+
+double InteractiveObjectView::getCurrentScale() const {
+    return transform().m11();
 }
 
 void InteractiveObjectView::setContextMenu(QMenu *pMenu)

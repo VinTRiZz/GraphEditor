@@ -13,6 +13,7 @@ class ObjectViewBase : public QGraphicsView
 {
     // Запрет на использование из-за багов
     using QGraphicsView::setSceneRect;
+    using QGraphicsView::setScene;
 
 public:
     explicit ObjectViewBase(QWidget *parent);
@@ -40,9 +41,7 @@ private:
     QHash<ObjectViewConstants::objectId_t, ObjectViewItems::ItemBase*>  m_objectsMap; //! Словарь для сохранения ID объектов
 
 protected:
-    using QGraphicsView::scene;
-    using QGraphicsView::setScene;
-
+    ObjectsInternalScene* scene() const;
     ObjectViewItems::ItemBase* getParentOfComplex(QGraphicsItem *pItem);
     bool isNullItem(QGraphicsItem *pItem) const;
 };

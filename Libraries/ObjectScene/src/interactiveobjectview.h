@@ -12,6 +12,8 @@ public:
     void zoomIn();
     void zoomOut();
 
+    double getCurrentScale() const;
+
     void setContextMenu(QMenu* pMenu);
     QGraphicsItem* getContextMenuItem();
 
@@ -28,6 +30,8 @@ signals:
     void clickedOnItem(QGraphicsItem* pTargetItem);
     void pressedOnItem(QGraphicsItem* pTargetItem);
     void releasedOnItem(QGraphicsItem* pTargetItem);
+
+    void scaleChanged();
 
 private:
     QMenu*                          m_pContextMenu      {nullptr};  //! Контекстное меню

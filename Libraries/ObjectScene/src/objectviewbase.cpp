@@ -70,6 +70,11 @@ void ObjectViewBase::removeSpecialObjects(ObjectViewConstants::ObjectType objT)
     m_pNullItem->removeRegisteredItems(objT);
 }
 
+ObjectsInternalScene *ObjectViewBase::scene() const
+{
+    return m_pScene;
+}
+
 void ObjectViewBase::addObject(ObjectViewItems::ItemBase *pItem)
 {
     if (nullptr == pItem ||

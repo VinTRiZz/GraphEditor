@@ -15,6 +15,8 @@ public:
     explicit GraphEditorSettingsForm(QWidget *parent = nullptr);
     ~GraphEditorSettingsForm();
 
+signals:
+    void updateCanvasSize();
 
 public slots:
     void loadSettings();

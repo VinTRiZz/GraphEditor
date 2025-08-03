@@ -86,6 +86,9 @@ public slots:
 
     void showObjectProperties(QGraphicsItem* pTargetItem);
     void hideObjectProperties();
+
+    void updateCanvasSize();
+    void updateCanvasGrid();
 };
 
 #endif // GRAPHEDITORFORM_H

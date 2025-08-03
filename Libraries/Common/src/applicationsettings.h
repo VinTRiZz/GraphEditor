@@ -25,11 +25,13 @@ public:
      */
     enum class NodeShape
     {
+        Ellipse,
         Circle,
         Square,
-        Hexagon,
         Triangle,
-        RoundedRect
+        Rectangle,
+        RoundedRect,
+        Hexagon,
     };
 
     /**
@@ -52,55 +54,65 @@ public:
         Triangle,
         Diamond,
         Arrow,
-        Circle
+        Circle,
     };
 
-    // Работа с классом
+    // Работа с файлом настроек и классом
     static ApplicationSettings& getInstance();
     void loadSettings();
     void saveSettings() const;
 
-    // Свойства
-    Theme getTheme() const;
-    NodeShape getNodeShape() const;
-    NodeSize getNodeSize() const;
-    int getCanvasOpacity() const;
-    int getLineThickness() const;
-    ArrowStyle getArrowStyle() const;
-    QGradient getBackgroundGradient() const;
-    bool hasGrid() const;
-    double getGridSize() const;
-    bool snapToGrid() const;
-    bool confirmDeletion() const;
-    int getAutoSaveInterval() const;
-    QStringList getRecentFiles() const;
-    bool removeMetadata() const;
-    bool cleanupTempFiles() const;
-    int getMaxLogFiles() const;
-    bool minimizeToTray() const;
-    QString getDateTimeFormat() const;
+    // ======================================================= //
+    // Основные свойства
+    Theme       getThemeType() const;
+    bool        getNeedConfirmDeletion() const;
+    int         getAutoSaveInterval() const;
+    bool        getNeedRemoveMetadata() const;
+    bool        getNeedCleanupTempFiles() const;
+    unsigned    getMaxLogFileCount() const;
+    bool        getNeedMinimizeToTray() const;
+    QString     getDateTimeFormat() const;
 
-    void setNodeSize(NodeSize size);
-    void setCanvasOpacity(int opacity);
-    void setLineThickness(int thickness);
-    void setArrowStyle(ArrowStyle style);
-    void setBackgroundGradient(const QGradient& gradient);
-    void setHasGrid(bool hasGrid);
-    void setGridSize(double size);
-    void setSnapToGrid(bool snap);
-    void setConfirmDeletion(bool confirm);
-    void setAutoSaveInterval(int seconds);
-    void setRemoveMetadata(bool remove);
-    void setCleanupTempFiles(bool cleanup);
-    void setMaxLogFiles(int maxFiles);
-    void setMinimizeToTray(bool minimize);
-    void setDateTimeFormat(const QString& format);
+    void    setThemeType(Theme theme);
+    void    setNeedConfirmDeletion(bool confirm);
+    void    setAutoSaveInterval(int seconds);
+    void    setNeedRemoveMetadata(bool remove);
+    void    setNeedCleanupTempFiles(bool cleanup);
+    void    setMaxLogFileCount(int maxFiles);
+    void    setMinimizeToTray(bool minimize);
+    void    setDateTimeFormat(const QString& format);
 
-    void setTheme(Theme theme);
-    void setNodeShape(NodeShape shape);
 
-    void addRecentFile(const QString& path);
-    void removeRecentFile(const QString& path);
+    // ======================================================= //
+    // Полотно
+    QSize       getCanvasSize() const;
+    int         getCanvasOpacity() const;
+    QGradient   getBackgroundGradient() const;
+    bool        getIsGridEnabled() const;
+    double      getGridSize() const;
+
+    void    setCanvasOpacity(int opacity);
+    void    setBackgroundGradient(const QGradient& gradient);
+    void    setIsGridEnabled(bool hasGrid);
+    void    setGridSize(double size);
+    void    setCanvasSize(const QSize& canvasSize);
+
+    // ======================================================= //
+    // Свойства объектов
+    NodeShape   getDefaultNodeShape() const;
+    NodeSize    getNodeSize() const;
+    int         getLineThickness() const;
+    ArrowStyle  getArrowStyle() const;
+
+    void    setDefaultNodeShape(NodeShape shape);
+    void    setNodeSize(NodeSize size);
+    void    setLineThickness(int thickness);
+    void    setArrowStyle(ArrowStyle style);
+
+    // Сохранённое состояние
+    void        addRecentFile(const QString& path);
+    QStringList getRecentOpenFiles() const;
+    void        removeRecentFile(const QString& path);
 
 private:
     ApplicationSettings();
@@ -111,30 +123,35 @@ private:
 
     void fixErrors();
 
-
     // Преобразования для сохранения и загрузки
     QString themeToString(Theme theme) const;
-    Theme stringToTheme(const QString& str) const;
+    Theme   stringToTheme(const QString& str) const;
 
-    // Настройки приложения
-    Theme m_theme = Theme::System;
-    NodeShape m_nodeShape = NodeShape::Circle;
-    NodeSize m_nodeSize = NodeSize::Medium;
-    int m_canvasOpacity = 90;
-    int m_lineThickness = 2;
-    ArrowStyle m_arrowStyle = ArrowStyle::Triangle;
-    QGradient m_backgroundGradient = QLinearGradient(0, 0, 100, 100);
-    bool m_hasGrid = true;
-    double m_gridSize = 20.0;
-    bool m_snapToGrid = true;
-    bool m_confirmDeletion = true;
-    int m_autoSaveInterval = 300; // 5 минут
+    // Основные свойства
+    Theme       m_themeType             = Theme::System;
+    bool        m_needConfirmDeletion   = true;
+    int         m_autoSaveIntervalSec   = 300; // 5 минут
+    bool        m_removeMetadata        = false;
+    bool        m_cleanupTempFiles      = false;
+    unsigned    m_maxLogFiles           = 10;
+    bool        m_minimizeToTray        = false;
+    QString     m_dateTimeFormat        = "yyyy-MM-dd HH:mm:ss";
+
+    // Полотно
+    QSize       m_canvasSize;
+    int         m_canvasOpacity         = 90;
+    QGradient   m_backgroundGradient    = QLinearGradient(0, 100, 0, 100);
+    bool        m_isGridEnabled         = false;
+    double      m_gridSize              = 20.0;
+
+    // Свойства объектов
+    NodeShape   m_defaultNodeShape      = NodeShape::Circle;
+    NodeSize    m_nodeSize              = NodeSize::Medium;
+    int         m_lineThickness         = 2;
+    ArrowStyle  m_arrowStyle            = ArrowStyle::Triangle;
+
+    // Сохранённое состояние
     QStringList m_recentFiles;
-    bool m_removeMetadata = false;
-    bool m_cleanupTempFiles = true;
-    int m_maxLogFiles = 10;
-    bool m_minimizeToTray = true;
-    QString m_dateTimeFormat = "yyyy-MM-dd HH:mm:ss";
 };
 
 #endif // APPLICATIONSETTINGS_H

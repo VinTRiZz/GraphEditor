@@ -91,9 +91,7 @@ class LoggingMaster : boost::noncopyable
     class LoggingHelper
     {
         QDebug m_dbgStream {qDebug()}; //! Поток вывод (для Qt)
-
     public:
-
         /**
          * @brief fileWriteOnly Запись данных в файл
          * @param val данные
@@ -156,6 +154,7 @@ class LoggingMaster : boost::noncopyable
             return (iNum > 9 ? std::to_string(iNum) : std::string("0") + std::to_string(iNum));
         };
 
+        // TODO: Вынести в отдельную функцию из логгера для инкапсуляции формата
         return {
             formattedNumber(locTime->tm_mday) + "." + formattedNumber(locTime->tm_mon) + ".20" + formattedNumber(locTime->tm_year - 100) + " " +
             formattedNumber(locTime->tm_hour) + ":" + formattedNumber(locTime->tm_min) + ":" + formattedNumber(locTime->tm_sec)
@@ -178,9 +177,7 @@ class LoggingMaster : boost::noncopyable
     }
 
     LoggingMaster() {
-        auto logsDir = QDir::current();
-        logsDir.mkdir("logs");
-        logsDir.cd("logs");
+        auto logsDir = getLogsDir();
         logfile.setFileName(logsDir.absolutePath() + QDir::separator() + getCurrentTimestampFormatted().c_str() + ".log");
 
         isWorking = true;
@@ -215,6 +212,21 @@ class LoggingMaster : boost::noncopyable
     }
 
 public:
+
+    /**
+     * @brief getLogsDir    Получить директорию логов
+     * @return              Директория логов, созданная при отсутствии
+     */
+    static QDir getLogsDir() {
+        auto logsDir = QDir::current();
+        logsDir.mkdir("logs");
+        logsDir.cd("logs");
+        return logsDir;
+    }
+
+    static QString getCurrentLogfile() {
+        return getInstance().logfile.fileName();
+    }
 
     /**
      * @brief getInstance Получить объект сигнлетона мастера логгирования

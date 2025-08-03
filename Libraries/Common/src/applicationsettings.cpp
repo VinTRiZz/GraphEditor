@@ -5,9 +5,9 @@
 
 const QString APPLICATION_SETTINGS_FILE_PATH {"GraphEditor.ini"};
 
-ApplicationSettings::Theme ApplicationSettings::getTheme() const { return m_theme; }
+ApplicationSettings::Theme ApplicationSettings::getThemeType() const { return m_themeType; }
 
-ApplicationSettings::NodeShape ApplicationSettings::getNodeShape() const { return m_nodeShape; }
+ApplicationSettings::NodeShape ApplicationSettings::getDefaultNodeShape() const { return m_defaultNodeShape; }
 
 ApplicationSettings::NodeSize ApplicationSettings::getNodeSize() const { return m_nodeSize; }
 
@@ -19,27 +19,30 @@ ApplicationSettings::ArrowStyle ApplicationSettings::getArrowStyle() const { ret
 
 QGradient ApplicationSettings::getBackgroundGradient() const { return m_backgroundGradient; }
 
-bool ApplicationSettings::hasGrid() const { return m_hasGrid; }
+bool ApplicationSettings::getIsGridEnabled() const { return m_isGridEnabled; }
 
 double ApplicationSettings::getGridSize() const { return m_gridSize; }
 
-bool ApplicationSettings::snapToGrid() const { return m_snapToGrid; }
+bool ApplicationSettings::getNeedConfirmDeletion() const { return m_needConfirmDeletion; }
 
-bool ApplicationSettings::confirmDeletion() const { return m_confirmDeletion; }
+int ApplicationSettings::getAutoSaveInterval() const { return m_autoSaveIntervalSec; }
 
-int ApplicationSettings::getAutoSaveInterval() const { return m_autoSaveInterval; }
+QStringList ApplicationSettings::getRecentOpenFiles() const { return m_recentFiles; }
 
-QStringList ApplicationSettings::getRecentFiles() const { return m_recentFiles; }
+bool ApplicationSettings::getNeedRemoveMetadata() const { return m_removeMetadata; }
 
-bool ApplicationSettings::removeMetadata() const { return m_removeMetadata; }
+bool ApplicationSettings::getNeedCleanupTempFiles() const { return m_cleanupTempFiles; }
 
-bool ApplicationSettings::cleanupTempFiles() const { return m_cleanupTempFiles; }
+unsigned ApplicationSettings::getMaxLogFileCount() const { return m_maxLogFiles; }
 
-int ApplicationSettings::getMaxLogFiles() const { return m_maxLogFiles; }
-
-bool ApplicationSettings::minimizeToTray() const { return m_minimizeToTray; }
+bool ApplicationSettings::getNeedMinimizeToTray() const { return m_minimizeToTray; }
 
 QString ApplicationSettings::getDateTimeFormat() const { return m_dateTimeFormat; }
+
+QSize ApplicationSettings::getCanvasSize() const
+{
+    return m_canvasSize;
+}
 
 void ApplicationSettings::setNodeSize(NodeSize size) {
     m_nodeSize = size;
@@ -61,35 +64,31 @@ void ApplicationSettings::setBackgroundGradient(const QGradient& gradient) {
     m_backgroundGradient = gradient;
 }
 
-void ApplicationSettings::setHasGrid(bool hasGrid) {
-    m_hasGrid = hasGrid;
+void ApplicationSettings::setIsGridEnabled(bool hasGrid) {
+    m_isGridEnabled = hasGrid;
 }
 
 void ApplicationSettings::setGridSize(double size) {
     m_gridSize = qBound(5.0, size, 100.0);
 }
 
-void ApplicationSettings::setSnapToGrid(bool snap) {
-    m_snapToGrid = snap;
-}
-
-void ApplicationSettings::setConfirmDeletion(bool confirm) {
-    m_confirmDeletion = confirm;
+void ApplicationSettings::setNeedConfirmDeletion(bool confirm) {
+    m_needConfirmDeletion = confirm;
 }
 
 void ApplicationSettings::setAutoSaveInterval(int seconds) {
-    m_autoSaveInterval = qMax(0, seconds);
+    m_autoSaveIntervalSec = qMax(0, seconds);
 }
 
-void ApplicationSettings::setRemoveMetadata(bool remove) {
+void ApplicationSettings::setNeedRemoveMetadata(bool remove) {
     m_removeMetadata = remove;
 }
 
-void ApplicationSettings::setCleanupTempFiles(bool cleanup) {
+void ApplicationSettings::setNeedCleanupTempFiles(bool cleanup) {
     m_cleanupTempFiles = cleanup;
 }
 
-void ApplicationSettings::setMaxLogFiles(int maxFiles) {
+void ApplicationSettings::setMaxLogFileCount(int maxFiles) {
     m_maxLogFiles = qMax(0, maxFiles);
 }
 
@@ -103,9 +102,14 @@ void ApplicationSettings::setDateTimeFormat(const QString& format) {
     }
 }
 
-void ApplicationSettings::setTheme(Theme theme) { m_theme = theme; }
+void ApplicationSettings::setCanvasSize(const QSize &canvasSize)
+{
+    m_canvasSize = canvasSize;
+}
 
-void ApplicationSettings::setNodeShape(NodeShape shape) { m_nodeShape = shape; }
+void ApplicationSettings::setThemeType(Theme theme) { m_themeType = theme; }
+
+void ApplicationSettings::setDefaultNodeShape(NodeShape shape) { m_defaultNodeShape = shape; }
 
 void ApplicationSettings::addRecentFile(const QString &path) {
     m_recentFiles.removeAll(path);
@@ -144,13 +148,13 @@ ApplicationSettings::ApplicationSettings() {
 void ApplicationSettings::fixErrors() {
     // Проверка перечислений
     const int themeMax = static_cast<int>(Theme::Dark);
-    if (static_cast<int>(m_theme) < 0 || static_cast<int>(m_theme) > themeMax) {
-        m_theme = Theme::System;
+    if (static_cast<int>(m_themeType) < 0 || static_cast<int>(m_themeType) > themeMax) {
+        m_themeType = Theme::System;
     }
 
     const int shapeMax = static_cast<int>(NodeShape::RoundedRect);
-    if (static_cast<int>(m_nodeShape) < 0 || static_cast<int>(m_nodeShape) > shapeMax) {
-        m_nodeShape = NodeShape::Circle;
+    if (static_cast<int>(m_defaultNodeShape) < 0 || static_cast<int>(m_defaultNodeShape) > shapeMax) {
+        m_defaultNodeShape = NodeShape::Circle;
     }
 
     const int sizeMax = static_cast<int>(NodeSize::ExtraLarge);
@@ -167,8 +171,8 @@ void ApplicationSettings::fixErrors() {
     m_canvasOpacity = qBound(0, m_canvasOpacity, 100);
     m_lineThickness = qBound(1, m_lineThickness, 10);
     m_gridSize = qBound(5.0, m_gridSize, 100.0);
-    m_autoSaveInterval = qMax(0, m_autoSaveInterval);
-    m_maxLogFiles = qMax(0, m_maxLogFiles);
+    m_autoSaveIntervalSec = qMax(0, m_autoSaveIntervalSec);
+    m_maxLogFiles = std::max(unsigned{0}, m_maxLogFiles);
 
     // Проверка формата даты
     auto isValidFormat = [](const QString& format) {
@@ -209,6 +213,9 @@ void ApplicationSettings::fixErrors() {
         }
     }
     m_recentFiles = uniqueFiles;
+
+    m_canvasSize.setWidth(std::clamp(m_canvasSize.width(), 500, 100000));
+    m_canvasSize.setHeight(std::clamp(m_canvasSize.height(), 500, 100000));
 }
 
 void ApplicationSettings::loadSettings(const QString& configPath) {
@@ -216,22 +223,22 @@ void ApplicationSettings::loadSettings(const QString& configPath) {
 
     // Общие настройки
     settings.beginGroup("General");
-    m_theme = stringToTheme(settings.value("theme", "System").toString());
-    m_autoSaveInterval = settings.value("autosave_interval", 300).toInt();
+    m_themeType = stringToTheme(settings.value("theme", "System").toString());
+    m_autoSaveIntervalSec = settings.value("autosave_interval", 300).toInt();
     m_minimizeToTray = settings.value("minimize_to_tray", true).toBool();
     m_dateTimeFormat = settings.value("datetime_format", "yyyy-MM-dd HH:mm:ss").toString();
     settings.endGroup();
 
     // Внешний вид
     settings.beginGroup("Appearance");
-    m_nodeShape = static_cast<NodeShape>(settings.value("node_shape", 0).toInt());
+    m_canvasSize = settings.value("canvas_size").toSize();
+    m_defaultNodeShape = static_cast<NodeShape>(settings.value("node_shape", 0).toInt());
     m_nodeSize = static_cast<NodeSize>(settings.value("node_size", 1).toInt());
     m_canvasOpacity = settings.value("canvas_opacity", 90).toInt();
     m_lineThickness = settings.value("line_thickness", 2).toInt();
     m_arrowStyle = static_cast<ArrowStyle>(settings.value("arrow_style", 1).toInt());
-    m_hasGrid = settings.value("show_grid", true).toBool();
+    m_isGridEnabled = settings.value("show_grid", true).toBool();
     m_gridSize = settings.value("grid_size", 20.0).toDouble();
-    m_snapToGrid = settings.value("snap_to_grid", true).toBool();
 
     // Загрузка градиента
     QString gradientStr = settings.value("background_gradient").toString();
@@ -247,7 +254,7 @@ void ApplicationSettings::loadSettings(const QString& configPath) {
 
     // Поведение
     settings.beginGroup("Behavior");
-    m_confirmDeletion = settings.value("confirm_deletion", true).toBool();
+    m_needConfirmDeletion = settings.value("confirm_deletion", true).toBool();
     settings.endGroup();
 
     // Безопасность
@@ -270,22 +277,22 @@ void ApplicationSettings::saveSettings(const QString& configPath) const {
 
     // Общие настройки
     settings.beginGroup("General");
-    settings.setValue("theme", themeToString(m_theme));
-    settings.setValue("autosave_interval", m_autoSaveInterval);
+    settings.setValue("theme", themeToString(m_themeType));
+    settings.setValue("autosave_interval", m_autoSaveIntervalSec);
     settings.setValue("minimize_to_tray", m_minimizeToTray);
     settings.setValue("datetime_format", m_dateTimeFormat);
     settings.endGroup();
 
     // Внешний вид
     settings.beginGroup("Appearance");
-    settings.setValue("node_shape", static_cast<int>(m_nodeShape));
+    settings.setValue("canvas_size", m_canvasSize);
+    settings.setValue("node_shape", static_cast<int>(m_defaultNodeShape));
     settings.setValue("node_size", static_cast<int>(m_nodeSize));
     settings.setValue("canvas_opacity", m_canvasOpacity);
     settings.setValue("line_thickness", m_lineThickness);
     settings.setValue("arrow_style", static_cast<int>(m_arrowStyle));
-    settings.setValue("show_grid", m_hasGrid);
+    settings.setValue("show_grid", m_isGridEnabled);
     settings.setValue("grid_size", m_gridSize);
-    settings.setValue("snap_to_grid", m_snapToGrid);
 
     // Сохранение градиента
     // Здесь должна быть конвертация QGradient в строку
@@ -297,7 +304,7 @@ void ApplicationSettings::saveSettings(const QString& configPath) const {
 
     // Поведение
     settings.beginGroup("Behavior");
-    settings.setValue("confirm_deletion", m_confirmDeletion);
+    settings.setValue("confirm_deletion", m_needConfirmDeletion);
     settings.endGroup();
 
     // Безопасность

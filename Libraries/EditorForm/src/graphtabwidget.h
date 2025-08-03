@@ -2,6 +2,7 @@
 #define GRAPHTABWIDGET_H
 
 #include <QWidget>
+#include <QTimer>
 
 namespace Ui {
 class GraphTabWidget;
@@ -25,6 +26,7 @@ public slots:
 
 private:
     Ui::GraphTabWidget *ui;
+    QTimer m_saveTimer;
 };
 
 #endif // GRAPHTABWIDGET_H

@@ -35,6 +35,16 @@ bool ObjectViewBase::getIsGridEnabled() const
     return m_pScene->getIsGridEnabled();
 }
 
+void ObjectViewBase::setGridSize(int gridSizePx)
+{
+    m_pScene->setGridSize(gridSizePx);
+}
+
+int ObjectViewBase::getGridSize() const
+{
+    return m_pScene->getGridSize();
+}
+
 void ObjectViewBase::setSceneBrush(const QBrush &sceneBrush)
 {
     m_pScene->setBackgroundBrush(sceneBrush);
@@ -48,6 +58,11 @@ void ObjectViewBase::setCanvasRect(const QRectF &iRect)
     targetWidth = targetWidth == 0 ? 1 : targetWidth;
     auto scaleCoeff = viewport()->width() / targetWidth;
     scale(scaleCoeff, scaleCoeff);
+
+    auto rectCopy = iRect;
+    rectCopy.moveTo(-10, -10);
+    rectCopy.setSize(QSize(rectCopy.width(), rectCopy.height()));
+    setSceneRect(rectCopy);
 }
 
 ObjectViewItems::ItemBase *ObjectViewBase::getParentOfComplex(QGraphicsItem *pItem)

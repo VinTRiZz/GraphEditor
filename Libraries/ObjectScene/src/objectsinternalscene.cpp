@@ -31,6 +31,9 @@ bool ObjectsInternalScene::getIsGridEnabled() const
 
 void ObjectsInternalScene::setGridSize(int sizePx)
 {
+    if (sizePx < 2 || sizePx > 10e6) {
+        throw std::invalid_argument("Invalid size of grid (less than 2 or more than 10e6 px)");
+    }
     m_baseGridSize = sizePx;
     emit gridSizeChanged(sizePx);
 }

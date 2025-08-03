@@ -4,6 +4,8 @@
 #include <Common/CommonFunctions.h>
 using namespace CommonFunctions;
 
+#include <Common/ApplicationSettings.h>
+
 GraphEditorSettingsForm::GraphEditorSettingsForm(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::GraphEditorSettingsForm)
@@ -31,12 +33,18 @@ GraphEditorSettingsForm::~GraphEditorSettingsForm()
 
 void GraphEditorSettingsForm::loadSettings()
 {
+    auto& appSettings = ApplicationSettings::getInstance();
 
+    auto canvasSizes = appSettings.getCanvasSize();
+    ui->spinBox_width->setValue(canvasSizes.width());
+    ui->spinBox_height->setValue(canvasSizes.height());
 }
 
 void GraphEditorSettingsForm::applySettings()
 {
-
+    auto& appSettings = ApplicationSettings::getInstance();
+    appSettings.setCanvasSize(QSize(ui->spinBox_width->value(), ui->spinBox_height->value()));
+    emit updateCanvasSize();
 }
 
 void GraphEditorSettingsForm::showEvent(QShowEvent *e)

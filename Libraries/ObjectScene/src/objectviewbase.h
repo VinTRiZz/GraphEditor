@@ -24,6 +24,9 @@ public:
     void setGridEnabled(bool isGEnabled);
     bool getIsGridEnabled() const;
 
+    void setGridSize(int gridSizePx);
+    int  getGridSize() const;
+
     void setSceneBrush(const QBrush& sceneBrush);
     void setCanvasRect(const QRectF& iRect);
 

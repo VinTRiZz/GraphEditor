@@ -59,7 +59,7 @@ GraphTabWidget::GraphTabWidget(QWidget *parent) :
             this, &GraphTabWidget::loadVisibleGraph);
 
     auto& settingsInstance = ApplicationSettings::getInstance();
-    for (auto& recentFile : settingsInstance.getRecentFiles()) {
+    for (auto& recentFile : settingsInstance.getRecentOpenFiles()) {
         addTab(recentFile);
     }
 
@@ -71,6 +71,28 @@ GraphTabWidget::GraphTabWidget(QWidget *parent) :
             ui->stackedWidget->setCurrentIndex(0);
         }
     });
+
+    connect(ui->settingsForm, &GraphEditorSettingsForm::updateCanvasSize,
+            this, [this](){
+        for (int i = 0; i < ui->editorForms_tabWidget->count(); ++i) {
+            auto tabTargetWidget = ui->editorForms_tabWidget->widget(i);
+            static_cast<GraphEditorForm*>(tabTargetWidget)->updateCanvasSize();
+        }
+    });
+
+    m_saveTimer.connect(&m_saveTimer, &QTimer::timeout,
+                        [this](){
+        for (int i = 0; i < ui->editorForms_tabWidget->count(); ++i) {
+            auto tabTargetWidget = ui->editorForms_tabWidget->widget(i);
+            static_cast<GraphEditorForm*>(tabTargetWidget)->saveGraph();
+        }
+        auto savetimeSec = ApplicationSettings::getInstance().getAutoSaveInterval();
+        LOG_INFO("Restarting savefile timer. Time left:", savetimeSec / 60, "minutes");
+        m_saveTimer.start(savetimeSec * 1000);
+    });
+    auto savetimeSec = ApplicationSettings::getInstance().getAutoSaveInterval();
+    LOG_INFO("Restarting savefile timer. Time left:", savetimeSec / 60, "minutes");
+    m_saveTimer.start(savetimeSec * 1000);
 }
 
 GraphTabWidget::~GraphTabWidget()
@@ -128,12 +150,10 @@ void GraphTabWidget::removeTab(const QString &graphName)
         return;
     }
 
-    auto userResponse = QMessageBox::warning(this, "Внимание!", "Сохранить перед закрытием?", QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::No);
-    if (userResponse == QMessageBox::StandardButton::Yes) {
-        if (!pTargetForm->getIsSavepathValid()) {
-            auto targetPath = SaveMaster::getSavePath();
-            pTargetForm->saveGraph(targetPath);
-        } else {
+    if (ApplicationSettings::getInstance().getNeedConfirmDeletion() &&
+        pTargetForm->getIsSavepathValid()) {
+        auto userResponse = QMessageBox::warning(this, "Внимание!", "Сохранить перед закрытием?", QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::No);
+        if (userResponse == QMessageBox::StandardButton::Yes) {
             pTargetForm->saveGraph();
         }
     }

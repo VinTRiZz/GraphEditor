@@ -1,11 +1,7 @@
 #include "centeritem.h"
 
-namespace ObjectViewItems
-{
+namespace ObjectViewItems {
 
-CenterItem::CenterItem()
-{
+CenterItem::CenterItem() {}
 
-}
-
-}
+}  // namespace ObjectViewItems

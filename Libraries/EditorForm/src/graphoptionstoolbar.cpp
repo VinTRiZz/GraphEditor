@@ -1,14 +1,12 @@
 #include "graphoptionstoolbar.h"
 
-#include <QFileDialog>
-
-#include <QVariant>
-
 #include <Filework/SaveMaster.h>
 
-GraphOptionsToolbar::GraphOptionsToolbar(QWidget* parent) :
-    ButtonToolbar::HeadWidget(parent)
-{
+#include <QFileDialog>
+#include <QVariant>
+
+GraphOptionsToolbar::GraphOptionsToolbar(QWidget* parent)
+    : ButtonToolbar::HeadWidget(parent) {
     setButtonSize(QSize(35, 35));
     setFixedWidth(37);
     setVertical();

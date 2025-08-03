@@ -1,24 +1,22 @@
 #ifndef GRAPHPROPERTYEDITFORM_H
 #define GRAPHPROPERTYEDITFORM_H
 
-#include <QWidget>
-#include <QStandardItemModel>
-
 #include <GraphObject/Maintainer.h>
+
+#include <QStandardItemModel>
+#include <QWidget>
 
 namespace Ui {
 class GraphPropertyEditForm;
 }
 
-namespace Graph
-{
+namespace Graph {
 
-class GraphPropertyEditForm : public QWidget
-{
+class GraphPropertyEditForm : public QWidget {
     Q_OBJECT
 
 public:
-    explicit GraphPropertyEditForm(QWidget *parent = nullptr);
+    explicit GraphPropertyEditForm(QWidget* parent = nullptr);
     ~GraphPropertyEditForm();
 
     /**
@@ -34,26 +32,29 @@ public:
 
 public slots:
     /**
-     * @brief updateEditTime Должно вызываться после любых изменений свойств графа
+     * @brief updateEditTime Должно вызываться после любых изменений свойств
+     * графа
      */
     void updateEditTime();
 
 private:
-    Ui::GraphPropertyEditForm *ui;
+    Ui::GraphPropertyEditForm* ui;
 
-    Graph::PMaintainer m_currentGraph; //! Текущий майнтейнер графа
+    Graph::PMaintainer m_currentGraph;  //! Текущий майнтейнер графа
 
-    enum GraphCommonPropertyRows : int
-    {
+    enum GraphCommonPropertyRows : int {
         NAMEROW = 0,
         DESCRIPTIONROW,
         CREATEDROW,
         EDITEDROW,
     };
 
-    bool m_isSettingGraph {false}; //! Для задания графов без удаления их свойств (особенности логики)
-    QStandardItemModel* m_pCommonGraphInfoModel     {nullptr};  //! Модель с общими данными по графу
-    QStandardItemModel* m_pUserGraphInfoModel       {nullptr};  //! Модель с пользовательскими данными по графу
+    bool m_isSettingGraph{false};  //! Для задания графов без удаления их
+                                   //! свойств (особенности логики)
+    QStandardItemModel* m_pCommonGraphInfoModel{
+        nullptr};  //! Модель с общими данными по графу
+    QStandardItemModel* m_pUserGraphInfoModel{
+        nullptr};  //! Модель с пользовательскими данными по графу
 
     /**
      * @brief setupSignals Настройка сигналов виджета
@@ -69,9 +70,8 @@ private:
      * @brief setupWidget Настройка виджетов формы
      */
     void setupWidget();
-
 };
 
-}
+}  // namespace Graph
 
-#endif // GRAPHPROPERTYEDITFORM_H
+#endif  // GRAPHPROPERTYEDITFORM_H

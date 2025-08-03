@@ -1,19 +1,18 @@
 #ifndef GRAPHTABWIDGET_H
 #define GRAPHTABWIDGET_H
 
-#include <QWidget>
 #include <QTimer>
+#include <QWidget>
 
 namespace Ui {
 class GraphTabWidget;
 }
 
-class GraphTabWidget : public QWidget
-{
+class GraphTabWidget : public QWidget {
     Q_OBJECT
 
 public:
-    explicit GraphTabWidget(QWidget *parent = nullptr);
+    explicit GraphTabWidget(QWidget* parent = nullptr);
     ~GraphTabWidget();
 
 public slots:
@@ -25,8 +24,8 @@ public slots:
     void loadVisibleGraph(const QString& filePath);
 
 private:
-    Ui::GraphTabWidget *ui;
+    Ui::GraphTabWidget* ui;
     QTimer m_saveTimer;
 };
 
-#endif // GRAPHTABWIDGET_H
+#endif  // GRAPHTABWIDGET_H

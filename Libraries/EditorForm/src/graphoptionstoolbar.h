@@ -3,8 +3,7 @@
 
 #include <CustomWidgets/ButtonToolbar.h>
 
-class GraphOptionsToolbar : public ButtonToolbar::HeadWidget
-{
+class GraphOptionsToolbar : public ButtonToolbar::HeadWidget {
     Q_OBJECT
 public:
     explicit GraphOptionsToolbar(QWidget* parent = nullptr);
@@ -15,5 +14,4 @@ signals:
 private:
 };
 
-#endif // GRAPHOPTIONSTOOLBAR_H
-
+#endif  // GRAPHOPTIONSTOOLBAR_H

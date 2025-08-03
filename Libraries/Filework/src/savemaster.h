@@ -10,10 +10,10 @@ class AbstractSaveFormat;
 }
 
 /**
- * @brief The SaveMaster class Класс для сохранения и загрузки майнтейнера графов
+ * @brief The SaveMaster class Класс для сохранения и загрузки майнтейнера
+ * графов
  */
-class SaveMaster
-{
+class SaveMaster {
 public:
     /**
      * @brief formatToDefaultPath   Форматирует путь в путь по умолчанию
@@ -42,9 +42,11 @@ public:
 
     /**
      * @brief save              Сохранить граф в файл
-     * @param oFilePath         Путь до файла для сохранения (файл может не существовать, но его директория -- обязана)
+     * @param oFilePath         Путь до файла для сохранения (файл может не
+     * существовать, но его директория -- обязана)
      * @param iGraphMaintaner   Поставщик графа для сохранения
-     * @return false            если не удалось сохранить файл, например, при неверном расширении. В логах будет указано, почему
+     * @return false            если не удалось сохранить файл, например, при
+     * неверном расширении. В логах будет указано, почему
      */
     bool save(const QString& oFilePath, Graph::PMaintainer iGraphMaintaner);
 
@@ -52,9 +54,10 @@ public:
      * @brief load              Выгрузить граф из файла
      * @param iFilePath         Путь до файла сохранения
      * @param oGraphMaintaner   Поставщик графа для записи выгруженных данных
-     * @return false            если не удалось выгрузить граф, например, при неверном расширении. В логах будет указано, почему
+     * @return false            если не удалось выгрузить граф, например, при
+     * неверном расширении. В логах будет указано, почему
      */
     bool load(const QString& iFilePath, Graph::PMaintainer oGraphMaintaner);
 };
 
-#endif // SAVEMASTER_H
+#endif  // SAVEMASTER_H

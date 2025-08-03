@@ -1,61 +1,48 @@
 #include "itembase.h"
 
 #include <QJsonObject>
-
 #include <boost/core/demangle.hpp>
 
 #include "scenefielditem.h"
 
 using namespace ObjectViewConstants;
 
-namespace ObjectViewItems
-{
+namespace ObjectViewItems {
 
 static objectId_t getSystemId() {
-    static objectId_t currentId {-1};
+    static objectId_t currentId{-1};
     return --currentId;
 };
 
-ItemBase::ItemBase(QGraphicsItem *parent) :
-    QGraphicsItem(parent)
-{
+ItemBase::ItemBase(QGraphicsItem* parent) : QGraphicsItem(parent) {
     setSystemName("Неизвестный тип");
 }
 
-ItemBase::~ItemBase()
-{
+ItemBase::~ItemBase() {}
 
-}
-
-void ItemBase::unregister()
-{
+void ItemBase::unregister() {
     if (dynamic_cast<SceneFieldItem*>(parentItem()) != nullptr) {
         static_cast<SceneFieldItem*>(parentItem())->removeRegisteredItem(this);
     }
 }
 
-QString ItemBase::getSystemName() const
-{
+QString ItemBase::getSystemName() const {
     return data(OBJECTFIELD_NAME_SYSTEM).toString();
 }
 
-void ItemBase::setType(ObjectType objType)
-{
+void ItemBase::setType(ObjectType objType) {
     setData(OBJECTFIELD_OBJECTTYPE, objType);
 }
 
-ObjectType ItemBase::getType() const
-{
+ObjectType ItemBase::getType() const {
     return ObjectType(data(OBJECTFIELD_OBJECTTYPE).toInt());
 }
 
-void ItemBase::setSystemId()
-{
+void ItemBase::setSystemId() {
     setObjectId(getSystemId());
 }
 
-void ItemBase::setObjectId(objectId_t id)
-{
+void ItemBase::setObjectId(objectId_t id) {
     setData(OBJECTFIELD_ID, id);
 
     for (auto pChild : childItems()) {
@@ -63,106 +50,88 @@ void ItemBase::setObjectId(objectId_t id)
     }
 }
 
-objectId_t ItemBase::getObjectId() const
-{
+objectId_t ItemBase::getObjectId() const {
     if (!data(OBJECTFIELD_PARENTITEM_ID).isNull()) {
         return data(OBJECTFIELD_PARENTITEM_ID).toLongLong();
     }
     return data(OBJECTFIELD_ID).toLongLong();
 }
 
-void ItemBase::paint([[maybe_unused]] QPainter *painter, [[maybe_unused]] const QStyleOptionGraphicsItem *option, [[maybe_unused]] QWidget *widget)
-{
+void ItemBase::paint([[maybe_unused]] QPainter* painter,
+                     [[maybe_unused]] const QStyleOptionGraphicsItem* option,
+                     [[maybe_unused]] QWidget* widget) {}
 
-}
-
-void ItemBase::setBoundingRect(const QRectF &bRect)
-{
+void ItemBase::setBoundingRect(const QRectF& bRect) {
     m_boundingRect = bRect;
 }
 
-void ItemBase::setSystemName(const QString &iText)
-{
+void ItemBase::setSystemName(const QString& iText) {
     setData(OBJECTFIELD_NAME_SYSTEM, iText);
 }
 
-void ItemBase::registerSubitem(QGraphicsItem *pItem) {
-    pItem->setData(ObjectViewConstants::OBJECTFIELD_PARENTITEM_ID, getObjectId());
+void ItemBase::registerSubitem(QGraphicsItem* pItem) {
+    pItem->setData(ObjectViewConstants::OBJECTFIELD_PARENTITEM_ID,
+                   getObjectId());
 }
 
-void ItemBase::setShortName(const QString &text)
-{
+void ItemBase::setShortName(const QString& text) {
     setData(OBJECTFIELD_NAME_SHORT, text);
 }
 
-QString ItemBase::getShortName() const
-{
+QString ItemBase::getShortName() const {
     return data(OBJECTFIELD_NAME_SHORT).toString();
 }
 
-void ItemBase::setName(const QString &text)
-{
+void ItemBase::setName(const QString& text) {
     setData(OBJECTFIELD_NAME, text);
 }
 
-QString ItemBase::getName() const
-{
+QString ItemBase::getName() const {
     return data(OBJECTFIELD_NAME).toString();
 }
 
-void ItemBase::setDescription(const QString &text)
-{
+void ItemBase::setDescription(const QString& text) {
     setData(OBJECTFIELD_DESCRIPTION, text);
 }
 
-QString ItemBase::getDescription() const
-{
+QString ItemBase::getDescription() const {
     return data(OBJECTFIELD_DESCRIPTION).toString();
 }
 
-void ItemBase::setCustomProperties(const QJsonObject &props)
-{
+void ItemBase::setCustomProperties(const QJsonObject& props) {
     setData(OBJECTFIELD_PROPERTY_JSON, props);
 }
 
-QJsonObject ItemBase::getCustomProperties() const
-{
+QJsonObject ItemBase::getCustomProperties() const {
     return data(OBJECTFIELD_PROPERTY_JSON).toJsonObject();
 }
 
-void ItemBase::setMainColor(const QColor &penColor)
-{
+void ItemBase::setMainColor(const QColor& penColor) {
     setData(OBJECTFIELD_COLOR_MAIN, penColor);
 }
 
-QColor ItemBase::getMainColor() const
-{
+QColor ItemBase::getMainColor() const {
     return QColor(data(OBJECTFIELD_COLOR_MAIN).toString());
 }
 
-void ItemBase::setBackgroundColor(const QColor &penColor)
-{
+void ItemBase::setBackgroundColor(const QColor& penColor) {
     setData(OBJECTFIELD_COLOR_BACKGROUND, penColor);
 }
 
-QColor ItemBase::getBackgroundColor() const
-{
+QColor ItemBase::getBackgroundColor() const {
     return QColor(data(OBJECTFIELD_COLOR_BACKGROUND).toString());
 }
 
-void ItemBase::setSelectedColor(const QColor &penColor)
-{
+void ItemBase::setSelectedColor(const QColor& penColor) {
     setData(OBJECTFIELD_COLOR_SELECTED, penColor);
 }
 
-QColor ItemBase::getSelectedColor() const
-{
+QColor ItemBase::getSelectedColor() const {
     return QColor(data(OBJECTFIELD_COLOR_SELECTED).toString());
 }
 
-QRectF ItemBase::boundingRect() const
-{
+QRectF ItemBase::boundingRect() const {
     return m_boundingRect;
 }
 
-}
+}  // namespace ObjectViewItems

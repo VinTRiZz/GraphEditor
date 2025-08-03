@@ -3,13 +3,12 @@
 
 #include <ObjectItems/ItemBase.h>
 
-#include "objectpropertyeditorform.h"
-
 #include <QGraphicsProxyWidget>
 #include <QWidget>
 
-class PropertyEditItem : public ObjectViewItems::ItemBase
-{
+#include "objectpropertyeditorform.h"
+
+class PropertyEditItem : public ObjectViewItems::ItemBase {
 public:
     PropertyEditItem(QGraphicsItem* parent = nullptr);
     ~PropertyEditItem();
@@ -28,10 +27,9 @@ public:
     void setTargetItem(ItemBase* pTargetItem);
 
 private:
-    ItemBase*                   m_pTargetItem {nullptr};
-    ObjectPropertyEditorForm*   m_propertyEditorWidget {nullptr};
-    QGraphicsProxyWidget*       m_editorForm {nullptr};
+    ItemBase* m_pTargetItem{nullptr};
+    ObjectPropertyEditorForm* m_propertyEditorWidget{nullptr};
+    QGraphicsProxyWidget* m_editorForm{nullptr};
 };
 
-
-#endif // PROPERTYEDITITEM_H
+#endif  // PROPERTYEDITITEM_H

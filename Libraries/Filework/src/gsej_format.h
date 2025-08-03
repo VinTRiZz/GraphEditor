@@ -3,21 +3,20 @@
 
 #include "gsj_format.h"
 
-namespace Filework
-{
+namespace Filework {
 
 /**
  * @brief The GSEJ_Format class Формат gsej с шифрованием
  */
-class GSEJ_Format : public GSJ_Format
-{
+class GSEJ_Format : public GSJ_Format {
 public:
     GSEJ_Format();
     ~GSEJ_Format();
 
     QString getExtension() const override;
     QString getDescription() const override;
-    void    setEncryptionKey(const QString& keyString) override;;
+    void setEncryptionKey(const QString& keyString) override;
+    ;
     QString getEncryptionKey(const QString& keyString) const override;
 
     bool save(const QString& targetPath) const override;
@@ -29,6 +28,6 @@ private:
     QString m_key;
 };
 
-}
+}  // namespace Filework
 
-#endif // GSEJE_FORMAT_H
+#endif  // GSEJE_FORMAT_H

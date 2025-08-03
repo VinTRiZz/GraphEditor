@@ -1,9 +1,8 @@
+#include <GraphObject/TestGenerators.h>
 #include <gtest/gtest.h>
 
-#include <GraphObject/TestGenerators.h>
-
-#include <QGuiApplication>
 #include <QFile>
+#include <QGuiApplication>
 
 #include "../src/gsej_format.h"
 TEST(FormatSaving, GSE_JSON_Encrypted_Format) {
@@ -17,7 +16,8 @@ TEST(FormatSaving, GSE_JSON_Encrypted_Format) {
     Filework::GSEJ_Format saveFormat;
     saveFormat.setEncryptionKey("Example key to save with");
 
-    auto graphCopy = savedGraph; // Для чистоты исследований (проверка бага на затирание данных)
+    auto graphCopy = savedGraph;  // Для чистоты исследований (проверка бага на
+                                  // затирание данных)
     saveFormat.setGraphMaintaner(gMaintaner);
 
     EXPECT_TRUE(saveFormat.isStructureValid(saveFormat.toDataJson()));

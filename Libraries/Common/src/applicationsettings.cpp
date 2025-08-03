@@ -1,46 +1,80 @@
 #include "applicationsettings.h"
 
-#include <QFile>
 #include <QDateTime>
+#include <QFile>
 
-const QString APPLICATION_SETTINGS_FILE_PATH {"GraphEditor.ini"};
+const QString APPLICATION_SETTINGS_FILE_PATH{"GraphEditor.ini"};
 
-ApplicationSettings::Theme ApplicationSettings::getThemeType() const { return m_themeType; }
+ApplicationSettings::Theme ApplicationSettings::getThemeType() const {
+    return m_themeType;
+}
 
-ApplicationSettings::NodeShape ApplicationSettings::getDefaultNodeShape() const { return m_defaultNodeShape; }
+ApplicationSettings::NodeShape ApplicationSettings::getDefaultNodeShape()
+    const {
+    return m_defaultNodeShape;
+}
 
-ApplicationSettings::NodeSize ApplicationSettings::getNodeSize() const { return m_nodeSize; }
+ApplicationSettings::NodeSize ApplicationSettings::getNodeSize() const {
+    return m_nodeSize;
+}
 
-int ApplicationSettings::getCanvasOpacity() const { return m_canvasOpacity; }
+int ApplicationSettings::getCanvasOpacity() const {
+    return m_canvasOpacity;
+}
 
-int ApplicationSettings::getLineThickness() const { return m_lineThickness; }
+int ApplicationSettings::getLineThickness() const {
+    return m_lineThickness;
+}
 
-ApplicationSettings::ArrowStyle ApplicationSettings::getArrowStyle() const { return m_arrowStyle; }
+ApplicationSettings::ArrowStyle ApplicationSettings::getArrowStyle() const {
+    return m_arrowStyle;
+}
 
-QGradient ApplicationSettings::getBackgroundGradient() const { return m_backgroundGradient; }
+QGradient ApplicationSettings::getBackgroundGradient() const {
+    return m_backgroundGradient;
+}
 
-bool ApplicationSettings::getIsGridEnabled() const { return m_isGridEnabled; }
+bool ApplicationSettings::getIsGridEnabled() const {
+    return m_isGridEnabled;
+}
 
-double ApplicationSettings::getGridSize() const { return m_gridSize; }
+double ApplicationSettings::getGridSize() const {
+    return m_gridSize;
+}
 
-bool ApplicationSettings::getNeedConfirmDeletion() const { return m_needConfirmDeletion; }
+bool ApplicationSettings::getNeedConfirmDeletion() const {
+    return m_needConfirmDeletion;
+}
 
-int ApplicationSettings::getAutoSaveInterval() const { return m_autoSaveIntervalSec; }
+int ApplicationSettings::getAutoSaveInterval() const {
+    return m_autoSaveIntervalSec;
+}
 
-QStringList ApplicationSettings::getRecentOpenFiles() const { return m_recentFiles; }
+QStringList ApplicationSettings::getRecentOpenFiles() const {
+    return m_recentFiles;
+}
 
-bool ApplicationSettings::getNeedRemoveMetadata() const { return m_removeMetadata; }
+bool ApplicationSettings::getNeedRemoveMetadata() const {
+    return m_removeMetadata;
+}
 
-bool ApplicationSettings::getNeedCleanupTempFiles() const { return m_cleanupTempFiles; }
+bool ApplicationSettings::getNeedCleanupTempFiles() const {
+    return m_cleanupTempFiles;
+}
 
-unsigned ApplicationSettings::getMaxLogFileCount() const { return m_maxLogFiles; }
+unsigned ApplicationSettings::getMaxLogFileCount() const {
+    return m_maxLogFiles;
+}
 
-bool ApplicationSettings::getNeedMinimizeToTray() const { return m_minimizeToTray; }
+bool ApplicationSettings::getNeedMinimizeToTray() const {
+    return m_minimizeToTray;
+}
 
-QString ApplicationSettings::getDateTimeFormat() const { return m_dateTimeFormat; }
+QString ApplicationSettings::getDateTimeFormat() const {
+    return m_dateTimeFormat;
+}
 
-QSize ApplicationSettings::getCanvasSize() const
-{
+QSize ApplicationSettings::getCanvasSize() const {
     return m_canvasSize;
 }
 
@@ -102,16 +136,19 @@ void ApplicationSettings::setDateTimeFormat(const QString& format) {
     }
 }
 
-void ApplicationSettings::setCanvasSize(const QSize &canvasSize)
-{
+void ApplicationSettings::setCanvasSize(const QSize& canvasSize) {
     m_canvasSize = canvasSize;
 }
 
-void ApplicationSettings::setThemeType(Theme theme) { m_themeType = theme; }
+void ApplicationSettings::setThemeType(Theme theme) {
+    m_themeType = theme;
+}
 
-void ApplicationSettings::setDefaultNodeShape(NodeShape shape) { m_defaultNodeShape = shape; }
+void ApplicationSettings::setDefaultNodeShape(NodeShape shape) {
+    m_defaultNodeShape = shape;
+}
 
-void ApplicationSettings::addRecentFile(const QString &path) {
+void ApplicationSettings::addRecentFile(const QString& path) {
     m_recentFiles.removeAll(path);
     m_recentFiles.prepend(path);
     while (m_recentFiles.size() > 10) {
@@ -119,8 +156,7 @@ void ApplicationSettings::addRecentFile(const QString &path) {
     }
 }
 
-void ApplicationSettings::removeRecentFile(const QString &path)
-{
+void ApplicationSettings::removeRecentFile(const QString& path) {
     m_recentFiles.removeOne(path);
 }
 
@@ -129,13 +165,11 @@ ApplicationSettings& ApplicationSettings::getInstance() {
     return instance;
 }
 
-void ApplicationSettings::loadSettings()
-{
+void ApplicationSettings::loadSettings() {
     return loadSettings(APPLICATION_SETTINGS_FILE_PATH);
 }
 
-void ApplicationSettings::saveSettings() const
-{
+void ApplicationSettings::saveSettings() const {
     return saveSettings(APPLICATION_SETTINGS_FILE_PATH);
 }
 
@@ -148,22 +182,26 @@ ApplicationSettings::ApplicationSettings() {
 void ApplicationSettings::fixErrors() {
     // Проверка перечислений
     const int themeMax = static_cast<int>(Theme::Dark);
-    if (static_cast<int>(m_themeType) < 0 || static_cast<int>(m_themeType) > themeMax) {
+    if (static_cast<int>(m_themeType) < 0 ||
+        static_cast<int>(m_themeType) > themeMax) {
         m_themeType = Theme::System;
     }
 
     const int shapeMax = static_cast<int>(NodeShape::RoundedRect);
-    if (static_cast<int>(m_defaultNodeShape) < 0 || static_cast<int>(m_defaultNodeShape) > shapeMax) {
+    if (static_cast<int>(m_defaultNodeShape) < 0 ||
+        static_cast<int>(m_defaultNodeShape) > shapeMax) {
         m_defaultNodeShape = NodeShape::Circle;
     }
 
     const int sizeMax = static_cast<int>(NodeSize::ExtraLarge);
-    if (static_cast<int>(m_nodeSize) < 0 || static_cast<int>(m_nodeSize) > sizeMax) {
+    if (static_cast<int>(m_nodeSize) < 0 ||
+        static_cast<int>(m_nodeSize) > sizeMax) {
         m_nodeSize = NodeSize::Medium;
     }
 
     const int arrowMax = static_cast<int>(ArrowStyle::Circle);
-    if (static_cast<int>(m_arrowStyle) < 0 || static_cast<int>(m_arrowStyle) > arrowMax) {
+    if (static_cast<int>(m_arrowStyle) < 0 ||
+        static_cast<int>(m_arrowStyle) > arrowMax) {
         m_arrowStyle = ArrowStyle::Triangle;
     }
 
@@ -195,7 +233,7 @@ void ApplicationSettings::fixErrors() {
     }
 
     // Проверка списка файлов
-    for (auto it = m_recentFiles.begin(); it != m_recentFiles.end(); ) {
+    for (auto it = m_recentFiles.begin(); it != m_recentFiles.end();) {
         if (it->isEmpty()) {
             it = m_recentFiles.erase(it);
         } else {
@@ -226,17 +264,20 @@ void ApplicationSettings::loadSettings(const QString& configPath) {
     m_themeType = stringToTheme(settings.value("theme", "System").toString());
     m_autoSaveIntervalSec = settings.value("autosave_interval", 300).toInt();
     m_minimizeToTray = settings.value("minimize_to_tray", true).toBool();
-    m_dateTimeFormat = settings.value("datetime_format", "yyyy-MM-dd HH:mm:ss").toString();
+    m_dateTimeFormat =
+        settings.value("datetime_format", "yyyy-MM-dd HH:mm:ss").toString();
     settings.endGroup();
 
     // Внешний вид
     settings.beginGroup("Appearance");
     m_canvasSize = settings.value("canvas_size").toSize();
-    m_defaultNodeShape = static_cast<NodeShape>(settings.value("node_shape", 0).toInt());
+    m_defaultNodeShape =
+        static_cast<NodeShape>(settings.value("node_shape", 0).toInt());
     m_nodeSize = static_cast<NodeSize>(settings.value("node_size", 1).toInt());
     m_canvasOpacity = settings.value("canvas_opacity", 90).toInt();
     m_lineThickness = settings.value("line_thickness", 2).toInt();
-    m_arrowStyle = static_cast<ArrowStyle>(settings.value("arrow_style", 1).toInt());
+    m_arrowStyle =
+        static_cast<ArrowStyle>(settings.value("arrow_style", 1).toInt());
     m_isGridEnabled = settings.value("show_grid", true).toBool();
     m_gridSize = settings.value("grid_size", 20.0).toDouble();
 
@@ -296,7 +337,8 @@ void ApplicationSettings::saveSettings(const QString& configPath) const {
 
     // Сохранение градиента
     // Здесь должна быть конвертация QGradient в строку
-    QString gradientStr = QString("linear:%1:%2")
+    QString gradientStr =
+        QString("linear:%1:%2")
             .arg(m_backgroundGradient.stops().first().second.name())
             .arg(m_backgroundGradient.stops().last().second.name());
     settings.setValue("background_gradient", gradientStr);
@@ -322,15 +364,21 @@ void ApplicationSettings::saveSettings(const QString& configPath) const {
 
 // Конвертеры для Theme
 QString ApplicationSettings::themeToString(Theme theme) const {
-    switch(theme) {
-    case Theme::Light: return "Light";
-    case Theme::Dark: return "Dark";
-    default: return "System";
+    switch (theme) {
+        case Theme::Light:
+            return "Light";
+        case Theme::Dark:
+            return "Dark";
+        default:
+            return "System";
     }
 }
 
-ApplicationSettings::Theme ApplicationSettings::stringToTheme(const QString& str) const {
-    if (str == "Light") return Theme::Light;
-    if (str == "Dark") return Theme::Dark;
+ApplicationSettings::Theme ApplicationSettings::stringToTheme(
+    const QString& str) const {
+    if (str == "Light")
+        return Theme::Light;
+    if (str == "Dark")
+        return Theme::Dark;
     return Theme::System;
 }

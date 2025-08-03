@@ -1,15 +1,13 @@
 #ifndef LABELITEM_H
 #define LABELITEM_H
 
-#include "itembase.h"
-
 #include <QFont>
 
-namespace ObjectViewItems
-{
+#include "itembase.h"
 
-class LabelItem : public ItemBase
-{
+namespace ObjectViewItems {
+
+class LabelItem : public ItemBase {
 public:
     explicit LabelItem(QGraphicsItem* parent = nullptr);
 
@@ -24,10 +22,10 @@ public:
     QRectF boundingRect() const override;
 
 private:
-    QGraphicsRectItem*  m_vertexTextRect    {nullptr};
-    QGraphicsTextItem*  m_vertexText        {nullptr};
+    QGraphicsRectItem* m_vertexTextRect{nullptr};
+    QGraphicsTextItem* m_vertexText{nullptr};
 };
 
-}
+}  // namespace ObjectViewItems
 
-#endif // LABELITEM_H
+#endif  // LABELITEM_H

@@ -1,16 +1,15 @@
 #ifndef GRAPHVIEWER_H
 #define GRAPHVIEWER_H
 
-#include "graphmodebase.h"
+#include <CustomWidgets/ButtonMatrix.h>
 #include <GraphObject/Object.h>
 #include <ObjectItems/Constants.h>
-#include <CustomWidgets/ButtonMatrix.h>
 
-namespace Graph
-{
+#include "graphmodebase.h"
 
-class GraphViewMode : public GraphModeBase
-{
+namespace Graph {
+
+class GraphViewMode : public GraphModeBase {
     Q_OBJECT
 public:
     GraphViewMode(QWidget* parent = nullptr);
@@ -25,8 +24,7 @@ public:
     void processRelease(QGraphicsItem* pItem) override;
 
 private:
-    struct SearchProxy
-    {
+    struct SearchProxy {
         QStringView name;
         QStringView shortName;
         QStringView description;
@@ -40,6 +38,6 @@ protected:
     void registerGraph();
 };
 
-}
+}  // namespace Graph
 
-#endif // GRAPHVIEWER_H
+#endif  // GRAPHVIEWER_H

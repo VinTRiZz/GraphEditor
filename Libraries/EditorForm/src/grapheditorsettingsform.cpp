@@ -1,15 +1,14 @@
 #include "grapheditorsettingsform.h"
-#include "ui_grapheditorsettingsform.h"
 
 #include <Common/CommonFunctions.h>
+
+#include "ui_grapheditorsettingsform.h"
 using namespace CommonFunctions;
 
 #include <Common/ApplicationSettings.h>
 
-GraphEditorSettingsForm::GraphEditorSettingsForm(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::GraphEditorSettingsForm)
-{
+GraphEditorSettingsForm::GraphEditorSettingsForm(QWidget* parent)
+    : QWidget(parent), ui(new Ui::GraphEditorSettingsForm) {
     ui->setupUi(this);
 
     // Настройки полотна
@@ -22,17 +21,15 @@ GraphEditorSettingsForm::GraphEditorSettingsForm(QWidget *parent) :
     connectColorDialog(ui->pushButton_selectColorSecond, ui->label_cSecond);
     connectColorDialog(ui->pushButton_selectColorSelect, ui->label_cSelect);
 
-    connect(ui->pushButton_acceptSettings, &QPushButton::clicked,
-            this, &GraphEditorSettingsForm::applySettings);
+    connect(ui->pushButton_acceptSettings, &QPushButton::clicked, this,
+            &GraphEditorSettingsForm::applySettings);
 }
 
-GraphEditorSettingsForm::~GraphEditorSettingsForm()
-{
+GraphEditorSettingsForm::~GraphEditorSettingsForm() {
     delete ui;
 }
 
-void GraphEditorSettingsForm::loadSettings()
-{
+void GraphEditorSettingsForm::loadSettings() {
     auto& appSettings = ApplicationSettings::getInstance();
 
     auto canvasSizes = appSettings.getCanvasSize();
@@ -40,15 +37,14 @@ void GraphEditorSettingsForm::loadSettings()
     ui->spinBox_height->setValue(canvasSizes.height());
 }
 
-void GraphEditorSettingsForm::applySettings()
-{
+void GraphEditorSettingsForm::applySettings() {
     auto& appSettings = ApplicationSettings::getInstance();
-    appSettings.setCanvasSize(QSize(ui->spinBox_width->value(), ui->spinBox_height->value()));
+    appSettings.setCanvasSize(
+        QSize(ui->spinBox_width->value(), ui->spinBox_height->value()));
     emit updateCanvasSize();
 }
 
-void GraphEditorSettingsForm::showEvent(QShowEvent *e)
-{
+void GraphEditorSettingsForm::showEvent(QShowEvent* e) {
     QWidget::showEvent(e);
     loadSettings();
 }

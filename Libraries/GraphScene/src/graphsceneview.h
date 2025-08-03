@@ -1,35 +1,35 @@
 #ifndef GRAPHVIEWBASE_H
 #define GRAPHVIEWBASE_H
 
-#include "graphmodebase.h"
-
+#include <CustomWidgets/ButtonMatrix.h>
 #include <GraphObject/Maintainer.h>
 #include <ObjectScene/ObjectView.h>
-#include <CustomWidgets/ButtonMatrix.h>
-#include "Items/connectionlineitem.h"
 
 #include <boost/noncopyable.hpp>
 
-namespace Graph
-{
+#include "Items/connectionlineitem.h"
+#include "graphmodebase.h"
+
+namespace Graph {
 
 /**
  * @brief The GraphSceneBase class Основа класса сцены для отображения графа
  */
-class GraphSceneView : public ObjectView
-{
+class GraphSceneView : public ObjectView {
 public:
     GraphSceneView(QWidget* parent = nullptr);
     ~GraphSceneView();
 
     /**
      * @brief setMode   Выбрать текущий режим работы
-     * @param pMode     Указатель на режим работы. Не удалится после удаления сцены
+     * @param pMode     Указатель на режим работы. Не удалится после удаления
+     * сцены
      */
     void setMode(GraphModeBase* pMode);
 
     /**
-     * @brief writeChangesToGraph   Записать данные сцены в граф (фактически, применить изменения)
+     * @brief writeChangesToGraph   Записать данные сцены в граф (фактически,
+     * применить изменения)
      */
     void writeChangesToGraph();
 
@@ -40,7 +40,8 @@ public:
     virtual void setGraphMaintaner(const Graph::PMaintainer& pGraphMaintaner);
 
     /**
-     * @brief updateGraph Считать данные из текущего графа. Вызывается также при установке графа
+     * @brief updateGraph Считать данные из текущего графа. Вызывается также при
+     * установке графа
      */
     void updateGraph();
 
@@ -62,7 +63,9 @@ public:
      * @param idTo                  Вершина до которой идёт линия
      * @return                      Указатель на объект, добавленный на сцену
      */
-    ObjectViewItems::VertexConnectionLine* createConnectionLine(ObjectViewConstants::objectId_t idFrom, ObjectViewConstants::objectId_t idTo);
+    ObjectViewItems::VertexConnectionLine* createConnectionLine(
+        ObjectViewConstants::objectId_t idFrom,
+        ObjectViewConstants::objectId_t idTo);
 
     /**
      * @brief createVertex  Создать вершину
@@ -72,14 +75,18 @@ public:
 
 private:
     void resizeEvent(QResizeEvent* e) override;
-    ObjectViewItems::VertexObject* createVertex(ObjectViewConstants::objectId_t vId);
+    ObjectViewItems::VertexObject* createVertex(
+        ObjectViewConstants::objectId_t vId);
 
-    ObjectViewConstants::objectId_t         m_currentItemId {1};            //! Текущий идентификатор объекта сцены. Используется для создания объектов
-    GraphModeBase*                          m_pCurrentMode {nullptr};       //! Текущий режим работы
-    Graph::PMaintainer  m_pGraphMaintaner;              //! Текущий граф
-    ButtonMatrix::HeadButton*               m_buttonMatrixHead {nullptr};   //! Указатель на кнопку-матрицу (инструментарий)
+    ObjectViewConstants::objectId_t m_currentItemId{
+        1};  //! Текущий идентификатор объекта сцены. Используется для создания
+             //! объектов
+    GraphModeBase* m_pCurrentMode{nullptr};  //! Текущий режим работы
+    Graph::PMaintainer m_pGraphMaintaner;    //! Текущий граф
+    ButtonMatrix::HeadButton* m_buttonMatrixHead{
+        nullptr};  //! Указатель на кнопку-матрицу (инструментарий)
 };
 
-}
+}  // namespace Graph
 
-#endif // GRAPHVIEWBASE_H
+#endif  // GRAPHVIEWBASE_H

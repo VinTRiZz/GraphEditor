@@ -1,20 +1,12 @@
 #include "graphmaintaner.h"
 
-namespace Graph
-{
+namespace Graph {
 
-GraphMaintainer::GraphMaintainer()
-{
+GraphMaintainer::GraphMaintainer() {}
 
-}
+GraphMaintainer::~GraphMaintainer() {}
 
-GraphMaintainer::~GraphMaintainer()
-{
-
-}
-
-bool GraphMaintainer::operator ==(const GraphMaintainer &gObj_) const
-{
+bool GraphMaintainer::operator==(const GraphMaintainer& gObj_) const {
     if (m_graph != gObj_.m_graph) {
         LOG_INFO("GraphMaintainer::equal objects are not equal");
         return false;
@@ -28,70 +20,68 @@ bool GraphMaintainer::operator ==(const GraphMaintainer &gObj_) const
         }
 
         if (customProp.second != gObjValue->second) {
-            LOG_INFO("GraphMaintainer::equal custom values not equal:", customProp.first);
+            LOG_INFO("GraphMaintainer::equal custom values not equal:",
+                     customProp.first);
             return false;
         }
     }
 
-    if ((m_name         != gObj_.m_name) ||
-        (m_description  != gObj_.m_description) ||
-        (m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT) != gObj_.m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT)) ||
-        (m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT)   != gObj_.m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT))
-        ) {
-
+    if ((m_name != gObj_.m_name) || (m_description != gObj_.m_description) ||
+        (m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT) !=
+         gObj_.m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT)) ||
+        (m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT) !=
+         gObj_.m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT))) {
         // Закомментил на будущее
-//        LOG_DEBUG("GraphMaintainer::equal common", m_name != gObj_.m_name, m_description != gObj_.m_description,
-//                               m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT) != gObj_.m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT),
-//                               m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT) != gObj_.m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT));
+        //        LOG_DEBUG("GraphMaintainer::equal common", m_name !=
+        //        gObj_.m_name, m_description != gObj_.m_description,
+        //                               m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT)
+        //                               !=
+        //                               gObj_.m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT),
+        //                               m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT)
+        //                               !=
+        //                               gObj_.m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT));
 
-//        LOG_DEBUG("GraphMaintainer::equal common data my:",
-//                  m_name,
-//                  m_description,
-//                  m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT),
-//                  m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT));
+        //        LOG_DEBUG("GraphMaintainer::equal common data my:",
+        //                  m_name,
+        //                  m_description,
+        //                  m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT),
+        //                  m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT));
 
-//        LOG_DEBUG("GraphMaintainer::equal common data other:",
-//                  gObj_.m_name,
-//                  gObj_.m_description,
-//                  gObj_.m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT),
-//                  gObj_.m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT));
+        //        LOG_DEBUG("GraphMaintainer::equal common data other:",
+        //                  gObj_.m_name,
+        //                  gObj_.m_description,
+        //                  gObj_.m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT),
+        //                  gObj_.m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT));
         return false;
     }
     return true;
 }
 
-bool GraphMaintainer::operator ==(const PMaintainer &gObj_) const
-{
+bool GraphMaintainer::operator==(const PMaintainer& gObj_) const {
     return (*this == *gObj_);
 }
 
-bool GraphMaintainer::operator !=(const GraphMaintainer &gObj_) const
-{
+bool GraphMaintainer::operator!=(const GraphMaintainer& gObj_) const {
     return !(*this == gObj_);
 }
 
-bool GraphMaintainer::operator !=(const PMaintainer &gObj_) const
-{
+bool GraphMaintainer::operator!=(const PMaintainer& gObj_) const {
     return (*this != *gObj_);
 }
 
-PMaintainer GraphMaintainer::createInstance()
-{
+PMaintainer GraphMaintainer::createInstance() {
     return std::make_shared<GraphMaintainer>();
 }
 
-GraphObject &GraphMaintainer::getObject()
-{
+GraphObject& GraphMaintainer::getObject() {
     return m_graph;
 }
 
-GraphExtendedObject* GraphMaintainer::getExtendedObject()
-{
+GraphExtendedObject* GraphMaintainer::getExtendedObject() {
     return &m_graph;
 }
 
-void GraphMaintainer::resetMaintainer()
-{
+void GraphMaintainer::resetMaintainer() {
     m_graph.clearConnections();
     m_graph.clearVertices();
     m_createTime = {};
@@ -101,59 +91,49 @@ void GraphMaintainer::resetMaintainer()
     m_description.clear();
 }
 
-
-void GraphMaintainer::setName(const QString &iName)
-{
+void GraphMaintainer::setName(const QString& iName) {
     m_name = iName;
     emit changedCommonProperty();
 }
 
-QString GraphMaintainer::getName() const
-{
+QString GraphMaintainer::getName() const {
     return m_name;
 }
 
-void GraphMaintainer::setDescription(const QString &iDescr)
-{
+void GraphMaintainer::setDescription(const QString& iDescr) {
     m_description = iDescr;
     emit changedCommonProperty();
 }
 
-QString GraphMaintainer::getDescription() const
-{
+QString GraphMaintainer::getDescription() const {
     return m_description;
 }
 
-void GraphMaintainer::setCreateTime(const QDateTime &iDateTime)
-{
+void GraphMaintainer::setCreateTime(const QDateTime& iDateTime) {
     m_createTime = iDateTime;
     emit changedCommonProperty();
 }
 
-QDateTime GraphMaintainer::getCreateTime() const
-{
+QDateTime GraphMaintainer::getCreateTime() const {
     return m_createTime;
 }
 
-void GraphMaintainer::setEditTime(const QDateTime &iDateTime)
-{
+void GraphMaintainer::setEditTime(const QDateTime& iDateTime) {
     m_editTime = iDateTime;
     emit changedCommonProperty();
 }
 
-QDateTime GraphMaintainer::getEditTime() const
-{
+QDateTime GraphMaintainer::getEditTime() const {
     return m_editTime;
 }
 
-void GraphMaintainer::setCustomValue(const QString &key, const QVariant &value)
-{
+void GraphMaintainer::setCustomValue(const QString& key,
+                                     const QVariant& value) {
     m_customDataValues[key] = value;
     emit changedCustomProperty();
 }
 
-void GraphMaintainer::removeCustomValue(const QString &key)
-{
+void GraphMaintainer::removeCustomValue(const QString& key) {
     auto targetValIt = m_customDataValues.find(key);
     if (targetValIt == m_customDataValues.end()) {
         return;
@@ -162,8 +142,7 @@ void GraphMaintainer::removeCustomValue(const QString &key)
     emit changedCustomProperty();
 }
 
-QVariant GraphMaintainer::getCustomValue(const QString &key) const
-{
+QVariant GraphMaintainer::getCustomValue(const QString& key) const {
     auto targetValIt = m_customDataValues.find(key);
     if (targetValIt == m_customDataValues.end()) {
         return {};
@@ -171,10 +150,8 @@ QVariant GraphMaintainer::getCustomValue(const QString &key) const
     return targetValIt->second;
 }
 
-std::map<QString, QVariant> GraphMaintainer::getCustomValueMap() const
-{
+std::map<QString, QVariant> GraphMaintainer::getCustomValueMap() const {
     return m_customDataValues;
 }
 
-
-}
+}  // namespace Graph

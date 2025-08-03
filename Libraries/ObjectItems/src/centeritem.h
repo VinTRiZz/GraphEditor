@@ -3,15 +3,13 @@
 
 #include "itembase.h"
 
-namespace ObjectViewItems
-{
+namespace ObjectViewItems {
 
-class CenterItem : public ItemBase
-{
+class CenterItem : public ItemBase {
 public:
     CenterItem();
 };
 
-}
+}  // namespace ObjectViewItems
 
-#endif // CENTERITEM_H
+#endif  // CENTERITEM_H

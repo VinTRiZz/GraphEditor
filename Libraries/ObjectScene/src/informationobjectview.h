@@ -1,16 +1,15 @@
 #ifndef INFORMATIONOBJECTVIEWMX_H
 #define INFORMATIONOBJECTVIEWMX_H
 
-#include "interactiveobjectview.h"
-
 #include <ObjectItems/LabelItem.h>
+
 #include <QLabel>
 
-class InformationObjectView : public InteractiveObjectView
-{
+#include "interactiveobjectview.h"
+
+class InformationObjectView : public InteractiveObjectView {
 public:
     explicit InformationObjectView(QWidget* parent);
-
 
 public slots:
     void updateInformation();
@@ -19,9 +18,10 @@ public slots:
     void setCurrentToolName(const QString& toolName);
 
 private:
-    ObjectViewItems::LabelItem* m_pCursorLabel {nullptr};  //! Объект, который показывает координаты пользователю
+    ObjectViewItems::LabelItem* m_pCursorLabel{
+        nullptr};  //! Объект, который показывает координаты пользователю
 
-    QLabel* m_pInformationLabel {nullptr};
+    QLabel* m_pInformationLabel{nullptr};
     QString m_currentToolName;
 
 protected:
@@ -29,4 +29,4 @@ protected:
     void resizeEvent(QResizeEvent* e) override;
 };
 
-#endif // INFORMATIONOBJECTVIEWMX_H
+#endif  // INFORMATIONOBJECTVIEWMX_H

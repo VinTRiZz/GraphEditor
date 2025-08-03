@@ -11,14 +11,14 @@ class ObjectsInternalScene;
 class QMenu;
 
 /**
- * @brief The ObjectScene class Посредник для отображения объектов на QGraphicScene с доп функционалом
+ * @brief The ObjectScene class Посредник для отображения объектов на
+ * QGraphicScene с доп функционалом
  */
-class ObjectView : public InformationObjectView
-{
+class ObjectView : public InformationObjectView {
     Q_OBJECT
 public:
-    explicit ObjectView(QWidget *parent = nullptr);
+    explicit ObjectView(QWidget* parent = nullptr);
     ~ObjectView();
 };
 
-#endif // OBJECTSCENE_H
+#endif  // OBJECTSCENE_H

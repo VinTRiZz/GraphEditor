@@ -1,9 +1,8 @@
+#include <GraphObject/TestGenerators.h>
 #include <gtest/gtest.h>
 
-#include <GraphObject/TestGenerators.h>
-
-#include <QGuiApplication>
 #include <QFile>
+#include <QGuiApplication>
 
 #include "../src/gse_format.h"
 TEST(FormatSaving, GSE_Format) {
@@ -16,7 +15,8 @@ TEST(FormatSaving, GSE_Format) {
 
     Filework::GSE_Format saveFormat;
 
-    auto graphCopy = savedGraph; // Для чистоты исследований (проверка бага на затирание данных)
+    auto graphCopy = savedGraph;  // Для чистоты исследований (проверка бага на
+                                  // затирание данных)
     saveFormat.setGraphMaintaner(gMaintaner);
 
     QString testTargetPath = "/tmp/GraphEditorSaveTest.gse";

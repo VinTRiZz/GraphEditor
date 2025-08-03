@@ -3,12 +3,11 @@
 
 #include <QByteArray>
 
-namespace Encryption
-{
+namespace Encryption {
 
 QByteArray encryptAes256Cbc(const QByteArray& plainText, QByteArray key);
 QByteArray decryptAes256Cbc(QByteArray cipherText, QByteArray key);
 
-}
+}  // namespace Encryption
 
-#endif // ENCRYPTION_H
+#endif  // ENCRYPTION_H

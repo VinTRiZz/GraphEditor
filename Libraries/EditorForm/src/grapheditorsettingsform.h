@@ -7,12 +7,11 @@ namespace Ui {
 class GraphEditorSettingsForm;
 }
 
-class GraphEditorSettingsForm : public QWidget
-{
+class GraphEditorSettingsForm : public QWidget {
     Q_OBJECT
 
 public:
-    explicit GraphEditorSettingsForm(QWidget *parent = nullptr);
+    explicit GraphEditorSettingsForm(QWidget* parent = nullptr);
     ~GraphEditorSettingsForm();
 
 signals:
@@ -23,9 +22,9 @@ public slots:
     void applySettings();
 
 private:
-    Ui::GraphEditorSettingsForm *ui;
+    Ui::GraphEditorSettingsForm* ui;
 
     void showEvent(QShowEvent* e) override;
 };
 
-#endif // GRAPHEDITORSETTINGSFORM_H
+#endif  // GRAPHEDITORSETTINGSFORM_H

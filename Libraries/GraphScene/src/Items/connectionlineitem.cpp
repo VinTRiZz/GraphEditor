@@ -1,31 +1,24 @@
 #include "connectionlineitem.h"
 
-#include <QStyleOptionGraphicsItem>
-
-#include <QGraphicsSceneMouseEvent>
-
-#include <QPainter>
-#include <QPainterPath>
-
+#include <Common/Logging.h>
+#include <GraphObject/Object.h>
+#include <ObjectItems/Constants.h>
 #include <math.h>
 
-#include <Common/Logging.h>
-
-#include <GraphObject/Object.h>
-
+#include <QGraphicsSceneMouseEvent>
 #include <QJsonObject>
+#include <QPainter>
+#include <QPainterPath>
+#include <QStyleOptionGraphicsItem>
 
 #include "vertexobjectitem.h"
-#include <ObjectItems/Constants.h>
 
 using namespace ObjectViewConstants;
 
-namespace ObjectViewItems
-{
+namespace ObjectViewItems {
 
-VertexConnectionLine::VertexConnectionLine(QGraphicsItem *parent) :
-    ItemBase(parent)
-{
+VertexConnectionLine::VertexConnectionLine(QGraphicsItem* parent)
+    : ItemBase(parent) {
     setSystemName("Соединение вершин");
 
     setType(ObjectViewConstants::OBJECTTYPE_VERTEX_CONNECTION);
@@ -67,8 +60,7 @@ VertexConnectionLine::VertexConnectionLine(QGraphicsItem *parent) :
     m_labelItem->setBackgroundColor(GraphCommon::DEFAULT_VERTEX_TEXT_BGR_COLOR);
 }
 
-VertexConnectionLine::~VertexConnectionLine()
-{
+VertexConnectionLine::~VertexConnectionLine() {
     if (m_fromVertex) {
         m_fromVertex->unsubscribeConnectionFrom(this);
     }
@@ -78,70 +70,59 @@ VertexConnectionLine::~VertexConnectionLine()
     }
 }
 
-void VertexConnectionLine::setVertexFrom(VertexObject *pVertexFrom)
-{
+void VertexConnectionLine::setVertexFrom(VertexObject* pVertexFrom) {
     if (m_toVertex == pVertexFrom) {
         return;
     }
     m_fromVertex = pVertexFrom;
 }
 
-VertexObject *VertexConnectionLine::getVertexFrom() const
-{
+VertexObject* VertexConnectionLine::getVertexFrom() const {
     return m_fromVertex;
 }
 
-void VertexConnectionLine::setVertexTo(VertexObject *pVertexTo)
-{
+void VertexConnectionLine::setVertexTo(VertexObject* pVertexTo) {
     if (m_fromVertex == pVertexTo) {
         return;
     }
     m_toVertex = pVertexTo;
 }
 
-VertexObject *VertexConnectionLine::getVertexTo() const
-{
+VertexObject* VertexConnectionLine::getVertexTo() const {
     return m_toVertex;
 }
 
-void VertexConnectionLine::setLine(const QLineF &line)
-{
+void VertexConnectionLine::setLine(const QLineF& line) {
     m_straightLine = line;
     updatePolygon();
 }
 
-void VertexConnectionLine::setLine(const QPointF &p1, const QPointF &p2)
-{
+void VertexConnectionLine::setLine(const QPointF& p1, const QPointF& p2) {
     setLine(QLineF(p1, p2));
 }
 
-QLineF VertexConnectionLine::getLine() const
-{
+QLineF VertexConnectionLine::getLine() const {
     return m_straightLine;
 }
 
-void VertexConnectionLine::setPositionFrom(const QPointF &posFrom)
-{
+void VertexConnectionLine::setPositionFrom(const QPointF& posFrom) {
     m_straightLine.setP1(posFrom);
     updatePolygon();
 }
 
-void VertexConnectionLine::setPositionTo(const QPointF &posTo)
-{
+void VertexConnectionLine::setPositionTo(const QPointF& posTo) {
     m_straightLine.setP2(posTo);
     updatePolygon();
 }
 
-void VertexConnectionLine::resetPositions()
-{
+void VertexConnectionLine::resetPositions() {
     if (nullptr == m_toVertex) {
         return;
     }
     m_toVertex->updateConnectionLines();
 }
 
-void VertexConnectionLine::setMainColor(const QColor &penColor)
-{
+void VertexConnectionLine::setMainColor(const QColor& penColor) {
     ItemBase::setMainColor(penColor);
 
     m_penGradient.setColorAt(1, getMainColor());
@@ -151,8 +132,7 @@ void VertexConnectionLine::setMainColor(const QColor &penColor)
     m_pArrowHeadPolygon->setPen(currentPen);
 }
 
-void VertexConnectionLine::setSelectedColor(const QColor &penColor)
-{
+void VertexConnectionLine::setSelectedColor(const QColor& penColor) {
     ItemBase::setSelectedColor(penColor);
 
     auto selectedPen = QPen(getSelectedColor(), 5);
@@ -161,24 +141,20 @@ void VertexConnectionLine::setSelectedColor(const QColor &penColor)
     m_pArrowHeadPolygon->setPen(currentPen);
 }
 
-void VertexConnectionLine::setShortName(const QString &iText)
-{
+void VertexConnectionLine::setShortName(const QString& iText) {
     m_labelItem->setShortName(iText);
     ItemBase::setShortName(iText);
 }
 
-void VertexConnectionLine::setArrowSize(qreal size)
-{
+void VertexConnectionLine::setArrowSize(qreal size) {
     m_arrowSize = size;
 }
 
-qreal VertexConnectionLine::getArrowSize() const
-{
+qreal VertexConnectionLine::getArrowSize() const {
     return m_arrowSize;
 }
 
-void VertexConnectionLine::updatePolygon()
-{
+void VertexConnectionLine::updatePolygon() {
     m_boundingRect = {};
     m_line->setPath(createLinePath());
     m_lineSelected->setPath(m_line->path());
@@ -198,19 +174,23 @@ void VertexConnectionLine::updatePolygon()
     bool isP1Lefter = m_straightLine.x2() > m_straightLine.x1();
     bool isP1Higher = m_straightLine.y2() > m_straightLine.y1();
 
-    m_boundingRect.moveTop((isP1Higher ? m_straightLine.y1() : m_straightLine.y2()) - m_arrowSize);
-    m_boundingRect.moveLeft((isP1Lefter ? m_straightLine.x1() : m_straightLine.x2()) - m_arrowSize);
-    m_boundingRect.setWidth(std::fabs(m_straightLine.x2() - m_straightLine.x1()) + m_arrowSize * 2);
-    m_boundingRect.setHeight(std::fabs(m_straightLine.y2() - m_straightLine.y1()) + m_arrowSize * 2);
+    m_boundingRect.moveTop(
+        (isP1Higher ? m_straightLine.y1() : m_straightLine.y2()) - m_arrowSize);
+    m_boundingRect.moveLeft(
+        (isP1Lefter ? m_straightLine.x1() : m_straightLine.x2()) - m_arrowSize);
+    m_boundingRect.setWidth(
+        std::fabs(m_straightLine.x2() - m_straightLine.x1()) + m_arrowSize * 2);
+    m_boundingRect.setHeight(
+        std::fabs(m_straightLine.y2() - m_straightLine.y1()) + m_arrowSize * 2);
 }
 
-QPainterPath VertexConnectionLine::createLinePath()
-{
+QPainterPath VertexConnectionLine::createLinePath() {
     auto pointFrom = m_straightLine.p1();
     pointFrom.setY(pointFrom.y() + m_arrowSize);
 
     auto pointTo = m_straightLine.p2();
-    pointTo.setX(pointTo.x() + (pointFrom.x() > pointTo.x() ? m_arrowSize : - m_arrowSize));
+    pointTo.setX(pointTo.x() +
+                 (pointFrom.x() > pointTo.x() ? m_arrowSize : -m_arrowSize));
     pointTo.setY(pointTo.y() - m_arrowSize);
 
     QPainterPath p;
@@ -236,11 +216,13 @@ QPainterPath VertexConnectionLine::createLinePath()
 
         QPointF arrowP1 = arrowLine.p2();
 
-        QPointF arrowP2 = arrowLine.p2() + QPointF(sin(angle + PI_DELIM_3) * m_arrowSize,
-                                              cos(angle + PI_DELIM_3) * m_arrowSize);
+        QPointF arrowP2 =
+            arrowLine.p2() + QPointF(sin(angle + PI_DELIM_3) * m_arrowSize,
+                                     cos(angle + PI_DELIM_3) * m_arrowSize);
 
-        QPointF arrowP3 = arrowLine.p2() + QPointF(sin(angle + PI_2_DELIM_3) * m_arrowSize,
-                                              cos(angle + PI_2_DELIM_3) * m_arrowSize);
+        QPointF arrowP3 =
+            arrowLine.p2() + QPointF(sin(angle + PI_2_DELIM_3) * m_arrowSize,
+                                     cos(angle + PI_2_DELIM_3) * m_arrowSize);
 
         p.lineTo(m_straightLine.p2());
         p.lineTo(arrowP2);
@@ -251,13 +233,12 @@ QPainterPath VertexConnectionLine::createLinePath()
     return p;
 }
 
-QPolygonF VertexConnectionLine::createPolygon(const QLineF &line)
-{
+QPolygonF VertexConnectionLine::createPolygon(const QLineF& line) {
     QRectF rect;
     QTransform transf;
 
-    auto leftX      = line.x1() > line.x2() ? line.x1() : line.x2();
-    auto bottomY    = line.y1() > line.y2() ? line.y2() : line.y1();
+    auto leftX = line.x1() > line.x2() ? line.x1() : line.x2();
+    auto bottomY = line.y1() > line.y2() ? line.y2() : line.y1();
 
     rect.setLeft(leftX);
     rect.setBottom(bottomY);
@@ -272,8 +253,7 @@ QPolygonF VertexConnectionLine::createPolygon(const QLineF &line)
     return transf.mapRect(rect);
 }
 
-void VertexConnectionLine::updatePen()
-{
+void VertexConnectionLine::updatePen() {
     if (isSelected() == m_prevSelectedState) {
         return;
     }
@@ -283,8 +263,8 @@ void VertexConnectionLine::updatePen()
     m_pArrowHeadPolygon->setPen(currentPen);
 }
 
-QVariant VertexConnectionLine::itemChange(GraphicsItemChange change, const QVariant &value)
-{
+QVariant VertexConnectionLine::itemChange(GraphicsItemChange change,
+                                          const QVariant& value) {
     if (change == ItemSelectedChange) {
         if (value.toBool()) {
             m_lineSelected->show();
@@ -296,22 +276,19 @@ QVariant VertexConnectionLine::itemChange(GraphicsItemChange change, const QVari
     return QGraphicsItem::itemChange(change, value);
 }
 
-QRectF VertexConnectionLine::boundingRect() const
-{
+QRectF VertexConnectionLine::boundingRect() const {
     return m_boundingRect;
 }
 
-bool VertexConnectionLine::contains(const QPointF &p) const
-{
+bool VertexConnectionLine::contains(const QPointF& p) const {
     return m_pArrowHeadPolygon->contains(p) || m_line->contains(p);
 }
 
-QPainterPath VertexConnectionLine::shape() const
-{
+QPainterPath VertexConnectionLine::shape() const {
     QPainterPath res;
     res.addPath(m_line->shape());
     res.addPath(m_pArrowHeadPolygon->shape());
     return res;
 }
 
-}
+}  // namespace ObjectViewItems

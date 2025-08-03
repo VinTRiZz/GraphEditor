@@ -1,43 +1,31 @@
 #include "gsj_format.h"
-#include <QFileInfo>
-
-#include <QJsonDocument>
 
 #include <Common/Logging.h>
 
-#include <QJsonDocument>
-#include <QJsonArray>
 #include <QColor>
-
-#include <QFileInfo>
 #include <QDir>
+#include <QFileInfo>
+#include <QJsonArray>
+#include <QJsonDocument>
 
-namespace Filework
-{
+namespace Filework {
 
-GSJ_Format::GSJ_Format()
-{
+GSJ_Format::GSJ_Format() {
     m_isEncrypted = false;
     m_formatVersion = "1.0.0";
 }
 
-GSJ_Format::~GSJ_Format()
-{
+GSJ_Format::~GSJ_Format() {}
 
-}
-
-QString GSJ_Format::getExtension() const
-{
+QString GSJ_Format::getExtension() const {
     return "gsj";
 }
 
-QString GSJ_Format::getDescription() const
-{
+QString GSJ_Format::getDescription() const {
     return "Файл сохранения графа";
 }
 
-bool GSJ_Format::initFromDataJson(const QJsonObject &iJson)
-{
+bool GSJ_Format::initFromDataJson(const QJsonObject& iJson) {
     if (!isStructureValid(iJson)) {
         return false;
     }
@@ -51,8 +39,10 @@ bool GSJ_Format::initFromDataJson(const QJsonObject &iJson)
     const QJsonObject common = props["common"].toObject();
     pMaintainer->setName(common["name"].toString());
     pMaintainer->setDescription(common["descr"].toString());
-    pMaintainer->setCreateTime(QDateTime::fromString(common["created"].toString(), GraphCommon::DATE_CONVERSION_FORMAT));
-    pMaintainer->setEditTime(QDateTime::fromString(common["edited"].toString(), GraphCommon::DATE_CONVERSION_FORMAT));
+    pMaintainer->setCreateTime(QDateTime::fromString(
+        common["created"].toString(), GraphCommon::DATE_CONVERSION_FORMAT));
+    pMaintainer->setEditTime(QDateTime::fromString(
+        common["edited"].toString(), GraphCommon::DATE_CONVERSION_FORMAT));
 
     const QJsonObject custom = props["custom"].toObject();
     for (const auto& key : custom.keys()) {
@@ -71,11 +61,16 @@ bool GSJ_Format::initFromDataJson(const QJsonObject &iJson)
         vertex.shortName = vObj["shortName"].toString();
         vertex.name = vObj["name"].toString();
         vertex.description = vObj["description"].toString();
-        vertex.borderColor = GraphCommon::decodeColor(vObj["borderColor"].toString().toUtf8());
-        vertex.backgroundColor = GraphCommon::decodeColor(vObj["backgroundColor"].toString().toUtf8());
-        vertex.image = getDecodedPixmap(vObj["image"].toString().toUtf8().data()).toImage();
+        vertex.borderColor =
+            GraphCommon::decodeColor(vObj["borderColor"].toString().toUtf8());
+        vertex.backgroundColor = GraphCommon::decodeColor(
+            vObj["backgroundColor"].toString().toUtf8());
+        vertex.image =
+            getDecodedPixmap(vObj["image"].toString().toUtf8().data())
+                .toImage();
 
-        if (vObj.contains("customProperties") && vObj["customProperties"].isObject()) {
+        if (vObj.contains("customProperties") &&
+            vObj["customProperties"].isObject()) {
             vertex.customProperties = vObj["customProperties"].toObject();
         }
 
@@ -96,23 +91,25 @@ bool GSJ_Format::initFromDataJson(const QJsonObject &iJson)
             conn.idFrom = conObj["idFrom"].toString().toULongLong();
             conn.idTo = conObj["idTo"].toString().toULongLong();
             conn.name = conObj["name"].toString();
-            conn.lineColor = GraphCommon::decodeColor(conObj["color"].toString().toUtf8());
+            conn.lineColor =
+                GraphCommon::decodeColor(conObj["color"].toString().toUtf8());
             conn.connectionWeight = conObj["weight"].toDouble();
 
-            if (conObj.contains("customProperties") && conObj["customProperties"].isObject()) {
+            if (conObj.contains("customProperties") &&
+                conObj["customProperties"].isObject()) {
                 conn.customProperties = conObj["customProperties"].toObject();
             }
 
             if (!pMaintainer->getObject().addConnection(conn)) {
-                LOG_WARNING("Failed to add connection:", conn.idFrom, conn.idTo);
+                LOG_WARNING("Failed to add connection:", conn.idFrom,
+                            conn.idTo);
             }
         }
     }
     return true;
 }
 
-QJsonObject GSJ_Format::toDataJson() const
-{
+QJsonObject GSJ_Format::toDataJson() const {
     auto pMaintainer = getGraphMaintaner();
     QJsonObject root;
 
@@ -126,8 +123,10 @@ QJsonObject GSJ_Format::toDataJson() const
     QJsonObject commonObj;
     commonObj["name"] = pMaintainer->getName();
     commonObj["descr"] = pMaintainer->getDescription();
-    commonObj["created"] = pMaintainer->getCreateTime().toString(GraphCommon::DATE_CONVERSION_FORMAT);
-    commonObj["edited"] = pMaintainer->getEditTime().toString(GraphCommon::DATE_CONVERSION_FORMAT);
+    commonObj["created"] = pMaintainer->getCreateTime().toString(
+        GraphCommon::DATE_CONVERSION_FORMAT);
+    commonObj["edited"] = pMaintainer->getEditTime().toString(
+        GraphCommon::DATE_CONVERSION_FORMAT);
     propertiesObj["common"] = commonObj;
 
     // Custom properties
@@ -150,10 +149,13 @@ QJsonObject GSJ_Format::toDataJson() const
         vObj["shortName"] = vertex.shortName;
         vObj["name"] = vertex.name;
         vObj["description"] = vertex.description;
-        vObj["borderColor"] = GraphCommon::encodeColor(vertex.borderColor).data();
-        vObj["backgroundColor"] = GraphCommon::encodeColor(vertex.backgroundColor).data();
+        vObj["borderColor"] =
+            GraphCommon::encodeColor(vertex.borderColor).data();
+        vObj["backgroundColor"] =
+            GraphCommon::encodeColor(vertex.backgroundColor).data();
         vObj["customProperties"] = vertex.customProperties;
-        vObj["image"] = getEncodedPixmap(QPixmap::fromImage(vertex.image)).data();
+        vObj["image"] =
+            getEncodedPixmap(QPixmap::fromImage(vertex.image)).data();
 
         verticesObj[QString::number(vertex.id)] = vObj;
     }
@@ -195,19 +197,18 @@ QJsonObject GSJ_Format::toDataJson() const
     return root;
 }
 
-bool GSJ_Format::save(const QString &targetPath) const
-{
+bool GSJ_Format::save(const QString& targetPath) const {
     auto targetDir = QFileInfo(targetPath).dir();
     if (!targetDir.exists() || !targetDir.isReadable()) {
         return false;
     }
 
-    auto resultData = QJsonDocument(toDataJson()).toJson(QJsonDocument::Compact);
+    auto resultData =
+        QJsonDocument(toDataJson()).toJson(QJsonDocument::Compact);
     return rewriteFileData(targetPath, resultData);
 }
 
-bool GSJ_Format::load(const QString &targetPath)
-{
+bool GSJ_Format::load(const QString& targetPath) {
     QByteArray tmpData;
     if (!readFromFile(targetPath, tmpData)) {
         return false;
@@ -215,8 +216,7 @@ bool GSJ_Format::load(const QString &targetPath)
     return initFromDataJson(QJsonDocument::fromJson(tmpData).object());
 }
 
-bool GSJ_Format::isFileValid(const QString &targetPath) const
-{
+bool GSJ_Format::isFileValid(const QString& targetPath) const {
     auto fileInfo = QFileInfo(targetPath);
     if (!fileInfo.exists()) {
         return false;
@@ -233,8 +233,7 @@ bool GSJ_Format::isFileValid(const QString &targetPath) const
     return isStructureValid(jsonObj);
 }
 
-bool GSJ_Format::isStructureValid(const QJsonObject &iJson) const
-{
+bool GSJ_Format::isStructureValid(const QJsonObject& iJson) const {
     // Properties
     if (!iJson.contains("properties")) {
         LOG_ERROR("Not found section: properties");
@@ -289,8 +288,7 @@ bool GSJ_Format::isStructureValid(const QJsonObject &iJson) const
     return true;
 }
 
-QJsonObject GSJ_Format::createSystemJson() const
-{
+QJsonObject GSJ_Format::createSystemJson() const {
     QJsonObject systemObj;
     systemObj["app_version"] = QString(GRAPH_EDITOR_VERSION);
     systemObj["format_version"] = m_formatVersion;
@@ -298,19 +296,16 @@ QJsonObject GSJ_Format::createSystemJson() const
     return systemObj;
 }
 
-bool GSJ_Format::config_getIsEncrypted(const QJsonObject &iJson)
-{
+bool GSJ_Format::config_getIsEncrypted(const QJsonObject& iJson) {
     return iJson["is_encrypted"].toBool();
 }
 
-QString GSJ_Format::config_getVersion(const QJsonObject &iJson)
-{
+QString GSJ_Format::config_getVersion(const QJsonObject& iJson) {
     return iJson["app_version"].toString();
 }
 
-QString GSJ_Format::config_getFormatVersion(const QJsonObject &iJson)
-{
+QString GSJ_Format::config_getFormatVersion(const QJsonObject& iJson) {
     return iJson["format_version"].toString();
 }
 
-}
+}  // namespace Filework

@@ -1,17 +1,14 @@
 #ifndef GRAPHEDITOR_H
 #define GRAPHEDITOR_H
 
-#include "graphmodebase.h"
-
+#include "Items/connectionlineitem.h"
 #include "Items/propertyedititem.h"
 #include "Items/vertexobjectitem.h"
-#include "Items/connectionlineitem.h"
+#include "graphmodebase.h"
 
-namespace Graph
-{
+namespace Graph {
 
-class GraphEditMode : public GraphModeBase
-{
+class GraphEditMode : public GraphModeBase {
     Q_OBJECT
 public:
     GraphEditMode(QWidget* parent = nullptr);
@@ -45,20 +42,20 @@ private:
         CEM_EDIT_PROPERTIES,
         CEM_REMOVING,
     };
-    CurrentEditMode m_currentEditMode {CurrentEditMode::CEM_NONE};
+    CurrentEditMode m_currentEditMode{CurrentEditMode::CEM_NONE};
 
     void clearMode();
 
-    ObjectViewItems::VertexObject*            m_movingVertex {nullptr};
-    ObjectViewItems::VertexConnectionLine*    m_movingConnectionLine {nullptr};
+    ObjectViewItems::VertexObject* m_movingVertex{nullptr};
+    ObjectViewItems::VertexConnectionLine* m_movingConnectionLine{nullptr};
     void toggleMovingItem(ObjectViewItems::ItemBase* pItem);
     void clearMovingMode();
 
-    ObjectViewItems::VertexConnectionLine* m_pendingConnectionLine {nullptr};
+    ObjectViewItems::VertexConnectionLine* m_pendingConnectionLine{nullptr};
     void setPendingConnection(ObjectViewItems::ItemBase* pTargetVertexItem);
     void clearConnectionAddMode();
 
-    ObjectViewItems::VertexObject* m_pendingVertex {nullptr};
+    ObjectViewItems::VertexObject* m_pendingVertex{nullptr};
     void setPendingVertex(ObjectViewItems::ItemBase* pItem);
     void clearVertexAddMode();
 
@@ -66,6 +63,6 @@ private:
     void clearPropertyEditMode();
 };
 
-}
+}  // namespace Graph
 
-#endif // GRAPHEDITOR_H
+#endif  // GRAPHEDITOR_H

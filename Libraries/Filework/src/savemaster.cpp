@@ -1,21 +1,19 @@
 #include "savemaster.h"
 
-#include "abstractsaveformat.h"
-
 #include <Common/Logging.h>
-
 #include <CustomWidgets/PasswordInsertDialog.h>
+
+#include <QDir>
+#include <QFileDialog>
+#include <QFileInfo>
 #include <QMessageBox>
 
-#include <QFileInfo>
-#include <QFileDialog>
-#include <QDir>
-
+#include "abstractsaveformat.h"
 #include "formatfactory.h"
 
-QString SaveMaster::formatToDefaultPath(const QString &iPath)
-{
-    auto defaultExtension = Filework::FormatFactory::getInstance().getDefaultSaveExtension();
+QString SaveMaster::formatToDefaultPath(const QString& iPath) {
+    auto defaultExtension =
+        Filework::FormatFactory::getInstance().getDefaultSaveExtension();
     auto fileSuffix = QFileInfo(iPath).completeSuffix();
     if (fileSuffix == defaultExtension) {
         return iPath;
@@ -23,31 +21,24 @@ QString SaveMaster::formatToDefaultPath(const QString &iPath)
     return iPath + "." + defaultExtension;
 }
 
-QStringList SaveMaster::getAvailableFormats()
-{
+QStringList SaveMaster::getAvailableFormats() {
     return Filework::FormatFactory::getInstance().getAvailableFormats();
 }
 
-QString SaveMaster::getSavePath()
-{
-    return QFileDialog::getSaveFileName(
-                nullptr,
-                "Файл для сохранения графа",
-                QDir::homePath(),
-                getAvailableFormats().join(";;"));
+QString SaveMaster::getSavePath() {
+    return QFileDialog::getSaveFileName(nullptr, "Файл для сохранения графа",
+                                        QDir::homePath(),
+                                        getAvailableFormats().join(";;"));
 }
 
-QString SaveMaster::getLoadPath()
-{
-    return QFileDialog::getOpenFileName(
-                nullptr,
-                "Файл для загрузки",
-                QDir::homePath(),
-                getAvailableFormats().join(";;"));
+QString SaveMaster::getLoadPath() {
+    return QFileDialog::getOpenFileName(nullptr, "Файл для загрузки",
+                                        QDir::homePath(),
+                                        getAvailableFormats().join(";;"));
 }
 
-bool SaveMaster::save(const QString &oFilePath, Graph::PMaintainer iGraphMaintaner)
-{
+bool SaveMaster::save(const QString& oFilePath,
+                      Graph::PMaintainer iGraphMaintaner) {
     auto fileSuffix = QFileInfo(oFilePath).completeSuffix();
     auto& formatFactory = Filework::FormatFactory::getInstance();
     if (fileSuffix.isEmpty()) {
@@ -76,7 +67,8 @@ bool SaveMaster::save(const QString &oFilePath, Graph::PMaintainer iGraphMaintan
 
     auto res = false;
     if (QFileInfo(oFilePath).completeSuffix().isEmpty()) {
-        res = pFormat->save(oFilePath + "." + fileSuffix); // Суффикс точно будет на этом моменте
+        res = pFormat->save(oFilePath + "." +
+                            fileSuffix);  // Суффикс точно будет на этом моменте
     } else {
         res = pFormat->save(oFilePath);
     }
@@ -89,8 +81,8 @@ bool SaveMaster::save(const QString &oFilePath, Graph::PMaintainer iGraphMaintan
     return res;
 }
 
-bool SaveMaster::load(const QString &iFilePath, Graph::PMaintainer oGraphMaintaner)
-{
+bool SaveMaster::load(const QString& iFilePath,
+                      Graph::PMaintainer oGraphMaintaner) {
     auto fileSuffix = QFileInfo(iFilePath).completeSuffix();
     auto& formatFactory = Filework::FormatFactory::getInstance();
     auto pFormat = formatFactory.getFormat(fileSuffix);

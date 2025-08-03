@@ -1,13 +1,12 @@
 #ifndef GRAPHMAINTANER_H
 #define GRAPHMAINTANER_H
 
-#include "graphobject.h"
-#include "graphextendedobject.h"
-
 #include <QObject>
 
-namespace Graph
-{
+#include "graphextendedobject.h"
+#include "graphobject.h"
+
+namespace Graph {
 
 class GraphMaintainer;
 using PMaintainer = std::shared_ptr<Graph::GraphMaintainer>;
@@ -15,18 +14,17 @@ using PMaintainer = std::shared_ptr<Graph::GraphMaintainer>;
 /**
  * @brief The GraphMaintainer class Мастер данных графа
  */
-class GraphMaintainer : public QObject
-{
+class GraphMaintainer : public QObject {
     Q_OBJECT
 public:
     GraphMaintainer();
     ~GraphMaintainer();
 
-    bool operator ==(const GraphMaintainer &gObj_) const;
-    bool operator ==(const PMaintainer &gObj_) const;
+    bool operator==(const GraphMaintainer& gObj_) const;
+    bool operator==(const PMaintainer& gObj_) const;
 
-    bool operator !=(const GraphMaintainer &gObj_) const;
-    bool operator !=(const PMaintainer &gObj_) const;
+    bool operator!=(const GraphMaintainer& gObj_) const;
+    bool operator!=(const PMaintainer& gObj_) const;
 
     static PMaintainer createInstance();
 
@@ -38,9 +36,10 @@ public:
 
     /**
      * @brief getExtendedObject Получение инстанции расширенного объекта графа
-     * @return                  Указатель на поле класса, являющееся Q_OBJECT наследником
+     * @return                  Указатель на поле класса, являющееся Q_OBJECT
+     * наследником
      */
-    GraphExtendedObject *getExtendedObject();
+    GraphExtendedObject* getExtendedObject();
 
     /**
      * @brief resetMaintainer Полностью очищает все данные мейнтейнера
@@ -114,24 +113,28 @@ public:
     /**
      * @brief getCustomValue    Получение пользовательского значения
      * @param key               Ключ (уже имеющийся)
-     * @return                  Значение или NULL QVariant при отсутствии такого ключа
+     * @return                  Значение или NULL QVariant при отсутствии такого
+     * ключа
      */
     QVariant getCustomValue(const QString& key) const;
 
     /**
      * @brief getCustomValueMap     Получение всех пользовательских данных
-     * @return                      Словарь ключ-значение пользовательских данных
+     * @return                      Словарь ключ-значение пользовательских
+     * данных
      */
     std::map<QString, QVariant> getCustomValueMap() const;
 
 signals:
     /**
-     * @brief changedCommonProperty Сигналит на изменение имени, описания, времени создания/редактирования
+     * @brief changedCommonProperty Сигналит на изменение имени, описания,
+     * времени создания/редактирования
      */
     void changedCommonProperty();
 
     /**
-     * @brief changedCustomProperty Сигналит на любое изменение свойтсв, от удаления до задания и добавления
+     * @brief changedCustomProperty Сигналит на любое изменение свойтсв, от
+     * удаления до задания и добавления
      */
     void changedCustomProperty();
 
@@ -139,14 +142,14 @@ private:
     GraphExtendedObject m_graph;
 
     // Основные параметры графа
-    QString     m_name;
-    QString     m_description;
-    QDateTime   m_createTime;
-    QDateTime   m_editTime;
+    QString m_name;
+    QString m_description;
+    QDateTime m_createTime;
+    QDateTime m_editTime;
 
-    std::map<QString, QVariant> m_customDataValues; //! Пользовательские данные
+    std::map<QString, QVariant> m_customDataValues;  //! Пользовательские данные
 };
 
-}
+}  // namespace Graph
 
-#endif // GRAPHMAINTANER_H
+#endif  // GRAPHMAINTANER_H

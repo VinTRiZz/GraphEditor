@@ -2,33 +2,28 @@
 
 #include <Common/Logging.h>
 
-namespace GraphCommon
-{
+namespace GraphCommon {
 
-QByteArray encodeColor(const QColor &iCol)
-{
+QByteArray encodeColor(const QColor& iCol) {
     return iCol.name(QColor::HexArgb).toUtf8();
 }
 
-QColor decodeColor(const QByteArray &iBytes)
-{
+QColor decodeColor(const QByteArray& iBytes) {
     if (iBytes.length() != 9) {
         return {};
     }
     return QColor(iBytes.data());
 }
 
-QByteArray encodeColorGSE(const QColor &iCol)
-{
+QByteArray encodeColorGSE(const QColor& iCol) {
     return iCol.name(QColor::HexRgb).toUtf8();
 }
 
-QColor decodeColorGSE(const QByteArray &iBytes)
-{
+QColor decodeColorGSE(const QByteArray& iBytes) {
     if (iBytes.length() != 7) {
         return {};
     }
     return QColor(iBytes.data());
 }
 
-}
+}  // namespace GraphCommon

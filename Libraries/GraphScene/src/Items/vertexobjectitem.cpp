@@ -1,33 +1,28 @@
 #include "vertexobjectitem.h"
 
-#include <QLabel>
-
-#include <QGraphicsSceneMouseEvent>
-
-#include <QTextOption>
-
-#include <QFileInfo>
-#include <QImageReader>
-
-#include <QBuffer>
-
-#include "connectionlineitem.h"
+#include <Common/Logging.h>
+#include <GraphObject/Object.h>
 #include <ObjectItems/Constants.h>
 
-#include <Common/Logging.h>
+#include <QBuffer>
+#include <QFileInfo>
+#include <QGraphicsSceneMouseEvent>
+#include <QImageReader>
+#include <QLabel>
+#include <QTextOption>
 
-#include <GraphObject/Object.h>
+#include "connectionlineitem.h"
 
 using namespace ObjectViewConstants;
 
-namespace ObjectViewItems
-{
+namespace ObjectViewItems {
 
 // Загрузка изображения с поддержкой прозрачности
 QPixmap loadImageWithAlpha(const QString& path) {
     QImageReader reader(path);
     reader.setAutoTransform(true);  // Автоповорот по EXIF
-    reader.setDecideFormatFromContent(true);  // Определение формата по содержимому
+    reader.setDecideFormatFromContent(
+        true);  // Определение формата по содержимому
 
     if (reader.supportsAnimation()) {  // Для GIF/APNG
         return QPixmap::fromImage(reader.read());
@@ -38,8 +33,10 @@ QPixmap loadImageWithAlpha(const QString& path) {
 QString rectToString(const QRectF& iRect) {
     QString res;
 
-    res = QString("%0:%1:%2:%3").arg(QString::number(iRect.left()), QString::number(iRect.top()),
-                                     QString::number(iRect.width()), QString::number(iRect.height()));
+    res = QString("%0:%1:%2:%3")
+              .arg(QString::number(iRect.left()), QString::number(iRect.top()),
+                   QString::number(iRect.width()),
+                   QString::number(iRect.height()));
 
     return res;
 }
@@ -52,15 +49,14 @@ QRectF rectFromString(const QString& iString) {
     }
 
     QRectF res;
-    res.setTopLeft(QPointF(valuesSplitted[0].toDouble(), valuesSplitted[1].toDouble()));
+    res.setTopLeft(
+        QPointF(valuesSplitted[0].toDouble(), valuesSplitted[1].toDouble()));
     res.setWidth(valuesSplitted[2].toDouble());
     res.setHeight(valuesSplitted[3].toDouble());
     return res;
 }
 
-VertexObject::VertexObject(QGraphicsItem *parent) :
-    ItemBase(parent)
-{
+VertexObject::VertexObject(QGraphicsItem* parent) : ItemBase(parent) {
     setSystemName("Вершина");
 
     setType(ObjectViewConstants::OBJECTTYPE_VERTEX);
@@ -74,7 +70,7 @@ VertexObject::VertexObject(QGraphicsItem *parent) :
     m_selectedRectItem->hide();
     m_selectedRectItem->setZValue(1);
 
-    m_vertexImage   = new QGraphicsPixmapItem(this);
+    m_vertexImage = new QGraphicsPixmapItem(this);
     registerSubitem(m_vertexImage);
     m_vertexImage->hide();
 
@@ -91,8 +87,7 @@ VertexObject::VertexObject(QGraphicsItem *parent) :
     m_nameItem->setZValue(0);
 }
 
-VertexObject::~VertexObject()
-{
+VertexObject::~VertexObject() {
     for (auto pLine : m_connectionsToThis) {
         pLine->setVertexTo(nullptr);
         pLine->unregister();
@@ -104,19 +99,18 @@ VertexObject::~VertexObject()
     }
 }
 
-LabelItem *VertexObject::getLabel() const
-{
+LabelItem* VertexObject::getLabel() const {
     return m_nameItem;
 }
 
-void VertexObject::setImage(const QImage &img)
-{
+void VertexObject::setImage(const QImage& img) {
     if (img.isNull()) {
         return;
     }
 
     auto newImage = QPixmap::fromImage(img);
-    newImage = newImage.scaled(m_vertexEllipse->boundingRect().width(), m_vertexEllipse->boundingRect().height());
+    newImage = newImage.scaled(m_vertexEllipse->boundingRect().width(),
+                               m_vertexEllipse->boundingRect().height());
     m_vertexImage->setPixmap(newImage);
     m_vertexImage->show();
     m_vertexEllipse->hide();
@@ -125,8 +119,7 @@ void VertexObject::setImage(const QImage &img)
     setRect(boundingRect());
 }
 
-void VertexObject::setShortName(const QString &iText)
-{
+void VertexObject::setShortName(const QString& iText) {
     m_nameItem->setShortName(iText);
     ItemBase::setShortName(iText);
 
@@ -134,24 +127,22 @@ void VertexObject::setShortName(const QString &iText)
     setRect(boundingRect());
 }
 
-void VertexObject::setName(const QString &iText)
-{
+void VertexObject::setName(const QString& iText) {
     m_nameItem->setName(iText);
     ItemBase::setName(iText);
 }
 
-void VertexObject::setMainColor(const QColor &penColor)
-{
+void VertexObject::setMainColor(const QColor& penColor) {
     if (penColor.isValid()) {
         m_vertexEllipse->setPen(QPen(penColor, 5));
     } else {
-        m_vertexEllipse->setPen(QPen(GraphCommon::DEFAULT_VERTEX_BORDER_COLOR, 5));
+        m_vertexEllipse->setPen(
+            QPen(GraphCommon::DEFAULT_VERTEX_BORDER_COLOR, 5));
     }
     ItemBase::setMainColor(m_vertexEllipse->pen().color());
 }
 
-void VertexObject::setBackgroundColor(const QColor &penColor)
-{
+void VertexObject::setBackgroundColor(const QColor& penColor) {
     if (penColor.isValid()) {
         m_vertexEllipse->setBrush(penColor);
     } else {
@@ -160,12 +151,11 @@ void VertexObject::setBackgroundColor(const QColor &penColor)
     ItemBase::setBackgroundColor(m_vertexEllipse->brush().color());
 }
 
-void VertexObject::setSelectedColor(const QColor &penColor)
-{
+void VertexObject::setSelectedColor(const QColor& penColor) {
     ItemBase::setSelectedColor(penColor);
 
     auto selectedPen = QPen(Qt::black, 4, Qt::SolidLine, Qt::RoundCap);
-    QRadialGradient gradient (0, 0, 100);
+    QRadialGradient gradient(0, 0, 100);
     gradient.setColorAt(0, QColor("#c5ffb3"));
     gradient.setColorAt(0.5, QColor("#a3ff8a"));
     gradient.setColorAt(1, getSelectedColor());
@@ -173,24 +163,25 @@ void VertexObject::setSelectedColor(const QColor &penColor)
     m_selectedRectItem->setPen(selectedPen);
 }
 
-QImage VertexObject::getImage() const
-{
+QImage VertexObject::getImage() const {
     return m_vertexImage->pixmap().toImage();
 }
 
-QRectF VertexObject::getImageRect() const
-{
+QRectF VertexObject::getImageRect() const {
     return m_vertexEllipse->rect();
 }
 
-void VertexObject::setRect(const QRectF &iRect)
-{
+void VertexObject::setRect(const QRectF& iRect) {
     const double selectionPadding = 20;
 
-    // Задаю прямоугольник, чтобы boundingRect() подхватил область определения вершины
+    // Задаю прямоугольник, чтобы boundingRect() подхватил область определения
+    // вершины
     setBoundingRect(iRect);
     auto itemRect = iRect;
-    itemRect.setX(0); itemRect.setY(0); itemRect.setWidth(iRect.width()); itemRect.setHeight(iRect.height());
+    itemRect.setX(0);
+    itemRect.setY(0);
+    itemRect.setWidth(iRect.width());
+    itemRect.setHeight(iRect.height());
 
     // Изображение
     auto imageRect = itemRect;
@@ -198,26 +189,30 @@ void VertexObject::setRect(const QRectF &iRect)
     m_vertexEllipse->setRect(imageRect);
 
     if (m_vertexImage->isVisible()) {
-        m_vertexImage->setPixmap(m_vertexImage->pixmap().scaled(QSize(itemRect.width(), itemRect.height()), Qt::AspectRatioMode::KeepAspectRatio));
+        m_vertexImage->setPixmap(m_vertexImage->pixmap().scaled(
+            QSize(itemRect.width(), itemRect.height()),
+            Qt::AspectRatioMode::KeepAspectRatio));
     }
-    m_vertexImage->setPos({(boundingRect().width() - m_vertexImage->boundingRect().width()) / 2.0, 0});
+    m_vertexImage->setPos(
+        {(boundingRect().width() - m_vertexImage->boundingRect().width()) / 2.0,
+         0});
 
     // Текст
-    const double labelPadding = 5.0; // Отступ для визуального разделения
+    const double labelPadding = 5.0;  // Отступ для визуального разделения
     m_nameItem->setPos(0, boundingRect().height());
 
     // Выбор
     auto itemRoundRect = itemRect;
     itemRoundRect.moveTo(-selectionPadding / 2.0, -selectionPadding / 2.0);
     itemRoundRect.setWidth(itemRoundRect.width() + selectionPadding);
-    itemRoundRect.setHeight(itemRoundRect.height() + selectionPadding + m_nameItem->boundingRect().height());
+    itemRoundRect.setHeight(itemRoundRect.height() + selectionPadding +
+                            m_nameItem->boundingRect().height());
     QPainterPath path;
     path.addRoundedRect(itemRoundRect, 10, 10);
     m_selectedRectItem->setPath(path);
 }
 
-QPainterPath VertexObject::shape() const
-{
+QPainterPath VertexObject::shape() const {
     QPainterPath res;
 
     if (m_vertexImage->isVisible()) {
@@ -232,20 +227,19 @@ QPainterPath VertexObject::shape() const
     return res;
 }
 
-bool VertexObject::isLineSubscribed(VertexConnectionLine *pLine)
-{
-    // Нет смысла проверять исходящие, т.к. нельзя регистрировать вершину саму на себя
+bool VertexObject::isLineSubscribed(VertexConnectionLine* pLine) {
+    // Нет смысла проверять исходящие, т.к. нельзя регистрировать вершину саму
+    // на себя
     for (auto pLineTo : m_connectionsToThis) {
         if (pLineTo->getVertexFrom()->getObjectId() ==
-                pLine->getVertexFrom()->getObjectId()) {
+            pLine->getVertexFrom()->getObjectId()) {
             return true;
         }
     }
     return false;
 }
 
-void VertexObject::subscribeAsConnectionFrom(VertexConnectionLine *pLine)
-{
+void VertexObject::subscribeAsConnectionFrom(VertexConnectionLine* pLine) {
     if (this == pLine->getVertexTo()) {
         return;
     }
@@ -259,14 +253,12 @@ void VertexObject::subscribeAsConnectionFrom(VertexConnectionLine *pLine)
     updateConnectionLines();
 }
 
-void VertexObject::unsubscribeConnectionFrom(VertexConnectionLine *pLine)
-{
+void VertexObject::unsubscribeConnectionFrom(VertexConnectionLine* pLine) {
     pLine->setVertexFrom(nullptr);
     m_connectionsFromThis.erase(pLine);
 }
 
-void VertexObject::subscribeAsConnectionTo(VertexConnectionLine *pLine)
-{
+void VertexObject::subscribeAsConnectionTo(VertexConnectionLine* pLine) {
     if (this == pLine->getVertexFrom()) {
         return;
     }
@@ -280,14 +272,13 @@ void VertexObject::subscribeAsConnectionTo(VertexConnectionLine *pLine)
     updateConnectionLines();
 }
 
-void VertexObject::unsubscribeConnectionTo(VertexConnectionLine *pLine)
-{
+void VertexObject::unsubscribeConnectionTo(VertexConnectionLine* pLine) {
     pLine->setVertexTo(nullptr);
     m_connectionsToThis.erase(pLine);
 }
 
-QVariant VertexObject::itemChange(GraphicsItemChange change, const QVariant &value)
-{
+QVariant VertexObject::itemChange(GraphicsItemChange change,
+                                  const QVariant& value) {
     if (change == ItemPositionChange) {
         updateConnectionLines();
     }
@@ -303,14 +294,14 @@ QVariant VertexObject::itemChange(GraphicsItemChange change, const QVariant &val
     return ItemBase::itemChange(change, value);
 }
 
-void VertexObject::updateConnectionLines()
-{
-    unsigned connectionNumber {0};
+void VertexObject::updateConnectionLines() {
+    unsigned connectionNumber{0};
     auto vertexRadius = static_cast<double>(boundingRect().width()) / 2.0;
 
     for (auto pConFrom : m_connectionsFromThis) {
-        auto fromPos = QPointF(x() + vertexRadius,
-                               y() + 2 * vertexRadius + pConFrom->getArrowSize());
+        auto fromPos =
+            QPointF(x() + vertexRadius,
+                    y() + 2 * vertexRadius + pConFrom->getArrowSize());
 
         pConFrom->setPositionFrom(fromPos);
         connectionNumber++;
@@ -323,11 +314,11 @@ void VertexObject::updateConnectionLines()
         auto isConnectionFromLeft = conLine.x1() < x();
         double connectionOffsetMultiplier = (isConnectionFromLeft ? -1 : 1);
 
-        auto lineOffset = static_cast<double>(connectionNumber) / (static_cast<double>(m_connectionsToThis.size() + 1));
-        auto xOffset =
-                (isConnectionFromLeft ? 0 : vertexRadius) +
-                lineOffset * vertexRadius -
-                connectionOffsetMultiplier * pConTo->getArrowSize();
+        auto lineOffset = static_cast<double>(connectionNumber) /
+                          (static_cast<double>(m_connectionsToThis.size() + 1));
+        auto xOffset = (isConnectionFromLeft ? 0 : vertexRadius) +
+                       lineOffset * vertexRadius -
+                       connectionOffsetMultiplier * pConTo->getArrowSize();
 
         auto toPos = QPointF(x() + xOffset, y() - pConTo->getArrowSize());
 
@@ -336,22 +327,22 @@ void VertexObject::updateConnectionLines()
     }
 }
 
-void VertexObject::setCustomProperties(const QJsonObject &props)
-{
+void VertexObject::setCustomProperties(const QJsonObject& props) {
     if (props.contains(CustomPropertyName::PROPERTY_BOUNDINGRECT)) {
-        setBoundingRect(rectFromString(props[CustomPropertyName::PROPERTY_BOUNDINGRECT].toString()));
+        setBoundingRect(rectFromString(
+            props[CustomPropertyName::PROPERTY_BOUNDINGRECT].toString()));
     }
 
     ItemBase::setCustomProperties(props);
 }
 
-QJsonObject VertexObject::getCustomProperties() const
-{
+QJsonObject VertexObject::getCustomProperties() const {
     auto res = ItemBase::getCustomProperties();
 
-    res[CustomPropertyName::PROPERTY_BOUNDINGRECT] = rectToString(boundingRect());
+    res[CustomPropertyName::PROPERTY_BOUNDINGRECT] =
+        rectToString(boundingRect());
 
     return res;
 }
 
-}
+}  // namespace ObjectViewItems

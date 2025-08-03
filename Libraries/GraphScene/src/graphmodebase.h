@@ -1,28 +1,26 @@
 #ifndef GRAPHMODEBASE_H
 #define GRAPHMODEBASE_H
 
-#include <QObject>
-
 #include <CustomWidgets/ButtonMatrix.h>
 
 #include <QGraphicsItem>
+#include <QObject>
 
-namespace Graph
-{
+namespace Graph {
 
 class GraphSceneView;
 
-class GraphModeBase : public QObject
-{
+class GraphModeBase : public QObject {
     Q_OBJECT
 public:
-    explicit GraphModeBase(QObject *parent = nullptr);
+    explicit GraphModeBase(QObject* parent = nullptr);
     ~GraphModeBase();
 
     void setGraphScene(GraphSceneView* pScene);
 
     virtual void processPress(QGraphicsItem* pItem) = 0;
-    virtual void processMove(QGraphicsItem* pItem, const QPointF& currentPos) = 0;
+    virtual void processMove(QGraphicsItem* pItem,
+                             const QPointF& currentPos) = 0;
     virtual void processRelease(QGraphicsItem* pItem) = 0;
 
     virtual void init() = 0;
@@ -36,8 +34,8 @@ signals:
     void stopped();
 
 private:
-    bool m_isModeStarted {false};
-    GraphSceneView* m_pScene {nullptr};
+    bool m_isModeStarted{false};
+    GraphSceneView* m_pScene{nullptr};
 
 protected:
     void setStarted();
@@ -48,6 +46,6 @@ protected:
     std::vector<ButtonMatrix::ButtonConfig> m_modeButtonConfiguration;
 };
 
-}
+}  // namespace Graph
 
-#endif // GRAPHMODEBASE_H
+#endif  // GRAPHMODEBASE_H

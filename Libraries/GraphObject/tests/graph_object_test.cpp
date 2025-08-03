@@ -1,5 +1,6 @@
 #include <GraphObject/Object.h>
 #include <gtest/gtest.h>
+
 #include <QDateTime>
 
 using namespace Graph;
@@ -45,7 +46,7 @@ TEST_F(GraphObjectTest, AddVertex) {
 
     EXPECT_TRUE(graph.addVertex(v1));
     EXPECT_TRUE(graph.addVertex(v2));
-    EXPECT_FALSE(graph.addVertex(v1)); // Дубликат
+    EXPECT_FALSE(graph.addVertex(v1));  // Дубликат
 }
 
 TEST_F(GraphObjectTest, UpdateVertex) {
@@ -64,7 +65,7 @@ TEST_F(GraphObjectTest, UpdateVertex) {
 
     GVertex newVert;
     newVert.id = 99;
-    EXPECT_FALSE(graph.updateVertex(newVert)); // Несуществующая вершина
+    EXPECT_FALSE(graph.updateVertex(newVert));  // Несуществующая вершина
 }
 
 TEST_F(GraphObjectTest, GetVertex) {
@@ -133,12 +134,12 @@ TEST_F(GraphObjectTest, AddConnection) {
     graph.addVertex(v2);
 
     EXPECT_TRUE(graph.addConnection(conn1));
-    EXPECT_FALSE(graph.addConnection(conn1)); // Дубликат
+    EXPECT_FALSE(graph.addConnection(conn1));  // Дубликат
 
     GConnection invalid;
     invalid.idFrom = 99;
     invalid.idTo = 1;
-    EXPECT_FALSE(graph.addConnection(invalid)); // Несуществующие вершины
+    EXPECT_FALSE(graph.addConnection(invalid));  // Несуществующие вершины
 }
 
 TEST_F(GraphObjectTest, GetConnectionsFromVertex) {

@@ -3,11 +3,10 @@
 
 #include "objectviewbase.h"
 
-class InteractiveObjectView : public ObjectViewBase
-{
+class InteractiveObjectView : public ObjectViewBase {
     Q_OBJECT
 public:
-    explicit InteractiveObjectView(QWidget *parent);
+    explicit InteractiveObjectView(QWidget* parent);
 
     void zoomIn();
     void zoomOut();
@@ -18,7 +17,8 @@ public:
     void setContextMenu(QMenu* pMenu);
     QGraphicsItem* getContextMenuItem();
 
-    void setMovingCallback(const std::function<void(const QPointF&)>& callbackFunc);
+    void setMovingCallback(
+        const std::function<void(const QPointF&)>& callbackFunc);
 
     QGraphicsItem* getGrabObject() const;
 
@@ -35,20 +35,27 @@ signals:
     void scaleChanged();
 
 private:
-    QMenu*          m_mainContextMenu   {nullptr};  //! Основное контекстное меню
-    QAction*        m_contextAction     {nullptr};  //! Действие с пометкой "Контекст" в контестном меню
-    QGraphicsItem*  m_contextMenuItem   {nullptr};  //! Объект, который находился под указателем мыши во время вызова контекстного меню
+    QMenu* m_mainContextMenu{nullptr};  //! Основное контекстное меню
+    QAction* m_contextAction{
+        nullptr};  //! Действие с пометкой "Контекст" в контестном меню
+    QGraphicsItem* m_contextMenuItem{
+        nullptr};  //! Объект, который находился под указателем мыши во время
+                   //! вызова контекстного меню
 
-    QPointF                                         m_grabObjectPos;    //! Положение объекта до grab
-    std::optional<ObjectViewConstants::objectId_t>  m_grabObjectId;     //! ID объекта, который "прикреплён" к указателю мыши
+    QPointF m_grabObjectPos;  //! Положение объекта до grab
+    std::optional<ObjectViewConstants::objectId_t>
+        m_grabObjectId;  //! ID объекта, который "прикреплён" к указателю мыши
 
-    QPointF m_prevPos;                          //! Позиция нажатия на графе
-    bool    m_isHoldingLeftButton   {false};    //! Флаг факта того, что пользователь кникнул на сцену ЛКМ
-    bool    m_isHoldingMiddleButton {false};    //! Флаг факта того, что пользователь кникнул на сцену СКМ
-    bool    m_isMovingByUser        {true};     //! Флаг для перемещений сцены по СКМ
-    double  m_currentZoomValue      {1};        //! Текущий коэффициент увеличения
+    QPointF m_prevPos;  //! Позиция нажатия на графе
+    bool m_isHoldingLeftButton{
+        false};  //! Флаг факта того, что пользователь кникнул на сцену ЛКМ
+    bool m_isHoldingMiddleButton{
+        false};  //! Флаг факта того, что пользователь кникнул на сцену СКМ
+    bool m_isMovingByUser{true};   //! Флаг для перемещений сцены по СКМ
+    double m_currentZoomValue{1};  //! Текущий коэффициент увеличения
 
-    std::function<void(const QPointF&)> m_movingCallback;   //! Колбек для обработки перемещения по сцене
+    std::function<void(const QPointF&)>
+        m_movingCallback;  //! Колбек для обработки перемещения по сцене
 
     // Интерфейс QWidget
 protected:
@@ -56,7 +63,7 @@ protected:
     void mousePressEvent(QMouseEvent* e) override;
     void mouseMoveEvent(QMouseEvent* e) override;
     void mouseReleaseEvent(QMouseEvent* e) override;
-    void contextMenuEvent(QContextMenuEvent *e) override;
+    void contextMenuEvent(QContextMenuEvent* e) override;
 };
 
-#endif // INTERACTIVEOBJECTVIEW_H
+#endif  // INTERACTIVEOBJECTVIEW_H

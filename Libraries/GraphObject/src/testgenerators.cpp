@@ -1,24 +1,24 @@
 #include "testgenerators.h"
 
-#include <random>
-#include <ctime>
 #include <QColor>
 #include <QImage>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <ctime>
+#include <random>
 
-namespace Graph::TestGenerators
-{
+namespace Graph::TestGenerators {
 
 // Генератор случайных строк
 QString randomString(int minLength = 3, int maxLength = 20) {
-    static const char alphanum[] = "0123456789"
-                                   "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                                   "abcdefghijklmnopqrstuvwxyz";
+    static const char alphanum[] =
+        "0123456789"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz";
     static std::mt19937 rng(std::time(nullptr));
 
     std::uniform_int_distribution<int> lenDist(minLength, maxLength);
-    std::uniform_int_distribution<int> charDist(0, sizeof(alphanum)-2);
+    std::uniform_int_distribution<int> charDist(0, sizeof(alphanum) - 2);
 
     int length = lenDist(rng);
     QString result;
@@ -36,8 +36,7 @@ QColor randomColor(bool withAlpha = false) {
     static std::mt19937 rng(std::time(nullptr));
     std::uniform_int_distribution<int> dist(0, 255);
 
-    return QColor(dist(rng), dist(rng), dist(rng),
-                  withAlpha ? dist(rng) : 255);
+    return QColor(dist(rng), dist(rng), dist(rng), withAlpha ? dist(rng) : 255);
 }
 
 // Генератор случайных изображений
@@ -52,14 +51,12 @@ QImage randomImage() {
 
     for (int y = 0; y < size; ++y) {
         for (int x = 0; x < size; ++x) {
-            int alpha = (x == 0 || y == 0 || x == size-1 || y == size-1)
-                    ? 255 : alphaDist(rng);
-            image.setPixelColor(x, y, QColor(
-                                    colorDist(rng),
-                                    colorDist(rng),
-                                    colorDist(rng),
-                                    alpha
-                                    ));
+            int alpha = (x == 0 || y == 0 || x == size - 1 || y == size - 1)
+                            ? 255
+                            : alphaDist(rng);
+            image.setPixelColor(
+                x, y,
+                QColor(colorDist(rng), colorDist(rng), colorDist(rng), alpha));
         }
     }
 
@@ -75,49 +72,47 @@ QJsonObject randomJsonObject(int maxDepth = 2) {
     std::uniform_int_distribution<int> boolDist(0, 1);
 
     QJsonObject obj;
-    if (maxDepth <= 0) return obj;
+    if (maxDepth <= 0)
+        return obj;
 
     int itemCount = countDist(rng);
     for (int i = 0; i < itemCount; ++i) {
         QString key = "prop_" + randomString(3, 8);
 
         switch (typeDist(rng)) {
-        case 0: // String
-            obj[key] = randomString(2, 15);
-            break;
-        case 1: // Number
-            obj[key] = numDist(rng);
-            break;
-        case 2: // Boolean
-            obj[key] = boolDist(rng) == 1;
-            break;
-        case 3: // Array
-        {
-            QJsonArray arr;
-            int arrSize = countDist(rng);
-            for (int j = 0; j < arrSize; ++j) {
-                arr.append(numDist(rng));
-            }
-            obj[key] = arr;
-        }
-            break;
-        case 4: // Nested object
-            if (maxDepth > 1) {
-                obj[key] = randomJsonObject(maxDepth - 1);
-            }
-            break;
-        case 5: // Null
-            obj[key] = QJsonValue::Null;
-            break;
+            case 0:  // String
+                obj[key] = randomString(2, 15);
+                break;
+            case 1:  // Number
+                obj[key] = numDist(rng);
+                break;
+            case 2:  // Boolean
+                obj[key] = boolDist(rng) == 1;
+                break;
+            case 3:  // Array
+            {
+                QJsonArray arr;
+                int arrSize = countDist(rng);
+                for (int j = 0; j < arrSize; ++j) {
+                    arr.append(numDist(rng));
+                }
+                obj[key] = arr;
+            } break;
+            case 4:  // Nested object
+                if (maxDepth > 1) {
+                    obj[key] = randomJsonObject(maxDepth - 1);
+                }
+                break;
+            case 5:  // Null
+                obj[key] = QJsonValue::Null;
+                break;
         }
     }
 
     return obj;
 }
 
-
-PMaintainer createTestGraph()
-{
+PMaintainer createTestGraph() {
     auto testGeneratedGraph = Graph::GraphMaintainer::createInstance();
 
     testGeneratedGraph->setName("Test example graph");
@@ -131,7 +126,8 @@ PMaintainer createTestGraph()
     auto redPersonIcon = QIcon(":/common/images/vertexicons/person/red.svg");
     auto redPersonImage = redPersonIcon.pixmap(500).toImage();
 
-    auto greenPersonIcon = QIcon(":/common/images/vertexicons/person/green.svg");
+    auto greenPersonIcon =
+        QIcon(":/common/images/vertexicons/person/green.svg");
     auto greenPersonImage = greenPersonIcon.pixmap(500).toImage();
 
     std::list<Graph::GVertex> testVertices;
@@ -177,7 +173,7 @@ PMaintainer createTestGraph()
     vert.shortName = "Тест нода";
     vert.name = "Соединён с 1";
     vert.backgroundColor = QColor();
-    vert.borderColor     = QColor();
+    vert.borderColor = QColor();
     vert.image = {};
     vert.posX = 900;
     vert.posY = 400;
@@ -246,7 +242,6 @@ PMaintainer createTestGraph()
     return testGeneratedGraph;
 }
 
-
 Graph::GVertex randomVertex(GraphCommon::graphId_t minId,
                             GraphCommon::graphId_t maxId) {
     static std::mt19937 rng(std::time(nullptr));
@@ -270,9 +265,8 @@ Graph::GVertex randomVertex(GraphCommon::graphId_t minId,
 
 // Генератор случайных соединений
 Graph::GConnection randomConnection(
-        const std::vector<GraphCommon::graphId_t>& existingIds,
-        bool allowSelfConnect)
-{
+    const std::vector<GraphCommon::graphId_t>& existingIds,
+    bool allowSelfConnect) {
     static std::mt19937 rng(std::time(nullptr));
 
     if (existingIds.size() < 2) {
@@ -280,7 +274,7 @@ Graph::GConnection randomConnection(
     }
 
     std::uniform_real_distribution<double> weightDist(0.0, 100.0);
-    std::uniform_int_distribution<size_t> indexDist(0, existingIds.size()-1);
+    std::uniform_int_distribution<size_t> indexDist(0, existingIds.size() - 1);
 
     Graph::GConnection conn;
 
@@ -301,8 +295,7 @@ Graph::GConnection randomConnection(
     return conn;
 }
 
-PMaintainer createRandomGraph()
-{
+PMaintainer createRandomGraph() {
     auto testGeneratedGraph = Graph::GraphMaintainer::createInstance();
 
     testGeneratedGraph->setName(randomString());
@@ -331,4 +324,4 @@ PMaintainer createRandomGraph()
     return testGeneratedGraph;
 }
 
-}
+}  // namespace Graph::TestGenerators

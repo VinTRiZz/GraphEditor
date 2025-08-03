@@ -1,38 +1,26 @@
 #include "buttontoolbar.h"
 
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-
 #include <QDebug>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
-namespace ButtonToolbar
-{
+namespace ButtonToolbar {
 
-HeadWidget::HeadWidget(QWidget *parent) :
-    QWidget(parent)
-{
+HeadWidget::HeadWidget(QWidget* parent) : QWidget(parent) {}
 
-}
+HeadWidget::~HeadWidget() {}
 
-HeadWidget::~HeadWidget()
-{
-
-}
-
-void HeadWidget::setVertical()
-{
+void HeadWidget::setVertical() {
     m_isVertical = true;
     updateLayout();
 }
 
-void HeadWidget::setHorizontal()
-{
+void HeadWidget::setHorizontal() {
     m_isVertical = false;
     updateLayout();
 }
 
-void HeadWidget::addButton(const ButtonConfig &conf)
-{
+void HeadWidget::addButton(const ButtonConfig& conf) {
     auto buttonPos = conf.buttonPos;
     if (buttonPos > m_buttons.size()) {
         return;
@@ -48,8 +36,7 @@ void HeadWidget::addButton(const ButtonConfig &conf)
     updateLayout();
 }
 
-void HeadWidget::updateButton(const ButtonConfig &conf)
-{
+void HeadWidget::updateButton(const ButtonConfig& conf) {
     auto buttonPos = conf.buttonPos;
     if (buttonPos >= m_buttons.size()) {
         return;
@@ -63,8 +50,8 @@ void HeadWidget::updateButton(const ButtonConfig &conf)
     updateLayout();
 }
 
-void HeadWidget::setButtonEnabled(unsigned int buttonPos, bool isButtonEnabled)
-{
+void HeadWidget::setButtonEnabled(unsigned int buttonPos,
+                                  bool isButtonEnabled) {
     if (buttonPos >= m_buttons.size()) {
         return;
     }
@@ -76,8 +63,7 @@ void HeadWidget::setButtonEnabled(unsigned int buttonPos, bool isButtonEnabled)
     targetIt->pButton->setEnabled(isButtonEnabled);
 }
 
-void HeadWidget::removeButton(unsigned int buttonPos)
-{
+void HeadWidget::removeButton(unsigned int buttonPos) {
     if (buttonPos >= m_buttons.size()) {
         return;
     }
@@ -87,13 +73,11 @@ void HeadWidget::removeButton(unsigned int buttonPos)
     m_buttons.erase(targetIt);
 }
 
-void HeadWidget::setButtonSize(const QSize &iSize)
-{
+void HeadWidget::setButtonSize(const QSize& iSize) {
     m_buttonsSize = iSize;
 }
 
-void HeadWidget::updateLayout()
-{
+void HeadWidget::updateLayout() {
     if (m_isVertical && (nullptr == dynamic_cast<QVBoxLayout*>(layout()))) {
         delete layout();
         setLayout(new QVBoxLayout);
@@ -118,13 +102,16 @@ void HeadWidget::updateLayout()
         buttonConf.pButton->setEnabled(buttonConf.config.isEnabled);
         layout()->addWidget(buttonConf.pButton);
     }
-    auto horPolicy = !m_isVertical ? QSizePolicy::Expanding : QSizePolicy::Preferred;
-    auto vertPolicy = m_isVertical ? QSizePolicy::Expanding : QSizePolicy::Preferred;
-    layout()->addItem(new QSpacerItem(m_buttonsSize.width(), m_buttonsSize.height(), horPolicy, vertPolicy));
+    auto horPolicy =
+        !m_isVertical ? QSizePolicy::Expanding : QSizePolicy::Preferred;
+    auto vertPolicy =
+        m_isVertical ? QSizePolicy::Expanding : QSizePolicy::Preferred;
+    layout()->addItem(new QSpacerItem(
+        m_buttonsSize.width(), m_buttonsSize.height(), horPolicy, vertPolicy));
 }
 
-void HeadWidget::setupButton(QPushButton *pButton, const ButtonConfig &buttonInfo)
-{
+void HeadWidget::setupButton(QPushButton* pButton,
+                             const ButtonConfig& buttonInfo) {
     pButton->setText(buttonInfo.name);
     pButton->setStyleSheet(buttonInfo.styleSheet);
     pButton->setToolTip(buttonInfo.tooltip);
@@ -136,21 +123,20 @@ void HeadWidget::setupButton(QPushButton *pButton, const ButtonConfig &buttonInf
         return;
     }
 
-    connect(pButton, &QPushButton::clicked,
-            pButton, [buttonInfo, pButton]() {
-        buttonInfo.action(pButton);
-    });
+    connect(pButton, &QPushButton::clicked, pButton,
+            [buttonInfo, pButton]() { buttonInfo.action(pButton); });
 }
 
-void HeadWidget::resizeEvent(QResizeEvent *e)
-{
+void HeadWidget::resizeEvent(QResizeEvent* e) {
     if (size() != m_buttonsSize) {
         for (auto& buttonInfo : m_buttons) {
             buttonInfo.pButton->setFixedSize(m_buttonsSize);
-            buttonInfo.pButton->setIconSize(m_buttonsSize.scaled(m_buttonsSize.width() * 0.85, m_buttonsSize.height() * 0.85, Qt::AspectRatioMode::KeepAspectRatio));
+            buttonInfo.pButton->setIconSize(m_buttonsSize.scaled(
+                m_buttonsSize.width() * 0.85, m_buttonsSize.height() * 0.85,
+                Qt::AspectRatioMode::KeepAspectRatio));
         }
     }
     QWidget::resizeEvent(e);
 }
 
-}
+}  // namespace ButtonToolbar

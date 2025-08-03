@@ -1,14 +1,12 @@
 #include "graphfilestoolbar.h"
 
-#include <QFileDialog>
-
-#include <QVariant>
-
 #include <Filework/SaveMaster.h>
 
-GraphFilesToolbar::GraphFilesToolbar(QWidget* parent) :
-    ButtonToolbar::HeadWidget(parent)
-{
+#include <QFileDialog>
+#include <QVariant>
+
+GraphFilesToolbar::GraphFilesToolbar(QWidget* parent)
+    : ButtonToolbar::HeadWidget(parent) {
     setButtonSize(QSize(35, 35));
     setFixedHeight(37);
 
@@ -22,10 +20,10 @@ GraphFilesToolbar::GraphFilesToolbar(QWidget* parent) :
     };
     addButton(buttonInfo);
 
-
     buttonInfo.buttonPos++;
     m_loadButtonIndex = buttonInfo.buttonPos;
-    buttonInfo.icon = QIcon(":/common/images/icons/common/graph_cancel_changes.svg");
+    buttonInfo.icon =
+        QIcon(":/common/images/icons/common/graph_cancel_changes.svg");
     buttonInfo.tooltip = "Отменить изменения";
     buttonInfo.action = [this](QPushButton*) {
         emit loadGraph({});
@@ -46,7 +44,6 @@ GraphFilesToolbar::GraphFilesToolbar(QWidget* parent) :
     addButton(buttonInfo);
     buttonInfo.isEnabled = true;
 
-
     buttonInfo.buttonPos++;
     buttonInfo.icon = QIcon(":/common/images/icons/common/graph_open.svg");
     buttonInfo.tooltip = "Открыть файл графа";
@@ -58,7 +55,6 @@ GraphFilesToolbar::GraphFilesToolbar(QWidget* parent) :
         loadGraph(graphPath);
     };
     addButton(buttonInfo);
-
 
     buttonInfo.buttonPos++;
     m_saveAsButtonIndex = buttonInfo.buttonPos;
@@ -78,7 +74,7 @@ GraphFilesToolbar::GraphFilesToolbar(QWidget* parent) :
     buttonInfo.icon = QIcon(":/common/images/icons/common/edit_properties.svg");
     buttonInfo.tooltip = "Показать свойства графа";
     buttonInfo.action = [this](QPushButton* pSender) {
-        const auto propertyIsHiddenName {"isPropertiesHidden"};
+        const auto propertyIsHiddenName{"isPropertiesHidden"};
 
         if (pSender->property(propertyIsHiddenName).toBool()) {
             pSender->setToolTip("Показать свойства графа");
@@ -93,22 +89,18 @@ GraphFilesToolbar::GraphFilesToolbar(QWidget* parent) :
     addButton(buttonInfo);
 }
 
-void GraphFilesToolbar::setShowPropertiesEnabled(bool isSaveEnabled)
-{
+void GraphFilesToolbar::setShowPropertiesEnabled(bool isSaveEnabled) {
     setButtonEnabled(m_showPropertiesButtonIndex, isSaveEnabled);
 }
 
-void GraphFilesToolbar::setSaveEnabled(bool isSaveEnabled)
-{
+void GraphFilesToolbar::setSaveEnabled(bool isSaveEnabled) {
     setButtonEnabled(m_saveButtonIndex, isSaveEnabled);
 }
 
-void GraphFilesToolbar::setSaveAsEnabled(bool isSaveAsEnabled)
-{
+void GraphFilesToolbar::setSaveAsEnabled(bool isSaveAsEnabled) {
     setButtonEnabled(m_saveAsButtonIndex, isSaveAsEnabled);
 }
 
-void GraphFilesToolbar::setLoadEnabled(bool isLoadEnabled)
-{
+void GraphFilesToolbar::setLoadEnabled(bool isLoadEnabled) {
     setButtonEnabled(m_loadButtonIndex, isLoadEnabled);
 }

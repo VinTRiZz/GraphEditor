@@ -1,9 +1,8 @@
+#include <GraphObject/TestGenerators.h>
 #include <gtest/gtest.h>
 
-#include <GraphObject/TestGenerators.h>
-
-#include <QGuiApplication>
 #include <QFile>
+#include <QGuiApplication>
 
 #include "../src/gsj_format.h"
 TEST(FormatSaving, GSE_JSON_Format) {
@@ -16,7 +15,8 @@ TEST(FormatSaving, GSE_JSON_Format) {
 
     Filework::GSJ_Format saveFormat;
 
-    auto graphCopy = savedGraph; // Для чистоты исследований (проверка бага на затирание данных)
+    auto graphCopy = savedGraph;  // Для чистоты исследований (проверка бага на
+                                  // затирание данных)
     saveFormat.setGraphMaintaner(gMaintaner);
 
     EXPECT_TRUE(saveFormat.isStructureValid(saveFormat.toDataJson()));

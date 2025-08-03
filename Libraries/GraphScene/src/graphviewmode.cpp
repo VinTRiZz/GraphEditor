@@ -1,73 +1,61 @@
 #include "graphviewmode.h"
 
-#include "graphsceneview.h"
-
 #include <Common/Logging.h>
 
-namespace Graph
-{
+#include "graphsceneview.h"
 
-GraphViewMode::GraphViewMode(QWidget *parent) :
-    GraphModeBase(parent)
-{
-    
-}
+namespace Graph {
 
-void GraphViewMode::init()
-{
+GraphViewMode::GraphViewMode(QWidget* parent) : GraphModeBase(parent) {}
 
-}
+void GraphViewMode::init() {}
 
-void GraphViewMode::start()
-{
+void GraphViewMode::start() {
     // TODO: Setup button matrix
 
     setStarted();
 }
 
-void GraphViewMode::stop()
-{
+void GraphViewMode::stop() {
     // TODO: Reset button matrix
 
     setStopped();
 }
 
-void GraphViewMode::processPress(QGraphicsItem *pItem)
-{
-    
-}
+void GraphViewMode::processPress(QGraphicsItem* pItem) {}
 
-void GraphViewMode::processMove(QGraphicsItem *pItem, const QPointF &currentPos)
-{
-    
-}
+void GraphViewMode::processMove(QGraphicsItem* pItem,
+                                const QPointF& currentPos) {}
 
-void GraphViewMode::processRelease(QGraphicsItem *pItem)
-{
-    
-}
+void GraphViewMode::processRelease(QGraphicsItem* pItem) {}
 
-GraphViewMode::SearchProxy GraphViewMode::toSearchCache(const GVertex &vert) const
-{
+GraphViewMode::SearchProxy GraphViewMode::toSearchCache(
+    const GVertex& vert) const {
     return {};
 }
 
-GraphViewMode::SearchProxy GraphViewMode::toSearchCache(const GConnection &con) const
-{
+GraphViewMode::SearchProxy GraphViewMode::toSearchCache(
+    const GConnection& con) const {
     return {};
 }
 
-void GraphViewMode::registerGraph()
-{
-    connect(getScene()->getGraphMaintaner()->getExtendedObject(), &GraphExtendedObject::vertexAdded,
-            this, [this](ObjectViewConstants::objectId_t addedId) {
-        auto addedVertex = getScene()->getGraphMaintaner()->getExtendedObject()->getVertex(addedId);
-        if (!addedVertex.has_value()) {
-            LOG_WARNING_SYNC("Error occured: getVertex() returned no value, but vertex added");
-            return;
-        }
-        objectsSearchCache.emplace(addedId, toSearchCache(addedVertex.value()));
-    });
+void GraphViewMode::registerGraph() {
+    connect(
+        getScene()->getGraphMaintaner()->getExtendedObject(),
+        &GraphExtendedObject::vertexAdded, this,
+        [this](ObjectViewConstants::objectId_t addedId) {
+            auto addedVertex =
+                getScene()->getGraphMaintaner()->getExtendedObject()->getVertex(
+                    addedId);
+            if (!addedVertex.has_value()) {
+                LOG_WARNING_SYNC(
+                    "Error occured: getVertex() returned no value, but vertex "
+                    "added");
+                return;
+            }
+            objectsSearchCache.emplace(addedId,
+                                       toSearchCache(addedVertex.value()));
+        });
 }
 
-}
+}  // namespace Graph

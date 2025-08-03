@@ -1,30 +1,23 @@
 #include "grapheditmode.h"
 
-#include "graphsceneview.h"
-
 #include <Common/Logging.h>
 
-namespace Graph
-{
+#include "graphsceneview.h"
 
-GraphEditMode::GraphEditMode(QWidget *parent) :
-    GraphModeBase(parent)
-{
+namespace Graph {
 
-}
+GraphEditMode::GraphEditMode(QWidget* parent) : GraphModeBase(parent) {}
 
-GraphEditMode::~GraphEditMode()
-{
+GraphEditMode::~GraphEditMode() {}
 
-}
-
-void GraphEditMode::init()
-{
+void GraphEditMode::init() {
     ButtonMatrix::ButtonConfig buttonConf;
 
     buttonConf = {};
-    buttonConf.icon         = QIcon(":/common/images/icons/editmode/mode_edit_move.svg");
-    buttonConf.secondIcon   = QIcon(":/common/images/icons/editmode/mode_edit_move_active.svg");
+    buttonConf.icon =
+        QIcon(":/common/images/icons/editmode/mode_edit_move.svg");
+    buttonConf.secondIcon =
+        QIcon(":/common/images/icons/editmode/mode_edit_move_active.svg");
     buttonConf.tooltip = "Перемещение вершин графа";
     buttonConf.action = [this, buttonConf](QPushButton* pButton) -> void {
         clearMode();
@@ -36,10 +29,11 @@ void GraphEditMode::init()
     buttonConf.isEnabled = true;
     m_editButtons.push_back(buttonConf);
 
-
     buttonConf = {};
-    buttonConf.icon = QIcon(":/common/images/icons/editmode/mode_edit_add_vertex.svg");
-    buttonConf.secondIcon   = QIcon(":/common/images/icons/editmode/mode_edit_add_vertex_active.svg");
+    buttonConf.icon =
+        QIcon(":/common/images/icons/editmode/mode_edit_add_vertex.svg");
+    buttonConf.secondIcon =
+        QIcon(":/common/images/icons/editmode/mode_edit_add_vertex_active.svg");
     buttonConf.tooltip = "Добавление вершин графа";
     buttonConf.action = [this, buttonConf](QPushButton* pButton) -> void {
         clearMode();
@@ -51,11 +45,11 @@ void GraphEditMode::init()
     buttonConf.isEnabled = true;
     m_editButtons.push_back(buttonConf);
 
-
-
     buttonConf = {};
-    buttonConf.icon = QIcon(":/common/images/icons/editmode/mode_edit_add_connection.svg");
-    buttonConf.secondIcon   = QIcon(":/common/images/icons/editmode/mode_edit_add_connection_active.svg");
+    buttonConf.icon =
+        QIcon(":/common/images/icons/editmode/mode_edit_add_connection.svg");
+    buttonConf.secondIcon = QIcon(
+        ":/common/images/icons/editmode/mode_edit_add_connection_active.svg");
     buttonConf.tooltip = "Добавление соединений";
     buttonConf.action = [this, buttonConf](QPushButton* pButton) -> void {
         clearMode();
@@ -67,10 +61,11 @@ void GraphEditMode::init()
     buttonConf.isEnabled = true;
     m_editButtons.push_back(buttonConf);
 
-
     buttonConf = {};
-    buttonConf.icon = QIcon(":/common/images/icons/editmode/mode_edit_remove.svg");
-    buttonConf.secondIcon   = QIcon(":/common/images/icons/editmode/mode_edit_remove_active.svg");
+    buttonConf.icon =
+        QIcon(":/common/images/icons/editmode/mode_edit_remove.svg");
+    buttonConf.secondIcon =
+        QIcon(":/common/images/icons/editmode/mode_edit_remove_active.svg");
     buttonConf.tooltip = "Удаление элементов графа";
     buttonConf.action = [this, buttonConf](QPushButton* pButton) -> void {
         clearMode();
@@ -82,10 +77,11 @@ void GraphEditMode::init()
     buttonConf.isEnabled = true;
     m_editButtons.push_back(buttonConf);
 
-
     buttonConf = {};
-    buttonConf.icon = QIcon(":/common/images/icons/editmode/mode_edit_properties.svg");
-    buttonConf.secondIcon   = QIcon(":/common/images/icons/editmode/mode_edit_properties_active.svg");
+    buttonConf.icon =
+        QIcon(":/common/images/icons/editmode/mode_edit_properties.svg");
+    buttonConf.secondIcon =
+        QIcon(":/common/images/icons/editmode/mode_edit_properties_active.svg");
     buttonConf.tooltip = "Изменение свойств вершины";
     buttonConf.action = [this, buttonConf](QPushButton* pButton) -> void {
         clearMode();
@@ -98,21 +94,20 @@ void GraphEditMode::init()
     m_editButtons.push_back(buttonConf);
 }
 
-void GraphEditMode::start()
-{
+void GraphEditMode::start() {
     auto pButton = getScene()->getButtonMatrixHead();
     for (auto& conf : m_editButtons) {
         pButton->addButton(conf);
     }
 
     auto& firstButtonConf = m_editButtons.front();
-    pButton->getButton(firstButtonConf.positionX, firstButtonConf.positionY)->click();
+    pButton->getButton(firstButtonConf.positionX, firstButtonConf.positionY)
+        ->click();
 
     setStarted();
 }
 
-void GraphEditMode::stop()
-{
+void GraphEditMode::stop() {
     clearMode();
     auto pButton = getScene()->getButtonMatrixHead();
     pButton->collapse(false);
@@ -122,89 +117,80 @@ void GraphEditMode::stop()
     setStopped();
 }
 
-void GraphEditMode::processPress(QGraphicsItem *pItem)
-{
+void GraphEditMode::processPress(QGraphicsItem* pItem) {
     auto pCastedItem = dynamic_cast<ObjectViewItems::ItemBase*>(pItem);
 
-    switch (m_currentEditMode)
-    {
-    case CEM_NONE:
-        // Do nothing (nothing to do)
-        break;
+    switch (m_currentEditMode) {
+        case CEM_NONE:
+            // Do nothing (nothing to do)
+            break;
 
-    case CEM_MOVING:
-        toggleMovingItem(pCastedItem);
-        break;
+        case CEM_MOVING:
+            toggleMovingItem(pCastedItem);
+            break;
 
-    case CEM_ADD_VERTEX:
-        setPendingVertex(pCastedItem);
-        break;
+        case CEM_ADD_VERTEX:
+            setPendingVertex(pCastedItem);
+            break;
 
-    case CEM_ADD_CONNECTION:
-        setPendingConnection(pCastedItem);
-        break;
+        case CEM_ADD_CONNECTION:
+            setPendingConnection(pCastedItem);
+            break;
 
-    case CEM_REMOVING:
-        if (nullptr == pCastedItem) {
-            return;
-        }
-        getScene()->removeObject(pCastedItem->getObjectId());
-        break;
+        case CEM_REMOVING:
+            if (nullptr == pCastedItem) {
+                return;
+            }
+            getScene()->removeObject(pCastedItem->getObjectId());
+            break;
 
-    case CEM_EDIT_PROPERTIES:
-        setTargetForPropertyEditor(pCastedItem);
-        break;
+        case CEM_EDIT_PROPERTIES:
+            setTargetForPropertyEditor(pCastedItem);
+            break;
     }
 }
 
-void GraphEditMode::processMove(QGraphicsItem *pItem, const QPointF &currentPos)
-{
+void GraphEditMode::processMove(QGraphicsItem* pItem,
+                                const QPointF& currentPos) {}
 
-}
+void GraphEditMode::processRelease(QGraphicsItem* pItem) {}
 
-void GraphEditMode::processRelease(QGraphicsItem *pItem)
-{
+void GraphEditMode::clearMode() {
+    switch (m_currentEditMode) {
+        case CEM_NONE:
+            // Do nothing (nothing to clear)
+            break;
 
-}
+        case CEM_MOVING:
+            clearMovingMode();
+            break;
 
-void GraphEditMode::clearMode()
-{
-    switch (m_currentEditMode)
-    {
-    case CEM_NONE:
-        // Do nothing (nothing to clear)
-        break;
+        case CEM_ADD_VERTEX:
+            clearVertexAddMode();
+            break;
 
-    case CEM_MOVING:
-        clearMovingMode();
-        break;
+        case CEM_ADD_CONNECTION:
+            clearConnectionAddMode();
+            break;
 
-    case CEM_ADD_VERTEX:
-        clearVertexAddMode();
-        break;
+        case CEM_REMOVING:
+            // Do nothing (nothing to clear)
+            break;
 
-    case CEM_ADD_CONNECTION:
-        clearConnectionAddMode();
-        break;
-
-    case CEM_REMOVING:
-        // Do nothing (nothing to clear)
-        break;
-
-    case CEM_EDIT_PROPERTIES:
-        clearPropertyEditMode();
-        break;
+        case CEM_EDIT_PROPERTIES:
+            clearPropertyEditMode();
+            break;
     }
 
     auto pButtonMatrixHead = this->getScene()->getButtonMatrixHead();
     for (auto& buttonConf : m_editButtons) {
-        auto pButton = pButtonMatrixHead->getButton(buttonConf.positionX, buttonConf.positionY);
+        auto pButton = pButtonMatrixHead->getButton(buttonConf.positionX,
+                                                    buttonConf.positionY);
         pButton->setIcon(buttonConf.icon);
     }
 }
 
-void GraphEditMode::toggleMovingItem(ObjectViewItems::ItemBase *pItem)
-{
+void GraphEditMode::toggleMovingItem(ObjectViewItems::ItemBase* pItem) {
     if (pItem == nullptr) {
         return;
     }
@@ -215,7 +201,8 @@ void GraphEditMode::toggleMovingItem(ObjectViewItems::ItemBase *pItem)
     if (pItem->getType() == ObjectViewConstants::OBJECTTYPE_VERTEX_CONNECTION &&
         pItem != m_movingConnectionLine) {
         pItem->setSelected(true);
-        m_movingConnectionLine = static_cast<ObjectViewItems::VertexConnectionLine*>(pItem);
+        m_movingConnectionLine =
+            static_cast<ObjectViewItems::VertexConnectionLine*>(pItem);
         pScene->setMovingCallback([this](const QPointF& p) {
             m_movingConnectionLine->setPositionTo(p);
         });
@@ -233,7 +220,8 @@ void GraphEditMode::toggleMovingItem(ObjectViewItems::ItemBase *pItem)
         }
 
         // Соединяем
-        static_cast<ObjectViewItems::VertexObject*>(pItem)->subscribeAsConnectionTo(m_movingConnectionLine);
+        static_cast<ObjectViewItems::VertexObject*>(pItem)
+            ->subscribeAsConnectionTo(m_movingConnectionLine);
 
         // Забываем, что соединяли только что. Теперь это не наша забота
         clearMovingMode();
@@ -251,15 +239,15 @@ void GraphEditMode::toggleMovingItem(ObjectViewItems::ItemBase *pItem)
         return;
     }
 
-    // Забываем, что делали только что (по сути применяем изменения). Теперь это не наша забота
+    // Забываем, что делали только что (по сути применяем изменения). Теперь это
+    // не наша забота
     if (nullptr != m_movingVertex) {
         pScene->acceptGrabObject();
         clearMovingMode();
     }
 }
 
-void GraphEditMode::clearMovingMode()
-{
+void GraphEditMode::clearMovingMode() {
     auto pScene = getScene();
     pScene->setMovingCallback({});
     if (nullptr != pScene->getGrabObject()) {
@@ -279,24 +267,27 @@ void GraphEditMode::clearMovingMode()
     }
 }
 
-void GraphEditMode::setPendingConnection(ObjectViewItems::ItemBase *pTargetVertexItem)
-{
+void GraphEditMode::setPendingConnection(
+    ObjectViewItems::ItemBase* pTargetVertexItem) {
     if (pTargetVertexItem == nullptr) {
         return;
     }
 
     auto pScene = getScene();
 
-    if (pTargetVertexItem->getType() != ObjectViewConstants::OBJECTTYPE_VERTEX) {
+    if (pTargetVertexItem->getType() !=
+        ObjectViewConstants::OBJECTTYPE_VERTEX) {
         clearConnectionAddMode();
         return;
     }
 
     // Выбираем начальную точку соединения
     if (nullptr == m_pendingConnectionLine) {
-        m_pendingConnectionLine = pScene->createConnectionLine(pTargetVertexItem->getObjectId(), 0);
+        m_pendingConnectionLine =
+            pScene->createConnectionLine(pTargetVertexItem->getObjectId(), 0);
 
-        static_cast<ObjectViewItems::VertexObject*>(pTargetVertexItem)->subscribeAsConnectionFrom(m_pendingConnectionLine);
+        static_cast<ObjectViewItems::VertexObject*>(pTargetVertexItem)
+            ->subscribeAsConnectionFrom(m_pendingConnectionLine);
 
         pScene->setMovingCallback([this](const QPointF& p) {
             m_pendingConnectionLine->setPositionTo(p);
@@ -305,7 +296,8 @@ void GraphEditMode::setPendingConnection(ObjectViewItems::ItemBase *pTargetVerte
         return;
     }
 
-    auto pCastedVertex = static_cast<ObjectViewItems::VertexObject*>(pTargetVertexItem);
+    auto pCastedVertex =
+        static_cast<ObjectViewItems::VertexObject*>(pTargetVertexItem);
 
     // Нельзя соединять с самой собой
     if (pCastedVertex == m_pendingConnectionLine->getVertexFrom() ||
@@ -316,12 +308,11 @@ void GraphEditMode::setPendingConnection(ObjectViewItems::ItemBase *pTargetVerte
 
     // Соединяем
     pCastedVertex->subscribeAsConnectionTo(m_pendingConnectionLine);
-    m_pendingConnectionLine = nullptr; // Теперь эта линия не удалится
+    m_pendingConnectionLine = nullptr;  // Теперь эта линия не удалится
     clearConnectionAddMode();
 }
 
-void GraphEditMode::clearConnectionAddMode()
-{
+void GraphEditMode::clearConnectionAddMode() {
     getScene()->setMovingCallback({});
     if (nullptr != m_pendingConnectionLine) {
         getScene()->removeObject(m_pendingConnectionLine->getObjectId());
@@ -329,8 +320,7 @@ void GraphEditMode::clearConnectionAddMode()
     m_pendingConnectionLine = nullptr;
 }
 
-void GraphEditMode::setPendingVertex(ObjectViewItems::ItemBase *pItem)
-{
+void GraphEditMode::setPendingVertex(ObjectViewItems::ItemBase* pItem) {
     auto pScene = getScene();
     if (nullptr != m_pendingVertex) {
         pScene->acceptGrabObject();
@@ -342,8 +332,7 @@ void GraphEditMode::setPendingVertex(ObjectViewItems::ItemBase *pItem)
     pScene->setGrabObject(m_pendingVertex);
 }
 
-void GraphEditMode::clearVertexAddMode()
-{
+void GraphEditMode::clearVertexAddMode() {
     if (nullptr == m_pendingVertex) {
         return;
     }
@@ -355,8 +344,8 @@ void GraphEditMode::clearVertexAddMode()
     m_pendingVertex = nullptr;
 }
 
-void GraphEditMode::setTargetForPropertyEditor(ObjectViewItems::ItemBase *pItem)
-{
+void GraphEditMode::setTargetForPropertyEditor(
+    ObjectViewItems::ItemBase* pItem) {
     if (pItem == nullptr) {
         return;
     }
@@ -369,9 +358,8 @@ void GraphEditMode::setTargetForPropertyEditor(ObjectViewItems::ItemBase *pItem)
     emit openPropertyEditor(pItem);
 }
 
-void GraphEditMode::clearPropertyEditMode()
-{
+void GraphEditMode::clearPropertyEditMode() {
     emit closePropertyEditor();
 }
 
-}
+}  // namespace Graph

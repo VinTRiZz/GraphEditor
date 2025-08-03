@@ -1,56 +1,49 @@
 #include "objectsinternalscene.h"
 
 #include <Common/Logging.h>
-
-#include <QPainter>
-#include <QGraphicsView>
-
 #include <math.h>
 
-ObjectsInternalScene::ObjectsInternalScene(QObject *parent) :
-    QGraphicsScene(parent)
-{
+#include <QGraphicsView>
+#include <QPainter>
+
+ObjectsInternalScene::ObjectsInternalScene(QObject* parent)
+    : QGraphicsScene(parent) {
     m_gridPen.setCosmetic(true);
 }
 
-ObjectsInternalScene::~ObjectsInternalScene()
-{
+ObjectsInternalScene::~ObjectsInternalScene() {}
 
-}
-
-void ObjectsInternalScene::setGridEnabled(bool enabled)
-{
+void ObjectsInternalScene::setGridEnabled(bool enabled) {
     m_isGridEnabled = enabled;
     emit gridSetEnabled(enabled);
 }
 
-bool ObjectsInternalScene::getIsGridEnabled() const
-{
+bool ObjectsInternalScene::getIsGridEnabled() const {
     return m_isGridEnabled;
 }
 
-void ObjectsInternalScene::setGridSize(int sizePx)
-{
+void ObjectsInternalScene::setGridSize(int sizePx) {
     if (sizePx < 2 || sizePx > 10e6) {
-        throw std::invalid_argument("Invalid size of grid (less than 2 or more than 10e6 px)");
+        throw std::invalid_argument(
+            "Invalid size of grid (less than 2 or more than 10e6 px)");
     }
     m_baseGridSize = sizePx;
     emit gridSizeChanged(sizePx);
 }
 
-int ObjectsInternalScene::getGridSize() const
-{
+int ObjectsInternalScene::getGridSize() const {
     return m_baseGridSize;
 }
 
-void ObjectsInternalScene::drawForeground(QPainter* painter, const QRectF& rect) {
+void ObjectsInternalScene::drawForeground(QPainter* painter,
+                                          const QRectF& rect) {
     QGraphicsScene::drawForeground(painter, rect);
     drawGrid(painter, rect);
 }
 
-void ObjectsInternalScene::drawGrid(QPainter *painter, const QRectF &rect)
-{
-    if (!m_isGridEnabled) return;
+void ObjectsInternalScene::drawGrid(QPainter* painter, const QRectF& rect) {
+    if (!m_isGridEnabled)
+        return;
 
     // Настройка пера для сетки
     painter->setPen(m_gridPen);

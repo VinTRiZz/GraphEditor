@@ -1,21 +1,18 @@
 #ifndef PREDEFINEDOBJECTBASE_H
 #define PREDEFINEDOBJECTBASE_H
 
+#include <QBrush>
 #include <QGraphicsItem>
+#include <QPen>
 
 #include "constants.h"
 
-#include <QBrush>
-#include <QPen>
-
-namespace ObjectViewItems
-{
+namespace ObjectViewItems {
 
 /**
  * @brief The ItemBase class Основа для каждого класса объекта на сцене
  */
-class ItemBase : public QGraphicsItem
-{
+class ItemBase : public QGraphicsItem {
 public:
     explicit ItemBase(QGraphicsItem* parent = nullptr);
     ~ItemBase();
@@ -42,19 +39,20 @@ public:
     virtual void setCustomProperties(const QJsonObject& props);
     virtual QJsonObject getCustomProperties() const;
 
-    virtual void setMainColor(const QColor &penColor);
+    virtual void setMainColor(const QColor& penColor);
     virtual QColor getMainColor() const;
 
-    virtual void setBackgroundColor(const QColor &penColor);
+    virtual void setBackgroundColor(const QColor& penColor);
     virtual QColor getBackgroundColor() const;
 
-    virtual void setSelectedColor(const QColor &penColor);
+    virtual void setSelectedColor(const QColor& penColor);
     virtual QColor getSelectedColor() const;
 
     QRectF boundingRect() const override;
 
 private:
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget*widget) override;
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option,
+               QWidget* widget) override;
 
     QRectF m_boundingRect;
 
@@ -66,6 +64,6 @@ protected:
     void registerSubitem(QGraphicsItem* pItem);
 };
 
-}
+}  // namespace ObjectViewItems
 
-#endif // PREDEFINEDOBJECTBASE_H
+#endif  // PREDEFINEDOBJECTBASE_H

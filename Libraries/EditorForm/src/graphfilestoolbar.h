@@ -3,16 +3,14 @@
 
 #include <CustomWidgets/ButtonToolbar.h>
 
-class GraphFilesToolbar : public ButtonToolbar::HeadWidget
-{
+class GraphFilesToolbar : public ButtonToolbar::HeadWidget {
     Q_OBJECT
 public:
     explicit GraphFilesToolbar(QWidget* parent = nullptr);
 
     void setShowPropertiesEnabled(bool isSaveEnabled);
 
-    enum class GraphEditorMode : int
-    {
+    enum class GraphEditorMode : int {
         EditBasicGraph,
         ViewInteraction,
         Algorithmic,
@@ -37,11 +35,10 @@ signals:
 
 private:
     std::map<GraphEditorMode, int> m_modeIndexes;
-    unsigned m_showPropertiesButtonIndex {0};
-    unsigned m_saveButtonIndex {0};
-    unsigned m_saveAsButtonIndex {0};
-    unsigned m_loadButtonIndex {0};
+    unsigned m_showPropertiesButtonIndex{0};
+    unsigned m_saveButtonIndex{0};
+    unsigned m_saveAsButtonIndex{0};
+    unsigned m_loadButtonIndex{0};
 };
 
-#endif // GRAPHFILESTOOLBAR_H
-
+#endif  // GRAPHFILESTOOLBAR_H

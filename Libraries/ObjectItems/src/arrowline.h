@@ -6,13 +6,11 @@
 
 #include "itembase.h"
 
-namespace ObjectViewItems
-{
+namespace ObjectViewItems {
 
-class ArrowedLine : public ItemBase
-{
+class ArrowedLine : public ItemBase {
 public:
-    explicit ArrowedLine(QGraphicsItem *parent = nullptr);
+    explicit ArrowedLine(QGraphicsItem* parent = nullptr);
 
     void setPen(const QPen& drawPen);
     void setSelectedPen(const QPen& drawPen);
@@ -34,19 +32,21 @@ public:
     qreal getArrowSize() const;
 
 protected:
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option,
+               QWidget* widget = nullptr) override;
 
 private:
-    void drawArrow(QPainter *painter);
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
+    void drawArrow(QPainter* painter);
+    QVariant itemChange(GraphicsItemChange change,
+                        const QVariant& value) override;
 
-    QGraphicsLineItem* m_line {nullptr};
+    QGraphicsLineItem* m_line{nullptr};
 
-    qreal   m_arrowSize {10}; // Размер стрелки
-    QPen    m_drawPen;
-    QPen    m_drawSelectedPen;
+    qreal m_arrowSize{10};  // Размер стрелки
+    QPen m_drawPen;
+    QPen m_drawSelectedPen;
 };
 
-}
+}  // namespace ObjectViewItems
 
-#endif // ARROWLINE_H
+#endif  // ARROWLINE_H

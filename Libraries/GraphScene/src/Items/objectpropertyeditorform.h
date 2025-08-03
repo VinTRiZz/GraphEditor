@@ -1,9 +1,9 @@
 #ifndef OBJECTPROPERTYEDITORFORM_H
 #define OBJECTPROPERTYEDITORFORM_H
 
-#include <QWidget>
-
 #include <ObjectItems/ItemBase.h>
+
+#include <QWidget>
 
 namespace Ui {
 class ObjectPropertyEditorForm;
@@ -11,11 +11,10 @@ class ObjectPropertyEditorForm;
 
 class QLabel;
 
-class ObjectPropertyEditorForm : public QWidget
-{
+class ObjectPropertyEditorForm : public QWidget {
     Q_OBJECT
 public:
-    explicit ObjectPropertyEditorForm(QWidget *parent = nullptr);
+    explicit ObjectPropertyEditorForm(QWidget* parent = nullptr);
     ~ObjectPropertyEditorForm();
 
     void setTargetItem(ObjectViewItems::ItemBase* pTargetItem);
@@ -29,9 +28,9 @@ signals:
     void editCanceled();
 
 private:
-    Ui::ObjectPropertyEditorForm *ui;
+    Ui::ObjectPropertyEditorForm* ui;
 
-    ObjectViewItems::ItemBase* m_pTargetItem {nullptr};
+    ObjectViewItems::ItemBase* m_pTargetItem{nullptr};
 };
 
-#endif // OBJECTPROPERTYEDITORFORM_H
+#endif  // OBJECTPROPERTYEDITORFORM_H

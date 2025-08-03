@@ -1,22 +1,22 @@
 #ifndef FORMATFACTORY_H
 #define FORMATFACTORY_H
 
+#include <QString>
 #include <boost/noncopyable.hpp>
 #include <vector>
-#include <QString>
 
 #include "abstractsaveformat.h"
 
-namespace Filework
-{
+namespace Filework {
 
-class FormatFactory
-{
+class FormatFactory {
     FormatFactory();
+
 public:
     static FormatFactory& getInstance();
 
-    const std::shared_ptr<AbstractSaveFormat> getFormat(const QString& fileExtension) const;
+    const std::shared_ptr<AbstractSaveFormat> getFormat(
+        const QString& fileExtension) const;
     QStringList getAvailableFormats() const;
     QStringList getAvailableExtensions() const;
 
@@ -26,6 +26,6 @@ private:
     std::vector<std::shared_ptr<AbstractSaveFormat> > m_formats;
 };
 
-}
+}  // namespace Filework
 
-#endif // FORMATFACTORY_H
+#endif  // FORMATFACTORY_H

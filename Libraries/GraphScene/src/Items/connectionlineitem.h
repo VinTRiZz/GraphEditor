@@ -1,26 +1,22 @@
 #ifndef VERTEXCONNECTIONLINE_H
 #define VERTEXCONNECTIONLINE_H
 
-#include <QGraphicsItem>
-
-#include <QPen>
-#include <QBrush>
-
-#include <QGraphicsLineItem>
-#include <QGraphicsPolygonItem>
-
 #include <ObjectItems/ItemBase.h>
 #include <ObjectItems/LabelItem.h>
 
-namespace ObjectViewItems
-{
+#include <QBrush>
+#include <QGraphicsItem>
+#include <QGraphicsLineItem>
+#include <QGraphicsPolygonItem>
+#include <QPen>
+
+namespace ObjectViewItems {
 
 class VertexObject;
 
-class VertexConnectionLine : public ItemBase
-{
+class VertexConnectionLine : public ItemBase {
 public:
-    explicit VertexConnectionLine(QGraphicsItem *parent = nullptr);
+    explicit VertexConnectionLine(QGraphicsItem* parent = nullptr);
     ~VertexConnectionLine();
 
     void setVertexFrom(VertexObject* pVertexFrom);
@@ -37,8 +33,8 @@ public:
     void setPositionTo(const QPointF& posTo);
     void resetPositions();
 
-    void setMainColor(const QColor &penColor) override;
-    void setSelectedColor(const QColor &penColor) override;
+    void setMainColor(const QColor& penColor) override;
+    void setSelectedColor(const QColor& penColor) override;
 
     void setShortName(const QString& iText) override;
 
@@ -50,33 +46,34 @@ public:
     QPainterPath shape() const override;
 
 private:
-    VertexObject*   m_fromVertex {nullptr};
-    VertexObject*   m_toVertex {nullptr};
+    VertexObject* m_fromVertex{nullptr};
+    VertexObject* m_toVertex{nullptr};
 
     QLinearGradient m_penSelectedGradient;
     QLinearGradient m_penGradient;
-    QPen            m_drawPen;
-    QPen            m_selectedPen;
-    QLineF          m_straightLine;
+    QPen m_drawPen;
+    QPen m_selectedPen;
+    QLineF m_straightLine;
 
     QRectF m_boundingRect;
 
-    QGraphicsPathItem*      m_line              {nullptr};
-    QGraphicsPathItem*      m_lineSelected      {nullptr};
-    QGraphicsPolygonItem*   m_pArrowHeadPolygon {nullptr};
-    LabelItem*              m_labelItem         {nullptr};
+    QGraphicsPathItem* m_line{nullptr};
+    QGraphicsPathItem* m_lineSelected{nullptr};
+    QGraphicsPolygonItem* m_pArrowHeadPolygon{nullptr};
+    LabelItem* m_labelItem{nullptr};
 
-    bool  m_prevSelectedState {false};
-    qreal m_arrowSize {8};
+    bool m_prevSelectedState{false};
+    qreal m_arrowSize{8};
 
     void updatePolygon();
     QPainterPath createLinePath();
     QPolygonF createPolygon(const QLineF& line);
     void updatePen();
 
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
+    QVariant itemChange(GraphicsItemChange change,
+                        const QVariant& value) override;
 };
 
-}
+}  // namespace ObjectViewItems
 
-#endif // VERTEXCONNECTIONLINE_H
+#endif  // VERTEXCONNECTIONLINE_H

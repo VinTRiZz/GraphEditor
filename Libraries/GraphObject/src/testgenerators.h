@@ -3,8 +3,7 @@
 
 #include "graphmaintaner.h"
 
-namespace Graph::TestGenerators
-{
+namespace Graph::TestGenerators {
 
 /**
  * @brief createTestGraph   Создаёт вполне конкретный граф для тестов
@@ -28,15 +27,16 @@ Graph::GVertex randomVertex(GraphCommon::graphId_t minId = 1,
  * @return                  Случайное соединение
  */
 Graph::GConnection randomConnection(
-        const std::vector<GraphCommon::graphId_t>& existingIds,
-        bool allowSelfConnect = false);
+    const std::vector<GraphCommon::graphId_t>& existingIds,
+    bool allowSelfConnect = false);
 
 /**
- * @brief createRandomGraph Создаёт граф с совершенно случайными данными, каждый раз разный
+ * @brief createRandomGraph Создаёт граф с совершенно случайными данными, каждый
+ * раз разный
  * @return                  Случайный граф
  */
 PMaintainer createRandomGraph();
 
-}
+}  // namespace Graph::TestGenerators
 
-#endif // TESTGENERATORS_H
+#endif  // TESTGENERATORS_H

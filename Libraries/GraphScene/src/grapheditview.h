@@ -1,16 +1,13 @@
 #ifndef GRAPHEDITVIEW_H
 #define GRAPHEDITVIEW_H
 
-#include "graphsceneview.h"
-
 #include "grapheditmode.h"
+#include "graphsceneview.h"
 #include "graphviewmode.h"
 
-namespace Graph
-{
+namespace Graph {
 
-class GraphEditView final : public GraphSceneView
-{
+class GraphEditView final : public GraphSceneView {
     Q_OBJECT
 public:
     GraphEditView(QWidget* parent = nullptr);
@@ -35,6 +32,6 @@ private:
     GraphEditMode m_editMode;
 };
 
-}
+}  // namespace Graph
 
-#endif // GRAPHEDITVIEW_H
+#endif  // GRAPHEDITVIEW_H

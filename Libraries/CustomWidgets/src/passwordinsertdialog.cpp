@@ -1,12 +1,11 @@
 #include "passwordinsertdialog.h"
-#include "ui_passwordinsertdialog.h"
 
 #include <QIcon>
 
-PasswordInsertDialog::PasswordInsertDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::PasswordInsertDialog)
-{
+#include "ui_passwordinsertdialog.h"
+
+PasswordInsertDialog::PasswordInsertDialog(QWidget* parent)
+    : QDialog(parent), ui(new Ui::PasswordInsertDialog) {
     ui->setupUi(this);
     ui->password_lineEdit->setEchoMode(QLineEdit::Password);
 
@@ -14,12 +13,10 @@ PasswordInsertDialog::PasswordInsertDialog(QWidget *parent) :
     setWindowIcon(QIcon(":/common/images/icons/app/grapheditor.svg"));
 }
 
-PasswordInsertDialog::~PasswordInsertDialog()
-{
+PasswordInsertDialog::~PasswordInsertDialog() {
     delete ui;
 }
 
-QString PasswordInsertDialog::getPassword() const
-{
+QString PasswordInsertDialog::getPassword() const {
     return ui->password_lineEdit->text();
 }

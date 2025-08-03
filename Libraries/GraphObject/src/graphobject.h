@@ -5,23 +5,22 @@
 
 #include <optional>
 
-#include "gvertex.h"
 #include "gconnection.h"
 #include "graphcommon.h"
+#include "gvertex.h"
 
-namespace Graph
-{
+namespace Graph {
 
 /**
- * @brief The GraphObject class Объект графа, заключающий в себе свойства графа и его наполнение
+ * @brief The GraphObject class Объект графа, заключающий в себе свойства графа
+ * и его наполнение
  */
-class GraphObject
-{
+class GraphObject {
 public:
     GraphObject();
 
-    bool operator ==(const GraphObject& gObj_) const;
-    bool operator !=(const GraphObject& gObj_) const;
+    bool operator==(const GraphObject& gObj_) const;
+    bool operator!=(const GraphObject& gObj_) const;
 
     // ============================================================== //
     // ================= Работа с вершинами графа =================== //
@@ -36,7 +35,8 @@ public:
 
     /**
      * @brief updateVertex  Заменить свойства вершины на другие
-     * @param iVert         Вершина с новыми свойствами. Обязательно должен быть задан ID
+     * @param iVert         Вершина с новыми свойствами. Обязательно должен быть
+     * задан ID
      * @return              false если вершина не найдена
      */
     bool updateVertex(const GVertex& iVert);
@@ -67,10 +67,10 @@ public:
     void removeVertex(GraphCommon::graphId_t vertexId);
 
     /**
-     * @brief clearVertices Удалить все вершины. Также удаляет соединения, связанные с ними
+     * @brief clearVertices Удалить все вершины. Также удаляет соединения,
+     * связанные с ними
      */
     void clearVertices();
-
 
     // ============================================================== //
     // ============== Работа с соединениями вершин графа ============ //
@@ -84,19 +84,24 @@ public:
     bool addConnection(const GConnection& iCon);
 
     /**
-     * @brief getConnectionsFromVertex  Получить все соединения, исходящие из вершины с ID = vertexId
+     * @brief getConnectionsFromVertex  Получить все соединения, исходящие из
+     * вершины с ID = vertexId
      * @param vertexId                  ID вершины
      * @return                          Вектор входящих соединений
      */
-    std::vector<GConnection> getConnectionsFromVertex(GraphCommon::graphId_t vertexId) const;
+    std::vector<GConnection> getConnectionsFromVertex(
+        GraphCommon::graphId_t vertexId) const;
 
     /**
-     * @brief getConnection Получить соединение по ID вершин, от и к которой оно идёт
+     * @brief getConnection Получить соединение по ID вершин, от и к которой оно
+     * идёт
      * @param vertexFromId  Вершина от которой исходит соединение
      * @param vertexToId    Вершина к которой исходит соединение
      * @return              std::nullopt если такого соединения нет
      */
-    std::optional<GConnection> getConnection(GraphCommon::graphId_t vertexFromId, GraphCommon::graphId_t vertexToId) const;
+    std::optional<GConnection> getConnection(
+        GraphCommon::graphId_t vertexFromId,
+        GraphCommon::graphId_t vertexToId) const;
 
     /**
      * @brief getAllConnections Получить все рёбра в графе
@@ -115,7 +120,8 @@ public:
      * @param conFrom           Вершина от которой исходит ребро
      * @param conTo             Вершина к которой исходит ребро
      */
-    void removeConnection(GraphCommon::graphId_t conFrom, GraphCommon::graphId_t conTo);
+    void removeConnection(GraphCommon::graphId_t conFrom,
+                          GraphCommon::graphId_t conTo);
 
     /**
      * @brief removeConnections Удалить все рёбра, соединённые с этой вершиной
@@ -130,10 +136,11 @@ public:
 
 private:
     // Через STL векторы для удобства работы с алгоритмами
-    std::list<GVertex>  m_vertices;                                     //! Вершины графа
-    std::multimap<GraphCommon::graphId_t, GConnection>  m_connections;  //! Рёбра графа. Ключ -- ID из которого исходит ребро
+    std::list<GVertex> m_vertices;  //! Вершины графа
+    std::multimap<GraphCommon::graphId_t, GConnection>
+        m_connections;  //! Рёбра графа. Ключ -- ID из которого исходит ребро
 };
 
-}
+}  // namespace Graph
 
-#endif // GRAPHOBJECT_H
+#endif  // GRAPHOBJECT_H

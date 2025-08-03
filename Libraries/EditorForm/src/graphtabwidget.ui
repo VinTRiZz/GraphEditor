@@ -48,6 +48,9 @@
    </item>
    <item row="0" column="1" rowspan="2">
     <widget class="QStackedWidget" name="stackedWidget">
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
      <widget class="QWidget" name="graphs_page">
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="spacing">
@@ -113,7 +116,13 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="settings_page"/>
+     <widget class="QWidget" name="settings_page">
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="GraphEditorSettingsForm" name="settingsForm" native="true"/>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>
@@ -129,6 +138,12 @@
    <class>GraphOptionsToolbar</class>
    <extends>QWidget</extends>
    <header>graphoptionstoolbar.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GraphEditorSettingsForm</class>
+   <extends>QWidget</extends>
+   <header>grapheditorsettingsform.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

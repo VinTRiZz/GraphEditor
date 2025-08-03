@@ -14,6 +14,8 @@ GraphTabWidget::GraphTabWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->stackedWidget->setCurrentIndex(0); // Чтобы UI редактировать спокойно
+
     ui->filesToolBar->setSaveAsEnabled(false);
     ui->filesToolBar->setShowPropertiesEnabled(false);
     ui->filesToolBar->setSaveEnabled(false);

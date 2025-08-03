@@ -76,7 +76,8 @@ public:
 private:
     Ui::GraphEditorForm *ui;
     Graph::PMaintainer  m_graphMaintainer;  //! Текущий граф
-    QString m_lastSavePath; //! Путь до файла с последним сохранённым графом
+    QString m_lastSavePath;                 //! Путь до файла с последним сохранённым графом
+    unsigned m_propBarShowWidth {400};      //! Значение ширины, которой будет окно свойств после появления. Нужно для анимаций
 
 public slots:
     void showProperties();

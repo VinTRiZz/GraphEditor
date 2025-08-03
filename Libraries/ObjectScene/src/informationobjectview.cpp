@@ -59,7 +59,6 @@ void InformationObjectView::updateInformation()
 void InformationObjectView::updateCursorLabel(const QPoint &currentPos)
 {
     auto currentPosMapped = mapToScene(currentPos);
-
     m_pCursorLabel->setPos(mapToScene({currentPos.x() + 20, currentPos.y() + 20}));
 
     QString hoverItemName {};

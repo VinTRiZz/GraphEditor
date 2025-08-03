@@ -24,5 +24,6 @@
         <file>images/vertexicons/person/red.svg</file>
         <file>images/icons/editmode/mode_edit_properties_active.svg</file>
         <file>images/icons/app/grapheditor.svg</file>
+        <file>images/icons/common/settings.svg</file>
     </qresource>
 </RCC>

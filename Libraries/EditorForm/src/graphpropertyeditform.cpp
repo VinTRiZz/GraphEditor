@@ -73,37 +73,6 @@ void GraphPropertyEditForm::setCurrentGraph(const PMaintainer &pGraphMaintaner)
     updateGraphInfo();
 }
 
-void GraphPropertyEditForm::showAnimated()
-{
-    show();
-
-    QPropertyAnimation* animation = new QPropertyAnimation(this, "minimumWidth");
-    animation->setDuration(150);
-
-    setMaximumWidth(m_showWidth);
-    setMinimumWidth(0);
-    setFixedWidth(0);
-    animation->setStartValue(0);
-    animation->setEndValue(m_showWidth);
-    animation->start(QPropertyAnimation::DeleteWhenStopped);
-}
-
-void GraphPropertyEditForm::hideAnimated()
-{
-    QPropertyAnimation* animation = new QPropertyAnimation(this, "maximumWidth");
-    animation->setDuration(150);
-
-    setMaximumWidth(m_showWidth);
-    setMinimumWidth(0);
-    setFixedWidth(0);
-    animation->setStartValue(m_showWidth);
-    animation->setEndValue(0);
-    animation->start(QPropertyAnimation::DeleteWhenStopped);
-
-    connect(animation, &QPropertyAnimation::finished,
-            this, &GraphPropertyEditForm::hide);
-}
-
 void GraphPropertyEditForm::updateEditTime()
 {
     auto pItem = m_pCommonGraphInfoModel->item(EDITEDROW, 1);

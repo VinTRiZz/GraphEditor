@@ -1,4 +1,4 @@
-#include "graphtoolbar.h"
+#include "graphfilestoolbar.h"
 
 #include <QFileDialog>
 
@@ -6,10 +6,11 @@
 
 #include <Filework/SaveMaster.h>
 
-GraphToolbar::GraphToolbar(QWidget* parent) :
+GraphFilesToolbar::GraphFilesToolbar(QWidget* parent) :
     ButtonToolbar::HeadWidget(parent)
 {
     setButtonSize(QSize(35, 35));
+    setFixedHeight(37);
 
     ButtonToolbar::ButtonConfig buttonInfo;
     buttonInfo.buttonPos = 0;
@@ -92,22 +93,22 @@ GraphToolbar::GraphToolbar(QWidget* parent) :
     addButton(buttonInfo);
 }
 
-void GraphToolbar::setShowPropertiesEnabled(bool isSaveEnabled)
+void GraphFilesToolbar::setShowPropertiesEnabled(bool isSaveEnabled)
 {
     setButtonEnabled(m_showPropertiesButtonIndex, isSaveEnabled);
 }
 
-void GraphToolbar::setSaveEnabled(bool isSaveEnabled)
+void GraphFilesToolbar::setSaveEnabled(bool isSaveEnabled)
 {
     setButtonEnabled(m_saveButtonIndex, isSaveEnabled);
 }
 
-void GraphToolbar::setSaveAsEnabled(bool isSaveAsEnabled)
+void GraphFilesToolbar::setSaveAsEnabled(bool isSaveAsEnabled)
 {
     setButtonEnabled(m_saveAsButtonIndex, isSaveAsEnabled);
 }
 
-void GraphToolbar::setLoadEnabled(bool isLoadEnabled)
+void GraphFilesToolbar::setLoadEnabled(bool isLoadEnabled)
 {
     setButtonEnabled(m_loadButtonIndex, isLoadEnabled);
 }

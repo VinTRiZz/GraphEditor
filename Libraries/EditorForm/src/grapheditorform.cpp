@@ -12,6 +12,7 @@
 #include <QPropertyAnimation>
 
 #include <Common/Logging.h>
+#include <Common/CommonFunctions.h>
 
 #include <CustomWidgets/PasswordInsertDialog.h>
 
@@ -29,7 +30,7 @@ GraphEditorForm::GraphEditorForm(QWidget *parent) :
 
     ui->graphScene->setGraphMaintaner(m_graphMaintainer);
     ui->propertyEditForm->setCurrentGraph(m_graphMaintainer);
-    ui->propertyEditForm->hide();
+    ui->props_stackedWidget->hide();
 }
 
 GraphEditorForm::~GraphEditorForm()
@@ -139,10 +140,10 @@ void GraphEditorForm::setCrimeMode()
 
 void GraphEditorForm::showProperties()
 {
-    ui->propertyEditForm->showAnimated();
+    CommonFunctions::showAnimatedHorizontal(ui->props_stackedWidget, m_propBarShowWidth);
 }
 
 void GraphEditorForm::hideProperties()
 {
-    ui->propertyEditForm->hideAnimated();
+    CommonFunctions::hideAnimatedHorizontal(ui->props_stackedWidget, m_propBarShowWidth);
 }

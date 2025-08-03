@@ -33,9 +33,6 @@ public:
     void setCurrentGraph(const Graph::PMaintainer& pGraphMaintaner);
 
 public slots:
-    void showAnimated();
-    void hideAnimated();
-
     /**
      * @brief updateEditTime Должно вызываться после любых изменений свойств графа
      */
@@ -43,8 +40,6 @@ public slots:
 
 private:
     Ui::GraphPropertyEditForm *ui;
-
-    unsigned m_showWidth {400}; //! Значение ширины, которой будет окно после появления. Нужно для анимаций
 
     Graph::PMaintainer m_currentGraph; //! Текущий майнтейнер графа
 

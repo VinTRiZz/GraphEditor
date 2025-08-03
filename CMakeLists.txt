@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Project configuration
 project(
     GraphEditor
-    VERSION 1.17.18
+    VERSION 1.18.18
     LANGUAGES C CXX
 )
 
@@ -85,8 +85,6 @@ add_subdirectory(Testing EXCLUDE_FROM_ALL)
 
 # ====================================================== #
 # ETC CONFIGURATION
-
-source_group("Ui Files" FILES ${UIFILES})
 
 # ======================================== #
 # Installation

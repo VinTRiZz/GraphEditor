@@ -1,13 +1,13 @@
-#ifndef GRAPHTOOLBAR_H
-#define GRAPHTOOLBAR_H
+#ifndef GRAPHFILESTOOLBAR_H
+#define GRAPHFILESTOOLBAR_H
 
 #include <CustomWidgets/ButtonToolbar.h>
 
-class GraphToolbar : public ButtonToolbar::HeadWidget
+class GraphFilesToolbar : public ButtonToolbar::HeadWidget
 {
     Q_OBJECT
 public:
-    explicit GraphToolbar(QWidget* parent = nullptr);
+    explicit GraphFilesToolbar(QWidget* parent = nullptr);
 
     void setShowPropertiesEnabled(bool isSaveEnabled);
 
@@ -43,5 +43,5 @@ private:
     unsigned m_loadButtonIndex {0};
 };
 
-#endif // GRAPHTOOLBAR_H
+#endif // GRAPHFILESTOOLBAR_H
 

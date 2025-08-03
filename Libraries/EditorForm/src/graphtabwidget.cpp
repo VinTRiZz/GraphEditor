@@ -14,10 +14,10 @@ GraphTabWidget::GraphTabWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->buttonToolbar->setSaveAsEnabled(false);
-    ui->buttonToolbar->setShowPropertiesEnabled(false);
-    ui->buttonToolbar->setSaveEnabled(false);
-    ui->buttonToolbar->setLoadEnabled(false);
+    ui->filesToolBar->setSaveAsEnabled(false);
+    ui->filesToolBar->setShowPropertiesEnabled(false);
+    ui->filesToolBar->setSaveEnabled(false);
+    ui->filesToolBar->setLoadEnabled(false);
 
     ui->editorForms_tabWidget->hide();
     ui->placeholder_label->show();
@@ -30,8 +30,8 @@ GraphTabWidget::GraphTabWidget(QWidget *parent) :
 
     connect(ui->editorForms_tabWidget, &QTabWidget::currentChanged,
             this, [this](int tabIndex){
-        disconnect(ui->buttonToolbar, &GraphToolbar::showProperties, nullptr, nullptr);
-        disconnect(ui->buttonToolbar, &GraphToolbar::hideProperties, nullptr, nullptr);
+        disconnect(ui->filesToolBar, &GraphFilesToolbar::showProperties, nullptr, nullptr);
+        disconnect(ui->filesToolBar, &GraphFilesToolbar::hideProperties, nullptr, nullptr);
 
         auto tabTargetWidget = ui->editorForms_tabWidget->widget(tabIndex);
         auto pForm = static_cast<GraphEditorForm*>(tabTargetWidget);
@@ -40,26 +40,35 @@ GraphTabWidget::GraphTabWidget(QWidget *parent) :
         }
 
         auto isSavesEnabled = pForm->getIsSavepathValid();
-        ui->buttonToolbar->setSaveEnabled(isSavesEnabled);
-        ui->buttonToolbar->setLoadEnabled(isSavesEnabled);
+        ui->filesToolBar->setSaveEnabled(isSavesEnabled);
+        ui->filesToolBar->setLoadEnabled(isSavesEnabled);
 
-        connect(ui->buttonToolbar, &GraphToolbar::showProperties, pForm, &GraphEditorForm::showProperties);
-        connect(ui->buttonToolbar, &GraphToolbar::hideProperties, pForm, &GraphEditorForm::hideProperties);
+        connect(ui->filesToolBar, &GraphFilesToolbar::showProperties, pForm, &GraphEditorForm::showProperties);
+        connect(ui->filesToolBar, &GraphFilesToolbar::hideProperties, pForm, &GraphEditorForm::hideProperties);
     });
 
-    connect(ui->buttonToolbar, &GraphToolbar::createGraph,
+    connect(ui->filesToolBar, &GraphFilesToolbar::createGraph,
             this, &GraphTabWidget::createGraph);
 
-    connect(ui->buttonToolbar, &GraphToolbar::saveGraph,
+    connect(ui->filesToolBar, &GraphFilesToolbar::saveGraph,
             this, &GraphTabWidget::saveVisibleGraph);
 
-    connect(ui->buttonToolbar, &GraphToolbar::loadGraph,
+    connect(ui->filesToolBar, &GraphFilesToolbar::loadGraph,
             this, &GraphTabWidget::loadVisibleGraph);
 
     auto& settingsInstance = ApplicationSettings::getInstance();
     for (auto& recentFile : settingsInstance.getRecentFiles()) {
         addTab(recentFile);
     }
+
+    connect(ui->optionsToolBar, &GraphOptionsToolbar::openSettings,
+            this, [this](){
+        if (ui->stackedWidget->currentIndex() == 0) {
+            ui->stackedWidget->setCurrentIndex(1);
+        } else {
+            ui->stackedWidget->setCurrentIndex(0);
+        }
+    });
 }
 
 GraphTabWidget::~GraphTabWidget()
@@ -87,8 +96,8 @@ void GraphTabWidget::addTab(const QString &filePath)
         }
     });
 
-    ui->buttonToolbar->setShowPropertiesEnabled(true);
-    ui->buttonToolbar->setSaveAsEnabled(true);
+    ui->filesToolBar->setShowPropertiesEnabled(true);
+    ui->filesToolBar->setSaveAsEnabled(true);
 
     if (ui->editorForms_tabWidget->isHidden()) {
         ui->editorForms_tabWidget->show();
@@ -133,10 +142,10 @@ void GraphTabWidget::removeTab(const QString &graphName)
     if (ui->editorForms_tabWidget->count() == 0) {
         ui->editorForms_tabWidget->hide();
         ui->placeholder_label->show();
-        ui->buttonToolbar->setSaveAsEnabled(false);
-        ui->buttonToolbar->setSaveEnabled(false);
-        ui->buttonToolbar->setLoadEnabled(false);
-        ui->buttonToolbar->setShowPropertiesEnabled(false);
+        ui->filesToolBar->setSaveAsEnabled(false);
+        ui->filesToolBar->setSaveEnabled(false);
+        ui->filesToolBar->setLoadEnabled(false);
+        ui->filesToolBar->setShowPropertiesEnabled(false);
     }
 }
 
@@ -159,8 +168,8 @@ void GraphTabWidget::createGraph()
         }
     });
 
-    ui->buttonToolbar->setShowPropertiesEnabled(true);
-    ui->buttonToolbar->setSaveAsEnabled(true);
+    ui->filesToolBar->setShowPropertiesEnabled(true);
+    ui->filesToolBar->setSaveAsEnabled(true);
 
     if (ui->editorForms_tabWidget->isHidden()) {
         ui->editorForms_tabWidget->show();
@@ -174,8 +183,8 @@ void GraphTabWidget::saveVisibleGraph(const QString &filePath)
     auto pForm = static_cast<GraphEditorForm*>(tabTargetWidget);
     pForm->saveGraph(filePath);
 
-    ui->buttonToolbar->setLoadEnabled(true);
-    ui->buttonToolbar->setSaveEnabled(true);
+    ui->filesToolBar->setLoadEnabled(true);
+    ui->filesToolBar->setSaveEnabled(true);
 }
 
 void GraphTabWidget::loadVisibleGraph(const QString &filePath)

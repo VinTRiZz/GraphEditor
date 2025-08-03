@@ -32,11 +32,6 @@ private:
     Ui::ObjectPropertyEditorForm *ui;
 
     ObjectViewItems::ItemBase* m_pTargetItem {nullptr};
-
-    void setColor(QLabel* pLabel, const QColor& color);
-    QColor getColor(QLabel* pLabel);
-
-    QPixmap pixmapFromPath(const QString& targetPath) const;
 };
 
 #endif // OBJECTPROPERTYEDITORFORM_H

@@ -7,18 +7,12 @@
 #include "Items/vertexobjectitem.h"
 #include "Items/connectionlineitem.h"
 
-#include <QColorDialog>
 #include <QFileDialog>
-
-#include <QImageReader>
-#include <QFileInfo>
-
-#include <QPainter>
-#include <QImage>
 
 #include <QVariant>
 
-static const auto LABEL_COLOR_PROPERTY_NAME = "labelDisplayColor";
+#include <Common/CommonFunctions.h>
+using namespace CommonFunctions;
 
 ObjectPropertyEditorForm::ObjectPropertyEditorForm(QWidget *parent) :
     QWidget(parent),
@@ -32,30 +26,9 @@ ObjectPropertyEditorForm::ObjectPropertyEditorForm(QWidget *parent) :
     connect(ui->cancel_pushButton, &QPushButton::clicked,
             this, &ObjectPropertyEditorForm::cancelChanges);
 
-    auto callColorDialog = [this](QLabel* pLabel){
-        auto currentColorName = pLabel->property(LABEL_COLOR_PROPERTY_NAME).toString();
-        auto userDefinedColor = QColorDialog::getColor(currentColorName, nullptr, "Выберите цвет");
-        if (!userDefinedColor.isValid()) { // Пользователь не выбрал цвет
-            return;
-        }
-
-        setColor(pLabel, userDefinedColor);
-    };
-
-    connect(ui->selectMainColor_pushButton, &QPushButton::clicked,
-            this, [callColorDialog, this](){
-        callColorDialog(ui->mainColor_label);
-    });
-
-    connect(ui->selectBgrColor_pushButton, &QPushButton::clicked,
-            this, [callColorDialog, this](){
-        callColorDialog(ui->bgrColor_label);
-    });
-
-    connect(ui->selectSelectionColor_pushButton, &QPushButton::clicked,
-            this, [callColorDialog, this](){
-        callColorDialog(ui->selectedColor_label);
-    });
+    connectColorDialog(ui->selectMainColor_pushButton, ui->mainColor_label);
+    connectColorDialog(ui->selectBgrColor_pushButton, ui->bgrColor_label);
+    connectColorDialog(ui->selectSelectionColor_pushButton, ui->selectedColor_label);
 
     connect(ui->selectIcon_pushButton, &QPushButton::clicked,
             this, [this](){
@@ -67,7 +40,7 @@ ObjectPropertyEditorForm::ObjectPropertyEditorForm(QWidget *parent) :
             return;
         }
 
-        ui->iconPreview_label->setPixmap(pixmapFromPath(targetPath));
+        ui->iconPreview_label->setPixmap(pixmapFromPath(targetPath, ui->iconPreview_label->size()));
         ui->iconPath_lineEdit->setText(targetPath);
     });
 
@@ -76,7 +49,7 @@ ObjectPropertyEditorForm::ObjectPropertyEditorForm(QWidget *parent) :
         if (!QFileInfo(changedText).isFile()) {
             return;
         }
-        ui->iconPreview_label->setPixmap(pixmapFromPath(changedText));
+        ui->iconPreview_label->setPixmap(pixmapFromPath(changedText, ui->iconPreview_label->size()));
     });
 
     ui->shortName_lineEdit->setMaxLength(Graph::GRAPH_MAX_SHORTNAME_SIZE);
@@ -144,54 +117,4 @@ void ObjectPropertyEditorForm::cancelChanges()
     LOG_INFO("Canceled change data of object");
     setTargetItem(m_pTargetItem); // ez
     emit editCanceled();
-}
-
-void ObjectPropertyEditorForm::setColor(QLabel *pLabel, const QColor &color)
-{
-    QImage labelImage(pLabel->width(), pLabel->height(), QImage::Format_RGBA64);
-    labelImage.fill(color);
-    QPainter p(&labelImage);
-
-    auto negativeColor = QColor(color.red() > 125 ? 0 : 255,
-                                color.green() > 125 ? 0 : 255,
-                                color.blue() > 125 ? 0 : 255);
-    p.setPen(negativeColor);
-    p.setBrush(Qt::transparent);
-    auto drawRect = labelImage.rect();
-    drawRect.setWidth(drawRect.width() - 6);
-    drawRect.setHeight(drawRect.height() - 6);
-    drawRect.moveTo(drawRect.x() + 3, drawRect.y() + 3);
-    p.drawRect(drawRect);
-
-    auto displayColorName = QString("#%1%2%3")
-            .arg(color.red(), 2, 16, QLatin1Char('0'))
-            .arg(color.green(), 2, 16, QLatin1Char('0'))
-            .arg(color.blue(), 2, 16, QLatin1Char('0'))
-            .toUpper();
-
-    p.drawText(drawRect, Qt::AlignHCenter, displayColorName);
-
-    pLabel->setPixmap(QPixmap::fromImage(labelImage));
-    pLabel->setProperty(LABEL_COLOR_PROPERTY_NAME, displayColorName);
-}
-
-QColor ObjectPropertyEditorForm::getColor(QLabel *pLabel)
-{
-    return QColor(pLabel->property(LABEL_COLOR_PROPERTY_NAME).toString());
-}
-
-QPixmap ObjectPropertyEditorForm::pixmapFromPath(const QString &targetPath) const
-{
-    QImageReader imgReader;
-    imgReader.setAutoDetectImageFormat(true);
-    imgReader.setAutoTransform(true);
-    imgReader.setDecideFormatFromContent(true);
-    imgReader.setFileName(targetPath);
-
-    if (imgReader.imageCount() == 0) {
-        LOG_WARNING("Not an image:", targetPath);
-        return {};
-    }
-
-    return QPixmap::fromImage(imgReader.read().scaled(ui->iconPreview_label->size()));
 }

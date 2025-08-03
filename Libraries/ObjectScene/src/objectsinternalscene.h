@@ -43,10 +43,10 @@ protected:
     void drawForeground(QPainter* painter, const QRectF& rect) override;
 
 private:
-    bool    m_isGridEnabled = true; //! Вкл/выкл сетки
-    double  m_baseGridSize = 50;    //! Размер ячейки при масштабе 1х1
+    bool    m_isGridEnabled {false};    //! Вкл/выкл сетки
+    double  m_baseGridSize  {50};       //! Размер стороны клетки в сетке при масштабе
+    QPen    m_gridPen {QColor(15, 90, 180, 100), 1}; //! Перо сетки
 
-    QPen    m_gridPen {QColor(15, 90, 180, 100), 1};            //! Перо сетки
     void drawGrid(QPainter* painter, const QRectF& rect);
 };
 

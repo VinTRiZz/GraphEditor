@@ -386,7 +386,7 @@ void GraphEditMode::setTargetForPropertyEditor(ObjectViewItems::ItemBase *pItem)
 
     m_propertyEditor->show();
     m_propertyEditor->setTargetItem(pItem);
-    m_propertyEditor->setPos(pItem->pos() + QPointF(100, 100));
+    m_propertyEditor->setPos(pItem->pos() + QPointF(100, 30));
 }
 
 void GraphEditMode::clearPropertyEditMode()

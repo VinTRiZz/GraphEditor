@@ -19,6 +19,7 @@ public:
      * @param pWidget           Виджет редактора свойств
      */
     void setPropertyEditor(ObjectPropertyEditorForm* pWidget);
+    QRect getEditorRect() const;
 
     /**
      * @brief setTargetItem Задать объект, свойства которого нужно редактировать

@@ -38,6 +38,9 @@ R"(
         updateInformation();
         updateCursorLabel(mapFromGlobal(cursor().pos()));
     });
+
+    connect(scene(), &ObjectsInternalScene::gridSetEnabled,
+            this, &InformationObjectView::updateInformation);
 }
 
 void InformationObjectView::updateInformation()

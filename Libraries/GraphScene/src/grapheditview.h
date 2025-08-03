@@ -27,6 +27,9 @@ signals:
     void startedView();
     void startedEdit();
 
+    void openPropertyEditor(QGraphicsItem* pTargetItem);
+    void closePropertyEditor();
+
 private:
     GraphViewMode m_viewMode;
     GraphEditMode m_editMode;

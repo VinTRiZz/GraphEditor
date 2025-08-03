@@ -1,1 +1,1 @@
-#include "../../src/objectpropertyeditorform.h"
+#include "../../src/Items/objectpropertyeditorform.h"

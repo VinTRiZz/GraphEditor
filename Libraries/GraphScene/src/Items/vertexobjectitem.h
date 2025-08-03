@@ -30,6 +30,7 @@ public:
     void setSelectedColor(const QColor &penColor) override;
 
     QImage getImage() const;
+    QRectF getImageRect() const;
 
     void setRect(const QRectF& iRect);
 

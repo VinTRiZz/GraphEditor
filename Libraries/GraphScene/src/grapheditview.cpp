@@ -13,6 +13,11 @@ GraphEditView::GraphEditView(QWidget *parent) :
     connect(&m_editMode, &GraphEditMode::started,
             this, &GraphEditView::startedEdit);
 
+    connect(&m_editMode, &GraphEditMode::openPropertyEditor,
+            this, &GraphEditView::openPropertyEditor);
+    connect(&m_editMode, &GraphEditMode::closePropertyEditor,
+            this, &GraphEditView::closePropertyEditor);
+
     m_viewMode.setGraphScene(this);
     m_editMode.setGraphScene(this);
 

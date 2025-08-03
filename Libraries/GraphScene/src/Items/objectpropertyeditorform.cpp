@@ -78,6 +78,8 @@ void ObjectPropertyEditorForm::setTargetItem(ObjectViewItems::ItemBase *pTargetI
         if (ui->iconPreview_label->pixmap(Qt::ReturnByValue).isNull()) {
             ui->iconPreview_label->setText("Предпросмотр");
         }
+        auto imageRect = pVertex->getImageRect();
+        ui->iconPreview_label->setFixedSize(QSize(imageRect.width(), imageRect.height()));
     }
     ui->property_tabWidget->setTabEnabled(1, nullptr != pVertex);
 

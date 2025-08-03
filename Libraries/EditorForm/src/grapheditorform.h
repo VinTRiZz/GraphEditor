@@ -1,6 +1,7 @@
 #ifndef GRAPHEDITORFORM_H
 #define GRAPHEDITORFORM_H
 
+#include "qgraphicsitem.h"
 #include <QWidget>
 #include <QStandardItemModel>
 
@@ -80,8 +81,11 @@ private:
     unsigned m_propBarShowWidth {400};      //! Значение ширины, которой будет окно свойств после появления. Нужно для анимаций
 
 public slots:
-    void showProperties();
-    void hideProperties();
+    void showGraphProperties();
+    void hideGraphProperties();
+
+    void showObjectProperties(QGraphicsItem* pTargetItem);
+    void hideObjectProperties();
 };
 
 #endif // GRAPHEDITORFORM_H

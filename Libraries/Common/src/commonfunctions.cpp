@@ -15,7 +15,7 @@
 namespace CommonFunctions
 {
 
-void showAnimatedVertical(QWidget *pTarget, int maxHeight, int timeMs)
+void showAnimatedVertical(QWidget *pTarget, int maxHeight, int timeMs, const std::function<void(void)>& animationCallback)
 {
     pTarget->show();
 
@@ -27,6 +27,11 @@ void showAnimatedVertical(QWidget *pTarget, int maxHeight, int timeMs)
     pTarget->setFixedHeight(0);
     animation->setStartValue(0);
     animation->setEndValue(maxHeight);
+
+    if (animationCallback) {
+        animation->connect(animation, &QPropertyAnimation::finished,
+                           [=](){ animationCallback(); });
+    }
     animation->start(QPropertyAnimation::DeleteWhenStopped);
 }
 
@@ -40,10 +45,10 @@ void hideAnimatedVertical(QWidget *pTarget, int maxHeight, int timeMs)
     pTarget->setFixedHeight(0);
     animation->setStartValue(maxHeight);
     animation->setEndValue(0);
-    animation->start(QPropertyAnimation::DeleteWhenStopped);
 
     pTarget->connect(animation, &QPropertyAnimation::finished,
             pTarget, &QWidget::hide);
+    animation->start(QPropertyAnimation::DeleteWhenStopped);
 }
 
 void showAnimatedHorizontal(QWidget *pTarget, int maxWidth, int timeMs)
@@ -58,6 +63,7 @@ void showAnimatedHorizontal(QWidget *pTarget, int maxWidth, int timeMs)
     pTarget->setFixedWidth(0);
     animation->setStartValue(0);
     animation->setEndValue(maxWidth);
+
     animation->start(QPropertyAnimation::DeleteWhenStopped);
 }
 
@@ -71,10 +77,10 @@ void hideAnimatedHorizontal(QWidget *pTarget, int maxWidth, int timeMs)
     pTarget->setFixedWidth(0);
     animation->setStartValue(maxWidth);
     animation->setEndValue(0);
-    animation->start(QPropertyAnimation::DeleteWhenStopped);
 
     pTarget->connect(animation, &QPropertyAnimation::finished,
                      pTarget, &QWidget::hide);
+    animation->start(QPropertyAnimation::DeleteWhenStopped);
 }
 
 static const auto LABEL_COLOR_PROPERTY_NAME = "labelDisplayColor";

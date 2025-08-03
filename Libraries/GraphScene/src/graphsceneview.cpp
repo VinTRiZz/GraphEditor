@@ -20,7 +20,7 @@ GraphSceneView::GraphSceneView(QWidget *parent) :
     m_buttonMatrixHead->setButtonMatrix(-10, 0, 0, 10);
     m_buttonMatrixHead->setButtonMargin(10);
 
-    m_buttonMatrixHead->setAnimationSpeed(0.5);
+    m_buttonMatrixHead->setAnimationSpeed(0.4);
     m_buttonMatrixHead->setIcons(QIcon(":/common/images/icons/common/tools_open.svg"), QIcon(":/common/images/icons/common/tools_close.svg"));
     m_buttonMatrixHead->setButtonPadding(0, 30, 0, 30);
     m_buttonMatrixHead->collapse(false);

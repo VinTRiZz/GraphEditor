@@ -45,8 +45,8 @@ GraphTabWidget::GraphTabWidget(QWidget *parent) :
         ui->filesToolBar->setSaveEnabled(isSavesEnabled);
         ui->filesToolBar->setLoadEnabled(isSavesEnabled);
 
-        connect(ui->filesToolBar, &GraphFilesToolbar::showProperties, pForm, &GraphEditorForm::showProperties);
-        connect(ui->filesToolBar, &GraphFilesToolbar::hideProperties, pForm, &GraphEditorForm::hideProperties);
+        connect(ui->filesToolBar, &GraphFilesToolbar::showProperties, pForm, &GraphEditorForm::showGraphProperties);
+        connect(ui->filesToolBar, &GraphFilesToolbar::hideProperties, pForm, &GraphEditorForm::hideGraphProperties);
     });
 
     connect(ui->filesToolBar, &GraphFilesToolbar::createGraph,

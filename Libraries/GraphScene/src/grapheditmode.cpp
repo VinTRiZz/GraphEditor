@@ -15,7 +15,7 @@ GraphEditMode::GraphEditMode(QWidget *parent) :
 
 GraphEditMode::~GraphEditMode()
 {
-    delete m_vertexEditorForm; // Т.к. нету у него parent
+
 }
 
 void GraphEditMode::init()
@@ -96,23 +96,6 @@ void GraphEditMode::init()
     buttonConf.positionY = 1;
     buttonConf.isEnabled = true;
     m_editButtons.push_back(buttonConf);
-
-    m_propertyEditor = new PropertyEditItem;
-    m_vertexEditorForm = new ObjectPropertyEditorForm(nullptr);
-    m_propertyEditor->setPropertyEditor(m_vertexEditorForm);
-    m_propertyEditor->setSystemId();
-    m_propertyEditor->setZValue(ObjectViewConstants::ObjectSceneConfiguration::getInstance().propertyEditorLayer);
-    getScene()->addObject(m_propertyEditor);
-    m_propertyEditor->hide();
-
-    // Из-за приколов с наследованием
-    QFile stylesFile(":/common/styles/mainstyles.qss");
-    if (!stylesFile.open(QIODevice::ReadOnly)) {
-        LOG_ERROR("Error opening styles:", stylesFile.errorString());
-        return;
-    }
-    m_vertexEditorForm->setStyleSheet(stylesFile.readAll());
-    LOG_OK("Property editor styles set");
 }
 
 void GraphEditMode::start()
@@ -375,7 +358,6 @@ void GraphEditMode::clearVertexAddMode()
 void GraphEditMode::setTargetForPropertyEditor(ObjectViewItems::ItemBase *pItem)
 {
     if (pItem == nullptr) {
-        m_propertyEditor->hide();
         return;
     }
 
@@ -384,14 +366,12 @@ void GraphEditMode::setTargetForPropertyEditor(ObjectViewItems::ItemBase *pItem)
         return;
     }
 
-    m_propertyEditor->show();
-    m_propertyEditor->setTargetItem(pItem);
-    m_propertyEditor->setPos(pItem->pos() + QPointF(100, 30));
+    emit openPropertyEditor(pItem);
 }
 
 void GraphEditMode::clearPropertyEditMode()
 {
-    m_propertyEditor->hide();
+    emit closePropertyEditor();
 }
 
 }

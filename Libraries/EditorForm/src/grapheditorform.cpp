@@ -21,16 +21,22 @@ GraphEditorForm::GraphEditorForm(QWidget *parent) :
     ui(new Ui::GraphEditorForm)
 {
     ui->setupUi(this);
+    ui->props_stackedWidget->setCurrentIndex(0); // Чтобы редактировать UI без проблем
 
     ui->graphScene->startEditMode();
 
     m_graphMaintainer = Graph::GraphMaintainer::createInstance();
-
     m_graphMaintainer->setCreateTime(QDateTime::currentDateTime());
 
     ui->graphScene->setGraphMaintaner(m_graphMaintainer);
     ui->propertyEditForm->setCurrentGraph(m_graphMaintainer);
     ui->props_stackedWidget->hide();
+
+    // Коннекты для редактора свойств объектов
+    connect(ui->graphScene, &Graph::GraphEditView::openPropertyEditor,
+            this, &GraphEditorForm::showObjectProperties);
+    connect(ui->graphScene, &Graph::GraphEditView::closePropertyEditor,
+            this, &GraphEditorForm::hideObjectProperties);
 }
 
 GraphEditorForm::~GraphEditorForm()
@@ -138,12 +144,39 @@ void GraphEditorForm::setCrimeMode()
 
 }
 
-void GraphEditorForm::showProperties()
+void GraphEditorForm::showGraphProperties()
 {
+    ui->props_stackedWidget->setCurrentIndex(0);
+
+    // Иначе будет дёргаться
+    if (!ui->props_stackedWidget->isHidden()) {
+        return;
+    }
     CommonFunctions::showAnimatedHorizontal(ui->props_stackedWidget, m_propBarShowWidth);
 }
 
-void GraphEditorForm::hideProperties()
+void GraphEditorForm::hideGraphProperties()
 {
+    ui->props_stackedWidget->setCurrentIndex(0);
+    CommonFunctions::hideAnimatedHorizontal(ui->props_stackedWidget, m_propBarShowWidth);
+}
+
+void GraphEditorForm::showObjectProperties(QGraphicsItem* pTargetItem)
+{
+    if (!dynamic_cast<ObjectViewItems::ItemBase*>(pTargetItem)) {
+        throw std::invalid_argument("Invalid item to edit properties of");
+    }
+    ui->props_stackedWidget->setCurrentIndex(1);
+
+    // Иначе будет дёргаться
+    if (ui->props_stackedWidget->isHidden()) {
+        CommonFunctions::showAnimatedHorizontal(ui->props_stackedWidget, m_propBarShowWidth);
+    }
+    ui->objectPropertyEditForm->setTargetItem(static_cast<ObjectViewItems::ItemBase*>(pTargetItem));
+}
+
+void GraphEditorForm::hideObjectProperties()
+{
+    ui->props_stackedWidget->setCurrentIndex(1);
     CommonFunctions::hideAnimatedHorizontal(ui->props_stackedWidget, m_propBarShowWidth);
 }

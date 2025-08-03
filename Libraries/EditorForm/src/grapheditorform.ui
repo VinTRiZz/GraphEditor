@@ -50,7 +50,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="mainProps_page">
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -69,7 +69,7 @@
      <widget class="QWidget" name="objectProps_page">
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
-        <widget class="QWidget" name="objectPropertyEditForm" native="true"/>
+        <widget class="ObjectPropertyEditorForm" name="objectPropertyEditForm" native="true"/>
        </item>
       </layout>
      </widget>
@@ -88,6 +88,12 @@
    <class>Graph::GraphPropertyEditForm</class>
    <extends>QWidget</extends>
    <header>graphpropertyeditform.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ObjectPropertyEditorForm</class>
+   <extends>QWidget</extends>
+   <header location="global">GraphScene/ObjectPropertyEditorForm.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

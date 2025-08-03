@@ -30,6 +30,9 @@ signals:
     void enabledEdit();
     void disabledEdit();
 
+    void openPropertyEditor(QGraphicsItem* pTargetItem);
+    void closePropertyEditor();
+
 private:
     std::list<ButtonMatrix::ButtonConfig> m_editButtons;
 
@@ -59,8 +62,6 @@ private:
     void setPendingVertex(ObjectViewItems::ItemBase* pItem);
     void clearVertexAddMode();
 
-    PropertyEditItem*           m_propertyEditor {nullptr};
-    ObjectPropertyEditorForm*   m_vertexEditorForm {nullptr};
     void setTargetForPropertyEditor(ObjectViewItems::ItemBase* pItem);
     void clearPropertyEditMode();
 };

@@ -178,6 +178,11 @@ QImage VertexObject::getImage() const
     return m_vertexImage->pixmap().toImage();
 }
 
+QRectF VertexObject::getImageRect() const
+{
+    return m_vertexEllipse->rect();
+}
+
 void VertexObject::setRect(const QRectF &iRect)
 {
     const double selectionPadding = 20;

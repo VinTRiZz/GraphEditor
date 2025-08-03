@@ -1,4 +1,4 @@
-#include "vertexconnectionline.h"
+#include "connectionlineitem.h"
 
 #include <QStyleOptionGraphicsItem>
 
@@ -15,8 +15,8 @@
 
 #include <QJsonObject>
 
-#include "vertexobject.h"
-#include "constants.h"
+#include "vertexobjectitem.h"
+#include <ObjectItems/Constants.h>
 
 using namespace ObjectViewConstants;
 

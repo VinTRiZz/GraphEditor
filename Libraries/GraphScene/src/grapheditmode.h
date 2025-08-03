@@ -3,9 +3,9 @@
 
 #include "graphmodebase.h"
 
-#include "GraphEdit/propertyedititem.h"
-
-#include <ObjectItems/VertexObjectItem.h>
+#include "Items/propertyedititem.h"
+#include "Items/vertexobjectitem.h"
+#include "Items/connectionlineitem.h"
 
 namespace Graph
 {

@@ -54,13 +54,13 @@
   <customwidget>
    <class>Graph::GraphEditView</class>
    <extends>QWidget</extends>
-   <header>grapheditview.h</header>
+   <header location="global">GraphScene/EditView.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>Graph::GraphPropertyEditForm</class>
    <extends>QWidget</extends>
-   <header>GraphEdit/graphpropertyeditform.h</header>
+   <header>graphpropertyeditform.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

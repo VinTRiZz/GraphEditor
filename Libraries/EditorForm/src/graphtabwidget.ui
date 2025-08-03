@@ -55,7 +55,7 @@
   <customwidget>
    <class>GraphToolbar</class>
    <extends>QWidget</extends>
-   <header>GraphEdit/graphtoolbar.h</header>
+   <header>graphtoolbar.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

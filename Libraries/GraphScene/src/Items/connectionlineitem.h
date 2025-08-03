@@ -9,8 +9,8 @@
 #include <QGraphicsLineItem>
 #include <QGraphicsPolygonItem>
 
-#include "itembase.h"
-#include "labelitem.h"
+#include <ObjectItems/ItemBase.h>
+#include <ObjectItems/LabelItem.h>
 
 namespace ObjectViewItems
 {

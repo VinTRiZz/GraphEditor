@@ -1,4 +1,4 @@
-#include "vertexobject.h"
+#include "vertexobjectitem.h"
 
 #include <QLabel>
 
@@ -11,8 +11,8 @@
 
 #include <QBuffer>
 
-#include "vertexconnectionline.h"
-#include "constants.h"
+#include "connectionlineitem.h"
+#include <ObjectItems/Constants.h>
 
 #include <Common/Logging.h>
 

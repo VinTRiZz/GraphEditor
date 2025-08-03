@@ -1,7 +1,7 @@
 CONFIGURE_LIBRARY(EditorForm)
 
 LINK_TARGET_LIBRARY(EditorForm Common)
-LINK_TARGET_LIBRARY(EditorForm ObjectScene)
 LINK_TARGET_LIBRARY(EditorForm GraphObject)
+LINK_TARGET_LIBRARY(EditorForm GraphScene)
 LINK_TARGET_LIBRARY(EditorForm CustomWidgets)
 LINK_TARGET_LIBRARY(EditorForm Filework)

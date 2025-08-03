@@ -5,8 +5,8 @@
 #include <Common/Logging.h>
 #include <Common/ApplicationSettings.h>
 
-#include <ObjectItems/ConnectionLineItem.h>
-#include <ObjectItems/VertexObjectItem.h>
+#include "Items/connectionlineitem.h"
+#include "Items/vertexobjectitem.h"
 
 namespace Graph
 {

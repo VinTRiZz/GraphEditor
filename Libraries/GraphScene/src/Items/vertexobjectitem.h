@@ -5,8 +5,8 @@
 #include <QPen>
 #include <set>
 
-#include "itembase.h"
-#include "labelitem.h"
+#include <ObjectItems/ItemBase.h>
+#include <ObjectItems/LabelItem.h>
 
 namespace ObjectViewItems
 {

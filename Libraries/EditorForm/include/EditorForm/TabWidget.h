@@ -1,2 +1,2 @@
-#include "../../src/GraphEdit/graphtabwidget.h"
+#include "../../src/graphtabwidget.h"
 

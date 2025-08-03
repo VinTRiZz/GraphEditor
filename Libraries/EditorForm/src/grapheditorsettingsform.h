@@ -15,8 +15,15 @@ public:
     explicit GraphEditorSettingsForm(QWidget *parent = nullptr);
     ~GraphEditorSettingsForm();
 
+
+public slots:
+    void loadSettings();
+    void applySettings();
+
 private:
     Ui::GraphEditorSettingsForm *ui;
+
+    void showEvent(QShowEvent* e) override;
 };
 
 #endif // GRAPHEDITORSETTINGSFORM_H

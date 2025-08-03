@@ -66,7 +66,7 @@
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QLabel" name="label_cg_3">
+       <widget class="QLabel" name="label_colorCanvas">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -89,7 +89,7 @@
        </widget>
       </item>
       <item row="5" column="1">
-       <widget class="QLabel" name="label_cg_4">
+       <widget class="QLabel" name="label_colorGrid">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -176,7 +176,7 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QLabel" name="label_cg_2">
+       <widget class="QLabel" name="label_colorTheme">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
           <horstretch>0</horstretch>

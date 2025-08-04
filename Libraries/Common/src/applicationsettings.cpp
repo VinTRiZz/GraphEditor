@@ -167,7 +167,7 @@ ApplicationSettings& ApplicationSettings::getInstance() {
 
 QDir ApplicationSettings::getApplicationDataDir()
 {
-    auto appDir = QDir(qApp->applicationDirPath());
+    auto appDir = QDir::current();
     if (!QFileInfo(appDir.absolutePath() + QDir::separator() + "GraphEditor").exists()) {
         appDir.mkdir("GraphEditor");
     }

@@ -261,7 +261,7 @@ public:
 
             logfile.open(QIODevice::Append);
             if (!logfile.isOpen()) {
-                throw std::runtime_error("Error opening logfile");
+                throw std::runtime_error(std::string("Error opening logfile (logfile path: ") + logfile.fileName().toStdString());
             }
 
             LoggingHelper logger;

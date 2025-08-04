@@ -17,6 +17,9 @@
 #include <QDir>
 #include <QFile>
 #include <QPoint>
+#include <QCoreApplication>
+
+#include "applicationsettings.h"
 
 namespace Logging {
 
@@ -225,7 +228,7 @@ public:
      * @return              Директория логов, созданная при отсутствии
      */
     static QDir getLogsDir() {
-        auto logsDir = QDir::current();
+        auto logsDir = ApplicationSettings::getApplicationDataDir();
         logsDir.mkdir("logs");
         logsDir.cd("logs");
         return logsDir;

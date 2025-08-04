@@ -27,7 +27,7 @@ set_target_properties(
     ${PROJECT_NAME} PROPERTIES
     BUILD_WITH_INSTALL_RPATH TRUE
     INSTALL_RPATH_USE_LINK_PATH TRUE
-    INSTALL_RPATH "./lib"
+    INSTALL_RPATH "./lib;../lib"
 )
 
 add_executable( ${INSTALL_BINARY_NAME} )
@@ -42,5 +42,5 @@ set_target_properties(
     ${INSTALL_BINARY_NAME} PROPERTIES
     BUILD_WITH_INSTALL_RPATH TRUE
     INSTALL_RPATH_USE_LINK_PATH TRUE
-    INSTALL_RPATH "../lib"
+    INSTALL_RPATH "./lib;../lib"
 )

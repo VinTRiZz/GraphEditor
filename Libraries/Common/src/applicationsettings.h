@@ -1,6 +1,7 @@
 #ifndef APPLICATIONSETTINGS_H
 #define APPLICATIONSETTINGS_H
 
+#include <QDir>
 #include <QColor>
 #include <QGradient>
 #include <QSettings>
@@ -46,6 +47,7 @@ public:
 
     // Работа с файлом настроек и классом
     static ApplicationSettings& getInstance();
+    static QDir getApplicationDataDir();
     void loadSettings();
     void saveSettings() const;
 

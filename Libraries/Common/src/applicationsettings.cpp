@@ -165,12 +165,22 @@ ApplicationSettings& ApplicationSettings::getInstance() {
     return instance;
 }
 
+QDir ApplicationSettings::getApplicationDataDir()
+{
+    auto appDir = QDir(qApp->applicationDirPath());
+    if (!QFileInfo(appDir.absolutePath() + QDir::separator() + "GraphEditor").exists()) {
+        appDir.mkdir("GraphEditor");
+    }
+    appDir.cd("GraphEditor");
+    return appDir;
+}
+
 void ApplicationSettings::loadSettings() {
-    return loadSettings(APPLICATION_SETTINGS_FILE_PATH);
+    return loadSettings(getApplicationDataDir().absolutePath() + QDir::separator() + APPLICATION_SETTINGS_FILE_PATH);
 }
 
 void ApplicationSettings::saveSettings() const {
-    return saveSettings(APPLICATION_SETTINGS_FILE_PATH);
+    return saveSettings(getApplicationDataDir().absolutePath() + QDir::separator() + APPLICATION_SETTINGS_FILE_PATH);
 }
 
 ApplicationSettings::ApplicationSettings() {

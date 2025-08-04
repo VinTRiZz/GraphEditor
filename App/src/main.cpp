@@ -49,13 +49,12 @@ void removeExtraLogs() {
 }
 
 int main(int argc, char* argv[]) {
-    LOG_INFO_SYNC("Started GraphEditor");
     QApplication a(argc, argv);
-
     auto& settingsInstance = ApplicationSettings::getInstance();
-    settingsInstance.loadSettings();
 
     removeExtraLogs();
+    LOG_INFO_SYNC("Started GraphEditor");
+    settingsInstance.loadSettings();
 
     QFile stylesFile(":/common/styles/mainstyles.qss");
     if (stylesFile.open(QIODevice::ReadOnly)) {

@@ -222,12 +222,17 @@ void GraphTabWidget::setupEditorForm(GraphEditorForm *pEditorForm)
 
     connect(ui->settingsForm, &GraphEditorSettingsForm::updateSceneBrush,
             pEditorForm->getScene(), &Graph::GraphSceneView::setSceneBrush);
+
     connect(ui->settingsForm, &GraphEditorSettingsForm::updateCanvasBrush,
             pEditorForm->getScene(), &Graph::GraphSceneView::setCanvasBrush);
-    connect(ui->settingsForm, &GraphEditorSettingsForm::updateGridColor,
-            pEditorForm->getScene(), &Graph::GraphSceneView::setGridColor);
     connect(ui->settingsForm, &GraphEditorSettingsForm::updateCanvasSize,
             pEditorForm, &GraphEditorForm::updateCanvasSize);
+
+    connect(ui->settingsForm, &GraphEditorSettingsForm::updateGridColor,
+            pEditorForm->getScene(), &Graph::GraphSceneView::setGridColor);
+    connect(ui->settingsForm, &GraphEditorSettingsForm::updateGridSize,
+            pEditorForm->getScene(), &Graph::GraphSceneView::setGridSize);
+
     connect(&m_saveTimer, &QTimer::timeout,
             pEditorForm, [pEditorForm](){
         pEditorForm->saveGraph();

@@ -42,8 +42,8 @@ public:
     virtual void setMainColor(const QColor& penColor);
     virtual QColor getMainColor() const;
 
-    virtual void setBackgroundColor(const QColor& penColor);
-    virtual QColor getBackgroundColor() const;
+    virtual void setSecondColor(const QColor& penColor);
+    virtual QColor getSecondColor() const;
 
     virtual void setSelectedColor(const QColor& penColor);
     virtual QColor getSelectedColor() const;

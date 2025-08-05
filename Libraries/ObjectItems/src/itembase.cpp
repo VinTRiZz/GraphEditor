@@ -114,12 +114,12 @@ QColor ItemBase::getMainColor() const {
     return QColor(data(OBJECTFIELD_COLOR_MAIN).toString());
 }
 
-void ItemBase::setBackgroundColor(const QColor& penColor) {
-    setData(OBJECTFIELD_COLOR_BACKGROUND, penColor);
+void ItemBase::setSecondColor(const QColor& penColor) {
+    setData(OBJECTFIELD_COLOR_SECOND, penColor);
 }
 
-QColor ItemBase::getBackgroundColor() const {
-    return QColor(data(OBJECTFIELD_COLOR_BACKGROUND).toString());
+QColor ItemBase::getSecondColor() const {
+    return QColor(data(OBJECTFIELD_COLOR_SECOND).toString());
 }
 
 void ItemBase::setSelectedColor(const QColor& penColor) {

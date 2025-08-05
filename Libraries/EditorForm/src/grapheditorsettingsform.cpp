@@ -85,6 +85,9 @@ void GraphEditorSettingsForm::applySettings() {
     appSettings.getObjectsConfig().setLineMainColor(mainColor);
     appSettings.getObjectsConfig().setLineSecondColor(secondColor);
     appSettings.getObjectsConfig().setLineSelectionColor(selectedColor);
+
+    appSettings.getCanvasConfig().setGridSize(ui->spinBox_gridSize->value());
+    emit updateGridSize(ui->spinBox_gridSize->value());
 }
 
 void GraphEditorSettingsForm::showEvent(QShowEvent* e) {

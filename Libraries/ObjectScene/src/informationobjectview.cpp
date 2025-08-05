@@ -7,7 +7,7 @@
 InformationObjectView::InformationObjectView(QWidget* parent)
     : InteractiveObjectView(parent) {
     m_pCursorLabel = new ObjectViewItems::LabelItem();
-    m_pCursorLabel->setBackgroundColor(QColor(200, 240, 210, 80));
+    m_pCursorLabel->setSecondColor(QColor(200, 240, 210, 80));
     m_pCursorLabel->setMainColor(Qt::black);
     m_pCursorLabel->setTextSize(10);
     m_pCursorLabel->setFlag(QGraphicsItem::ItemIgnoresTransformations, true);

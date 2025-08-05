@@ -81,12 +81,12 @@ VertexObject::VertexObject(QGraphicsItem* parent) : ItemBase(parent) {
     auto& appSettings = ApplicationSettings::getInstance();
 
     VertexObject::setSelectedColor(appSettings.getObjectsConfig().getNodeSelectionColor());
-    VertexObject::setBackgroundColor(appSettings.getObjectsConfig().getNodeSecondColor());
+    VertexObject::setSecondColor(appSettings.getObjectsConfig().getNodeSecondColor());
     VertexObject::setMainColor(appSettings.getObjectsConfig().getNodeMainColor());
 
     m_nameItem = new LabelItem(this);
     registerSubitem(m_nameItem);
-    m_nameItem->setBackgroundColor(appSettings.getObjectsConfig().getLabelBackgroundColor());
+    m_nameItem->setSecondColor(appSettings.getObjectsConfig().getLabelBackgroundColor());
     m_nameItem->setMainColor(appSettings.getObjectsConfig().getLabelTextColor());
     m_nameItem->setZValue(0);
 }
@@ -147,14 +147,14 @@ void VertexObject::setMainColor(const QColor& penColor) {
     ItemBase::setMainColor(m_vertexEllipse->pen().color());
 }
 
-void VertexObject::setBackgroundColor(const QColor& penColor) {
+void VertexObject::setSecondColor(const QColor& penColor) {
     if (penColor.isValid()) {
         m_vertexEllipse->setBrush(penColor);
     } else {
         auto& appSettings = ApplicationSettings::getInstance();
         m_vertexEllipse->setBrush(appSettings.getObjectsConfig().getNodeSecondColor());
     }
-    ItemBase::setBackgroundColor(m_vertexEllipse->brush().color());
+    ItemBase::setSecondColor(m_vertexEllipse->brush().color());
 }
 
 void VertexObject::setSelectedColor(const QColor& penColor) {

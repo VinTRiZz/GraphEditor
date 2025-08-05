@@ -14,7 +14,7 @@ public:
     void setShortName(const QString& iText) override;
 
     void setMainColor(const QColor& iColor) override;
-    void setBackgroundColor(const QColor& iColor) override;
+    void setSecondColor(const QColor& iColor) override;
 
     void setTextStyle(QFont::Style fStyle);
     void setTextSize(int pixelSize);

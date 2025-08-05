@@ -98,7 +98,7 @@ void GraphSceneView::writeChangesToGraph() {
         tmpVertex.description = vertCasted->getDescription();
 
         tmpVertex.borderColor = vertCasted->getMainColor();
-        tmpVertex.backgroundColor = vertCasted->getBackgroundColor();
+        tmpVertex.backgroundColor = vertCasted->getSecondColor();
 
         tmpVertex.image = vertCasted->getImage();
 
@@ -190,7 +190,7 @@ void GraphSceneView::updateGraph() {
         pVertexItem->setZValue(sceneConfig.vertexLayer);
 
         pVertexItem->setMainColor(vert.borderColor);
-        pVertexItem->setBackgroundColor(vert.backgroundColor);
+        pVertexItem->setSecondColor(vert.backgroundColor);
 
         vertexObjects[vert.id] = pVertexItem;
     }

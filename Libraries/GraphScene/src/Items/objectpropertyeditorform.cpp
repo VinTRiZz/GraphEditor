@@ -68,7 +68,7 @@ void ObjectPropertyEditorForm::setTargetItem(
         m_pTargetItem->getDescription());
 
     setColor(ui->mainColor_label, pTargetItem->getMainColor());
-    setColor(ui->bgrColor_label, pTargetItem->getBackgroundColor());
+    setColor(ui->bgrColor_label, pTargetItem->getSecondColor());
     setColor(ui->selectedColor_label, pTargetItem->getSelectedColor());
 
     auto pVertex = dynamic_cast<ObjectViewItems::VertexObject*>(m_pTargetItem);
@@ -98,7 +98,7 @@ void ObjectPropertyEditorForm::acceptChanges() {
     m_pTargetItem->setDescription(ui->description_plainTextEdit->toPlainText());
 
     m_pTargetItem->setMainColor(getColor(ui->mainColor_label));
-    m_pTargetItem->setBackgroundColor(getColor(ui->bgrColor_label));
+    m_pTargetItem->setSecondColor(getColor(ui->bgrColor_label));
     m_pTargetItem->setSelectedColor(getColor(ui->selectedColor_label));
 
     if (auto pVertex =

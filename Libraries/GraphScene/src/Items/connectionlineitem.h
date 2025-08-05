@@ -34,6 +34,7 @@ public:
     void resetPositions();
 
     void setMainColor(const QColor& penColor) override;
+    void setSecondColor(const QColor& penColor) override;
     void setSelectedColor(const QColor& penColor) override;
 
     void setShortName(const QString& iText) override;
@@ -49,7 +50,6 @@ private:
     VertexObject* m_fromVertex{nullptr};
     VertexObject* m_toVertex{nullptr};
 
-    QLinearGradient m_penSelectedGradient;
     QLinearGradient m_penGradient;
     QPen m_drawPen;
     QPen m_selectedPen;

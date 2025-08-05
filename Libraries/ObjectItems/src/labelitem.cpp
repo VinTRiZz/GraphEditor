@@ -45,9 +45,9 @@ void LabelItem::setMainColor(const QColor& iColor) {
     ItemBase::setMainColor(iColor);
 }
 
-void LabelItem::setBackgroundColor(const QColor& iColor) {
+void LabelItem::setSecondColor(const QColor& iColor) {
     m_vertexTextRect->setBrush(iColor);
-    ItemBase::setBackgroundColor(iColor);
+    ItemBase::setSecondColor(iColor);
 }
 
 void LabelItem::setTextStyle(QFont::Style fStyle) {

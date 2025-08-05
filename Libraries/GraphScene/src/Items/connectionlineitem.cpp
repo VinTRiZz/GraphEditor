@@ -44,23 +44,21 @@ VertexConnectionLine::VertexConnectionLine(QGraphicsItem* parent)
     registerSubitem(m_pArrowHeadPolygon);
 
     auto& appSettings = ApplicationSettings::getInstance();
-    m_penGradient.setColorAt(0, appSettings.getObjectsConfig().getLineMainColor()); // QColor("#2a8d7c"));
     m_drawPen.setWidth(3);
     m_drawPen.setCapStyle(Qt::RoundCap);
-    VertexConnectionLine::setMainColor(appSettings.getObjectsConfig().getLineSecondColor());
+    m_penGradient.setColorAt(0.5, Qt::lightGray);
+    VertexConnectionLine::setMainColor(appSettings.getObjectsConfig().getLineMainColor());
+    VertexConnectionLine::setSecondColor(appSettings.getObjectsConfig().getLineSecondColor());
 
-    m_penSelectedGradient.setColorAt(0, QColor("#fff09c"));
-    m_penSelectedGradient.setColorAt(1, appSettings.getObjectsConfig().getLineSelectionColor()); // QColor("#ffbc20"));
     m_selectedPen.setWidth(8);
     m_selectedPen.setCapStyle(Qt::RoundCap);
-    m_selectedPen.setBrush(m_penSelectedGradient);
-    VertexConnectionLine::setSelectedColor(m_selectedPen.color());
+    VertexConnectionLine::setSelectedColor(appSettings.getObjectsConfig().getLineSelectionColor());
 
     m_labelItem = new LabelItem(this);
     registerSubitem(m_labelItem);
     m_labelItem->setZValue(1);
-    m_labelItem->setBackgroundColor(appSettings.getObjectsConfig().getLabelBackgroundColor());
     m_labelItem->setMainColor(appSettings.getObjectsConfig().getLabelTextColor());
+    m_labelItem->setSecondColor(appSettings.getObjectsConfig().getLabelBackgroundColor());
 }
 
 VertexConnectionLine::~VertexConnectionLine() {
@@ -128,7 +126,18 @@ void VertexConnectionLine::resetPositions() {
 void VertexConnectionLine::setMainColor(const QColor& penColor) {
     ItemBase::setMainColor(penColor);
 
-    m_penGradient.setColorAt(1, getMainColor());
+    m_penGradient.setColorAt(0, getMainColor());
+    m_drawPen.setBrush(m_penGradient);
+    m_line->setPen(m_drawPen);
+    auto currentPen = isSelected() ? m_selectedPen : m_drawPen;
+    m_pArrowHeadPolygon->setPen(currentPen);
+}
+
+void VertexConnectionLine::setSecondColor(const QColor &penColor)
+{
+    ItemBase::setSecondColor(penColor);
+
+    m_penGradient.setColorAt(1, getSecondColor());
     m_drawPen.setBrush(m_penGradient);
     m_line->setPen(m_drawPen);
     auto currentPen = isSelected() ? m_selectedPen : m_drawPen;
@@ -165,10 +174,6 @@ void VertexConnectionLine::updatePolygon() {
     auto labelPos = m_line->boundingRect().center();
     labelPos.setX(labelPos.x() - m_labelItem->boundingRect().width());
     m_labelItem->setPos(labelPos);
-
-    m_penSelectedGradient.setStart(m_straightLine.p1());
-    m_penSelectedGradient.setFinalStop(m_straightLine.p2());
-    m_selectedPen.setBrush(m_penSelectedGradient);
 
     m_penGradient.setStart(m_straightLine.p1());
     m_penGradient.setFinalStop(m_straightLine.p2());

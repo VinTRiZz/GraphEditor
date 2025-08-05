@@ -24,7 +24,7 @@ public:
     void setName(const QString& iText) override;
 
     void setMainColor(const QColor& penColor) override;
-    void setBackgroundColor(const QColor& penColor) override;
+    void setSecondColor(const QColor& penColor) override;
     void setSelectedColor(const QColor& penColor) override;
 
     QImage getImage() const;

@@ -140,6 +140,13 @@ void GraphTabWidget::addTab(const QString& filePath) {
     }
 
     ApplicationSettings::getInstance().addRecentFile(filePath);
+
+    connect(ui->settingsForm, &GraphEditorSettingsForm::updateSceneBrush,
+            pEditorForm->getScene(), &Graph::GraphSceneView::setSceneBrush);
+    connect(ui->settingsForm, &GraphEditorSettingsForm::updateCanvasBrush,
+            pEditorForm->getScene(), &Graph::GraphSceneView::setCanvasBrush);
+    connect(ui->settingsForm, &GraphEditorSettingsForm::updateGridColor,
+            pEditorForm->getScene(), &Graph::GraphSceneView::setGridColor);;
 }
 
 void GraphTabWidget::removeTab(const QString& graphName) {

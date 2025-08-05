@@ -42,6 +42,21 @@ void ObjectViewBase::setSceneBrush(const QBrush& sceneBrush) {
     m_pScene->setBackgroundBrush(sceneBrush);
 }
 
+void ObjectViewBase::setCanvasBrush(const QBrush &canvasBrush)
+{
+    m_pNullItem->setBrush(canvasBrush);
+}
+
+void ObjectViewBase::setCanvasOpacity(double opac)
+{
+    m_pNullItem->setOpacity(opac);
+}
+
+void ObjectViewBase::setGridColor(const QColor &gColor)
+{
+    m_pScene->setGridPen({gColor, 1}); // TODO: Задание "жирности" сетки
+}
+
 void ObjectViewBase::setCanvasRect(const QRectF& iRect) {
     m_pNullItem->setFieldRect(iRect);
 

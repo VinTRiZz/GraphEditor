@@ -130,6 +130,11 @@ void GraphEditorForm::setAlgoMode() {}
 
 void GraphEditorForm::setCrimeMode() {}
 
+Graph::GraphSceneView *GraphEditorForm::getScene() const
+{
+    return ui->graphScene;
+}
+
 void GraphEditorForm::showGraphProperties() {
     ui->props_stackedWidget->setCurrentIndex(0);
 

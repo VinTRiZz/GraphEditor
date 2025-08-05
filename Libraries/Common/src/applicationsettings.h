@@ -92,10 +92,20 @@ public:
     int getLineThickness() const;
     ArrowStyle getArrowStyle() const;
 
+    QColor getCanvasColor() const;
+    QColor getNodeMainColor() const;
+    QColor getNodeSecondColor() const;
+    QColor getNodeSelectionColor() const;
+
     void setDefaultNodeShape(NodeShape shape);
     void setNodeSize(NodeSize size);
     void setLineThickness(int thickness);
     void setArrowStyle(ArrowStyle style);
+
+    void setCanvasColor(const QColor& iCol);
+    void setNodeMainColor(const QColor& iCol);
+    void setNodeSecondColor(const QColor& iCol);
+    void setNodeSelectionColor(const QColor& iCol);
 
     // Сохранённое состояние
     void addRecentFile(const QString& path);
@@ -104,7 +114,7 @@ public:
 
 private:
     ApplicationSettings();
-    ~ApplicationSettings() = default;
+    ~ApplicationSettings();
 
     void loadSettings(const QString& configPath);
     void saveSettings(const QString& configPath) const;
@@ -131,12 +141,16 @@ private:
     QGradient m_backgroundGradient = QLinearGradient(0, 100, 0, 100);
     bool m_isGridEnabled = false;
     double m_gridSize = 20.0;
+    QColor m_canvasColor {QColor(200, 200, 200)};
 
     // Свойства объектов
     NodeShape m_defaultNodeShape = NodeShape::Circle;
     NodeSize m_nodeSize = NodeSize::Medium;
     int m_lineThickness = 2;
     ArrowStyle m_arrowStyle = ArrowStyle::Triangle;
+    QColor m_defaultMainColor;
+    QColor m_defaultSecondColor;
+    QColor m_defaultSelectionColor;
 
     // Сохранённое состояние
     QStringList m_recentFiles;

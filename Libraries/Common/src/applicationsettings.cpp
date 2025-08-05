@@ -30,6 +30,26 @@ ApplicationSettings::ArrowStyle ApplicationSettings::getArrowStyle() const {
     return m_arrowStyle;
 }
 
+QColor ApplicationSettings::getCanvasColor() const
+{
+    return m_canvasColor;
+}
+
+QColor ApplicationSettings::getNodeMainColor() const
+{
+    return m_defaultMainColor;
+}
+
+QColor ApplicationSettings::getNodeSecondColor() const
+{
+    return m_defaultSecondColor;
+}
+
+QColor ApplicationSettings::getNodeSelectionColor() const
+{
+    return m_defaultSelectionColor;
+}
+
 QGradient ApplicationSettings::getBackgroundGradient() const {
     return m_backgroundGradient;
 }
@@ -92,6 +112,26 @@ void ApplicationSettings::setLineThickness(int thickness) {
 
 void ApplicationSettings::setArrowStyle(ArrowStyle style) {
     m_arrowStyle = style;
+}
+
+void ApplicationSettings::setCanvasColor(const QColor &iCol)
+{
+    m_canvasColor = iCol;
+}
+
+void ApplicationSettings::setNodeMainColor(const QColor &iCol)
+{
+    m_defaultMainColor = iCol;
+}
+
+void ApplicationSettings::setNodeSecondColor(const QColor &iCol)
+{
+    m_defaultSecondColor = iCol;
+}
+
+void ApplicationSettings::setNodeSelectionColor(const QColor &iCol)
+{
+    m_defaultSelectionColor = iCol;
 }
 
 void ApplicationSettings::setBackgroundGradient(const QGradient& gradient) {
@@ -187,6 +227,11 @@ ApplicationSettings::ApplicationSettings() {
     // Инициализация градиента по умолчанию
     m_backgroundGradient.setColorAt(0, QColor(50, 50, 50));
     m_backgroundGradient.setColorAt(1, QColor(50, 50, 50));
+}
+
+ApplicationSettings::~ApplicationSettings()
+{
+
 }
 
 void ApplicationSettings::fixErrors() {

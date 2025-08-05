@@ -32,6 +32,9 @@ public:
     void setGridSize(int sizePx);
     int getGridSize() const;
 
+    void setGridPen(const QPen& gPen);
+    void resetGridPen();
+
     using QGraphicsScene::addItem;
 
 signals:

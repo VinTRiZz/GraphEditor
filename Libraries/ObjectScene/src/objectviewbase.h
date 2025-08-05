@@ -26,7 +26,6 @@ public:
     void setGridSize(int gridSizePx);
     int getGridSize() const;
 
-    void setSceneBrush(const QBrush& sceneBrush);
     void setCanvasRect(const QRectF& iRect);
 
     void addObject(ObjectViewItems::ItemBase* pItem);
@@ -37,6 +36,14 @@ public:
     void removeAllObjects();
     void removeObject(ObjectViewConstants::objectId_t itemId);
     void removeSpecialObjects(ObjectViewConstants::ObjectType objT);
+
+public slots:
+    void setSceneBrush(const QBrush& sceneBrush);
+
+    void setCanvasBrush(const QBrush& canvasBrush);
+    void setCanvasOpacity(double opac);
+
+    void setGridColor(const QColor& gColor);
 
 private:
     ObjectsInternalScene* m_pScene{

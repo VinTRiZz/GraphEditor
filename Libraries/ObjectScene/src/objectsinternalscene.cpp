@@ -35,6 +35,16 @@ int ObjectsInternalScene::getGridSize() const {
     return m_baseGridSize;
 }
 
+void ObjectsInternalScene::setGridPen(const QPen &gPen)
+{
+    m_gridPen = gPen;
+}
+
+void ObjectsInternalScene::resetGridPen()
+{
+    m_gridPen = {QColor(15, 90, 180, 100), 1};
+}
+
 void ObjectsInternalScene::drawForeground(QPainter* painter,
                                           const QRectF& rect) {
     QGraphicsScene::drawForeground(painter, rect);

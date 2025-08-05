@@ -42,6 +42,19 @@ void GraphEditorSettingsForm::applySettings() {
     appSettings.setCanvasSize(
         QSize(ui->spinBox_width->value(), ui->spinBox_height->value()));
     emit updateCanvasSize();
+
+    auto sceneColor = getColor(ui->label_colorTheme);
+    auto targetGrad = QLinearGradient(0, 100, 0, 100);
+    targetGrad.setColorAt(0, sceneColor);
+    targetGrad.setColorAt(1, sceneColor);
+    appSettings.setBackgroundGradient(targetGrad);
+    emit updateSceneBrush(sceneColor);
+
+    auto canvasBrush = getColor(ui->label_colorCanvas);
+    emit updateCanvasBrush(canvasBrush);
+
+    auto gridColor = getColor(ui->label_colorGrid);
+    emit updateGridColor(gridColor);
 }
 
 void GraphEditorSettingsForm::showEvent(QShowEvent* e) {

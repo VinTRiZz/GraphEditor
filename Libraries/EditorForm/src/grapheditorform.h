@@ -8,7 +8,7 @@
 #include <QStandardItemModel>
 #include <QWidget>
 
-#include "qgraphicsitem.h"
+#include <GraphScene/EditView.h>
 
 namespace Ui {
 class GraphEditorForm;
@@ -75,6 +75,8 @@ public:
     void setViewMode();
     void setAlgoMode();
     void setCrimeMode();
+
+    Graph::GraphSceneView* getScene() const;
 
 private:
     Ui::GraphEditorForm* ui;

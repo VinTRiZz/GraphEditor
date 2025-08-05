@@ -52,7 +52,7 @@ void ApplicationSettings::loadSettings(const QString& configPath) {
     // История файлов
     settings.beginGroup("ETC");
     m_recentFiles.clear();
-    for (const auto& recentFile : settings.value("recent_open_files", "").toStringList()) {
+    for (const auto& recentFile : settings.value("recent_open_files", "").toString().split(",")) {
         if (QFileInfo(recentFile).exists()) {
             m_recentFiles.insert(recentFile);
         }

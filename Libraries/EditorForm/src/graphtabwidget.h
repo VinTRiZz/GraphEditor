@@ -4,6 +4,8 @@
 #include <QTimer>
 #include <QWidget>
 
+class GraphEditorForm;
+
 namespace Ui {
 class GraphTabWidget;
 }
@@ -26,6 +28,8 @@ public slots:
 private:
     Ui::GraphTabWidget* ui;
     QTimer m_saveTimer;
+
+    void setupEditorForm(GraphEditorForm* pEditorForm);
 };
 
 #endif  // GRAPHTABWIDGET_H

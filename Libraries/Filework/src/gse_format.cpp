@@ -1,6 +1,7 @@
 #include "gse_format.h"
 
 #include <Common/Logging.h>
+#include <Common/CommonFunctions.h>
 #include <GraphObject/Object.h>
 
 #include <QBuffer>
@@ -176,9 +177,9 @@ bool GSE_Format::save(const QString& targetPath) const {
         queryText += "'" + vert.description + "',";
         queryText +=
             "'" + QJsonDocument(vert.customProperties).toJson().toHex() + "',";
-        queryText += "'" + GraphCommon::encodeColorGSE(vert.borderColor) + "',";
+        queryText += "'" + CommonFunctions::encodeColorGSE(vert.borderColor) + "',";
         queryText +=
-            "'" + GraphCommon::encodeColorGSE(vert.backgroundColor) + "',";
+            "'" + CommonFunctions::encodeColorGSE(vert.backgroundColor) + "',";
         queryText +=
             "'" + getEncodedPixmap(QPixmap::fromImage(vert.image)) + "'";
 
@@ -202,7 +203,7 @@ bool GSE_Format::save(const QString& targetPath) const {
         queryText += QString::number(con.idTo) + ",";
         queryText += QString::number(con.connectionWeight) + ",";
         queryText += "'" + con.name + "',";
-        queryText += "'" + GraphCommon::encodeColorGSE(con.lineColor) + "'";
+        queryText += "'" + CommonFunctions::encodeColorGSE(con.lineColor) + "'";
 
         queryText += ")";
         if (!executeQuery(q, queryText)) {
@@ -345,9 +346,9 @@ bool GSE_Format::load(const QString& targetPath) {
             QJsonDocument::fromJson(getDecoded(q.value(valPos++).toByteArray()))
                 .object();
         vert.borderColor =
-            GraphCommon::decodeColorGSE(q.value(valPos++).toByteArray());
+            CommonFunctions::decodeColorGSE(q.value(valPos++).toByteArray());
         vert.backgroundColor =
-            GraphCommon::decodeColorGSE(q.value(valPos++).toByteArray());
+            CommonFunctions::decodeColorGSE(q.value(valPos++).toByteArray());
         vert.image =
             getDecodedPixmap(q.value(valPos++).toByteArray()).toImage();
         oGraphObject.addVertex(vert);
@@ -371,7 +372,7 @@ bool GSE_Format::load(const QString& targetPath) {
         con.connectionWeight = q.value(valPos++).toDouble();
         con.name = q.value(valPos++).toString();
         con.lineColor =
-            GraphCommon::decodeColorGSE(q.value(valPos++).toByteArray());
+            CommonFunctions::decodeColorGSE(q.value(valPos++).toByteArray());
 
         oGraphObject.addConnection(con);
         totalLoadedData++;

@@ -175,13 +175,13 @@ void GraphEditorForm::hideObjectProperties() {
 
 void GraphEditorForm::updateCanvasSize() {
     auto& appSettings = ApplicationSettings::getInstance();
-    auto canvasSize = appSettings.getCanvasSize();
+    auto canvasSize = appSettings.getCanvasConfig().getCanvasSize();
     ui->graphScene->setCanvasRect(
         QRectF(0, 0, canvasSize.width(), canvasSize.height()));
 }
 
 void GraphEditorForm::updateCanvasGrid() {
     auto& appSettings = ApplicationSettings::getInstance();
-    ui->graphScene->setGridEnabled(appSettings.getIsGridEnabled());
-    ui->graphScene->setGridSize(appSettings.getGridSize());
+    ui->graphScene->setGridEnabled(appSettings.getCanvasConfig().getIsGridEnabled());
+    ui->graphScene->setGridSize(appSettings.getCanvasConfig().getGridSize());
 }

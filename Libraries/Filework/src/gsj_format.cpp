@@ -1,6 +1,7 @@
 #include "gsj_format.h"
 
 #include <Common/Logging.h>
+#include <Common/CommonFunctions.h>
 
 #include <QColor>
 #include <QDir>
@@ -62,8 +63,8 @@ bool GSJ_Format::initFromDataJson(const QJsonObject& iJson) {
         vertex.name = vObj["name"].toString();
         vertex.description = vObj["description"].toString();
         vertex.borderColor =
-            GraphCommon::decodeColor(vObj["borderColor"].toString().toUtf8());
-        vertex.backgroundColor = GraphCommon::decodeColor(
+            CommonFunctions::decodeColor(vObj["borderColor"].toString().toUtf8());
+        vertex.backgroundColor = CommonFunctions::decodeColor(
             vObj["backgroundColor"].toString().toUtf8());
         vertex.image =
             getDecodedPixmap(vObj["image"].toString().toUtf8().data())
@@ -92,7 +93,7 @@ bool GSJ_Format::initFromDataJson(const QJsonObject& iJson) {
             conn.idTo = conObj["idTo"].toString().toULongLong();
             conn.name = conObj["name"].toString();
             conn.lineColor =
-                GraphCommon::decodeColor(conObj["color"].toString().toUtf8());
+                CommonFunctions::decodeColor(conObj["color"].toString().toUtf8());
             conn.connectionWeight = conObj["weight"].toDouble();
 
             if (conObj.contains("customProperties") &&
@@ -150,9 +151,9 @@ QJsonObject GSJ_Format::toDataJson() const {
         vObj["name"] = vertex.name;
         vObj["description"] = vertex.description;
         vObj["borderColor"] =
-            GraphCommon::encodeColor(vertex.borderColor).data();
+            CommonFunctions::encodeColor(vertex.borderColor).data();
         vObj["backgroundColor"] =
-            GraphCommon::encodeColor(vertex.backgroundColor).data();
+            CommonFunctions::encodeColor(vertex.backgroundColor).data();
         vObj["customProperties"] = vertex.customProperties;
         vObj["image"] =
             getEncodedPixmap(QPixmap::fromImage(vertex.image)).data();
@@ -172,7 +173,7 @@ QJsonObject GSJ_Format::toDataJson() const {
         conObj["idFrom"] = QString::number(conn.idFrom);
         conObj["idTo"] = QString::number(conn.idTo);
         conObj["name"] = conn.name;
-        conObj["color"] = GraphCommon::encodeColor(conn.lineColor).data();
+        conObj["color"] = CommonFunctions::encodeColor(conn.lineColor).data();
         conObj["weight"] = conn.connectionWeight;
         conObj["customProperties"] = conn.customProperties;
 

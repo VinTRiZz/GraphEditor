@@ -73,32 +73,21 @@ GraphTabWidget::GraphTabWidget(QWidget* parent)
             [this]() {
                 if (ui->stackedWidget->currentIndex() == 0) {
                     ui->stackedWidget->setCurrentIndex(1);
+                    ui->settingsForm->loadSettings();
                 } else {
                     ui->stackedWidget->setCurrentIndex(0);
                 }
             });
 
-    connect(ui->settingsForm, &GraphEditorSettingsForm::updateCanvasSize, this,
-            [this]() {
-                for (int i = 0; i < ui->editorForms_tabWidget->count(); ++i) {
-                    auto tabTargetWidget = ui->editorForms_tabWidget->widget(i);
-                    static_cast<GraphEditorForm*>(tabTargetWidget)
-                        ->updateCanvasSize();
-                }
-            });
 
-    m_saveTimer.connect(&m_saveTimer, &QTimer::timeout, [this]() {
-        for (int i = 0; i < ui->editorForms_tabWidget->count(); ++i) {
-            auto tabTargetWidget = ui->editorForms_tabWidget->widget(i);
-            static_cast<GraphEditorForm*>(tabTargetWidget)->saveGraph();
-        }
+    m_saveTimer.connect(&m_saveTimer, &QTimer::timeout, this, [this]() {
         auto savetimeSec =
-            ApplicationSettings::getInstance().getAutoSaveInterval();
+            ApplicationSettings::getInstance().getGeneralConfig().getAutoSaveInterval();
         LOG_INFO("Restarting savefile timer. Time left:", savetimeSec / 60,
                  "minutes");
         m_saveTimer.start(savetimeSec * 1000);
     });
-    auto savetimeSec = ApplicationSettings::getInstance().getAutoSaveInterval();
+    auto savetimeSec = ApplicationSettings::getInstance().getGeneralConfig().getAutoSaveInterval();
     LOG_INFO("Restarting savefile timer. Time left:", savetimeSec / 60,
              "minutes");
     m_saveTimer.start(savetimeSec * 1000);
@@ -119,18 +108,6 @@ void GraphTabWidget::addTab(const QString& filePath) {
     ui->editorForms_tabWidget->setCurrentIndex(
         ui->editorForms_tabWidget->count() - 1);
 
-    connect(pEditorForm->getGraph().get(),
-            &Graph::GraphMaintainer::changedCommonProperty, this,
-            [this, pEditorForm]() {
-                for (int i = 0; i < ui->editorForms_tabWidget->count(); ++i) {
-                    if (ui->editorForms_tabWidget->widget(i) == pEditorForm) {
-                        ui->editorForms_tabWidget->setTabText(
-                            i, pEditorForm->getGraph()->getName());
-                        break;
-                    }
-                }
-            });
-
     ui->filesToolBar->setShowPropertiesEnabled(true);
     ui->filesToolBar->setSaveAsEnabled(true);
 
@@ -140,13 +117,7 @@ void GraphTabWidget::addTab(const QString& filePath) {
     }
 
     ApplicationSettings::getInstance().addRecentFile(filePath);
-
-    connect(ui->settingsForm, &GraphEditorSettingsForm::updateSceneBrush,
-            pEditorForm->getScene(), &Graph::GraphSceneView::setSceneBrush);
-    connect(ui->settingsForm, &GraphEditorSettingsForm::updateCanvasBrush,
-            pEditorForm->getScene(), &Graph::GraphSceneView::setCanvasBrush);
-    connect(ui->settingsForm, &GraphEditorSettingsForm::updateGridColor,
-            pEditorForm->getScene(), &Graph::GraphSceneView::setGridColor);;
+    setupEditorForm(pEditorForm);
 }
 
 void GraphTabWidget::removeTab(const QString& graphName) {
@@ -169,7 +140,7 @@ void GraphTabWidget::removeTab(const QString& graphName) {
         return;
     }
 
-    if (ApplicationSettings::getInstance().getNeedConfirmDeletion() &&
+    if (ApplicationSettings::getInstance().getGeneralConfig().getNeedConfirmClose() &&
         pTargetForm->getIsSavepathValid()) {
         auto userResponse = QMessageBox::warning(
             this, "Внимание!", "Сохранить перед закрытием?",
@@ -203,18 +174,6 @@ void GraphTabWidget::createGraph() {
     ui->editorForms_tabWidget->setCurrentIndex(
         ui->editorForms_tabWidget->count() - 1);
 
-    connect(pEditorForm->getGraph().get(),
-            &Graph::GraphMaintainer::changedCommonProperty, this,
-            [this, pEditorForm]() {
-                for (int i = 0; i < ui->editorForms_tabWidget->count(); ++i) {
-                    if (ui->editorForms_tabWidget->widget(i) == pEditorForm) {
-                        ui->editorForms_tabWidget->setTabText(
-                            i, pEditorForm->getGraph()->getName());
-                        break;
-                    }
-                }
-            });
-
     ui->filesToolBar->setShowPropertiesEnabled(true);
     ui->filesToolBar->setSaveAsEnabled(true);
 
@@ -222,6 +181,8 @@ void GraphTabWidget::createGraph() {
         ui->editorForms_tabWidget->show();
         ui->placeholder_label->hide();
     }
+
+    setupEditorForm(pEditorForm);
 }
 
 void GraphTabWidget::saveVisibleGraph(const QString& filePath) {
@@ -243,4 +204,32 @@ void GraphTabWidget::loadVisibleGraph(const QString& filePath) {
     auto tabTargetWidget = ui->editorForms_tabWidget->currentWidget();
     auto pForm = static_cast<GraphEditorForm*>(tabTargetWidget);
     pForm->loadGraph(filePath);
+}
+
+void GraphTabWidget::setupEditorForm(GraphEditorForm *pEditorForm)
+{
+    connect(pEditorForm->getGraph().get(),
+            &Graph::GraphMaintainer::changedCommonProperty, this,
+            [this, pEditorForm]() {
+                for (int i = 0; i < ui->editorForms_tabWidget->count(); ++i) {
+                    if (ui->editorForms_tabWidget->widget(i) == pEditorForm) {
+                        ui->editorForms_tabWidget->setTabText(
+                            i, pEditorForm->getGraph()->getName());
+                        break;
+                    }
+                }
+            });
+
+    connect(ui->settingsForm, &GraphEditorSettingsForm::updateSceneBrush,
+            pEditorForm->getScene(), &Graph::GraphSceneView::setSceneBrush);
+    connect(ui->settingsForm, &GraphEditorSettingsForm::updateCanvasBrush,
+            pEditorForm->getScene(), &Graph::GraphSceneView::setCanvasBrush);
+    connect(ui->settingsForm, &GraphEditorSettingsForm::updateGridColor,
+            pEditorForm->getScene(), &Graph::GraphSceneView::setGridColor);
+    connect(ui->settingsForm, &GraphEditorSettingsForm::updateCanvasSize,
+            pEditorForm, &GraphEditorForm::updateCanvasSize);
+    connect(&m_saveTimer, &QTimer::timeout,
+            pEditorForm, [pEditorForm](){
+        pEditorForm->saveGraph();
+    });
 }

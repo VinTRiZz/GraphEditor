@@ -100,6 +100,8 @@ void connectColorDialog(QPushButton* pButton, QLabel* pTargetLabel) {
 }
 
 void setColor(QLabel* pLabel, const QColor& color) {
+    pLabel->setFixedWidth(100);
+
     QImage labelImage(pLabel->width(), pLabel->height(), QImage::Format_RGBA64);
     labelImage.fill(color);
     QPainter p(&labelImage);
@@ -145,5 +147,29 @@ QPixmap pixmapFromPath(const QString& targetPath, const QSize& scaleSize) {
 
     return QPixmap::fromImage(imgReader.read().scaled(scaleSize));
 }
+
+
+QByteArray encodeColor(const QColor& iCol) {
+    return iCol.name(QColor::HexArgb).toUtf8();
+}
+
+QColor decodeColor(const QString &iName) {
+    if (iName.length() != 9) {
+        return {};
+    }
+    return QColor(iName.data());
+}
+
+QByteArray encodeColorGSE(const QColor& iCol) {
+    return iCol.name(QColor::HexRgb).toUtf8();
+}
+
+QColor decodeColorGSE(const QString &iName) {
+    if (iName.length() != 7) {
+        return {};
+    }
+    return QColor(iName.data());
+}
+
 
 }  // namespace CommonFunctions

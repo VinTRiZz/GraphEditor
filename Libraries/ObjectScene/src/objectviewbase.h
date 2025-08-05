@@ -14,6 +14,7 @@ class ObjectViewBase : public QGraphicsView {
     using QGraphicsView::setScene;
     using QGraphicsView::setSceneRect;
 
+    Q_OBJECT
 public:
     explicit ObjectViewBase(QWidget* parent);
 

@@ -47,7 +47,7 @@ protected:
 private:
     bool m_isGridEnabled{false};  //! Вкл/выкл сетки
     double m_baseGridSize{50};    //! Размер стороны клетки в сетке при масштабе
-    QPen m_gridPen{QColor(15, 90, 180, 100), 1};  //! Перо сетки
+    QPen m_gridPen{QColor(15, 90, 180, 100), 2};  //! Перо сетки
 
     void drawGrid(QPainter* painter, const QRectF& rect);
 };

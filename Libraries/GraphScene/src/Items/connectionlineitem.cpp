@@ -13,6 +13,8 @@
 
 #include "vertexobjectitem.h"
 
+#include <Common/ApplicationSettings.h>
+
 using namespace ObjectViewConstants;
 
 namespace ObjectViewItems {
@@ -23,16 +25,6 @@ VertexConnectionLine::VertexConnectionLine(QGraphicsItem* parent)
 
     setType(ObjectViewConstants::OBJECTTYPE_VERTEX_CONNECTION);
 
-    m_penSelectedGradient.setColorAt(0, QColor("#fff09c"));
-    m_penSelectedGradient.setColorAt(1, QColor("#ffbc20"));
-    m_selectedPen.setWidth(8);
-    m_selectedPen.setCapStyle(Qt::RoundCap);
-    m_selectedPen.setBrush(m_penSelectedGradient);
-
-    m_penGradient.setColorAt(0, QColor("#2a8d7c"));
-    m_drawPen.setWidth(3);
-    m_drawPen.setCapStyle(Qt::RoundCap);
-    m_drawPen.setBrush(m_penGradient);
 
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setFlag(QGraphicsItem::ItemClipsToShape, true);
@@ -51,13 +43,24 @@ VertexConnectionLine::VertexConnectionLine(QGraphicsItem* parent)
     m_pArrowHeadPolygon = new QGraphicsPolygonItem(this);
     registerSubitem(m_pArrowHeadPolygon);
 
-    VertexConnectionLine::setMainColor(QColor("#2a8d7c"));
+    auto& appSettings = ApplicationSettings::getInstance();
+    m_penGradient.setColorAt(0, appSettings.getObjectsConfig().getLineMainColor()); // QColor("#2a8d7c"));
+    m_drawPen.setWidth(3);
+    m_drawPen.setCapStyle(Qt::RoundCap);
+    VertexConnectionLine::setMainColor(appSettings.getObjectsConfig().getLineSecondColor());
+
+    m_penSelectedGradient.setColorAt(0, QColor("#fff09c"));
+    m_penSelectedGradient.setColorAt(1, appSettings.getObjectsConfig().getLineSelectionColor()); // QColor("#ffbc20"));
+    m_selectedPen.setWidth(8);
+    m_selectedPen.setCapStyle(Qt::RoundCap);
+    m_selectedPen.setBrush(m_penSelectedGradient);
     VertexConnectionLine::setSelectedColor(m_selectedPen.color());
 
     m_labelItem = new LabelItem(this);
     registerSubitem(m_labelItem);
     m_labelItem->setZValue(1);
-    m_labelItem->setBackgroundColor(GraphCommon::DEFAULT_VERTEX_TEXT_BGR_COLOR);
+    m_labelItem->setBackgroundColor(appSettings.getObjectsConfig().getLabelBackgroundColor());
+    m_labelItem->setMainColor(appSettings.getObjectsConfig().getLabelTextColor());
 }
 
 VertexConnectionLine::~VertexConnectionLine() {

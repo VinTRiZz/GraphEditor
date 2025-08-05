@@ -10,6 +10,8 @@
 
 #include "graphcommon.h"
 
+#include <Common/CommonFunctions.h>
+
 namespace Graph {
 
 /**
@@ -30,17 +32,17 @@ struct GConnection {
     bool isValid() const { return idFrom != idTo; }
 
     /**
-     * @brief tieFields     Соединить вместе поля структуры для выполнения
+     * @brief applyOperator Соединить вместе поля структуры для выполнения
      * бинарного оператора к ним
      * @param vert          Вершина, с которой вместе выполнить оператор
      * @param vertOperator  Оператор для применения
      * @return              То, что вернёт оператор
      */
     template<typename OperatorT>
-    bool tieFields(const GConnection& cCon_, OperatorT&& vertOperator) const {
+    bool applyOperator(const GConnection& cCon_, OperatorT&& vertOperator) const {
         auto lineColorCompare =
-            vertOperator(GraphCommon::encodeColor(lineColor),
-                         GraphCommon::encodeColor(cCon_.lineColor));
+            vertOperator(CommonFunctions::encodeColor(lineColor),
+                         CommonFunctions::encodeColor(cCon_.lineColor));
 
         return vertOperator(std::tie(idFrom, idTo, name),
                             std::tie(cCon_.idFrom, cCon_.idTo, cCon_.name)) &&
@@ -55,7 +57,7 @@ struct GConnection {
     bool operator==(const GConnection& oCon_) const {
         auto weightEquality =
             (fabs(oCon_.connectionWeight - connectionWeight) < 1e-6);
-        auto res = tieFields(oCon_, std::equal_to<>{}) && weightEquality;
+        auto res = applyOperator(oCon_, std::equal_to<>{}) && weightEquality;
         return res;
     }
 
@@ -67,7 +69,7 @@ struct GConnection {
     bool operator!=(const GConnection& oCon_) const {
         auto weightEquality =
             (fabs(oCon_.connectionWeight - connectionWeight) < 1e-6);
-        return tieFields(oCon_, std::not_equal_to<>{}) && !weightEquality;
+        return applyOperator(oCon_, std::not_equal_to<>{}) && !weightEquality;
     }
 };
 

@@ -57,6 +57,7 @@ public:
      */
     QString getSavefilePath() const;
 
+public slots:
     /**
      * @brief saveGraph     Сохранение текущего графа в файл
      * @param targetPath    Путь к файлу

@@ -21,7 +21,6 @@ signals:
 
     void updateCanvasBrush(const QBrush& canvasBrush);
     void updateCanvasOpacity(double opac);
-
     void updateGridColor(const QColor& gColor);
 
 public slots:

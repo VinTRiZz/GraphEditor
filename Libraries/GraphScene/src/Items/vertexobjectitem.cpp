@@ -1,6 +1,7 @@
 #include "vertexobjectitem.h"
 
 #include <Common/Logging.h>
+#include <Common/ApplicationSettings.h>
 #include <GraphObject/Object.h>
 #include <ObjectItems/Constants.h>
 
@@ -77,13 +78,16 @@ VertexObject::VertexObject(QGraphicsItem* parent) : ItemBase(parent) {
     m_vertexEllipse = new QGraphicsEllipseItem(this);
     registerSubitem(m_vertexEllipse);
 
-    VertexObject::setSelectedColor(QColor("#5cff37"));
-    VertexObject::setMainColor(GraphCommon::DEFAULT_VERTEX_BORDER_COLOR);
-    VertexObject::setBackgroundColor(GraphCommon::DEFAULT_VERTEX_COLOR);
+    auto& appSettings = ApplicationSettings::getInstance();
+
+    VertexObject::setSelectedColor(appSettings.getObjectsConfig().getNodeSelectionColor());
+    VertexObject::setBackgroundColor(appSettings.getObjectsConfig().getNodeSecondColor());
+    VertexObject::setMainColor(appSettings.getObjectsConfig().getNodeMainColor());
 
     m_nameItem = new LabelItem(this);
     registerSubitem(m_nameItem);
-    m_nameItem->setBackgroundColor(GraphCommon::DEFAULT_VERTEX_TEXT_BGR_COLOR);
+    m_nameItem->setBackgroundColor(appSettings.getObjectsConfig().getLabelBackgroundColor());
+    m_nameItem->setMainColor(appSettings.getObjectsConfig().getLabelTextColor());
     m_nameItem->setZValue(0);
 }
 
@@ -136,8 +140,9 @@ void VertexObject::setMainColor(const QColor& penColor) {
     if (penColor.isValid()) {
         m_vertexEllipse->setPen(QPen(penColor, 5));
     } else {
+        auto& appSettings = ApplicationSettings::getInstance();
         m_vertexEllipse->setPen(
-            QPen(GraphCommon::DEFAULT_VERTEX_BORDER_COLOR, 5));
+            QPen(appSettings.getObjectsConfig().getNodeMainColor(), 5));
     }
     ItemBase::setMainColor(m_vertexEllipse->pen().color());
 }
@@ -146,7 +151,8 @@ void VertexObject::setBackgroundColor(const QColor& penColor) {
     if (penColor.isValid()) {
         m_vertexEllipse->setBrush(penColor);
     } else {
-        m_vertexEllipse->setBrush(GraphCommon::DEFAULT_VERTEX_COLOR);
+        auto& appSettings = ApplicationSettings::getInstance();
+        m_vertexEllipse->setBrush(appSettings.getObjectsConfig().getNodeSecondColor());
     }
     ItemBase::setBackgroundColor(m_vertexEllipse->brush().color());
 }

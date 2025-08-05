@@ -49,14 +49,14 @@ struct GVertex {
     bool isValid() const;
 
     /**
-     * @brief tieFields     Соединить вместе поля структуры для выполнения
+     * @brief applyOperator Соединить вместе поля структуры для выполнения
      * бинарного оператора к ним
      * @param vert          Вершина, с которой вместе выполнить оператор
      * @param vertOperator  Оператор для применения
      * @return              То, что вернёт оператор
      */
     template<typename OperatorT>
-    bool tieFields(const GVertex& vert, OperatorT&& vertOperator) const {
+    bool applyOperator(const GVertex& vert, OperatorT&& vertOperator) const {
         return vertOperator(
             std::tie(id, shortName, name, description, customProperties),
             std::tie(vert.id, vert.shortName, vert.name, vert.description,

@@ -54,7 +54,7 @@ void ObjectViewBase::setCanvasOpacity(double opac)
 
 void ObjectViewBase::setGridColor(const QColor &gColor)
 {
-    m_pScene->setGridPen({gColor, 1}); // TODO: Задание "жирности" сетки
+    m_pScene->setGridPen({gColor, 2}); // TODO: Задание "жирности" сетки
 }
 
 void ObjectViewBase::setCanvasRect(const QRectF& iRect) {

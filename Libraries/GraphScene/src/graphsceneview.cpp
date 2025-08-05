@@ -25,7 +25,7 @@ GraphSceneView::GraphSceneView(QWidget* parent) : ObjectView(parent) {
     m_buttonMatrixHead->collapse(false);
     m_buttonMatrixHead->hide();
 
-    setSceneBrush(ApplicationSettings::getInstance().getBackgroundGradient());
+    setSceneBrush(ApplicationSettings::getInstance().getCanvasConfig().getBackgroundColor());
     setCanvasRect(QRectF(0, 0, 2000, 2000));
     customZoom(1.0 / 200.0);
 }

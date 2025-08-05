@@ -13,7 +13,7 @@ void removeExtraLogs() {
     logfiles.removeOne("..");  // Игнорируем текущую и директорию выше (кьют
                                // багованный в этом плане)
 
-    auto maxLogCount = ApplicationSettings::getInstance().getMaxLogFileCount();
+    auto maxLogCount = ApplicationSettings::getInstance().getGeneralConfig().getMaxLogFileCount();
     if (logfiles.size() > maxLogCount) {
         LOG_INFO("Removing logfiles");
         auto currentLogfile =

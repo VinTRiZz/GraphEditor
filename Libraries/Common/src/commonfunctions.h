@@ -19,6 +19,23 @@ QColor getColor(QLabel* pLabel);
 
 QPixmap pixmapFromPath(const QString& targetPath, const QSize& scaleSize);
 
+/**
+ * @brief encodeColor   Конвертировать цвет во внутренний способ хранения
+ * @param iCol          Входной цвет
+ * @return              Массив байт с кодом цвета
+ */
+QByteArray encodeColor(const QColor& iCol);
+QByteArray encodeColorGSE(const QColor& iCol);
+
+/**
+ * @brief decodeColor   Получить цвет из массива байт внутреннего способа
+ * хранения
+ * @param iName         Входной массив байт
+ * @return              Декодированный цвет
+ */
+QColor decodeColor(const QString& iName);
+QColor decodeColorGSE(const QString& iName);
+
 }  // namespace CommonFunctions
 
 #endif  // COMMONFUNCTIONS_H

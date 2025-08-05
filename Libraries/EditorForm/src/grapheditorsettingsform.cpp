@@ -40,6 +40,7 @@ void GraphEditorSettingsForm::loadSettings() {
     auto canvasSizes = appSettings.getCanvasConfig().getCanvasSize();
     ui->spinBox_width->setValue(canvasSizes.width());
     ui->spinBox_height->setValue(canvasSizes.height());
+    ui->spinBox_gridSize->setValue(appSettings.getCanvasConfig().getGridSize());
 
     setColor(ui->label_colorTheme, appSettings.getCanvasConfig().getBackgroundColor());
     setColor(ui->label_colorCanvas, appSettings.getCanvasConfig().getCanvasColor());

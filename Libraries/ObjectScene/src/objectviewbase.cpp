@@ -2,6 +2,8 @@
 
 #include <Common/Logging.h>
 
+#include <QScrollBar>
+
 ObjectViewBase::ObjectViewBase(QWidget* parent) : QGraphicsView(parent) {
     m_pScene = new ObjectsInternalScene(this);
     setScene(m_pScene);
@@ -60,10 +62,16 @@ void ObjectViewBase::setGridColor(const QColor &gColor)
 void ObjectViewBase::setCanvasRect(const QRectF& iRect) {
     m_pNullItem->setFieldRect(iRect);
 
-    auto targetWidth = m_pNullItem->boundingRect().width();
-    targetWidth = targetWidth == 0 ? 1 : targetWidth;
-    auto scaleCoeff = viewport()->width() / targetWidth;
-    scale(scaleCoeff, scaleCoeff);
+    resetTransform();
+
+    QRectF viewRect = mapToScene(viewport()->rect()).boundingRect();
+    auto viewCenter = viewRect.center();
+
+    auto deltaPos = iRect.center() - viewCenter;
+    horizontalScrollBar()->setSliderPosition(
+        horizontalScrollBar()->sliderPosition() + deltaPos.x());
+    verticalScrollBar()->setSliderPosition(
+        verticalScrollBar()->sliderPosition() + deltaPos.y());
 
     auto rectCopy = iRect;
     rectCopy.moveTo(-10, -10);

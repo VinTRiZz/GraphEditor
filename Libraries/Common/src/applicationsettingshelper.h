@@ -109,7 +109,7 @@ public:
     QColor getBackgroundColor() const; ///< Возвращает цвет фона холста
     QColor getGridColor() const;       ///< Возвращает цвет сетки
     bool getIsGridEnabled() const;     ///< Проверяет, включена ли сетка
-    double getGridSize() const;        ///< Возвращает размер ячейки сетки
+    int getGridSize() const;           ///< Возвращает размер ячейки сетки
     QColor getCanvasColor() const;     ///< Возвращает цвет полотна
 
     // Сеттеры
@@ -117,17 +117,17 @@ public:
     void setBackgroundColor(const QColor &col);  ///< Устанавливает цвет фона
     void setGridColor(const QColor& col);        ///< Устанавливает цвет сетки
     void setIsGridEnabled(bool hasGrid);         ///< Включает/отключает сетку
-    void setGridSize(double size);               ///< Устанавливает размер ячейки сетки
+    void setGridSize(int size);                  ///< Устанавливает размер ячейки сетки
     void setCanvasSize(const QSize& canvasSize); ///< Устанавливает размер холста
     void setCanvasColor(const QColor& iCol);     ///< Устанавливает цвет полотна
 
 private:
-    QSize   m_canvasSize;
+    QSize   m_canvasSize {QSize(2000, 1000)};
     int     m_canvasOpacity = 90;
-    QColor  m_backgroundColor;
+    QColor  m_backgroundColor {QColor(170, 170, 170)};
     QColor  m_gridColor {QColor(15, 90, 180, 100)};
     bool    m_isGridEnabled = false;
-    double  m_gridSize = 20.0;
+    int     m_gridSize = 10;
     QColor  m_canvasColor {QColor(200, 200, 200)};
 };
 

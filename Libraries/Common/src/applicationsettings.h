@@ -22,6 +22,7 @@ public:
     void addRecentFile(const QString& path);     ///< Добавляет файл в список недавних
     QStringList getRecentOpenFiles() const;      ///< Возвращает список недавних файлов
     void removeRecentFile(const QString& path);  ///< Удаляет файл из списка недавних
+    void clearRecentFiles();                     ///< Удаляет все файлы из списка недавних
 
 private:
     ApplicationSettings();

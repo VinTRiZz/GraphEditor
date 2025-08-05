@@ -128,6 +128,7 @@ void CanvasConfiguration::fromSettingsFile(QSettings &iFile) {
     };
     setColorIfExist(m_backgroundColor, "background_color");
     setColorIfExist(m_gridColor, "grid_color");
+    setColorIfExist(m_canvasColor, "canvas_color");
 
     m_canvasSize = iFile.value("canvas_size").toSize();
     m_canvasOpacity = iFile.value("canvas_opacity", 90).toInt();
@@ -146,6 +147,7 @@ void CanvasConfiguration::addToSettingsFile(QSettings &iFile) const {
     };
     setColorValue(m_backgroundColor, "background_color");
     setColorValue(m_gridColor, "grid_color");
+    setColorValue(m_canvasColor, "canvas_color");
 }
 
 

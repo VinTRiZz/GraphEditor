@@ -111,6 +111,11 @@ void ApplicationSettings::removeRecentFile(const QString &path)
     m_recentFiles.remove(path);
 }
 
+void ApplicationSettings::clearRecentFiles()
+{
+    m_recentFiles.clear();
+}
+
 ApplicationSettings::ApplicationSettings()
 {
 

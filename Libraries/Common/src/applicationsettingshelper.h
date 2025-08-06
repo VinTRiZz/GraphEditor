@@ -104,13 +104,14 @@ public:
 
 
     // Геттеры
-    QSize getCanvasSize() const;       ///< Возвращает размер холста по умолчанию
-    int getCanvasOpacity() const;      ///< Возвращает прозрачность холста (0-100%)
-    QColor getBackgroundColor() const; ///< Возвращает цвет фона холста
-    QColor getGridColor() const;       ///< Возвращает цвет сетки
-    bool getIsGridEnabled() const;     ///< Проверяет, включена ли сетка
-    int getGridSize() const;           ///< Возвращает размер ячейки сетки
-    QColor getCanvasColor() const;     ///< Возвращает цвет полотна
+    QSize   getCanvasSize() const;          ///< Возвращает размер холста по умолчанию
+    int     getCanvasOpacity() const;       ///< Возвращает прозрачность холста (0-100%)
+    QColor  getBackgroundColor() const;     ///< Возвращает цвет фона холста
+    QColor  getGridColor() const;           ///< Возвращает цвет сетки
+    bool    getIsGridEnabled() const;       ///< Проверяет, включена ли сетка
+    int     getGridSize() const;            ///< Возвращает размер ячейки сетки
+    double  getGridLineWidth() const;       ///< Возвращает ширину линий сетки
+    QColor  getCanvasColor() const;         ///< Возвращает цвет полотна
 
     // Сеттеры
     void setCanvasOpacity(int opacity);          ///< Устанавливает прозрачность холста
@@ -119,6 +120,7 @@ public:
     void setIsGridEnabled(bool hasGrid);         ///< Включает/отключает сетку
     void setGridSize(int size);                  ///< Устанавливает размер ячейки сетки
     void setCanvasSize(const QSize& canvasSize); ///< Устанавливает размер холста
+    void setGridLineWidth(double gridLineWidth); ///< Устанавливает ширину линий
     void setCanvasColor(const QColor& iCol);     ///< Устанавливает цвет полотна
 
 private:
@@ -128,6 +130,7 @@ private:
     QColor  m_gridColor {QColor(15, 90, 180, 100)};
     bool    m_isGridEnabled = false;
     int     m_gridSize = 10;
+    double  m_gridLineWidth {1};
     QColor  m_canvasColor {QColor(200, 200, 200)};
 };
 

@@ -70,6 +70,7 @@ void GraphEditorSettingsForm::loadSettings() {
     ui->spinBox_width->setValue(canvasSizes.width());
     ui->spinBox_height->setValue(canvasSizes.height());
     ui->spinBox_gridSize->setValue(appSettings.getCanvasConfig().getGridSize());
+    ui->doubleSpinBox_gridLineWidth->setValue(appSettings.getCanvasConfig().getGridLineWidth());
 
     setColor(ui->label_colorTheme, appSettings.getCanvasConfig().getBackgroundColor());
     setColor(ui->label_colorCanvas, appSettings.getCanvasConfig().getCanvasColor());
@@ -105,6 +106,9 @@ void GraphEditorSettingsForm::applySettings() {
     auto gridColor = getColor(ui->label_colorGrid);
     appSettings.getCanvasConfig().setGridColor(gridColor);
     emit updateGridColor(gridColor);
+
+    appSettings.getCanvasConfig().setGridLineWidth(ui->doubleSpinBox_gridLineWidth->value());
+    emit updateGridLineWidth(appSettings.getCanvasConfig().getGridLineWidth());
 
     auto mainColor = getColor(ui->label_cMain);
     auto secondColor = getColor(ui->label_cSecond);

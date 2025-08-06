@@ -134,6 +134,7 @@ void CanvasConfiguration::fromSettingsFile(QSettings &iFile) {
     m_canvasOpacity = iFile.value("canvas_opacity", 90).toInt();
     m_isGridEnabled = iFile.value("show_grid", true).toBool();
     m_gridSize = iFile.value("grid_size", 10).toInt();
+    m_gridSize = iFile.value("grid_line_width", 1).toDouble();
 }
 
 void CanvasConfiguration::addToSettingsFile(QSettings &iFile) const {
@@ -141,6 +142,7 @@ void CanvasConfiguration::addToSettingsFile(QSettings &iFile) const {
     iFile.setValue("canvas_opacity", m_canvasOpacity);
     iFile.setValue("show_grid", m_isGridEnabled);
     iFile.setValue("grid_size", m_gridSize);
+    iFile.setValue("grid_line_width", m_gridLineWidth);
 
     auto setColorValue = [&](const QColor& targetColor, const QString& valueName){
         iFile.setValue(valueName, encodeColor(targetColor));
@@ -176,6 +178,11 @@ int CanvasConfiguration::getGridSize() const {
     return m_gridSize;
 }
 
+double CanvasConfiguration::getGridLineWidth() const
+{
+    return m_gridLineWidth;
+}
+
 void CanvasConfiguration::setCanvasOpacity(int opacity) {
     m_canvasOpacity = opacity;
 }
@@ -198,6 +205,11 @@ void CanvasConfiguration::setGridSize(int size) {
 
 void CanvasConfiguration::setCanvasSize(const QSize& canvasSize) {
     m_canvasSize = canvasSize;
+}
+
+void CanvasConfiguration::setGridLineWidth(double gridLineWidth)
+{
+    m_gridLineWidth = gridLineWidth;
 }
 
 QColor CanvasConfiguration::getCanvasColor() const {

@@ -142,6 +142,7 @@ TEST(CanvasConfigurationTest, Serialization) {
     EXPECT_COLOR_EQ(loaded.getGridColor(), original.getGridColor());
     EXPECT_EQ(loaded.getIsGridEnabled(), original.getIsGridEnabled());
     EXPECT_DOUBLE_EQ(loaded.getGridSize(), original.getGridSize());
+    EXPECT_DOUBLE_EQ(loaded.getGridLineWidth(), original.getGridLineWidth());
     EXPECT_COLOR_EQ(loaded.getCanvasColor(), original.getCanvasColor());
 }
 

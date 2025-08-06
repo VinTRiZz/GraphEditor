@@ -232,6 +232,8 @@ void GraphTabWidget::setupEditorForm(GraphEditorForm *pEditorForm)
             pEditorForm->getScene(), &Graph::GraphSceneView::setGridColor);
     connect(ui->settingsForm, &GraphEditorSettingsForm::updateGridSize,
             pEditorForm->getScene(), &Graph::GraphSceneView::setGridSize);
+    connect(ui->settingsForm, &GraphEditorSettingsForm::updateGridLineWidth,
+            pEditorForm->getScene(), &Graph::GraphSceneView::setGridLineWidth);
 
     connect(&m_saveTimer, &QTimer::timeout,
             pEditorForm, [pEditorForm](){

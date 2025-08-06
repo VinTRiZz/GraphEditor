@@ -36,8 +36,18 @@ void ObjectViewBase::setGridSize(int gridSizePx) {
     m_pScene->setGridSize(gridSizePx);
 }
 
+void ObjectViewBase::setGridLineWidth(double gridLineWidthPx)
+{
+    m_pScene->setGridLineWidth(gridLineWidthPx);
+}
+
 int ObjectViewBase::getGridSize() const {
     return m_pScene->getGridSize();
+}
+
+double ObjectViewBase::getGridLineWidth() const
+{
+    return m_pScene->getGridLineWidth();
 }
 
 void ObjectViewBase::setSceneBrush(const QBrush& sceneBrush) {

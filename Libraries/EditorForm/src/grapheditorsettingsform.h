@@ -23,6 +23,7 @@ signals:
     void updateCanvasOpacity(double opac);
 
     void updateGridSize(int gSize);
+    void updateGridLineWidth(double gSize);
     void updateGridColor(const QColor& gColor);
 
 public slots:

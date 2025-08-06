@@ -25,6 +25,7 @@ public:
     bool getIsGridEnabled() const;
 
     int getGridSize() const;
+    double getGridLineWidth() const;
 
     void setCanvasRect(const QRectF& iRect);
 
@@ -45,6 +46,7 @@ public slots:
 
     void setGridColor(const QColor& gColor);
     void setGridSize(int gridSizePx);
+    void setGridLineWidth(double gridLineWidthPx);
 
 private:
     ObjectsInternalScene* m_pScene{

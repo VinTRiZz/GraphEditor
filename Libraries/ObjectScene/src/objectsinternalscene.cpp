@@ -47,6 +47,17 @@ void ObjectsInternalScene::resetGridPen()
     update(sceneRect());
 }
 
+void ObjectsInternalScene::setGridLineWidth(double glWidth)
+{
+    m_gridPen.setWidth(glWidth);
+    update(sceneRect());
+}
+
+double ObjectsInternalScene::getGridLineWidth() const
+{
+    return m_gridPen.widthF();
+}
+
 void ObjectsInternalScene::drawForeground(QPainter* painter,
                                           const QRectF& rect) {
     QGraphicsScene::drawForeground(painter, rect);

@@ -35,6 +35,9 @@ public:
     void setGridPen(const QPen& gPen);
     void resetGridPen();
 
+    void setGridLineWidth(double glWidth);
+    double getGridLineWidth() const;
+
     using QGraphicsScene::addItem;
 
 signals:

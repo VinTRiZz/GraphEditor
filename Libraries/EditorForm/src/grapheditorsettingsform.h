@@ -29,11 +29,16 @@ public slots:
     void loadSettings();
     void applySettings();
 
+private slots:
+    void setCanvasSizeType(int sizesTypeInt);
+
 private:
     Ui::GraphEditorSettingsForm* ui;
 
     QSize m_screenSize;
     double m_widthMultiplyCoefficient {1};
+
+    void connectSizesSignals();
 
     void showEvent(QShowEvent* e) override;
 };

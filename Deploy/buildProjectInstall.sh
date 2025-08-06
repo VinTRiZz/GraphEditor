@@ -13,6 +13,11 @@ rm -r "$BUILDPROJINST_SCRIPTDIR/../BIN" &> /dev/null
 mkdir "$BUILDPROJINST_SCRIPTDIR/../build" &> /dev/null
 cd "$BUILDPROJINST_SCRIPTDIR/../build"
 
+if [ "$?" != "0" ]; then
+    echo "Error changing directory"
+    exit 1
+fi
+
 # Сборка проекта
 if (command -v ninja); then
     cmake -GNinja $BUILDPROJINST_BUILDARGS .. && ninja install

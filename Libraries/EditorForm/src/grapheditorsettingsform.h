@@ -32,6 +32,9 @@ public slots:
 private:
     Ui::GraphEditorSettingsForm* ui;
 
+    QSize m_screenSize;
+    double m_widthMultiplyCoefficient {1};
+
     void showEvent(QShowEvent* e) override;
 };
 

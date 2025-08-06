@@ -7,9 +7,32 @@ using namespace CommonFunctions;
 
 #include <Common/ApplicationSettings.h>
 
+#include <QGuiApplication>
+#include <QScreen>
+
+#include <Common/Logging.h>
+
+enum class MultiplyCoeffType
+{
+    Custom = 0,
+    Screen,
+    A0,
+    A1,
+    A2,
+    A3,
+    A4,
+    A5
+};
+
 GraphEditorSettingsForm::GraphEditorSettingsForm(QWidget* parent)
     : QWidget(parent), ui(new Ui::GraphEditorSettingsForm) {
     ui->setupUi(this);
+
+    auto appScreens = qApp->screens();
+    if (appScreens.isEmpty()) {
+        throw std::runtime_error("No screens found! Can not configure settings");
+    }
+    m_screenSize = appScreens.front()->size();
 
     // Настройки полотна
     connectColorDialog(ui->pushButton_selectColorCanvas, ui->label_colorCanvas);
@@ -28,6 +51,71 @@ GraphEditorSettingsForm::GraphEditorSettingsForm(QWidget* parent)
 
     connect(ui->pushButton_acceptSettings, &QPushButton::clicked, this,
             &GraphEditorSettingsForm::applySettings);
+
+    connect(ui->checkBox_calcSizes, &QCheckBox::clicked,
+            this, [this](bool isCalcSizesChecked){
+        ui->doubleSpinBox_multiplyCoefficient->setEnabled(isCalcSizesChecked);
+        ui->checkBox_isAlbumOrientation->setEnabled(isCalcSizesChecked);
+        ui->comboBox_calcSizesType->setEnabled(isCalcSizesChecked);
+    });
+
+    connect(ui->comboBox_calcSizesType, QOverload<int>::of(&QComboBox::currentIndexChanged),
+            this, [this](int v){
+
+        m_widthMultiplyCoefficient = 1.0; // Для задания ширины перед расчётами
+        switch(MultiplyCoeffType(v))
+        {
+        case MultiplyCoeffType::Custom:
+            m_widthMultiplyCoefficient = ui->doubleSpinBox_multiplyCoefficient->value();
+            break;
+
+        case MultiplyCoeffType::Screen:
+            ui->spinBox_width->setValue(m_screenSize.width());
+            m_widthMultiplyCoefficient = static_cast<double>(m_screenSize.height()) / static_cast<double>(m_screenSize.width());
+            break;
+
+        case MultiplyCoeffType::A0: ui->spinBox_width->setValue(841.0); m_widthMultiplyCoefficient = (1189.0 / 841.0); break;
+        case MultiplyCoeffType::A1: ui->spinBox_width->setValue(594.0); m_widthMultiplyCoefficient = (841.0 / 594.0); break;
+        case MultiplyCoeffType::A2: ui->spinBox_width->setValue(420.0); m_widthMultiplyCoefficient = (594.0 / 420.0); break;
+        case MultiplyCoeffType::A3: ui->spinBox_width->setValue(297.0); m_widthMultiplyCoefficient = (420.0 / 297.0); break;
+        case MultiplyCoeffType::A4: ui->spinBox_width->setValue(210.0); m_widthMultiplyCoefficient = (297.0 / 210.0); break;
+        case MultiplyCoeffType::A5: ui->spinBox_width->setValue(148.0); m_widthMultiplyCoefficient = (210.0 / 148.0); break;
+        default:
+            throw std::invalid_argument("Invalid type of multiply coefficient!");
+        }
+
+        // Обновляем значение
+        auto canvasW = static_cast<double>(ui->spinBox_width->value());
+        auto canvasH = ui->checkBox_isAlbumOrientation->isChecked() ? canvasW / m_widthMultiplyCoefficient :
+                                                                      canvasW * m_widthMultiplyCoefficient;
+        ui->spinBox_height->setValue(canvasH);
+    });
+
+    connect(ui->spinBox_width, &QSpinBox::editingFinished,
+            this, [this](){
+        if (!ui->checkBox_calcSizes->isChecked()) {
+            return;
+        }
+        LOG_DEBUG("Width Coeff:", m_widthMultiplyCoefficient);
+
+        auto coeffW = ui->checkBox_isAlbumOrientation->isChecked() ? 1.0 / m_widthMultiplyCoefficient : m_widthMultiplyCoefficient;
+        auto canvasW = static_cast<double>(ui->spinBox_width->value());
+        auto canvasH = coeffW * canvasW;
+        ui->spinBox_height->setValue(canvasH);
+    });
+
+    connect(ui->spinBox_height, &QSpinBox::editingFinished,
+            this, [this](){
+        if (!ui->checkBox_calcSizes->isChecked()) {
+            return;
+        }
+        LOG_DEBUG("Height Coeff:", m_widthMultiplyCoefficient);
+
+        auto coeffW = ui->checkBox_isAlbumOrientation->isChecked() ? 1.0 / m_widthMultiplyCoefficient : m_widthMultiplyCoefficient;
+        auto canvasH = static_cast<double>(ui->spinBox_height->value());
+        auto canvasW = canvasH / coeffW;
+        ui->spinBox_width->setValue(canvasW);
+    });
 }
 
 GraphEditorSettingsForm::~GraphEditorSettingsForm() {

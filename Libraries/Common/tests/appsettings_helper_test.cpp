@@ -124,6 +124,7 @@ TEST(CanvasConfigurationTest, Serialization) {
     original.setGridColor(QColor(100, 150, 200));
     original.setIsGridEnabled(true);
     original.setGridSize(25.0);
+    original.setGridLineWidth(13.3);
     original.setCanvasColor(QColor(255, 255, 255));
 
     // Сохраняем настройки

@@ -1,8 +1,9 @@
 #ifndef APPLICATIONSETTINGS_H
 #define APPLICATIONSETTINGS_H
 
-#include <boost/noncopyable.hpp>
 #include "applicationsettingshelper.h"
+
+#include <boost/noncopyable.hpp>
 
 #include <QSet>
 

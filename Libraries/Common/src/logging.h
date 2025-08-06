@@ -1,7 +1,6 @@
 #ifndef LOGGING_HPP
 #define LOGGING_HPP
 
-#include <boost/noncopyable.hpp>
 #include <condition_variable>
 #include <functional>
 #include <list>
@@ -12,6 +11,8 @@
 #include <boost/fusion/include/for_each.hpp>
 #include <boost/fusion/include/make_tuple.hpp>
 #endif  // C++ 17
+
+#include <boost/noncopyable.hpp>
 
 #include <QDebug>
 #include <QDir>
@@ -77,7 +78,8 @@ constexpr const char* logTypeString() {
 /**
  * @brief The LoggingMaster class Мастер вывода информации (логов). Синглетон
  */
-class LoggingMaster : boost::noncopyable {
+class LoggingMaster : public boost::noncopyable {
+
     QFile logfile;                        //! Логфайл
     QTextStream logfileStream{&logfile};  //! Поток ввода в файл данных
 

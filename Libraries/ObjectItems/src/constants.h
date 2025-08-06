@@ -2,9 +2,8 @@
 #define ObjectViewConstants_H
 
 #include <stdint.h>
-
-#include <QString>
 #include <boost/noncopyable.hpp>
+#include <QString>
 
 namespace ObjectViewConstants {
 
@@ -12,7 +11,8 @@ namespace ObjectViewConstants {
  * @brief The GraphConversionConfiguration class Структура информации по уровням
  * объектов на сцене
  */
-struct ObjectSceneConfiguration : boost::noncopyable {
+struct ObjectSceneConfiguration : public boost::noncopyable {
+
     // Уровни расположения объектов на сцене по их типу
     int connectionLineLayer = 10;  //! Уровень линий соединения вершин
     int vertexLayer = 20;          //! Уровень вершин

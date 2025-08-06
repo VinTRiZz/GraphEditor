@@ -1,25 +1,13 @@
+
+# СКРИПТ ДЛЯ СБОРКИ APPIMAGE ВЕРСИИ ПРОЕКТА
+
 #! /bin/bash
 CREATEAPPIMAGE_SCRIPTDIR=$(realpath $(dirname "$0"))
 CREATEAPPIMAGE_BUILDS_DIR="$CREATEAPPIMAGE_SCRIPTDIR/../BIN/Package"
 
-# Очистка созданного ранее билда (для гарантий, что не использовался кэш)
-rm -r "$CREATEAPPIMAGE_SCRIPTDIR/../build" &> /dev/null
-rm -r "$CREATEAPPIMAGE_SCRIPTDIR/../BIN" &> /dev/null
-
-# Настройка проекта
-mkdir "$CREATEAPPIMAGE_SCRIPTDIR/../build" &> /dev/null
-cd "$CREATEAPPIMAGE_SCRIPTDIR/../build"
-
-# Сборка проекта
-if (command -v ninja); then
-    cmake -GNinja .. && ninja install
-else
-    cmake .. && cmake --build . --parallel --target install
-fi
-
-# Проверка, собралось ли
-if [[ "$?" != "0" ]]; then
-    echo "Error building install target"
+# Запуск скрипта сборки
+if (! bash "$CREATEAPPIMAGE_SCRIPTDIR/buildProjectInstall.sh"); then
+    echo "Error building install target for project"
     exit 1
 fi
 

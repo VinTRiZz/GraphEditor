@@ -46,9 +46,14 @@ VertexConnectionLine::VertexConnectionLine(QGraphicsItem* parent)
     auto& appSettings = ApplicationSettings::getInstance();
     m_drawPen.setWidth(3);
     m_drawPen.setCapStyle(Qt::RoundCap);
+
+    m_penGradient.setColorAt(0.0, appSettings.getObjectsConfig().getLineMainColor());
     m_penGradient.setColorAt(0.5, Qt::lightGray);
-    VertexConnectionLine::setMainColor(appSettings.getObjectsConfig().getLineMainColor());
-    VertexConnectionLine::setSecondColor(appSettings.getObjectsConfig().getLineSecondColor());
+    m_penGradient.setColorAt(1.0, appSettings.getObjectsConfig().getLineSecondColor());
+    m_penGradient.setCoordinateMode(QLinearGradient::ObjectMode);
+    m_drawPen.setBrush(m_penGradient);
+    m_line->setPen(m_drawPen);
+    m_pArrowHeadPolygon->setPen(m_drawPen);
 
     m_selectedPen.setWidth(8);
     m_selectedPen.setCapStyle(Qt::RoundCap);
@@ -95,6 +100,8 @@ VertexObject* VertexConnectionLine::getVertexTo() const {
 
 void VertexConnectionLine::setLine(const QLineF& line) {
     m_straightLine = line;
+    m_penGradient.setStart(m_straightLine.p1());
+    m_penGradient.setFinalStop(m_straightLine.p2());
     updatePolygon();
 }
 
@@ -108,11 +115,13 @@ QLineF VertexConnectionLine::getLine() const {
 
 void VertexConnectionLine::setPositionFrom(const QPointF& posFrom) {
     m_straightLine.setP1(posFrom);
+    m_penGradient.setStart(m_straightLine.p1());
     updatePolygon();
 }
 
 void VertexConnectionLine::setPositionTo(const QPointF& posTo) {
     m_straightLine.setP2(posTo);
+    m_penGradient.setFinalStop(m_straightLine.p2());
     updatePolygon();
 }
 
@@ -126,7 +135,7 @@ void VertexConnectionLine::resetPositions() {
 void VertexConnectionLine::setMainColor(const QColor& penColor) {
     ItemBase::setMainColor(penColor);
 
-    m_penGradient.setColorAt(0, getMainColor());
+    m_penGradient.setColorAt(0.0, penColor);
     m_drawPen.setBrush(m_penGradient);
     m_line->setPen(m_drawPen);
     auto currentPen = isSelected() ? m_selectedPen : m_drawPen;
@@ -137,7 +146,7 @@ void VertexConnectionLine::setSecondColor(const QColor &penColor)
 {
     ItemBase::setSecondColor(penColor);
 
-    m_penGradient.setColorAt(1, getSecondColor());
+    m_penGradient.setColorAt(1.0, penColor);
     m_drawPen.setBrush(m_penGradient);
     m_line->setPen(m_drawPen);
     auto currentPen = isSelected() ? m_selectedPen : m_drawPen;
@@ -174,10 +183,6 @@ void VertexConnectionLine::updatePolygon() {
     auto labelPos = m_line->boundingRect().center();
     labelPos.setX(labelPos.x() - m_labelItem->boundingRect().width());
     m_labelItem->setPos(labelPos);
-
-    m_penGradient.setStart(m_straightLine.p1());
-    m_penGradient.setFinalStop(m_straightLine.p2());
-    m_drawPen.setBrush(m_penGradient);
 
     bool isP1Lefter = m_straightLine.x2() > m_straightLine.x1();
     bool isP1Higher = m_straightLine.y2() > m_straightLine.y1();

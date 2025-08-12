@@ -6,6 +6,8 @@
 #include <QStandardItemModel>
 #include <QWidget>
 
+#include "graphcommonpropertiesmodel.h"
+
 namespace Ui {
 class GraphPropertyEditForm;
 }
@@ -30,13 +32,6 @@ public:
      */
     void setCurrentGraph(const Graph::PMaintainer& pGraphMaintaner);
 
-public slots:
-    /**
-     * @brief updateEditTime Должно вызываться после любых изменений свойств
-     * графа
-     */
-    void updateEditTime();
-
 private:
     Ui::GraphPropertyEditForm* ui;
 
@@ -51,7 +46,7 @@ private:
 
     bool m_isSettingGraph{false};  //! Для задания графов без удаления их
                                    //! свойств (особенности логики)
-    QStandardItemModel* m_pCommonGraphInfoModel{
+    GraphCommonPropertiesModel* m_pCommonGraphInfoModel{
         nullptr};  //! Модель с общими данными по графу
     QStandardItemModel* m_pUserGraphInfoModel{
         nullptr};  //! Модель с пользовательскими данными по графу

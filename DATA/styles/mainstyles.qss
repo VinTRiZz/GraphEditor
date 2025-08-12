@@ -1,4 +1,93 @@
 QWidget {
+  background-color: #1a1a1a;
+    border: 1px solid #1f4f4d;
+    border-radius: 4px;
+}
+
+QTabWidget::pane {
+    border: 1px solid #1f4f4d;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    background-color: #1a1a1a;
+    padding: 5px;
+    margin-top: -1px;
+}
+
+QTabBar {
+    background-color: #1f1f1f;
+    border-bottom: 1px solid #1f4f4d;
+    spacing: 2px;
+}
+
+QTabBar::tab {
+    background-color: #2a2a2a;
+    color: #d0d0d0;
+    border: 1px solid #1f4f4d;
+    border-bottom: none;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    padding: 6px 12px;
+    margin-right: 2px;
+    min-width: 80px;
+}
+
+QTabBar::tab:disabled {
+    background-color: #2d2d2d;
+    color: #6a6a6a;
+    border-color: #3a3a3a;
+}
+
+QTabBar::tab:hover {
+    background-color: #2d2d2d;
+    border-color: #30605e;
+    color: #bbb;
+}
+
+QTabBar::tab:selected {
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    border-color: #1f4f4d;
+    border-bottom-color: #1a1a1a; /* Сливается с панелью содержимого */
+    margin-bottom: -1px; /* Перекрывает границу панели */
+}
+
+QTabBar::tab:selected:hover {
+    background-color: #1c1c1c;
+    border-color: #30605e;
+}
+
+QTabBar::tab:!selected {
+    margin-top: 2px; /* Создает эффект глубины */
+}
+
+/* Стиль для кнопок закрытия вкладок (если используются) */
+QTabBar::close-button {
+    background: transparent;
+    subcontrol-position: right;
+    margin: 3px;
+}
+
+QTabBar::close-button:hover {
+    background-color: #30605e;
+    border-radius: 3px;
+}
+
+/* Вертикальные вкладки */
+QTabWidget::tab-bar:left,
+QTabWidget::tab-bar:right {
+    width: 150px; /* Фиксированная ширина для вертикальных вкладок */
+}
+
+QTabBar::tab:left,
+QTabBar::tab:right {
+    border: 1px solid #1f4f4d;
+    border-right: none;
+    padding: 8px 15px;
+    min-width: 0;
+    min-height: 30px;
+}
+
+QWidget {
     background-color: #1f1f1f;
     color: #c0c0c0;
     font-family: "Segoe UI", Arial, sans-serif;
@@ -56,9 +145,9 @@ QPushButton:hover {
 }
 
 QPushButton:pressed {
-	background-color: #383838;
+ background-color: #383838;
     border: 2px solid #777;
-	padding-top: 6px;
+ padding-top: 6px;
     padding-bottom: 4px;
 }
 
@@ -73,7 +162,7 @@ QScrollBar {
 }
 
 QScrollBar::handle:vertical {
-	background-color: #2a2a2a;
+ background-color: #2a2a2a;
     border: 2px solid #1f4f4d;
     min-height: 20px;
     border-radius: 4px;
@@ -81,7 +170,7 @@ QScrollBar::handle:vertical {
 }
 
 QScrollBar::handle:horizontal {
-	background-color: #2a2a2a;
+ background-color: #2a2a2a;
     border: 2px solid #1f4f4d;
     min-width: 20px;
     border-radius: 4px;
@@ -97,7 +186,7 @@ QScrollBar::handle:hover {
 QScrollBar::handle:pressed {
     background-color: #383838;
     border: 2px solid #777;
-	padding-top: 6px;
+ padding-top: 6px;
     padding-bottom: 4px;
 }
 
@@ -116,6 +205,3 @@ QScrollBar::up-arrow, QScrollBar::down-arrow {
 QScrollBar::add-page, QScrollBar::sub-page {
     background: none;
 }
-
-
-

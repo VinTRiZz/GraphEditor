@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Project configuration
 project(
     GraphEditor
-    VERSION 1.32.27
+    VERSION 1.32.28
     LANGUAGES C CXX
 )
 
@@ -62,8 +62,8 @@ set(
 
 
 # Qt
-find_package(QT NAMES Qt5 REQUIRED COMPONENTS Widgets Core Gui)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core Gui)
+find_package(QT NAMES Qt5 REQUIRED COMPONENTS Widgets Core Gui Sql)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core Gui Sql)
 
 # Qt configuration
 set(CMAKE_AUTOUIC ON)

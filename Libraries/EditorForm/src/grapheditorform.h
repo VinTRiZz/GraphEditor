@@ -72,11 +72,6 @@ public slots:
      */
     bool loadGraph(const QString& targetPath = {});
 
-    void setEditMode();
-    void setViewMode();
-    void setAlgoMode();
-    void setCrimeMode();
-
     Graph::GraphSceneView* getScene() const;
 
 private:

@@ -26,37 +26,11 @@ void GraphPropertyEditForm::updateGraphInfo() {
     m_isSettingGraph = true;
 
     // Очистка таким образом, чтобы не сбрасывать VIEW
-    m_pCommonGraphInfoModel->removeRows(0, m_pCommonGraphInfoModel->rowCount());
     m_pUserGraphInfoModel->removeRows(0, m_pUserGraphInfoModel->rowCount());
 
-    // Полу-хардкод
-    auto pItem = new QStandardItem("Название");
-    auto pProperyItem = new QStandardItem(m_currentGraph->getName());
-    pItem->setEditable(false);
-    m_pCommonGraphInfoModel->appendRow({pItem, pProperyItem});
-
-    pItem = new QStandardItem("Описание");
-    pProperyItem = new QStandardItem(m_currentGraph->getDescription());
-    pItem->setEditable(false);
-    m_pCommonGraphInfoModel->appendRow({pItem, pProperyItem});
-
-    pItem = new QStandardItem("Создан");
-    pProperyItem = new QStandardItem(m_currentGraph->getCreateTime().toString(
-        GraphCommon::DATE_DISPLAY_CONVERSION_FORMAT));
-    pItem->setEditable(false);
-    pProperyItem->setEditable(false);
-    m_pCommonGraphInfoModel->appendRow({pItem, pProperyItem});
-
-    pItem = new QStandardItem("Изменён");
-    pProperyItem = new QStandardItem(m_currentGraph->getEditTime().toString(
-        GraphCommon::DATE_DISPLAY_CONVERSION_FORMAT));
-    pItem->setEditable(false);
-    pProperyItem->setEditable(false);
-    m_pCommonGraphInfoModel->appendRow({pItem, pProperyItem});
-
     for (auto& [key, value] : m_currentGraph->getCustomValueMap()) {
-        pItem = new QStandardItem(key);
-        pProperyItem = new QStandardItem(value.toString());
+        auto pItem = new QStandardItem(key);
+        auto pProperyItem = new QStandardItem(value.toString());
         m_pUserGraphInfoModel->appendRow({pItem, pProperyItem});
     }
 
@@ -67,17 +41,8 @@ void GraphPropertyEditForm::updateGraphInfo() {
 void GraphPropertyEditForm::setCurrentGraph(
     const PMaintainer& pGraphMaintaner) {
     m_currentGraph = pGraphMaintaner;
+    m_pCommonGraphInfoModel->setGraph(m_currentGraph);
     updateGraphInfo();
-}
-
-void GraphPropertyEditForm::updateEditTime() {
-    auto pItem = m_pCommonGraphInfoModel->item(EDITEDROW, 1);
-    if (pItem != nullptr) {
-        m_currentGraph->setEditTime(QDateTime::currentDateTime());
-        pItem->setData(m_currentGraph->getEditTime().toString(
-                           GraphCommon::DATE_DISPLAY_CONVERSION_FORMAT),
-                       Qt::DisplayRole);
-    }
 }
 
 void GraphPropertyEditForm::setupSignals() {
@@ -153,10 +118,7 @@ void GraphPropertyEditForm::setupSignals() {
 
 void GraphPropertyEditForm::setupModels() {
     if (m_pCommonGraphInfoModel == nullptr) {
-        m_pCommonGraphInfoModel = new QStandardItemModel;
-        m_pCommonGraphInfoModel->setColumnCount(2);
-        m_pCommonGraphInfoModel->setHeaderData(0, Qt::Horizontal, "Свойство");
-        m_pCommonGraphInfoModel->setHeaderData(1, Qt::Horizontal, "Значение");
+        m_pCommonGraphInfoModel = new GraphCommonPropertiesModel;
 
         ui->propertyCommon_tableView->setModel(m_pCommonGraphInfoModel);
         ui->propertyCommon_tableView->verticalHeader()->hide();

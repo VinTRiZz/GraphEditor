@@ -118,18 +118,6 @@ bool GraphEditorForm::loadGraph(const QString& targetPath) {
     return true;
 }
 
-void GraphEditorForm::setEditMode() {
-    ui->graphScene->startEditMode();
-}
-
-void GraphEditorForm::setViewMode() {
-    ui->graphScene->startViewMode();
-}
-
-void GraphEditorForm::setAlgoMode() {}
-
-void GraphEditorForm::setCrimeMode() {}
-
 Graph::GraphSceneView *GraphEditorForm::getScene() const
 {
     return ui->graphScene;

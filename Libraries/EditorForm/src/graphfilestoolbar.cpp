@@ -89,8 +89,8 @@ GraphFilesToolbar::GraphFilesToolbar(QWidget* parent)
     addButton(buttonInfo);
 }
 
-void GraphFilesToolbar::setShowPropertiesEnabled(bool isSaveEnabled) {
-    setButtonEnabled(m_showPropertiesButtonIndex, isSaveEnabled);
+void GraphFilesToolbar::setShowPropertiesEnabled(bool isPropOpenEnabled) {
+    setButtonEnabled(m_showPropertiesButtonIndex, isPropOpenEnabled);
 }
 
 void GraphFilesToolbar::setSaveEnabled(bool isSaveEnabled) {

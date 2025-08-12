@@ -21,3 +21,11 @@ GraphOptionsToolbar::GraphOptionsToolbar(QWidget* parent)
     };
     addButton(buttonInfo);
 }
+
+void GraphOptionsToolbar::setModeEnabled(GraphEditorMode editorMode, bool isModeEnabled)
+{
+    if (!m_modeIndexes.count(editorMode)) {
+        return;
+    }
+    setButtonEnabled(m_modeIndexes.at(editorMode), isModeEnabled);
+}

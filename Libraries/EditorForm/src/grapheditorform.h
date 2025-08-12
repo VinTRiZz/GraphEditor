@@ -72,6 +72,10 @@ public slots:
      */
     bool loadGraph(const QString& targetPath = {});
 
+    /**
+     * @brief getScene  Получить сцену, на которой отрисовывается граф. Вместо проброса коннектов
+     * @return          Указатель на сцену. Всегда валидный (если его никто не удалил)
+     */
     Graph::GraphSceneView* getScene() const;
 
 private:
@@ -83,9 +87,11 @@ private:
                //! Нужно для анимаций
 
 public slots:
+    // Слоты открытия и закрытия формы свойств
     void showGraphProperties();
     void hideGraphProperties();
 
+    // Слоты открытия и закрытия формы свойств для объекта на сцене
     void showObjectProperties(QGraphicsItem* pTargetItem);
     void hideObjectProperties();
 };

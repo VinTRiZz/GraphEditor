@@ -3,38 +3,49 @@
 
 #include <CustomWidgets/ButtonToolbar.h>
 
+/**
+ * @brief The GraphFilesToolbar class   Тулбар с кнопками для работы с файлами
+ */
 class GraphFilesToolbar : public ButtonToolbar::HeadWidget {
     Q_OBJECT
 public:
     explicit GraphFilesToolbar(QWidget* parent = nullptr);
 
-    void setShowPropertiesEnabled(bool isSaveEnabled);
+    /**
+     * @brief setShowPropertiesEnabled  Переключить кнопку открытия свойств
+     * @param isSaveEnabled
+     */
+    void setShowPropertiesEnabled(bool isPropOpenEnabled);
 
-    enum class GraphEditorMode : int {
-        EditBasicGraph,
-        ViewInteraction,
-        Algorithmic,
-        CrimeInvestigation
-    };
-    void setModeEnabled(GraphEditorMode editorMode, bool isLoadEnabled);
-
+    /**
+     * @brief setSaveEnabled    Переключить кнопку сохранения
+     * @param isSaveEnabled
+     */
     void setSaveEnabled(bool isSaveEnabled);
+
+    /**
+     * @brief setSaveAsEnabled  Переключить кнопку "сохранить как..."
+     * @param isSaveAsEnabled
+     */
     void setSaveAsEnabled(bool isSaveAsEnabled);
 
+    /**
+     * @brief setLoadEnabled    Переключить кнопку загрузки
+     * @param isLoadEnabled
+     */
     void setLoadEnabled(bool isLoadEnabled);
 
 signals:
+    // Сигналы для скрытия/показа (прокидка сигнала кнопки)
     void showProperties();
     void hideProperties();
 
+    // Сигналы работы с сохранением графа
     void createGraph();
     void saveGraph(const QString& sPath);
     void loadGraph(const QString& lPath);
 
-    void changeMode();
-
 private:
-    std::map<GraphEditorMode, int> m_modeIndexes;
     unsigned m_showPropertiesButtonIndex{0};
     unsigned m_saveButtonIndex{0};
     unsigned m_saveAsButtonIndex{0};

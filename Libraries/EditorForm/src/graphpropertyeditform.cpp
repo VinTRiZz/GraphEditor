@@ -22,46 +22,32 @@ GraphPropertyEditForm::~GraphPropertyEditForm() {
     delete ui;
 }
 
-void GraphPropertyEditForm::updateGraphInfo() {
-    m_isSettingGraph = true;
-
-    // Очистка таким образом, чтобы не сбрасывать VIEW
-    m_pUserGraphInfoModel->removeRows(0, m_pUserGraphInfoModel->rowCount());
-
-    for (auto& [key, value] : m_currentGraph->getCustomValueMap()) {
-        auto pItem = new QStandardItem(key);
-        auto pProperyItem = new QStandardItem(value.toString());
-        m_pUserGraphInfoModel->appendRow({pItem, pProperyItem});
-    }
-
-    m_isSettingGraph = false;
-    LOG_INFO("Current graph data update");
-}
-
 void GraphPropertyEditForm::setCurrentGraph(
     const PMaintainer& pGraphMaintaner) {
     m_currentGraph = pGraphMaintaner;
-    m_pCommonGraphInfoModel->setGraph(m_currentGraph);
-    updateGraphInfo();
+    m_pCommonPropertiesModel->setGraph(m_currentGraph);
+    m_pCustomPropertiesModel->setGraph(m_currentGraph);
 }
 
 void GraphPropertyEditForm::setupSignals() {
-    connect(ui->propertyAdd_pushButton, &QPushButton::clicked, this, [this]() {
-        auto pItem = new QStandardItem("Моё свойство");
-        pItem->setColumnCount(2);
-        pItem->setChild(1, new QStandardItem("Моё значение"));
-        m_pUserGraphInfoModel->appendRow(pItem);
-    });
+    connect(ui->propertyAdd_pushButton, &QPushButton::clicked, m_pCustomPropertiesModel, &GraphCustomPropertiesModel::addProperty);
 
     connect(ui->propertyRemove_pushButton, &QPushButton::clicked, this,
             [this]() {
                 auto selectedItems =
                     ui->propertyUser_tableView->selectionModel()->selection();
 
-                auto firstRow = selectedItems.front().top();
-                auto rowCount = selectedItems.front().height();
+                std::list<QString> propertiesToRemove;
+                auto currentRow = selectedItems.front().top();
+                auto targetRow = selectedItems.front().height() + currentRow;
+                while (currentRow <= targetRow) {
+                    propertiesToRemove.push_back(m_pCustomPropertiesModel->getPropertyName(currentRow));
+                    ++currentRow;
+                }
 
-                m_pUserGraphInfoModel->removeRows(firstRow, rowCount);
+                for (auto& prop : propertiesToRemove) {
+                    m_pCustomPropertiesModel->removeProperty(prop);
+                }
             });
 
     ui->propertyRemove_pushButton->setDisabled(true);
@@ -70,57 +56,13 @@ void GraphPropertyEditForm::setupSignals() {
             [this](const QItemSelection& selected, const QItemSelection&) {
                 ui->propertyRemove_pushButton->setDisabled(selected.isEmpty());
             });
-
-    connect(m_pCommonGraphInfoModel, &QAbstractItemModel::dataChanged, this,
-            [this](const QModelIndex& topLeft, const QModelIndex&) {
-                auto changedString = topLeft.data(Qt::DisplayRole).toString();
-
-                switch (topLeft.row()) {
-                    case NAMEROW:
-                        m_currentGraph->setName(changedString);
-                        break;
-
-                    case DESCRIPTIONROW:
-                        m_currentGraph->setDescription(changedString);
-                        break;
-                }
-            });
-
-    connect(
-        m_pUserGraphInfoModel, &QAbstractItemModel::dataChanged, this,
-        [this](const QModelIndex&, const QModelIndex&) {
-            const int userPropNameCol = 0;
-            const int userPropDataCol = 1;
-            for (int row = 0; row < m_pUserGraphInfoModel->rowCount(); ++row) {
-                m_currentGraph->setCustomValue(
-                    m_pUserGraphInfoModel->index(row, userPropNameCol)
-                        .data()
-                        .toString(),
-                    m_pUserGraphInfoModel->index(row, userPropDataCol).data());
-            }
-        });
-
-    connect(m_pUserGraphInfoModel, &QAbstractItemModel::rowsAboutToBeRemoved,
-            this, [this](const QModelIndex& parent, int first, int last) {
-                if (m_isSettingGraph) {
-                    return;
-                }
-                const int userPropNameCol = 0;
-                const int userPropDataCol = 1;
-                for (int row = first; row <= last; ++row) {
-                    m_currentGraph->removeCustomValue(
-                        m_pUserGraphInfoModel->index(row, userPropNameCol)
-                            .data()
-                            .toString());
-                }
-            });
 }
 
 void GraphPropertyEditForm::setupModels() {
-    if (m_pCommonGraphInfoModel == nullptr) {
-        m_pCommonGraphInfoModel = new GraphCommonPropertiesModel;
+    if (m_pCommonPropertiesModel == nullptr) {
+        m_pCommonPropertiesModel = new GraphCommonPropertiesModel;
 
-        ui->propertyCommon_tableView->setModel(m_pCommonGraphInfoModel);
+        ui->propertyCommon_tableView->setModel(m_pCommonPropertiesModel);
         ui->propertyCommon_tableView->verticalHeader()->hide();
         ui->propertyCommon_tableView->horizontalHeader()->setStretchLastSection(
             true);
@@ -128,13 +70,10 @@ void GraphPropertyEditForm::setupModels() {
             QHeaderView::AdjustToContents);
     }
 
-    if (m_pUserGraphInfoModel == nullptr) {
-        m_pUserGraphInfoModel = new QStandardItemModel(this);
-        m_pUserGraphInfoModel->setColumnCount(2);
-        m_pUserGraphInfoModel->setHeaderData(0, Qt::Horizontal, "Свойство");
-        m_pUserGraphInfoModel->setHeaderData(1, Qt::Horizontal, "Значение");
+    if (m_pCustomPropertiesModel == nullptr) {
+        m_pCustomPropertiesModel = new GraphCustomPropertiesModel(this);
 
-        ui->propertyUser_tableView->setModel(m_pUserGraphInfoModel);
+        ui->propertyUser_tableView->setModel(m_pCustomPropertiesModel);
         ui->propertyUser_tableView->verticalHeader()->hide();
         ui->propertyUser_tableView->horizontalHeader()->setStretchLastSection(
             true);

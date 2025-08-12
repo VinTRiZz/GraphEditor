@@ -7,6 +7,7 @@
 #include <QWidget>
 
 #include "graphcommonpropertiesmodel.h"
+#include "graphcustompropertiesmodel.h"
 
 namespace Ui {
 class GraphPropertyEditForm;
@@ -20,11 +21,6 @@ class GraphPropertyEditForm : public QWidget {
 public:
     explicit GraphPropertyEditForm(QWidget* parent = nullptr);
     ~GraphPropertyEditForm();
-
-    /**
-     * @brief updateGraphInfo Обновление информации о графе
-     */
-    void updateGraphInfo();
 
     /**
      * @brief setCurrentGraph   Задать мейнтейнера данных графа
@@ -46,9 +42,9 @@ private:
 
     bool m_isSettingGraph{false};  //! Для задания графов без удаления их
                                    //! свойств (особенности логики)
-    GraphCommonPropertiesModel* m_pCommonGraphInfoModel{
+    GraphCommonPropertiesModel* m_pCommonPropertiesModel{
         nullptr};  //! Модель с общими данными по графу
-    QStandardItemModel* m_pUserGraphInfoModel{
+    GraphCustomPropertiesModel* m_pCustomPropertiesModel{
         nullptr};  //! Модель с пользовательскими данными по графу
 
     /**

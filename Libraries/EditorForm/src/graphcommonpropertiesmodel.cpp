@@ -62,10 +62,10 @@ QVariant GraphCommonPropertiesModel::data(const QModelIndex &index, int role) co
     if (index.column() == 0) {
         switch (index.row())
         {
-        case CPR_NAME: return "Название";
-        case CPR_DESCRIPTION: return "Описание";
-        case CPR_CREATED_BY: return " Создан ";
-        case CPR_EDITED_BY: return "Изменён";
+        case CPR_NAME:          return "Название";
+        case CPR_DESCRIPTION:   return "Описание";
+        case CPR_CREATED_BY:    return "Создан";
+        case CPR_EDITED_BY:     return "Изменён";
         }
     } else if (index.column() == 1) {
         switch (index.row())

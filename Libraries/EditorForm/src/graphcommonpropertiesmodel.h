@@ -8,7 +8,6 @@
 class GraphCommonPropertiesModel : public QAbstractTableModel
 {
     Q_OBJECT
-
 public:
     explicit GraphCommonPropertiesModel(QObject *parent = nullptr);
 

@@ -2,8 +2,7 @@
 
 namespace Graph {
 
-GraphMaintainer::GraphMaintainer() {}
-
+GraphMaintainer::GraphMaintainer(QObject* parent) : QObject(parent) {}
 GraphMaintainer::~GraphMaintainer() {}
 
 bool GraphMaintainer::operator==(const GraphMaintainer& gObj_) const {
@@ -151,6 +150,11 @@ QVariant GraphMaintainer::getCustomValue(const QString& key) const {
 }
 
 std::map<QString, QVariant> GraphMaintainer::getCustomValueMap() const {
+    return m_customDataValues;
+}
+
+const std::map<QString, QVariant> &GraphMaintainer::getCustomValueMapRef() const
+{
     return m_customDataValues;
 }
 

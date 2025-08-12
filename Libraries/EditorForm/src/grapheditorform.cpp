@@ -85,8 +85,6 @@ bool GraphEditorForm::saveGraph(const QString& targetPath) {
             "доступа к директории;\nФакт её существования");
         return false;
     }
-
-    ui->propertyEditForm->updateGraphInfo();
     return true;
 }
 
@@ -113,7 +111,6 @@ bool GraphEditorForm::loadGraph(const QString& targetPath) {
         return false;
     }
 
-    ui->propertyEditForm->updateGraphInfo();
     ui->graphScene->updateGraph();
     return true;
 }

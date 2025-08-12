@@ -71,6 +71,7 @@ void GraphEditorSettingsForm::loadSettings() {
     ui->spinBox_height->setValue(canvasSizes.height());
     ui->spinBox_gridSize->setValue(appSettings.getCanvasConfig().getGridSize());
     ui->doubleSpinBox_gridLineWidth->setValue(appSettings.getCanvasConfig().getGridLineWidth());
+    ui->checkBox_enableGrid->setChecked(appSettings.getCanvasConfig().getIsGridEnabled());
 
     setColor(ui->label_colorTheme, appSettings.getCanvasConfig().getBackgroundColor());
     setColor(ui->label_colorCanvas, appSettings.getCanvasConfig().getCanvasColor());
@@ -126,6 +127,8 @@ void GraphEditorSettingsForm::applySettings() {
 
     appSettings.getCanvasConfig().setGridSize(ui->spinBox_gridSize->value());
     emit updateGridSize(ui->spinBox_gridSize->value());
+
+    appSettings.getCanvasConfig().setIsGridEnabled(ui->checkBox_enableGrid->isChecked());
 
     LOG_OK("Settings applied");
 }

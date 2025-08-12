@@ -130,11 +130,11 @@ void CanvasConfiguration::fromSettingsFile(QSettings &iFile) {
     setColorIfExist(m_gridColor, "grid_color");
     setColorIfExist(m_canvasColor, "canvas_color");
 
-    m_canvasSize = iFile.value("canvas_size", QSize(2000, 1000)).toSize();
+    m_canvasSize    = iFile.value("canvas_size", QSize(2000, 1000)).toSize();
     m_canvasOpacity = iFile.value("canvas_opacity", 90).toInt();
-    m_isGridEnabled = iFile.value("show_grid", true).toBool();
-    m_gridSize = iFile.value("grid_size", 10).toInt();
-    m_gridSize = iFile.value("grid_line_width", 1).toDouble();
+    m_isGridEnabled = iFile.value("show_grid", false).toBool();
+    m_gridSize      = iFile.value("grid_size", 10).toInt();
+    m_gridLineWidth = iFile.value("grid_line_width", 2).toDouble();
 }
 
 void CanvasConfiguration::addToSettingsFile(QSettings &iFile) const {

@@ -208,6 +208,14 @@ void GraphTabWidget::loadVisibleGraph(const QString& filePath) {
 
 void GraphTabWidget::setupEditorForm(GraphEditorForm *pEditorForm)
 {
+    auto& appSettings = ApplicationSettings::getInstance();
+    pEditorForm->getScene()->setGridEnabled(appSettings.getCanvasConfig().getIsGridEnabled());
+    pEditorForm->getScene()->setGridSize(appSettings.getCanvasConfig().getGridSize());
+
+    auto canvasSize = appSettings.getCanvasConfig().getCanvasSize();
+    pEditorForm->getScene()->setCanvasRect(
+        QRectF(0, 0, canvasSize.width(), canvasSize.height()));
+
     connect(pEditorForm->getGraph().get(),
             &Graph::GraphMaintainer::changedCommonProperty, this,
             [this, pEditorForm]() {
@@ -226,7 +234,12 @@ void GraphTabWidget::setupEditorForm(GraphEditorForm *pEditorForm)
     connect(ui->settingsForm, &GraphEditorSettingsForm::updateCanvasBrush,
             pEditorForm->getScene(), &Graph::GraphSceneView::setCanvasBrush);
     connect(ui->settingsForm, &GraphEditorSettingsForm::updateCanvasSize,
-            pEditorForm, &GraphEditorForm::updateCanvasSize);
+            pEditorForm->getScene(), [pEditorForm](){
+        auto& appSettings = ApplicationSettings::getInstance();
+        auto canvasSize = appSettings.getCanvasConfig().getCanvasSize();
+        pEditorForm->getScene()->setCanvasRect(
+            QRectF(0, 0, canvasSize.width(), canvasSize.height()));
+    });
 
     connect(ui->settingsForm, &GraphEditorSettingsForm::updateGridColor,
             pEditorForm->getScene(), &Graph::GraphSceneView::setGridColor);

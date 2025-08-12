@@ -35,8 +35,6 @@ GraphEditorForm::GraphEditorForm(QWidget* parent)
             &GraphEditorForm::showObjectProperties);
     connect(ui->graphScene, &Graph::GraphEditView::closePropertyEditor, this,
             &GraphEditorForm::hideObjectProperties);
-
-    updateCanvasSize();
 }
 
 GraphEditorForm::~GraphEditorForm() {
@@ -73,7 +71,6 @@ bool GraphEditorForm::saveGraph(const QString& targetPath) {
     }
 
     m_graphMaintainer->setEditTime(QDateTime::currentDateTime());
-
     ui->graphScene->writeChangesToGraph();
 
     SaveMaster saveMaster;
@@ -156,17 +153,4 @@ void GraphEditorForm::hideObjectProperties() {
     ui->props_stackedWidget->setCurrentIndex(1);
     CommonFunctions::hideAnimatedHorizontal(ui->props_stackedWidget,
                                             m_propBarShowWidth);
-}
-
-void GraphEditorForm::updateCanvasSize() {
-    auto& appSettings = ApplicationSettings::getInstance();
-    auto canvasSize = appSettings.getCanvasConfig().getCanvasSize();
-    ui->graphScene->setCanvasRect(
-        QRectF(0, 0, canvasSize.width(), canvasSize.height()));
-}
-
-void GraphEditorForm::updateCanvasGrid() {
-    auto& appSettings = ApplicationSettings::getInstance();
-    ui->graphScene->setGridEnabled(appSettings.getCanvasConfig().getIsGridEnabled());
-    ui->graphScene->setGridSize(appSettings.getCanvasConfig().getGridSize());
 }

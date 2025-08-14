@@ -27,7 +27,7 @@ function(CONFIGURE_LIBRARY LIBRARY_NAME)
 
     # Library target
     add_library(${LIBRARY_NAME} SHARED)
-    target_sources(${LIBRARY_NAME} PRIVATE ${HEADERS} ${SOURCES} ${UIFILES} ${RESOURCES_COMMONFILE})
+    target_sources(${LIBRARY_NAME} PRIVATE ${HEADERS} ${SOURCES} ${UIFILES})
 
     set(
         TARGET_LINKED_LIBS
@@ -88,7 +88,7 @@ function(ADD_EDITOR_TEST EDITOR_MODULENAME)
 
     add_executable(${EDITOR_MODULENAME_TEST})
 
-    file(GLOB TESTING_SOURCES "tests/*.cpp" ${RESOURCES_COMMONFILE})
+    file(GLOB TESTING_SOURCES "tests/*.cpp")
     target_sources(${EDITOR_MODULENAME_TEST} PRIVATE ${TESTING_SOURCES})
 
     get_target_property(EDITOR_MODULE_LIBS ${EDITOR_MODULENAME} LINK_LIBRARIES)

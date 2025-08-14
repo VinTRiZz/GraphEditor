@@ -25,5 +25,7 @@
         <file>images/icons/editmode/mode_edit_properties_active.svg</file>
         <file>images/icons/app/grapheditor.svg</file>
         <file>images/icons/common/settings.svg</file>
+        <file>images/icons/common/close_tab.svg</file>
     </qresource>
+    <qresource prefix="/"/>
 </RCC>

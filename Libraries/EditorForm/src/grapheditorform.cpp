@@ -21,6 +21,9 @@ GraphEditorForm::GraphEditorForm(QWidget* parent)
     ui->props_stackedWidget->setCurrentIndex(
         0);  // Чтобы редактировать UI без проблем
 
+    // Чтобы отключить границу через стили
+    ui->graphScene_groupBox->setProperty("hasBorder", false);
+
     ui->graphScene->startEditMode();
 
     m_graphMaintainer = Graph::GraphMaintainer::createInstance();

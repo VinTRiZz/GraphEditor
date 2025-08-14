@@ -102,7 +102,7 @@ TEST(CanvasConfigurationTest, GettersSetters) {
     config.setBackgroundColor(bgColor);
     config.setGridColor(gridColor);
     config.setIsGridEnabled(true);
-    config.setGridSize(15.5);
+    config.setGridSize(15);
     config.setCanvasColor(canvasColor);
 
     // Проверка значений
@@ -111,7 +111,7 @@ TEST(CanvasConfigurationTest, GettersSetters) {
     EXPECT_COLOR_EQ(config.getBackgroundColor(), bgColor);
     EXPECT_COLOR_EQ(config.getGridColor(), gridColor);
     EXPECT_TRUE(config.getIsGridEnabled());
-    EXPECT_DOUBLE_EQ(config.getGridSize(), 15.5);
+    EXPECT_DOUBLE_EQ(config.getGridSize(), 15);
     EXPECT_COLOR_EQ(config.getCanvasColor(), canvasColor);
 }
 

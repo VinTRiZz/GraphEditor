@@ -6,3 +6,4 @@ bin/
 Makefile
 *.user
 .qtc_clangd/
+*.autosave

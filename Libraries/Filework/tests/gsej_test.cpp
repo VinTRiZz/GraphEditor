@@ -18,16 +18,14 @@ TEST(FormatSaving, GSE_JSON_Encrypted_Format) {
 
     auto graphCopy = savedGraph;  // Для чистоты исследований (проверка бага на
                                   // затирание данных)
-    saveFormat.setGraphMaintaner(gMaintaner);
-
-    EXPECT_TRUE(saveFormat.isStructureValid(saveFormat.toDataJson()));
+    saveFormat.setGraphMaintainer(gMaintaner);
 
     QString testTargetPath = "/tmp/GraphEditorSaveTest.gsej";
     EXPECT_TRUE(saveFormat.save(testTargetPath));
     EXPECT_EQ(graphCopy, savedGraph);
 
     auto gMaintanerLoaded = Graph::GraphMaintainer::createInstance();
-    saveFormat.setGraphMaintaner(gMaintanerLoaded);
+    saveFormat.setGraphMaintainer(gMaintanerLoaded);
     EXPECT_TRUE(saveFormat.load(testTargetPath));
 
     QFile::remove(testTargetPath);

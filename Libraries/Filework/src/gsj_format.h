@@ -16,27 +16,37 @@ public:
     GSJ_Format();
     ~GSJ_Format();
 
-    QString getExtension() const override;
-    QString getDescription() const override;
-    void setEncryptionKey(const QString& keyString) override {};
-    QString getEncryptionKey(const QString& keyString) const override {
-        return {};
-    }
-
+    /**
+     * @brief initFromDataJson  Инициализировать мейнтейнер из JSON. Требует задания мейнтейнера перед вызовом
+     * @param iJson             JSON сохранения
+     * @return                  true при успешной инициализации
+     */
     bool initFromDataJson(const QJsonObject& iJson);
+
+    /**
+     * @brief toDataJson    Конвертировать данные мейнтейнера в JSON. Требует задания мейнтейнера перед вызовом
+     * @return              объект с заданными полями
+     */
     QJsonObject toDataJson() const;
 
+    // Определения интерфейса AbstractSaveFormat
     bool save(const QString& targetPath) const override;
     bool load(const QString& targetPath) override;
-
     bool isFileValid(const QString& targetPath) const override;
-    bool isStructureValid(const QJsonObject& iJson) const;
 
-protected:
+protected:    
+    /**
+     * @brief createSystemJson  Креатор системного JSON
+     * @return                  Системный JSON (имеет некоторые нужные поля)
+     */
     QJsonObject createSystemJson() const;
-    bool config_getIsEncrypted(const QJsonObject& iJson);
-    QString config_getVersion(const QJsonObject& iJson);
-    QString config_getFormatVersion(const QJsonObject& iJson);
+
+    /**
+     * @brief isStructureValid  Проверка структуры JSON на валидность
+     * @param iJson             JSON для проверки
+     * @return                  true если структура может быть использована для инициализации
+     */
+    bool isStructureValid(const QJsonObject& iJson) const;
 };
 
 }  // namespace Filework

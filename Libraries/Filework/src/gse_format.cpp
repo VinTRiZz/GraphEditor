@@ -14,6 +14,7 @@
 #include <QSqlRecord>
 #include <boost/algorithm/hex.hpp>
 
+
 namespace Filework {
 
 const QString DB_GRAPH_PROPS_TABLENAME{"graph_properties"};
@@ -61,20 +62,12 @@ CREATE TABLE IF NOT EXISTS %0 (
 )")
         .arg(DB_GRAPH_CONNECTIONS_TABLENAME, DB_GRAPH_VERTICES_TABLENAME);
 
-GSE_Format::GSE_Format() {
-    m_isEncrypted = false;
-    m_formatVersion = "1.0.0";
+GSE_Format::GSE_Format() :
+    AbstractSaveFormat("1.0.0", "gse", "Устаревший формат сохранения", true)
+{
 }
 
 GSE_Format::~GSE_Format() {}
-
-QString GSE_Format::getExtension() const {
-    return "gse";
-}
-
-QString GSE_Format::getDescription() const {
-    return "Устаревший формат сохранения";
-}
 
 bool GSE_Format::save(const QString& targetPath) const {
     auto targetFileInfo = QFileInfo(targetPath);
@@ -87,8 +80,8 @@ bool GSE_Format::save(const QString& targetPath) const {
         return false;
     }
 
-    auto& iGraphObject = getGraph();
-    auto graphMaintaner = getGraphMaintaner();
+    auto graphMaintaner = getGraphMaintainer();
+    auto& iGraphObject = graphMaintaner->getObject();
 
     LOG_INFO("Saving data of graph", graphMaintaner->getName(), "to file",
              targetPath);
@@ -220,11 +213,11 @@ bool GSE_Format::save(const QString& targetPath) const {
 }
 
 bool GSE_Format::load(const QString& targetPath) {
-    auto& oGraphObject = getGraph();
+    auto& oGraphObject = getGraphMaintainer()->getObject();
     oGraphObject = Graph::GraphObject();  // Обнулить перед записью, чтобы не
                                           // было артефактов
 
-    auto graphMaintaner = getGraphMaintaner();
+    auto graphMaintaner = getGraphMaintainer();
     graphMaintaner->resetMaintainer();
 
     if (!isFileValid(targetPath)) {

@@ -5,32 +5,48 @@
 
 namespace Filework {
 
-AbstractSaveFormat::AbstractSaveFormat() {}
+AbstractSaveFormat::AbstractSaveFormat(
+        const QString &formatVersion,
+        const QString &formatExtension,
+        const QString &formatDescription,
+        bool backwardCompatible) :
+    m_formatVersion(formatVersion),
+    m_formatExtension(formatExtension),
+    m_formatDescription(formatDescription){
+
+}
 
 AbstractSaveFormat::~AbstractSaveFormat() {}
 
-bool AbstractSaveFormat::getIsEncrypted() const {
-    return m_isEncrypted;
+bool AbstractSaveFormat::isBackwardCompatible() const
+{
+    return m_isBackwardCompatible;
 }
 
-void AbstractSaveFormat::setGraphMaintaner(Graph::PMaintainer pGraphMaintaner) {
+QString AbstractSaveFormat::getExtension() const
+{
+    return m_formatExtension;
+}
+
+QString AbstractSaveFormat::getDescription() const
+{
+    return m_formatDescription;
+}
+
+QString AbstractSaveFormat::getVersion() const
+{
+    return m_formatVersion;
+}
+
+void AbstractSaveFormat::setGraphMaintainer(Graph::PMaintainer pGraphMaintaner) {
     m_pGraphMaintaner = pGraphMaintaner;
 }
 
-Graph::PMaintainer AbstractSaveFormat::getGraphMaintaner() const {
+Graph::PMaintainer AbstractSaveFormat::getGraphMaintainer() const {
     return m_pGraphMaintaner;
 }
 
-Graph::GraphObject& AbstractSaveFormat::getGraph() const {
-    if (!m_pGraphMaintaner) {
-        throw std::runtime_error(
-            "SaveFormat: Did not set graph maintaner, requested graph (invalid "
-            "operation)");
-    }
-    return m_pGraphMaintaner->getObject();
-}
-
-bool AbstractSaveFormat::rewriteFileData(const QString& filePath,
+bool AbstractSaveFormat::replaceFileData(const QString& filePath,
                                          const QByteArray& iData) const {
     QFile targetFile(filePath);
     targetFile.open(QIODevice::Truncate | QIODevice::WriteOnly);

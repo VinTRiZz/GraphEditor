@@ -16,16 +16,9 @@ public:
     GSE_Format();
     ~GSE_Format();
 
-    QString getExtension() const override;
-    QString getDescription() const override;
-    void setEncryptionKey(const QString& keyString) override {};
-    QString getEncryptionKey(const QString& keyString) const override {
-        return {};
-    }
-
+    // Определение интерфейса AbstractSaveFormat
     bool save(const QString& targetPath) const override;
     bool load(const QString& targetPath) override;
-
     bool isFileValid(const QString& targetPath) const override;
 
 private:

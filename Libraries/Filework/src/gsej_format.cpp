@@ -9,27 +9,16 @@
 
 namespace Filework {
 
-GSEJ_Format::GSEJ_Format() {
-    m_isEncrypted = true;
-    m_formatVersion = "1.0.0";
+GSEJ_Format::GSEJ_Format() :
+    AbstractSaveFormat("1.0.0", "gsej", "Зашифрованный граф") {
 }
 
 GSEJ_Format::~GSEJ_Format() {}
 
-QString GSEJ_Format::getExtension() const {
-    return "gsej";
-}
-
-QString GSEJ_Format::getDescription() const {
-    return "Зашифрованный граф";
-}
-
-void GSEJ_Format::setEncryptionKey(const QString& keyString) {
-    m_key = keyString;
-}
-
-QString GSEJ_Format::getEncryptionKey(const QString& keyString) const {
-    return m_key;
+void GSEJ_Format::setGraphMaintainer(Graph::PMaintainer pMaintainer)
+{
+    m_rootFormat.setGraphMaintainer(pMaintainer);
+    AbstractSaveFormat::setGraphMaintainer(pMaintainer);
 }
 
 bool GSEJ_Format::save(const QString& targetPath) const {
@@ -42,7 +31,7 @@ bool GSEJ_Format::save(const QString& targetPath) const {
     QJsonObject resultJson;
     resultJson["system"] = systemJson;
 
-    auto payloadJson = toDataJson();
+    auto payloadJson = m_rootFormat.toDataJson();
     resultJson["payload"] =
         Encryption::encryptAes256Cbc(
             QJsonDocument(payloadJson).toJson(QJsonDocument::Compact),
@@ -51,7 +40,7 @@ bool GSEJ_Format::save(const QString& targetPath) const {
             .data();
 
     auto resultData = QJsonDocument(resultJson).toJson();
-    return rewriteFileData(targetPath, resultData);
+    return replaceFileData(targetPath, resultData);
 }
 
 bool GSEJ_Format::load(const QString& targetPath) {
@@ -79,7 +68,7 @@ bool GSEJ_Format::load(const QString& targetPath) {
     auto payloadEncrypted = QByteArray::fromHex(payloadHex);
     auto decryptedData =
         Encryption::decryptAes256Cbc(payloadEncrypted, m_key.toUtf8());
-    return initFromDataJson(QJsonDocument::fromJson(decryptedData).object());
+    return m_rootFormat.initFromDataJson(QJsonDocument::fromJson(decryptedData).object());
 }
 
 bool GSEJ_Format::isFileValid(const QString& targetPath) const {
@@ -101,6 +90,14 @@ bool GSEJ_Format::isFileValid(const QString& targetPath) const {
         return false;
     }
     return jsonObj["system"].isObject();
+}
+
+QJsonObject GSEJ_Format::createSystemJson() const {
+    QJsonObject systemObj;
+    systemObj["app_version"]    = QString(GRAPH_EDITOR_VERSION);
+    systemObj["format_version"] = getVersion();
+    systemObj["is_encrypted"]   = true;
+    return systemObj;
 }
 
 }  // namespace Filework

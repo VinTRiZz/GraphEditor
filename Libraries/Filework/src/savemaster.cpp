@@ -9,6 +9,7 @@
 #include <QMessageBox>
 
 #include "abstractsaveformat.h"
+#include "encryptedsaveformat.h"
 #include "formatfactory.h"
 
 QString SaveMaster::formatToDefaultPath(const QString& iPath) {
@@ -46,8 +47,8 @@ bool SaveMaster::save(const QString& oFilePath,
     }
 
     auto pFormat = formatFactory.getFormat(fileSuffix);
-
-    if (pFormat->getIsEncrypted()) {
+    auto pEncryptedFormat = std::dynamic_pointer_cast<Filework::EncryptedSaveFormat>(pFormat);
+    if (pEncryptedFormat) {
         PasswordInsertDialog passDialog;
         auto res = passDialog.exec();
         if (res != QDialog::Accepted) {
@@ -55,7 +56,7 @@ bool SaveMaster::save(const QString& oFilePath,
             LOG_WARNING("Password input canceled");
             return false;
         }
-        pFormat->setEncryptionKey(passDialog.getPassword());
+        pEncryptedFormat->setEncryptionKey(passDialog.getPassword());
     }
 
     if (!pFormat) {
@@ -63,7 +64,7 @@ bool SaveMaster::save(const QString& oFilePath,
         return false;
     }
 
-    pFormat->setGraphMaintaner(iGraphMaintaner);
+    pFormat->setGraphMaintainer(iGraphMaintaner);
 
     auto res = false;
     if (QFileInfo(oFilePath).completeSuffix().isEmpty()) {
@@ -91,7 +92,8 @@ bool SaveMaster::load(const QString& iFilePath,
         return false;
     }
 
-    if (pFormat->getIsEncrypted()) {
+    auto pEncryptedFormat = std::dynamic_pointer_cast<Filework::EncryptedSaveFormat>(pFormat);
+    if (pEncryptedFormat) {
         PasswordInsertDialog passDialog;
         auto res = passDialog.exec();
         if (res != QDialog::Accepted) {
@@ -99,10 +101,10 @@ bool SaveMaster::load(const QString& iFilePath,
             LOG_WARNING("Password input canceled");
             return false;
         }
-        pFormat->setEncryptionKey(passDialog.getPassword());
+        pEncryptedFormat->setEncryptionKey(passDialog.getPassword());
     }
 
-    pFormat->setGraphMaintaner(oGraphMaintaner);
+    pFormat->setGraphMaintainer(oGraphMaintaner);
     auto res = pFormat->load(iFilePath);
 
     if (res) {

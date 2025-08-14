@@ -17,7 +17,7 @@ TEST(FormatSaving, GSE_Format) {
 
     auto graphCopy = savedGraph;  // Для чистоты исследований (проверка бага на
                                   // затирание данных)
-    saveFormat.setGraphMaintaner(gMaintaner);
+    saveFormat.setGraphMaintainer(gMaintaner);
 
     QString testTargetPath = "/tmp/GraphEditorSaveTest.gse";
 
@@ -26,7 +26,7 @@ TEST(FormatSaving, GSE_Format) {
     EXPECT_EQ(graphCopy, savedGraph);
 
     auto gMaintanerLoaded = Graph::GraphMaintainer::createInstance();
-    saveFormat.setGraphMaintaner(gMaintanerLoaded);
+    saveFormat.setGraphMaintainer(gMaintanerLoaded);
     EXPECT_TRUE(saveFormat.load(testTargetPath));
 
     QFile::remove(testTargetPath);

@@ -11,27 +11,19 @@
 
 namespace Filework {
 
-GSJ_Format::GSJ_Format() {
-    m_isEncrypted = false;
-    m_formatVersion = "1.0.0";
+GSJ_Format::GSJ_Format() :
+    AbstractSaveFormat("1.0.0", "gsj", "Файл сохранения графа")
+{
 }
 
 GSJ_Format::~GSJ_Format() {}
-
-QString GSJ_Format::getExtension() const {
-    return "gsj";
-}
-
-QString GSJ_Format::getDescription() const {
-    return "Файл сохранения графа";
-}
 
 bool GSJ_Format::initFromDataJson(const QJsonObject& iJson) {
     if (!isStructureValid(iJson)) {
         return false;
     }
 
-    auto pMaintainer = getGraphMaintaner();
+    auto pMaintainer = getGraphMaintainer();
     pMaintainer->resetMaintainer();
 
     // Parse properties
@@ -111,7 +103,7 @@ bool GSJ_Format::initFromDataJson(const QJsonObject& iJson) {
 }
 
 QJsonObject GSJ_Format::toDataJson() const {
-    auto pMaintainer = getGraphMaintaner();
+    auto pMaintainer = getGraphMaintainer();
     QJsonObject root;
 
     // System section
@@ -206,7 +198,7 @@ bool GSJ_Format::save(const QString& targetPath) const {
 
     auto resultData =
         QJsonDocument(toDataJson()).toJson(QJsonDocument::Compact);
-    return rewriteFileData(targetPath, resultData);
+    return replaceFileData(targetPath, resultData);
 }
 
 bool GSJ_Format::load(const QString& targetPath) {
@@ -292,21 +284,8 @@ bool GSJ_Format::isStructureValid(const QJsonObject& iJson) const {
 QJsonObject GSJ_Format::createSystemJson() const {
     QJsonObject systemObj;
     systemObj["app_version"] = QString(GRAPH_EDITOR_VERSION);
-    systemObj["format_version"] = m_formatVersion;
-    systemObj["is_encrypted"] = m_isEncrypted;
+    systemObj["format_version"] = getVersion();
     return systemObj;
-}
-
-bool GSJ_Format::config_getIsEncrypted(const QJsonObject& iJson) {
-    return iJson["is_encrypted"].toBool();
-}
-
-QString GSJ_Format::config_getVersion(const QJsonObject& iJson) {
-    return iJson["app_version"].toString();
-}
-
-QString GSJ_Format::config_getFormatVersion(const QJsonObject& iJson) {
-    return iJson["format_version"].toString();
 }
 
 }  // namespace Filework

@@ -9,20 +9,54 @@ namespace Filework {
 
 class AbstractSaveFormat {
 public:
-    AbstractSaveFormat();
+    /**
+     * @brief AbstractSaveFormat    Конструктор класса формата
+     * @param formatVersion         Версия формата (любой удобный набор символов)
+     * @param formatExtension       Расширение формата в виде "ext"
+     * @param formatDescription     Описание формата (желательно с указанием расширения)
+     * @param backwardCompatible    Является ли формат обратно совместимым с общепринятыми форматами (имеет ли уникальные объекты)
+     */
+    AbstractSaveFormat(const QString& formatVersion,
+                       const QString& formatExtension,
+                       const QString& formatDescription,
+                       bool backwardCompatible = false);
     virtual ~AbstractSaveFormat();
 
-    virtual QString getExtension() const = 0;
-    virtual QString getDescription() const = 0;
-    virtual void setEncryptionKey(const QString& keyString) = 0;
-    virtual QString getEncryptionKey(const QString& keyString) const = 0;
+    /**
+     * @brief isBackwardCompatible  Проверка, что формат обратно совместимый с общепринятыми форматами (без уникальных объектов)
+     * @return
+     */
+    bool isBackwardCompatible() const;
 
-    bool getIsEncrypted() const;
+    /**
+     * @brief getExtension  Получить расширение формата
+     * @return              Расширение в виде "ext"
+     */
+    QString getExtension() const;
+
+    /**
+     * @brief getDescription    Получить описание формата
+     * @return                  Описание формата
+     */
+    QString getDescription() const;
+
+    /**
+     * @brief getVersion    Получить версию формата
+     * @return              Набор символов, не обязательно цифровой
+     */
     QString getVersion() const;
 
-    void setGraphMaintaner(Graph::PMaintainer pGraphMaintaner);
-    Graph::PMaintainer getGraphMaintaner() const;
-    Graph::GraphObject& getGraph() const;
+    /**
+     * @brief setGraphMaintainer Задать мейнтейнер графа
+     * @param pGraphMaintaner    Майнтейнер графа
+     */
+    virtual void setGraphMaintainer(Graph::PMaintainer pGraphMaintaner);
+
+    /**
+     * @brief getGraphMaintainer Получить мейнтейнер графа
+     * @return                   Мейнтейнер графа. Если не был задан, будет не валидным
+     */
+    Graph::PMaintainer getGraphMaintainer() const;
 
     virtual bool save(const QString& targetPath) const = 0;
     virtual bool load(const QString& targetPath) = 0;
@@ -31,13 +65,28 @@ public:
 
 private:
     Graph::PMaintainer m_pGraphMaintaner;
+    QString m_formatVersion;
+    QString m_formatExtension;
+    QString m_formatDescription;
+    bool    m_isBackwardCompatible;
 
 protected:
-    bool m_isEncrypted{false};
-    QString m_formatVersion;
 
-    bool rewriteFileData(const QString& filePath,
+    /**
+     * @brief replaceFileData   Заменить данные в файле
+     * @param filePath          Путь до файла
+     * @param iData             Данные, которыми нужно заменить данные в файле
+     * @return                  true при успешной замене
+     */
+    bool replaceFileData(const QString& filePath,
                          const QByteArray& iData) const;
+
+    /**
+     * @brief readFromFile  Считать данные из файла
+     * @param filePath      Путь до файла
+     * @param oData         Массив, в который нужно записать данные файла
+     * @return              true если файл существует и был прочитан
+     */
     bool readFromFile(const QString& filePath, QByteArray& oData) const;
 
     /**
@@ -55,8 +104,8 @@ protected:
      * @param iPxmap            Входное изображение
      * @return                  Массив байт
      */
-    QByteArray getEncodedPixmap(const QPixmap& iPxmap) const;
-    QPixmap getDecodedPixmap(const QByteArray& iBytes) const;
+    QByteArray  getEncodedPixmap(const QPixmap& iPxmap) const;
+    QPixmap     getDecodedPixmap(const QByteArray& iBytes) const;
 };
 
 }  // namespace Filework

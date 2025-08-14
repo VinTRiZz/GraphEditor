@@ -30,31 +30,6 @@ TEST(GeneralConfigurationTest, ThemeConversion) {
     EXPECT_EQ(config.stringToTheme(""), GeneralConfiguration::Theme::System);
 }
 
-// Тест геттеров/сеттеров
-TEST(GeneralConfigurationTest, GettersSetters) {
-    GeneralConfiguration config;
-
-    // Установка значений
-    config.setThemeType(GeneralConfiguration::Theme::Dark);
-    config.setNeedConfirmClose(false);
-    config.setAutoSaveInterval(120);
-    config.setNeedRemoveMetadata(true);
-    config.setNeedCleanupTempFiles(true);
-    config.setMaxLogFileCount(5);
-    config.setMinimizeToTray(true);
-    config.setDateTimeFormat("dd.MM.yyyy HH:mm");
-
-    // Проверка значений
-    EXPECT_EQ(config.getThemeType(), GeneralConfiguration::Theme::Dark);
-    EXPECT_FALSE(config.getNeedConfirmClose());
-    EXPECT_EQ(config.getAutoSaveInterval(), 120);
-    EXPECT_TRUE(config.getNeedRemoveMetadata());
-    EXPECT_TRUE(config.getNeedCleanupTempFiles());
-    EXPECT_EQ(config.getMaxLogFileCount(), 5u);
-    EXPECT_TRUE(config.getNeedMinimizeToTray());
-    EXPECT_EQ(config.getDateTimeFormat(), "dd.MM.yyyy HH:mm");
-}
-
 // Тест сериализации
 TEST(GeneralConfigurationTest, Serialization) {
     GeneralConfiguration original;
@@ -79,6 +54,7 @@ TEST(GeneralConfigurationTest, Serialization) {
     // Сравниваем
     EXPECT_EQ(loaded.getThemeType(), original.getThemeType());
     EXPECT_EQ(loaded.getNeedConfirmClose(), original.getNeedConfirmClose());
+    EXPECT_EQ(loaded.getNeedBackwardCompatible(), original.getNeedBackwardCompatible());
     EXPECT_EQ(loaded.getAutoSaveInterval(), original.getAutoSaveInterval());
     EXPECT_EQ(loaded.getNeedRemoveMetadata(), original.getNeedRemoveMetadata());
     EXPECT_EQ(loaded.getNeedCleanupTempFiles(), original.getNeedCleanupTempFiles());
@@ -87,45 +63,25 @@ TEST(GeneralConfigurationTest, Serialization) {
     EXPECT_EQ(loaded.getDateTimeFormat(), original.getDateTimeFormat());
 }
 
-// Тест геттеров/сеттеров
-TEST(CanvasConfigurationTest, GettersSetters) {
-    CanvasConfiguration config;
-
-    // Установка значений
-    QColor bgColor(255, 0, 0, 100);
-    QColor gridColor(0, 255, 0);
-    QColor canvasColor(0, 0, 255);
-    QSize canvasSize(800, 600);
-
-    config.setCanvasSize(canvasSize);
-    config.setCanvasOpacity(75);
-    config.setBackgroundColor(bgColor);
-    config.setGridColor(gridColor);
-    config.setIsGridEnabled(true);
-    config.setGridSize(15);
-    config.setCanvasColor(canvasColor);
-
-    // Проверка значений
-    EXPECT_EQ(config.getCanvasSize(), canvasSize);
-    EXPECT_EQ(config.getCanvasOpacity(), 75);
-    EXPECT_COLOR_EQ(config.getBackgroundColor(), bgColor);
-    EXPECT_COLOR_EQ(config.getGridColor(), gridColor);
-    EXPECT_TRUE(config.getIsGridEnabled());
-    EXPECT_DOUBLE_EQ(config.getGridSize(), 15);
-    EXPECT_COLOR_EQ(config.getCanvasColor(), canvasColor);
-}
-
 // Тест сериализации
 TEST(CanvasConfigurationTest, Serialization) {
+    const QColor bgColor(255, 0, 0, 100);
+    const QColor gridColor(0, 255, 0);
+    const QColor canvasColor(0, 0, 255);
+    const QSize canvasSize(800, 600);
+    const int gridLineWidth {3};
+    const int gridSize {15};
+    const int canvasOpacity {75};
+
     CanvasConfiguration original;
-    original.setCanvasSize(QSize(1024, 768));
-    original.setCanvasOpacity(85);
-    original.setBackgroundColor(QColor(30, 40, 50, 60));
-    original.setGridColor(QColor(100, 150, 200));
+    original.setCanvasSize(canvasSize);
+    original.setCanvasOpacity(canvasOpacity);
+    original.setBackgroundColor(bgColor);
+    original.setGridColor(gridColor);
     original.setIsGridEnabled(true);
-    original.setGridSize(25.0);
-    original.setGridLineWidth(13.3);
-    original.setCanvasColor(QColor(255, 255, 255));
+    original.setGridSize(gridSize);
+    original.setCanvasColor(canvasColor);
+    original.setGridLineWidth(gridLineWidth);
 
     // Сохраняем настройки
     QSettings settingsFile("test.ini", QSettings::IniFormat);
@@ -136,15 +92,20 @@ TEST(CanvasConfigurationTest, Serialization) {
     CanvasConfiguration loaded;
     loaded.fromSettingsFile(settingsFile);
 
-    // Сравниваем
-    EXPECT_EQ(loaded.getCanvasSize(), original.getCanvasSize());
-    EXPECT_EQ(loaded.getCanvasOpacity(), original.getCanvasOpacity());
-    EXPECT_COLOR_EQ(loaded.getBackgroundColor(), original.getBackgroundColor());
-    EXPECT_COLOR_EQ(loaded.getGridColor(), original.getGridColor());
-    EXPECT_EQ(loaded.getIsGridEnabled(), original.getIsGridEnabled());
-    EXPECT_DOUBLE_EQ(loaded.getGridSize(), original.getGridSize());
-    EXPECT_DOUBLE_EQ(loaded.getGridLineWidth(), original.getGridLineWidth());
-    EXPECT_COLOR_EQ(loaded.getCanvasColor(), original.getCanvasColor());
+    // Проверка значений
+#define TST_CHECK_LOADED_EQ(checkmethod, classMethod) \
+    checkmethod(original.classMethod(), loaded.classMethod());
+
+    TST_CHECK_LOADED_EQ(EXPECT_COLOR_EQ, getBackgroundColor);
+    TST_CHECK_LOADED_EQ(EXPECT_COLOR_EQ, getGridColor);
+    TST_CHECK_LOADED_EQ(EXPECT_COLOR_EQ, getCanvasColor);
+
+    TST_CHECK_LOADED_EQ(EXPECT_EQ, getCanvasOpacity);
+    TST_CHECK_LOADED_EQ(EXPECT_EQ, getCanvasSize);
+    TST_CHECK_LOADED_EQ(EXPECT_EQ, getIsGridEnabled);
+    TST_CHECK_LOADED_EQ(EXPECT_EQ, getGridSize);
+    TST_CHECK_LOADED_EQ(EXPECT_EQ, getGridLineWidth);
+#undef TST_CHECK_LOADED_EQ
 }
 
 // Тест геттеров/сеттеров

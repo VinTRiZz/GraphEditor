@@ -12,7 +12,7 @@
 namespace Filework {
 
 GSJ_Format::GSJ_Format() :
-    AbstractSaveFormat("1.0.0", "gsj", "Файл сохранения графа")
+    AbstractSaveFormat("1.0.0", "gsj", "Файл сохранения графа", true)
 {
 }
 

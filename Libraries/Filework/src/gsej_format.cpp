@@ -10,7 +10,7 @@
 namespace Filework {
 
 GSEJ_Format::GSEJ_Format() :
-    AbstractSaveFormat("1.0.0", "gsej", "Зашифрованный граф") {
+    AbstractSaveFormat("1.0.0", "gsej", "Зашифрованный граф", true) {
 }
 
 GSEJ_Format::~GSEJ_Format() {}

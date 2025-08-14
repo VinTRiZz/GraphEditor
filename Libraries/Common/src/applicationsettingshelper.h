@@ -50,18 +50,20 @@ public:
     Theme stringToTheme(const QString& str) const;
 
     // Геттеры
-    Theme getThemeType() const;          ///< Возвращает текущую тему оформления
-    bool getNeedConfirmClose() const;    ///< Проверяет, требуется ли подтверждение при закрытии
-    int getAutoSaveInterval() const;     ///< Возвращает интервал автосохранения (в секундах)
-    bool getNeedRemoveMetadata() const;  ///< Проверяет, нужно ли удалять метаданные
-    bool getNeedCleanupTempFiles() const;///< Проверяет, нужно ли очищать временные файлы
-    unsigned getMaxLogFileCount() const; ///< Возвращает максимальное количество файлов логов
-    bool getNeedMinimizeToTray() const;  ///< Проверяет, нужно ли сворачивать в трей
-    QString getDateTimeFormat() const;   ///< Возвращает формат даты/времени
+    Theme getThemeType() const;             ///< Возвращает текущую тему оформления
+    bool getNeedConfirmClose() const;       ///< Проверяет, требуется ли подтверждение при закрытии
+    bool getNeedBackwardCompatible() const; ///< Необходимо ли требовать обратную совместимость при сохранении
+    int getAutoSaveInterval() const;        ///< Возвращает интервал автосохранения (в секундах)
+    bool getNeedRemoveMetadata() const;     ///< Проверяет, нужно ли удалять метаданные
+    bool getNeedCleanupTempFiles() const;   ///< Проверяет, нужно ли очищать временные файлы
+    unsigned getMaxLogFileCount() const;    ///< Возвращает максимальное количество файлов логов
+    bool getNeedMinimizeToTray() const;     ///< Проверяет, нужно ли сворачивать в трей
+    QString getDateTimeFormat() const;      ///< Возвращает формат даты/времени
 
     // Сеттеры
     void setThemeType(Theme theme);             ///< Устанавливает тему оформления
     void setNeedConfirmClose(bool confirm);     ///< Включает/отключает подтверждение закрытия
+    void setNeedBackwardCompatible(bool ask);   ///< Включает требование обратной совместимости при сохранении
     void setAutoSaveInterval(int seconds);      ///< Устанавливает интервал автосохранения
     void setNeedRemoveMetadata(bool remove);    ///< Включает/отключает удаление метаданных
     void setNeedCleanupTempFiles(bool cleanup); ///< Включает/отключает очистку временных файлов
@@ -72,6 +74,7 @@ public:
 private:
     Theme       m_themeType = Theme::System;
     bool        m_needConfirmSave = true;
+    bool        m_needBackwardCompatibility = false;
     int         m_autoSaveIntervalSec = 300;  // 5 минут
     bool        m_removeMetadata = false;
     bool        m_cleanupTempFiles = false;

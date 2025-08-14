@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS %0 (
         .arg(DB_GRAPH_CONNECTIONS_TABLENAME, DB_GRAPH_VERTICES_TABLENAME);
 
 GSE_Format::GSE_Format() :
-    AbstractSaveFormat("1.0.0", "gse", "Устаревший формат сохранения", true)
+    AbstractSaveFormat("1.0.0", "gse", "Устаревший формат сохранения")
 {
 }
 

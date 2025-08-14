@@ -68,7 +68,7 @@ private:
     QString m_formatVersion;
     QString m_formatExtension;
     QString m_formatDescription;
-    bool    m_isBackwardCompatible;
+    bool    m_isBackwardCompatible {false};
 
 protected:
 

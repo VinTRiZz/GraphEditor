@@ -34,7 +34,7 @@ void ApplicationSettings::saveSettings() const
 void ApplicationSettings::loadSettings(const QString& configPath) {
     QSettings settings(configPath, QSettings::IniFormat);
 
-    settings.beginGroup("GENERAL");
+    settings.beginGroup("APPSETTINGS");
     m_generalConfig = {};
     m_generalConfig.fromSettingsFile(settings);
     settings.endGroup();
@@ -63,7 +63,9 @@ void ApplicationSettings::loadSettings(const QString& configPath) {
 void ApplicationSettings::saveSettings(const QString& configPath) const {
     QSettings settings(configPath, QSettings::IniFormat);
 
-    settings.beginGroup("GENERAL");
+    settings.clear();
+
+    settings.beginGroup("APPSETTINGS");
     m_generalConfig.addToSettingsFile(settings);
     settings.endGroup();
 
@@ -79,6 +81,7 @@ void ApplicationSettings::saveSettings(const QString& configPath) const {
     settings.beginGroup("ETC");
     settings.setValue("recent_open_files", m_recentFiles.values().join(","));
     settings.endGroup();
+    settings.sync();
 }
 
 ApplicationSettingsHelper::GeneralConfiguration &ApplicationSettings::getGeneralConfig()

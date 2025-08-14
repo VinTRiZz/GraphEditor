@@ -7,29 +7,29 @@ namespace ApplicationSettingsHelper
 {
 
 void GeneralConfiguration::fromSettingsFile(QSettings& iFile) {
-    m_themeType = stringToTheme(iFile.value("theme", "System").toString());
-    m_autoSaveIntervalSec = iFile.value("autosave_interval", 300).toInt();
-    m_minimizeToTray = iFile.value("minimize_to_tray", true).toBool();
+    m_autoSaveIntervalSec = iFile.value("autosave_interval", m_autoSaveIntervalSec).toInt();
+    m_cleanupTempFiles = iFile.value("cleanup_temp_files", m_cleanupTempFiles).toBool();
+    m_needConfirmSave = iFile.value("confirm_deletion", m_needConfirmSave).toBool();
     m_dateTimeFormat =
         iFile.value("datetime_format", "yyyy-MM-dd HH:mm:ss").toString();
 
-    m_needConfirmSave = iFile.value("confirm_deletion", true).toBool();
-    m_removeMetadata = iFile.value("remove_metadata", false).toBool();
-    m_cleanupTempFiles = iFile.value("cleanup_temp_files", true).toBool();
-    m_maxLogFiles = iFile.value("max_log_files", 10).toInt();
+    m_maxLogFiles = iFile.value("max_log_files", m_maxLogFiles).toInt();
+    m_minimizeToTray = iFile.value("minimize_to_tray", m_minimizeToTray).toBool();
+    m_needBackwardCompatibility = iFile.value("need_compatibility", m_needBackwardCompatibility).toBool();
+    m_removeMetadata = iFile.value("remove_metadata", m_removeMetadata).toBool();
+    m_themeType = stringToTheme(iFile.value("theme").toString());
 }
 
 void GeneralConfiguration::addToSettingsFile(QSettings &iFile) const {
-    iFile.setValue("theme", themeToString(m_themeType));
     iFile.setValue("autosave_interval", m_autoSaveIntervalSec);
-    iFile.setValue("minimize_to_tray", m_minimizeToTray);
-    iFile.setValue("datetime_format", m_dateTimeFormat);
-
-    iFile.setValue("remove_metadata", m_removeMetadata);
     iFile.setValue("cleanup_temp_files", m_cleanupTempFiles);
-    iFile.setValue("max_log_files", m_maxLogFiles);
-
     iFile.setValue("confirm_deletion", m_needConfirmSave);
+    iFile.setValue("datetime_format", m_dateTimeFormat);
+    iFile.setValue("max_log_files", m_maxLogFiles);
+    iFile.setValue("minimize_to_tray", m_minimizeToTray);
+    iFile.setValue("need_compatibility", m_needBackwardCompatibility);
+    iFile.setValue("theme", themeToString(m_themeType));
+    iFile.setValue("remove_metadata", m_removeMetadata);
 }
 
 
@@ -59,6 +59,10 @@ GeneralConfiguration::Theme GeneralConfiguration::getThemeType() const {
 
 bool GeneralConfiguration::getNeedConfirmClose() const {
     return m_needConfirmSave;
+}
+
+bool GeneralConfiguration::getNeedBackwardCompatible() const {
+    return m_needBackwardCompatibility;
 }
 
 int GeneralConfiguration::getAutoSaveInterval() const {
@@ -91,6 +95,10 @@ void GeneralConfiguration::setThemeType(Theme theme) {
 
 void GeneralConfiguration::setNeedConfirmClose(bool confirm) {
     m_needConfirmSave = confirm;
+}
+
+void GeneralConfiguration::setNeedBackwardCompatible(bool ask) {
+    m_needBackwardCompatibility = ask;
 }
 
 void GeneralConfiguration::setAutoSaveInterval(int seconds) {
@@ -130,11 +138,11 @@ void CanvasConfiguration::fromSettingsFile(QSettings &iFile) {
     setColorIfExist(m_gridColor, "grid_color");
     setColorIfExist(m_canvasColor, "canvas_color");
 
-    m_canvasSize    = iFile.value("canvas_size", QSize(2000, 1000)).toSize();
-    m_canvasOpacity = iFile.value("canvas_opacity", 90).toInt();
-    m_isGridEnabled = iFile.value("show_grid", false).toBool();
-    m_gridSize      = iFile.value("grid_size", 10).toInt();
-    m_gridLineWidth = iFile.value("grid_line_width", 2).toDouble();
+    m_canvasSize    = iFile.value("canvas_size", m_canvasSize).toSize();
+    m_canvasOpacity = iFile.value("canvas_opacity", m_canvasOpacity).toInt();
+    m_isGridEnabled = iFile.value("show_grid", m_isGridEnabled).toBool();
+    m_gridSize      = iFile.value("grid_size", m_gridSize).toInt();
+    m_gridLineWidth = iFile.value("grid_line_width", m_gridLineWidth).toDouble();
 }
 
 void CanvasConfiguration::addToSettingsFile(QSettings &iFile) const {
@@ -244,11 +252,11 @@ void ObjectsConfiguration::fromSettingsFile(QSettings& iFile) {
     setColorIfExist(m_defaultLabelBackgroundColor, "default_label_bgr_color");
 
     m_defaultNodeShape =
-        static_cast<NodeShape>(iFile.value("node_shape", 0).toInt());
-    m_nodeSize = static_cast<NodeSize>(iFile.value("node_size", 1).toInt());
-    m_lineThickness = iFile.value("line_thickness", 2).toInt();
+        static_cast<NodeShape>(iFile.value("node_shape").toInt());
+    m_nodeSize = static_cast<NodeSize>(iFile.value("node_size").toInt());
+    m_lineThickness = iFile.value("line_thickness", m_lineThickness).toInt();
     m_arrowStyle =
-        static_cast<ArrowStyle>(iFile.value("arrow_style", 1).toInt());
+        static_cast<ArrowStyle>(iFile.value("arrow_style").toInt());
 }
 
 void ObjectsConfiguration::addToSettingsFile(QSettings &iFile) const {

@@ -47,13 +47,28 @@ bool SaveMaster::save(const QString& oFilePath,
     }
 
     auto pFormat = formatFactory.getFormat(fileSuffix);
+    if (!pFormat->isBackwardCompatible() &&
+        ApplicationSettings::getInstance().getGeneralConfig().getNeedBackwardCompatible()) {
+        auto userResponse = QMessageBox::question(
+                    nullptr,
+                    "Обратная совместимость",
+                    "Формат не является обратно совместимым.\nПри сохранении в этом формате, созданные\n кастомные объекты будут утеряны.\nПродолжить?",
+                    QMessageBox::StandardButton::Yes,
+                    QMessageBox::StandardButton::No);
+
+        if (userResponse != QMessageBox::StandardButton::Yes) {
+            LOG_WARNING("Backward compatibility required, canceled saving");
+            return false;
+        }
+    }
+
     auto pEncryptedFormat = std::dynamic_pointer_cast<Filework::EncryptedSaveFormat>(pFormat);
     if (pEncryptedFormat) {
         PasswordInsertDialog passDialog;
         auto res = passDialog.exec();
         if (res != QDialog::Accepted) {
-            QMessageBox::warning(nullptr, "Пароль", "Пароль не был введён");
             LOG_WARNING("Password input canceled");
+            QMessageBox::warning(nullptr, "Пароль", "Пароль не был введён");
             return false;
         }
         pEncryptedFormat->setEncryptionKey(passDialog.getPassword());
@@ -61,6 +76,7 @@ bool SaveMaster::save(const QString& oFilePath,
 
     if (!pFormat) {
         LOG_ERROR("Format did not recognized");
+        QMessageBox::critical(nullptr, "Ошибка сохранения", "Неизвестный формат");
         return false;
     }
 
@@ -78,6 +94,7 @@ bool SaveMaster::save(const QString& oFilePath,
         LOG_OK("Saved graph by path:", oFilePath);
     } else {
         LOG_WARNING("Graph not saved. Path:", oFilePath);
+        QMessageBox::critical(nullptr, "Ошибка сохранения", "Не удалось сохранить файл в данном формате.\nПроверьте права доступа к директории");
     }
     return res;
 }
@@ -89,6 +106,7 @@ bool SaveMaster::load(const QString& iFilePath,
     auto pFormat = formatFactory.getFormat(fileSuffix);
     if (!pFormat) {
         LOG_ERROR("Format did not recognized");
+        QMessageBox::critical(nullptr, "Ошибка загрузки", "Неизвестный формат");
         return false;
     }
 
@@ -97,8 +115,8 @@ bool SaveMaster::load(const QString& iFilePath,
         PasswordInsertDialog passDialog;
         auto res = passDialog.exec();
         if (res != QDialog::Accepted) {
-            QMessageBox::warning(nullptr, "Пароль", "Пароль не был введён");
             LOG_WARNING("Password input canceled");
+            QMessageBox::warning(nullptr, "Пароль", "Пароль не был введён");
             return false;
         }
         pEncryptedFormat->setEncryptionKey(passDialog.getPassword());
@@ -111,6 +129,7 @@ bool SaveMaster::load(const QString& iFilePath,
         LOG_OK("Loaded graph by path:", iFilePath);
     } else {
         LOG_WARNING("Graph not loaded. Path:", iFilePath);
+        QMessageBox::critical(nullptr, "Ошибка загрузки", "Ошибка загрузки данных графа.\nВозможно, формат сохранений устаревший\nили файл был испорчен.");
     }
     return res;
 }

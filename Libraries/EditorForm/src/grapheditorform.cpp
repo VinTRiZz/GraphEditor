@@ -77,15 +77,7 @@ bool GraphEditorForm::saveGraph(const QString& targetPath) {
     ui->graphScene->writeChangesToGraph();
 
     SaveMaster saveMaster;
-    auto saveSucceed = saveMaster.save(m_lastSavePath, m_graphMaintainer);
-    if (!saveSucceed) {
-        QMessageBox::critical(
-            this, "Ошибка сохранения",
-            "Возникла ошибка при сохранении данных.\nПроверьте: \nПрава "
-            "доступа к директории;\nФакт её существования");
-        return false;
-    }
-    return true;
+    return saveMaster.save(m_lastSavePath, m_graphMaintainer);
 }
 
 bool GraphEditorForm::loadGraph(const QString& targetPath) {
@@ -101,13 +93,6 @@ bool GraphEditorForm::loadGraph(const QString& targetPath) {
     SaveMaster saveMaster;
     auto loadSucceed = saveMaster.load(m_lastSavePath, m_graphMaintainer);
     if (!loadSucceed) {
-        QMessageBox::critical(this, "Ошибка загрузки",
-                              R"(Возникла ошибка при сохранении данных.
-Проверьте:
-Права доступа к директории;
-Факт её существования;
-Корректность формата файла;
-Введённый пароль (если это зашифрованный формат) )");
         return false;
     }
 

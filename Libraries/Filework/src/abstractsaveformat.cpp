@@ -12,7 +12,8 @@ AbstractSaveFormat::AbstractSaveFormat(
         bool backwardCompatible) :
     m_formatVersion(formatVersion),
     m_formatExtension(formatExtension),
-    m_formatDescription(formatDescription){
+    m_formatDescription(formatDescription),
+    m_isBackwardCompatible(backwardCompatible) {
 
 }
 

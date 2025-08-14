@@ -19,7 +19,7 @@ public:
      * @brief registerFormat    Регистрация формата. Желательно 1 раз, т.к. они хранятся в векторе
      */
     template <typename T>
-    std::enable_if<std::is_base_of_v<AbstractSaveFormat, T>, void>
+    std::enable_if_t<std::is_base_of_v<AbstractSaveFormat, T>, void>
     registerFormat() {
         m_formats.push_back(std::make_shared<T>());
     }

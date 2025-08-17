@@ -61,7 +61,7 @@ void InformationObjectView::updateCursorLabel(const QPoint& currentPos) {
 
     QString hoverItemName{};
     auto hoverItem = itemAt(currentPos);
-    if (nullptr != hoverItem) {
+    if ((nullptr != hoverItem) && (dynamic_cast<ObjectViewItems::SceneMarkerItem*>(hoverItem) == nullptr)) {
         auto pHoverItemParent = getParentOfComplex(hoverItem);
         if (nullptr != pHoverItemParent) {
             hoverItemName = pHoverItemParent->getSystemName();

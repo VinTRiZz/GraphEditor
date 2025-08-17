@@ -59,12 +59,18 @@ private:
     std::function<void(const QPointF&)>
         m_movingCallback;  //! Колбек для обработки перемещения по сцене
 
-    ObjectViewItems::CenterItem* m_pCenterItem {nullptr}; //! Центральный элемент сцены
+    ObjectViewItems::CenterItem*        m_pCenterItem {nullptr}; //! Центральный элемент сцены
+    ObjectViewItems::SceneMarkerItem*   m_centerPointerItem {nullptr};
 
     /**
      * @brief updateCenterPoint Обновить позицию центральной точки сцены
      */
     void updateCenterPoint();
+
+    /**
+     * @brief updateCenterMarker Показывает или скрывает маркер центра
+     */
+    void updateCenterMarker();
 
     // Интерфейс QWidget
 protected:

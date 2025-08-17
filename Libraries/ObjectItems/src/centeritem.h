@@ -2,6 +2,7 @@
 #define CENTERITEM_H
 
 #include "itembase.h"
+#include "scenemarkeritem.h"
 
 #include <QGraphicsEllipseItem>
 

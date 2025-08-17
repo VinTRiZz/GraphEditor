@@ -51,12 +51,12 @@ public:
     QRectF boundingRect() const override;
 
 private:
-    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option,
-               QWidget* widget) override;
-
     QRectF m_boundingRect;
 
 protected:
+
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option,
+               QWidget* widget) override;
     void setBoundingRect(const QRectF& bRect);
 
     void setSystemName(const QString& iText);

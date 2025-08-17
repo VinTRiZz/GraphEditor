@@ -16,6 +16,38 @@ InteractiveObjectView::InteractiveObjectView(QWidget* parent)
 
     m_pCenterItem = new ObjectViewItems::CenterItem();
     addObject(m_pCenterItem);
+
+    m_centerPointerItem = new ObjectViewItems::SceneMarkerItem();
+    m_centerPointerItem->setTarget(m_pCenterItem);
+//    m_centerPointerItem->setMainColor(QColor(20, 150, 80, 200));
+    m_centerPointerItem->setMainColor(QColor(5, 5, 5, 15));
+
+    // TODO: Рисовать иначе
+    QImage centerImage (50, 50, QImage::Format_RGBA64);
+    QPainter p(&centerImage);
+
+    const double maxX = 50;
+    const double maxY = 50;
+    const double roundEllipseScale = 0.4;
+
+    const double centerSizeX = 10;
+    const double centerSizeY = 10;
+
+    p.setPen(QPen(QColor(255, 0, 0, 170), 3));
+    p.setBrush(QColor(255, 0, 0, 170));
+    p.drawEllipse(QRectF(maxX / 2.0 - centerSizeX / 2.0, maxY / 2.0 - centerSizeY / 2.0, centerSizeX, centerSizeY));
+
+    p.setPen(QPen(QColor(255, 0, 0, 170), 3));
+    p.setBrush(Qt::transparent);
+    p.drawEllipse(QRectF(maxX * (1 - roundEllipseScale) * 0.5, maxY * (1 - roundEllipseScale) * 0.5,
+                         maxX * roundEllipseScale, maxY * roundEllipseScale));
+
+    p.setPen(QPen(Qt::black, 3));
+    p.drawLine(QLineF(maxX / 2.0, 0, maxX / 2.0, maxY));
+    p.drawLine(QLineF(0, maxY / 2.0, maxX, maxY / 2.0));
+    m_centerPointerItem->setTargetIcon(centerImage);
+
+    addObject(m_centerPointerItem);
 }
 
 void InteractiveObjectView::zoomIn() {
@@ -95,6 +127,23 @@ void InteractiveObjectView::updateCenterPoint()
 {
     auto targetPos = getCanvasRect().center() - (m_pCenterItem->boundingRect().center() / getCurrentScale());
     m_pCenterItem->setPos(targetPos);
+    updateCenterMarker();
+}
+
+void InteractiveObjectView::updateCenterMarker()
+{
+    QRectF viewportRect = mapToScene(viewport()->geometry()).boundingRect();
+    QPointF targetPos = m_pCenterItem->scenePos();
+
+    if (viewportRect.contains(targetPos)) {
+        m_centerPointerItem->hide();
+    } else {
+        m_centerPointerItem->show();
+
+        auto pTarget = m_centerPointerItem->getTarget();
+        auto targetLine = QLineF(viewportRect.center(), pTarget->pos());
+        m_centerPointerItem->setPos(targetLine.pointAt(viewportRect.height() * 0.4 / targetLine.length()));
+    }
 }
 
 void InteractiveObjectView::wheelEvent(QWheelEvent* e) {
@@ -149,6 +198,7 @@ void InteractiveObjectView::mouseMoveEvent(QMouseEvent* e) {
             horizontalScrollBar()->sliderPosition() - deltaPos.x());
         verticalScrollBar()->setSliderPosition(
             verticalScrollBar()->sliderPosition() - deltaPos.y());
+        updateCenterMarker();
     }
 
     if (m_movingCallback) {

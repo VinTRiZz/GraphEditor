@@ -32,6 +32,7 @@ void ApplicationSettings::saveSettings() const
 }
 
 void ApplicationSettings::loadSettings(const QString& configPath) {
+    LOG_INFO("Loading settings from file:", configPath);
     QSettings settings(configPath, QSettings::IniFormat);
 
     settings.beginGroup("APPSETTINGS");
@@ -58,11 +59,13 @@ void ApplicationSettings::loadSettings(const QString& configPath) {
         }
     }
     settings.endGroup();
+    LOG_OK("Setgings loaded");
 }
 
 void ApplicationSettings::saveSettings(const QString& configPath) const {
-    QSettings settings(configPath, QSettings::IniFormat);
+    LOG_INFO("Saving settings to file:", configPath);
 
+    QSettings settings(configPath, QSettings::IniFormat);
     settings.clear();
 
     settings.beginGroup("APPSETTINGS");
@@ -82,6 +85,8 @@ void ApplicationSettings::saveSettings(const QString& configPath) const {
     settings.setValue("recent_open_files", m_recentFiles.values().join(","));
     settings.endGroup();
     settings.sync();
+
+    LOG_OK("Setgings saved");
 }
 
 ApplicationSettingsHelper::GeneralConfiguration &ApplicationSettings::getGeneralConfig()

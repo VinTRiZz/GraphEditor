@@ -44,7 +44,7 @@ void removeExtraLogs() {
                 removedLogFileCount++;
             }
         }
-        LOG_INFO("Removed logfiles");
+        LOG_OK("Removed", removedLogFileCount, "logfiles");
     }
 }
 
@@ -66,7 +66,11 @@ int main(int argc, char* argv[]) {
 
     MainWindow w;
     w.show();
+
+    LOG_INFO("Starting app...");
     auto res = a.exec();
+    LOG_OK("App exited normally");
+
     settingsInstance.saveSettings();
     return res;
 }

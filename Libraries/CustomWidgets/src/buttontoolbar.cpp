@@ -1,6 +1,5 @@
 #include "buttontoolbar.h"
 
-#include <QDebug>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 

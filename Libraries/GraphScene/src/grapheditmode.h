@@ -2,7 +2,6 @@
 #define GRAPHEDITOR_H
 
 #include "Items/connectionlineitem.h"
-#include "Items/propertyedititem.h"
 #include "Items/vertexobjectitem.h"
 #include "graphmodebase.h"
 

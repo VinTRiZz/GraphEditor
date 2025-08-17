@@ -142,6 +142,8 @@ void InteractiveObjectView::updateCenterMarker()
         auto pTarget = m_centerPointerItem->getTarget();
         auto targetLine = QLineF(viewportRect.center(), pTarget->pos());
         m_centerPointerItem->setPos(targetLine.pointAt(viewportRect.height() * 0.4 / targetLine.length()));
+
+        m_centerPointerItem->update();
     }
 }
 

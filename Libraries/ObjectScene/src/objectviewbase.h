@@ -3,6 +3,7 @@
 
 #include <ObjectItems/Constants.h>
 #include <ObjectItems/SceneFieltItem.h>
+#include <ObjectItems/CenterItem.h>
 
 #include <QGraphicsView>
 #include <optional>
@@ -27,13 +28,14 @@ public:
     int getGridSize() const;
     double getGridLineWidth() const;
 
-    void setCanvasRect(const QRectF& iRect);
+    QRectF getCanvasRect() const;
+    virtual void setCanvasRect(const QRectF& iRect);
 
     void addObject(ObjectViewItems::ItemBase* pItem);
     ObjectViewItems::ItemBase* getObject(
         ObjectViewConstants::objectId_t itemId) const;
-    QList<ObjectViewItems::ItemBase*> getAllObjects() const;
-    QList<ObjectViewConstants::objectId_t> getAllObjectIds() const;
+    std::list<ObjectViewItems::ItemBase*> getAllObjects() const;
+    std::list<ObjectViewConstants::objectId_t> getAllObjectIds() const;
     void removeAllObjects();
     void removeObject(ObjectViewConstants::objectId_t itemId);
     void removeSpecialObjects(ObjectViewConstants::ObjectType objT);
@@ -54,8 +56,6 @@ private:
     ObjectViewItems::SceneFieldItem* m_pNullItem{
         nullptr};  //! Объект, который являет собой пространство сцены (как бы
                    //! ограниченная плоскость для расположения объектов)
-    QHash<ObjectViewConstants::objectId_t, ObjectViewItems::ItemBase*>
-        m_objectsMap;  //! Словарь для сохранения ID объектов
 
 protected:
     ObjectsInternalScene* scene() const;

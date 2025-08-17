@@ -14,6 +14,8 @@ public:
 
     double getCurrentScale() const;
 
+    void setCanvasRect(const QRectF& iRect) override;
+
     void setContextMenu(QMenu* pMenu);
     QGraphicsItem* getContextMenuItem();
 
@@ -56,6 +58,13 @@ private:
 
     std::function<void(const QPointF&)>
         m_movingCallback;  //! Колбек для обработки перемещения по сцене
+
+    ObjectViewItems::CenterItem* m_pCenterItem {nullptr}; //! Центральный элемент сцены
+
+    /**
+     * @brief updateCenterPoint Обновить позицию центральной точки сцены
+     */
+    void updateCenterPoint();
 
     // Интерфейс QWidget
 protected:

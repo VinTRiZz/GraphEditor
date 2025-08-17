@@ -62,6 +62,7 @@ enum ObjectField : int {
  */
 enum ObjectType : int {
     OBJECTTYPE_NONE = 0,
+    OBJECTTYPE_CANVAS_CENTER,
     OBJECTTYPE_PROPERTY_EDITOR,
     OBJECTTYPE_ARROWLINE,
     OBJECTTYPE_VERTEX,

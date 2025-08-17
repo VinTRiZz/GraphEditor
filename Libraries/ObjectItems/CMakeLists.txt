@@ -1,5 +1,7 @@
 CONFIGURE_LIBRARY(ObjectItems)
 
+ADD_EDITOR_TEST(ObjectItems)
+
 LINK_TARGET_LIBRARY(ObjectItems Common)
 LINK_TARGET_LIBRARY(ObjectItems GraphObject)
 

@@ -13,25 +13,37 @@ InteractiveObjectView::InteractiveObjectView(QWidget* parent)
     m_mainContextMenu->addAction("Переключить сетку", [this]() {
         scene()->setGridEnabled(!scene()->getIsGridEnabled());
     });
+
+    m_pCenterItem = new ObjectViewItems::CenterItem();
+    addObject(m_pCenterItem);
 }
 
 void InteractiveObjectView::zoomIn() {
     scale(1.2, 1.2);
+    updateCenterPoint();
     emit scaleChanged();
 }
 
 void InteractiveObjectView::zoomOut() {
     scale(0.8, 0.8);
+    updateCenterPoint();
     emit scaleChanged();
 }
 
 void InteractiveObjectView::customZoom(double scaleCoeff) {
     scale(scaleCoeff, scaleCoeff);
+    updateCenterPoint();
     emit scaleChanged();
 }
 
 double InteractiveObjectView::getCurrentScale() const {
     return transform().m11();
+}
+
+void InteractiveObjectView::setCanvasRect(const QRectF &iRect)
+{
+    ObjectViewBase::setCanvasRect(iRect);
+    m_pCenterItem->setPos(iRect.center() - m_pCenterItem->boundingRect().center());
 }
 
 void InteractiveObjectView::setContextMenu(QMenu* pMenu) {
@@ -77,6 +89,12 @@ void InteractiveObjectView::rejectGrabObject() {
     auto grabObject = getGrabObject();
     grabObject->setPos(m_grabObjectPos);
     m_grabObjectId = std::nullopt;
+}
+
+void InteractiveObjectView::updateCenterPoint()
+{
+    auto targetPos = getCanvasRect().center() - (m_pCenterItem->boundingRect().center() / getCurrentScale());
+    m_pCenterItem->setPos(targetPos);
 }
 
 void InteractiveObjectView::wheelEvent(QWheelEvent* e) {

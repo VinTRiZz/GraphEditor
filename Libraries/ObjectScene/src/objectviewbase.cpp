@@ -50,6 +50,11 @@ double ObjectViewBase::getGridLineWidth() const
     return m_pScene->getGridLineWidth();
 }
 
+QRectF ObjectViewBase::getCanvasRect() const
+{
+    return m_pNullItem->getFieldRect();
+}
+
 void ObjectViewBase::setSceneBrush(const QBrush& sceneBrush) {
     m_pScene->setBackgroundBrush(sceneBrush);
 }
@@ -66,7 +71,7 @@ void ObjectViewBase::setCanvasOpacity(double opac)
 
 void ObjectViewBase::setGridColor(const QColor &gColor)
 {
-    m_pScene->setGridPen({gColor, 2}); // TODO: Задание "жирности" сетки
+    m_pScene->setGridPen({gColor, 2});
 }
 
 void ObjectViewBase::setCanvasRect(const QRectF& iRect) {
@@ -85,7 +90,7 @@ void ObjectViewBase::setCanvasRect(const QRectF& iRect) {
 
     auto rectCopy = iRect;
     rectCopy.moveTo(-10, -10);
-    rectCopy.setSize(QSize(rectCopy.width(), rectCopy.height()));
+    rectCopy.setSize(QSize(rectCopy.width() + 10, rectCopy.height() + 10));
     setSceneRect(rectCopy);
 }
 
@@ -118,48 +123,28 @@ void ObjectViewBase::addObject(ObjectViewItems::ItemBase* pItem) {
         throw std::invalid_argument(
             "ObjectsScene-internal: invalid (nullptr) item");
     }
-
-    // Закомментировал, т.к. это уже забота классов-наследников ItemBase
-    //    std::function<void(QGraphicsItem*, ObjectViewConstants::objectId_t)>
-    //    setChildComplexId =
-    //        [&setChildComplexId](QGraphicsItem* pItem,
-    //        ObjectViewConstants::objectId_t parentId){
-    //        pItem->setData(ObjectViewConstants::OBJECTFIELD_PARENTITEM_ID,
-    //        parentId); for (auto* pChild : pItem->childItems()) {
-    //            setChildComplexId(pChild, parentId);
-    //        }
-    //    };
-    //    setChildComplexId(pItem, pItem->getObjectId());
-    //    pItem->setData(ObjectViewConstants::OBJECTFIELD_PARENTITEM_ID,
-    //    QVariant()); // Обнуление для сохранения зависимости parent-child
-
-    m_objectsMap[pItem->getObjectId()] = pItem;
     m_pNullItem->registerItem(pItem);
 }
 
 ObjectViewItems::ItemBase* ObjectViewBase::getObject(
     ObjectViewConstants::objectId_t objectId) const {
-    auto targetObject = m_objectsMap.find(objectId);
-    if (targetObject == m_objectsMap.end()) {
+    auto targetObject = m_pNullItem->getItem(objectId);
+    if (targetObject == nullptr) {
         return nullptr;
     }
-    return targetObject.value();
+    return targetObject;
 }
 
-QList<ObjectViewItems::ItemBase*> ObjectViewBase::getAllObjects() const {
-    return m_objectsMap.values();
+std::list<ObjectViewItems::ItemBase*> ObjectViewBase::getAllObjects() const {
+    return m_pNullItem->getRegisteredItems();
 }
 
-QList<ObjectViewConstants::objectId_t> ObjectViewBase::getAllObjectIds() const {
-    return m_objectsMap.keys();
+std::list<ObjectViewConstants::objectId_t> ObjectViewBase::getAllObjectIds() const {
+    return m_pNullItem->getRegisteredIds();
 }
 
 void ObjectViewBase::removeAllObjects() {}
 
 void ObjectViewBase::removeObject(ObjectViewConstants::objectId_t itemId) {
-    auto pItem = m_objectsMap.value(itemId, nullptr);
-    if (pItem != nullptr) {
-        m_objectsMap.remove(itemId);
-        m_pNullItem->removeRegisteredItem(pItem);
-    }
+    m_pNullItem->removeRegisteredItemById(itemId);
 }

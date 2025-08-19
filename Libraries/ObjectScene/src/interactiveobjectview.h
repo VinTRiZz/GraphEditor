@@ -79,6 +79,7 @@ protected:
     void mouseMoveEvent(QMouseEvent* e) override;
     void mouseReleaseEvent(QMouseEvent* e) override;
     void contextMenuEvent(QContextMenuEvent* e) override;
+    void resizeEvent(QResizeEvent* e) override;
 };
 
 #endif  // INTERACTIVEOBJECTVIEW_H

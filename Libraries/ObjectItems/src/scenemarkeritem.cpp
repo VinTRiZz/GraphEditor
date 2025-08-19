@@ -91,4 +91,14 @@ void SceneMarkerItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     }
 }
 
+QVariant SceneMarkerItem::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+    if (change == ItemVisibleChange) {
+        if (value.toBool()) {
+            update();
+        }
+    }
+    return ItemBase::itemChange(change, value);
+}
+
 }

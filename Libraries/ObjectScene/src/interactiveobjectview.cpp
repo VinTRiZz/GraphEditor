@@ -6,6 +6,8 @@
 #include <QScrollBar>
 #include <QWheelEvent>
 
+#include <math.h>
+
 InteractiveObjectView::InteractiveObjectView(QWidget* parent)
     : ObjectViewBase(parent) {
     m_mainContextMenu = new QMenu(this);
@@ -75,6 +77,7 @@ void InteractiveObjectView::setCanvasRect(const QRectF &iRect)
 {
     ObjectViewBase::setCanvasRect(iRect);
     m_pCenterItem->setPos(iRect.center() - m_pCenterItem->boundingRect().center());
+    updateCenterPoint();
 }
 
 void InteractiveObjectView::setContextMenu(QMenu* pMenu) {
@@ -132,7 +135,7 @@ void InteractiveObjectView::updateCenterPoint()
 void InteractiveObjectView::updateCenterMarker()
 {
     QRectF viewportRect = mapToScene(viewport()->geometry()).boundingRect();
-    QPointF targetPos = m_pCenterItem->scenePos();
+    QPointF targetPos = m_pCenterItem->scenePos() + m_pCenterItem->boundingRect().center();
 
     if (viewportRect.contains(targetPos)) {
         m_centerPointerItem->hide();
@@ -142,8 +145,6 @@ void InteractiveObjectView::updateCenterMarker()
         auto pTarget = m_centerPointerItem->getTarget();
         auto targetLine = QLineF(viewportRect.center(), pTarget->pos());
         m_centerPointerItem->setPos(targetLine.pointAt(viewportRect.height() * 0.4 / targetLine.length()));
-
-        m_centerPointerItem->update();
     }
 }
 
@@ -190,7 +191,16 @@ void InteractiveObjectView::mouseMoveEvent(QMouseEvent* e) {
 
     if (m_grabObjectId.has_value()) {
         auto pObject = getGrabObject();
-        pObject->setPos(currentPos - pObject->boundingRect().center());
+
+        if (getIsGridEnabled()) {
+            int gridSizeHalf = std::floor(getGridSize() / 2.0);
+            QPointF magnetPos;
+            magnetPos.setX(currentPos.x() - int(currentPos.x()) % gridSizeHalf);
+            magnetPos.setY(currentPos.y() - int(currentPos.y()) % gridSizeHalf);
+            pObject->setPos(magnetPos - pObject->boundingRect().center());
+        } else {
+            pObject->setPos(currentPos - pObject->boundingRect().center());
+        }
     }
 
     if (m_isHoldingMiddleButton) {
@@ -229,4 +239,10 @@ void InteractiveObjectView::mouseReleaseEvent(QMouseEvent* e) {
 void InteractiveObjectView::contextMenuEvent(QContextMenuEvent* e) {
     m_mainContextMenu->exec(e->globalPos());
     QGraphicsView::contextMenuEvent(e);
+}
+
+void InteractiveObjectView::resizeEvent(QResizeEvent *e)
+{
+    ObjectViewBase::resizeEvent(e);
+    updateCenterPoint();
 }

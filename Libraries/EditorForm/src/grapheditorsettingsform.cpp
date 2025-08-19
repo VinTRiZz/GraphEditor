@@ -169,6 +169,15 @@ void GraphEditorSettingsForm::setCanvasSizeType(int sizesTypeInt)
 
 void GraphEditorSettingsForm::connectSizesSignals()
 {
+    connect(ui->checkBox_enableGrid, &QCheckBox::clicked,
+            this, [this](bool isEnableGridChecked){
+        if (isEnableGridChecked) {
+            ui->checkBox_enableGrid->setText("(Вкл)");
+        } else {
+            ui->checkBox_enableGrid->setText("(Выкл)");
+        }
+    });
+
     connect(ui->checkBox_calcSizes, &QCheckBox::clicked,
             this, [this](bool isCalcSizesChecked){
         ui->doubleSpinBox_multiplyCoefficient->setEnabled(isCalcSizesChecked);

@@ -193,10 +193,17 @@ void InteractiveObjectView::mouseMoveEvent(QMouseEvent* e) {
         auto pObject = getGrabObject();
 
         if (getIsGridEnabled()) {
-            int gridSizeHalf = std::floor(getGridSize() / 2.0);
+            int gridSizeHalf = std::round(getGridSize() / 2.0);
+
             QPointF magnetPos;
-            magnetPos.setX(currentPos.x() - int(currentPos.x()) % gridSizeHalf);
-            magnetPos.setY(currentPos.y() - int(currentPos.y()) % gridSizeHalf);
+            if (auto magnetX = int(currentPos.x()) % gridSizeHalf; magnetX != 0) {
+                magnetPos.setX(std::round(currentPos.x() / gridSizeHalf) * gridSizeHalf);
+            }
+
+            if (auto magnetY = int(currentPos.y()) % gridSizeHalf; magnetY != 0) {
+                magnetPos.setY(std::round(currentPos.y() / gridSizeHalf) * gridSizeHalf);
+            }
+
             pObject->setPos(magnetPos - pObject->boundingRect().center());
         } else {
             pObject->setPos(currentPos - pObject->boundingRect().center());

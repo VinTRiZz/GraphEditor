@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Project configuration
 project(
     GraphEditor
-    VERSION 1.35.36
+    VERSION 1.35.37
     LANGUAGES C CXX
 )
 

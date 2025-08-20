@@ -158,15 +158,47 @@ QTabBar {
     spacing: 2px;
 }
 
+QTabBar::close-button {
+    image: url(:/common/images/icons/common/close_tab.svg);
+    background: transparent;
+    subcontrol-position: right;
+    margin: 3px;
+}
+
+QTabBar::close-button:hover {
+    background-color: #30605e;
+    border-radius: 3px;
+}
+
+QTabBar::tab:first {
+    border-radius: 0px;
+    border-top-left-radius: 15px;
+    border-right: none;
+    padding-left: 5px;
+}
+
+QTabBar::tab:middle {
+    border-radius: 0px;
+    border-left: none;
+    border-right: none;
+    padding-left: 3px;
+}
+
+QTabBar::tab:last {
+    border-radius: 0px;
+    border-top-right-radius: 15px;
+    border-left: none;
+    padding-left: 3px;
+}
+
 QTabBar::tab {
-    background-color: #2a2a2a;
+    background-color: #2d2d2d;
     color: #d0d0d0;
+    margin-top: 4px;
+    padding-bottom: 3px;
+    padding-top: 4px;
     border: 1px solid #1f4f4d;
     border-bottom: none;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-    padding: 6px 12px;
-    margin-right: 2px;
     min-width: 80px;
 }
 
@@ -182,31 +214,16 @@ QTabBar::tab:hover {
     color: #bbb;
 }
 
-QTabBar::tab:selected {
-    background-color: #0f1f1d;
-    color: #e0e0e0;
-    border-color: #1f4f4d;
-    border-bottom-color: #1a1a1a;
-    margin-bottom: -1px;
-}
-
 QTabBar::tab:selected:hover {
     background-color: #1c1c1c;
     border-color: #30605e;
 }
 
-QTabBar::tab:!selected {
-    margin-top: 2px;
-}
-
-QTabBar::close-button {
-    image: url(:/common/images/icons/common/close_tab.svg);
-    background: transparent;
-    subcontrol-position: right;
-    margin: 3px;
-}
-
-QTabBar::close-button:hover {
-    background-color: #30605e;
-    border-radius: 3px;
+QTabBar::tab:selected {
+    background-color: #0f1f1d;
+    color: #e0e0e0;
+    border: 1px solid;
+    border-bottom: none;
+    border-color: #1f4f4d;
+    border-bottom-color: #1a1a1a;
 }

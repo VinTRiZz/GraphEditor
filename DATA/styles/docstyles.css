@@ -1,0 +1,76 @@
+/* ========================= */
+/* ========================= */
+/* ===== Common styles ===== */
+/* ========================= */
+/* ========================= */
+body {
+    background-color: #1f1f1f;
+    color: #d0d0d0;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+div.tabs ul.tablist li a {
+    border: 1px solid #1f4f4d;
+}
+
+a:link {
+    color: #6f9f9d;
+}
+
+a:visited {
+    color: #1f4f4d;
+}
+
+/*
+ul#main-menu {
+    background-image: none;
+
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+
+    border: 1px solid #1f4f4d;
+    border-radius: 15px;
+}
+
+ul#main-menu a {
+    background-image: none;
+
+    background-color: none;
+    color: #e0e0e0;
+}
+*/
+
+
+
+/* ========================= */
+/* ========================= */
+/* ====== Push buttons ===== */
+/* ========================= */
+/* ========================= */
+button {
+    background-color: #2a2a2a;
+    color: #d0d0d0;
+    border: 2px solid #1f4f4d;
+    border-radius: 5px;
+    padding: 3px 4px;
+    min-width: 100px;
+}
+
+button:disabled {
+    background-color: #2d2d2d;
+    color: #6a6a6a;
+    border: 1px solid #3a3a3a;
+}
+
+button:hover {
+    background-color: #2d2d2d;
+    border: 2px solid #30605e;
+    color: #bbb;
+}
+
+button:pressed {
+ background-color: #383838;
+    border: 2px solid #777;
+ padding-top: 6px;
+    padding-bottom: 4px;
+}

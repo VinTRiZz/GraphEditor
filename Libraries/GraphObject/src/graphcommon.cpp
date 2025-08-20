@@ -2,6 +2,4 @@
 
 #include <Common/Logging.h>
 
-namespace GraphCommon {
-
-}  // namespace GraphCommon
+namespace GraphCommon {} // namespace GraphCommon

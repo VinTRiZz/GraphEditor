@@ -4,48 +4,44 @@
 
 namespace Graph {
 
-GraphEditView::GraphEditView(QWidget* parent) : GraphSceneView(parent) {
-    connect(&m_viewMode, &GraphViewMode::started, this,
-            &GraphEditView::startedView);
-    connect(&m_editMode, &GraphEditMode::started, this,
-            &GraphEditView::startedEdit);
+GraphEditView::GraphEditView(QWidget *parent) : GraphSceneView(parent) {
+  connect(&m_viewMode, &GraphViewMode::started, this,
+          &GraphEditView::startedView);
+  connect(&m_editMode, &GraphEditMode::started, this,
+          &GraphEditView::startedEdit);
 
-    connect(&m_editMode, &GraphEditMode::openPropertyEditor, this,
-            &GraphEditView::openPropertyEditor);
-    connect(&m_editMode, &GraphEditMode::closePropertyEditor, this,
-            &GraphEditView::closePropertyEditor);
+  connect(&m_editMode, &GraphEditMode::openPropertyEditor, this,
+          &GraphEditView::openPropertyEditor);
+  connect(&m_editMode, &GraphEditMode::closePropertyEditor, this,
+          &GraphEditView::closePropertyEditor);
 
-    m_viewMode.setGraphScene(this);
-    m_editMode.setGraphScene(this);
+  m_viewMode.setGraphScene(this);
+  m_editMode.setGraphScene(this);
 
-    m_viewMode.init();
-    m_editMode.init();
-    LOG_INFO("Inited graph view");
+  m_viewMode.init();
+  m_editMode.init();
+  LOG_INFO("Inited graph view");
 
-    startViewMode();
+  startViewMode();
 }
 
-void GraphEditView::setGraphMaintaner(const PMaintainer& pGraphMaintaner) {
-    // TODO: Connect graph
-    GraphSceneView::setGraphMaintaner(pGraphMaintaner);
+void GraphEditView::setGraphMaintaner(const PMaintainer &pGraphMaintaner) {
+  // TODO: Connect graph
+  GraphSceneView::setGraphMaintaner(pGraphMaintaner);
 }
 
 void GraphEditView::startViewMode() {
-    setMode(&m_viewMode);
-    LOG_INFO("Started view mode");
+  setMode(&m_viewMode);
+  LOG_INFO("Started view mode");
 }
 
 void GraphEditView::startEditMode() {
-    setMode(&m_editMode);
-    LOG_INFO("Started edit mode");
+  setMode(&m_editMode);
+  LOG_INFO("Started edit mode");
 }
 
-bool GraphEditView::isEditMode() const {
-    return m_editMode.isRunning();
-}
+bool GraphEditView::isEditMode() const { return m_editMode.isRunning(); }
 
-bool GraphEditView::isViewMode() const {
-    return m_viewMode.isRunning();
-}
+bool GraphEditView::isViewMode() const { return m_viewMode.isRunning(); }
 
-}  // namespace Graph
+} // namespace Graph

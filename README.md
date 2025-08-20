@@ -45,10 +45,10 @@ bash ./createAppImage.sh
 ### Граф со включенной сеткой
 <img src="./DATA/readme/graph-enabled-grid.png" height="760" width="850">
 
-### Граф со включенной сеткой
+### Прикрепления объектов к сетке
 <img src="./DATA/readme/graph-add-grid-vertices.png" height="760" width="850">
 
-### Граф со включенной сеткой
+### Свойства объектов на графе
 <img src="./DATA/readme/graph-object-props.png" height="760" width="850">
 
 ### Основные настройки приложения

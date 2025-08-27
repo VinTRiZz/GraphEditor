@@ -10,6 +10,7 @@
 #include "Items/connectionlineitem.h"
 #include "Items/vertexobjectitem.h"
 #include "ui_objectpropertyeditorform.h"
+
 using namespace CommonFunctions;
 
 ObjectPropertyEditorForm::ObjectPropertyEditorForm(QWidget *parent)
@@ -31,25 +32,11 @@ ObjectPropertyEditorForm::ObjectPropertyEditorForm(QWidget *parent)
     auto targetPath = QFileDialog::getOpenFileName(
         nullptr, "Выберите изображение", QDir::currentPath());
 
-    if (targetPath.isEmpty()) {
-      ui->iconPreview_label->setText("Предпросмотр");
-      ui->iconPath_lineEdit->clear();
-      return;
-    }
-
-    ui->iconPreview_label->setPixmap(
-        pixmapFromPath(targetPath, ui->iconPreview_label->size()));
-    ui->iconPath_lineEdit->setText(targetPath);
+    auto pLabel = new QLabel;
+    pLabel->setPixmap(
+        pixmapFromPath(targetPath, QSize(250, 250)));
+    ui->imageHistoryGalery->addWidget(pLabel);
   });
-
-  connect(ui->iconPath_lineEdit, &QLineEdit::textChanged, this,
-          [this](const QString &changedText) {
-            if (!QFileInfo(changedText).isFile()) {
-              return;
-            }
-            ui->iconPreview_label->setPixmap(
-                pixmapFromPath(changedText, ui->iconPreview_label->size()));
-          });
 
   ui->shortName_lineEdit->setMaxLength(Graph::GRAPH_MAX_SHORTNAME_SIZE);
   ui->property_tabWidget->setCurrentIndex(0);
@@ -69,15 +56,17 @@ void ObjectPropertyEditorForm::setTargetItem(
   setColor(ui->selectedColor_label, pTargetItem->getSelectedColor());
 
   auto pVertex = dynamic_cast<ObjectViewItems::VertexObject *>(m_pTargetItem);
-  if (nullptr != pVertex) {
-    ui->iconPreview_label->setPixmap(QPixmap::fromImage(pVertex->getImage()));
-    if (ui->iconPreview_label->pixmap(Qt::ReturnByValue).isNull()) {
-      ui->iconPreview_label->setText("Предпросмотр");
-    }
-    auto imageRect = pVertex->getImageRect();
-    ui->iconPreview_label->setFixedSize(
-        QSize(imageRect.width(), imageRect.height()));
-  }
+
+  // TODO: Setup everything
+//  if (nullptr != pVertex) {
+//    ui->iconPreview_label->setPixmap(QPixmap::fromImage(pVertex->getImage()));
+//    if (ui->iconPreview_label->pixmap(Qt::ReturnByValue).isNull()) {
+//      ui->iconPreview_label->setText("Предпросмотр");
+//    }
+//    auto imageRect = pVertex->getImageRect();
+//    ui->iconPreview_label->setFixedSize(
+//        QSize(imageRect.width(), imageRect.height()));
+//  }
   ui->property_tabWidget->setTabEnabled(1, nullptr != pVertex);
 
   auto isConnectionEditing = pTargetItem->getType() ==
@@ -96,12 +85,13 @@ void ObjectPropertyEditorForm::acceptChanges() {
   m_pTargetItem->setSecondColor(getColor(ui->bgrColor_label));
   m_pTargetItem->setSelectedColor(getColor(ui->selectedColor_label));
 
-  if (auto pVertex =
-          dynamic_cast<ObjectViewItems::VertexObject *>(m_pTargetItem);
-      nullptr != pVertex) {
-    auto pxmap = ui->iconPreview_label->pixmap(Qt::ReturnByValue);
-    pVertex->setImage(pxmap.toImage());
-  }
+  // TODO: Setup everything
+//  if (auto pVertex =
+//          dynamic_cast<ObjectViewItems::VertexObject *>(m_pTargetItem);
+//      nullptr != pVertex) {
+//    auto pxmap = ui->iconPreview_label->pixmap(Qt::ReturnByValue);
+//    pVertex->setImage(pxmap.toImage());
+//  }
 
   if (auto pConnection =
           dynamic_cast<ObjectViewItems::VertexConnectionLine *>(m_pTargetItem);

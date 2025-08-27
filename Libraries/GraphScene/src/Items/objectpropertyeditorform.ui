@@ -65,7 +65,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>2</number>
         </property>
         <property name="documentMode">
          <bool>true</bool>
@@ -165,25 +165,31 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="tab_icon">
+        <widget class="QWidget" name="tab">
          <attribute name="title">
           <string>Иконка</string>
          </attribute>
+        </widget>
+        <widget class="QWidget" name="tab_icon">
+         <attribute name="title">
+          <string>Изображение</string>
+         </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
-           <widget class="QLabel" name="iconPreview_label">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
+           <widget class="WidgetGalery" name="imageHistoryGalery">
+            <property name="widgetResizable">
+             <bool>true</bool>
             </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
+            <widget class="QWidget" name="scrollAreaWidgetContents">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>312</width>
+               <height>87</height>
+              </rect>
+             </property>
+            </widget>
            </widget>
           </item>
           <item>
@@ -200,22 +206,11 @@
            </spacer>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_5">
-            <item>
-             <widget class="QLineEdit" name="iconPath_lineEdit">
-              <property name="placeholderText">
-               <string>Путь до файла...</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="selectIcon_pushButton">
-              <property name="text">
-               <string>Выбрать...</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <widget class="QPushButton" name="selectIcon_pushButton">
+            <property name="text">
+             <string>Открыть...</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -244,6 +239,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>WidgetGalery</class>
+   <extends>QScrollArea</extends>
+   <header location="global">CustomWidgets/WidgetGalery.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

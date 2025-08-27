@@ -24,10 +24,11 @@ struct ButtonConfig {
                          //! activated и т.д.). Не используется матрицей, сугубо
                          //! для удобства
 
-    bool isEnabled{true};  //! Изначальное состояние
+    bool isEnabled{true};       //! Изначальное состояние
+    bool isMatrixHead{false};   //! Является ли матрицей кнопок (расширение)
 
-    std::function<void(QPushButton*)>
-        action;  //! Действие кнопки. Аргумент -- указатель на нажатую кнопку
+    std::function<void(QPushButton *)>
+        action; //! Действие кнопки. Аргумент -- указатель на нажатую кнопку
 };
 
 /**
@@ -103,6 +104,12 @@ public:
      */
     void setButtonPadding(unsigned left, unsigned right, unsigned top,
                           unsigned bottom);
+
+    /**
+     * @brief setButtonPaddingEnabled   Включить или отключить фиксацию кнопки на виджете
+     * @param isPaddingEnabled          true для включения фиксации
+     */
+    void setButtonPaddingEnabled(bool isPaddingEnabled = true);
 
     /**
      * @brief setIcons      Задать иконки кнопке
@@ -182,6 +189,7 @@ private:
     int m_paddingRight{};
     int m_paddingTop{};
     int m_paddingBottom{};
+    bool m_isPaddingEnabled {true}; //! Для отдельных случаев контроля кнопки (например, рекурсивные кнопки)
 
     double m_buttonMargins{
         15.0};  //! Отступы между кнопками в открытом состоянии
@@ -204,6 +212,8 @@ private:
     void moveButton(int xpos, int ypos, bool isAnimated, bool hideOnFinish);
     void setupButton(QPushButton* pButton, const ButtonConfig& buttonInfo);
 
+    void showEvent(QShowEvent* e) override;
+    void hideEvent(QHideEvent* e) override;
     void paintEvent(QPaintEvent* e) override;
     void resizeEvent(QResizeEvent* e) override;
     void moveEvent(QMoveEvent* event) override;

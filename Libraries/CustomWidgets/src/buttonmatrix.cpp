@@ -4,6 +4,8 @@
 
 #include <QPropertyAnimation>
 
+#include <QGuiApplication>
+
 namespace ButtonMatrix {
 
 HeadButton::HeadButton(QWidget *parent) : QPushButton(parent) {
@@ -28,7 +30,11 @@ bool HeadButton::addButton(const ButtonConfig &bConfig) {
   auto mappedPos = mapToMatrix(bConfig.positionX, bConfig.positionY);
   auto &buttonConfig = m_buttonMatrix[mappedPos.first][mappedPos.second];
   buttonConfig.conf = bConfig;
-  buttonConfig.pButton = new QPushButton(parentWidget());
+  if (buttonConfig.conf.isMatrixHead) {
+      buttonConfig.pButton = new HeadButton(parentWidget());
+  } else {
+      buttonConfig.pButton = new QPushButton(parentWidget());
+  }
   setupButton(buttonConfig.pButton, bConfig);
   return true;
 }
@@ -96,6 +102,11 @@ void HeadButton::setButtonPadding(unsigned int left, unsigned int right,
   m_paddingTop = top;
   m_paddingBottom = bottom;
   moveSelf();
+}
+
+void HeadButton::setButtonPaddingEnabled(bool isPaddingEnabled)
+{
+    m_isPaddingEnabled = isPaddingEnabled;
 }
 
 void HeadButton::setIcons(const QIcon &collapsedIcon,
@@ -236,6 +247,10 @@ void HeadButton::moveButton(int xpos, int ypos, bool isAnimated,
     return;
   }
 
+  if (m_buttonMatrix[xpos][ypos].conf.isMatrixHead && hideOnFinish) {
+      static_cast<HeadButton*>(pButton)->collapse(true);
+  }
+
   auto startRect = rect();
   auto startPosition = mapFromMatrix(xpos, ypos);
   startRect.moveTo(startPosition.first, startPosition.second);
@@ -287,6 +302,15 @@ void HeadButton::setupButton(QPushButton *pButton,
   pButton->setHidden(!m_isButtonsExpanded);
   pButton->setEnabled(buttonInfo.isEnabled);
 
+  // Прокидываем настройки
+  if (buttonInfo.isMatrixHead) {
+      auto pHButton = static_cast<HeadButton*>(pButton);
+      pHButton->setButtonPaddingEnabled(false);
+      pHButton->setButtonsSize(m_fixedSize);
+      connect(this, &HeadButton::stopAnimations,
+              pHButton, &HeadButton::stopAnimations);
+  }
+
   if (!buttonInfo.action) {
     return;
   }
@@ -300,11 +324,37 @@ void HeadButton::setupButton(QPushButton *pButton,
             } else {
               collapse(false);
             }
-          });
+  });
+}
+
+void HeadButton::showEvent(QShowEvent *e)
+{
+    for (const auto& row : m_buttonMatrix) {
+        for (const auto& buttonProxy : row) {
+            if (buttonProxy.pButton && m_isButtonsExpanded) {
+                buttonProxy.pButton->show();
+            }
+        }
+    }
+  QPushButton::showEvent(e);
+}
+
+void HeadButton::hideEvent(QHideEvent *e)
+{
+    for (const auto& row : m_buttonMatrix) {
+        for (const auto& buttonProxy : row) {
+            if (buttonProxy.pButton) {
+                buttonProxy.pButton->hide();
+            }
+        }
+    }
+  QPushButton::hideEvent(e);
 }
 
 void HeadButton::paintEvent(QPaintEvent *e) {
-  moveSelf();
+    if (m_isPaddingEnabled) {
+        moveSelf();
+    }
   QPushButton::paintEvent(e);
 }
 

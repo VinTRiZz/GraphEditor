@@ -2,10 +2,12 @@
 
 #include <Common/CommonFunctions.h>
 #include <Common/Logging.h>
+#include <Common/Encryption.h>
 #include <GraphObject/Components.h>
 
 #include <QFileDialog>
 #include <QVariant>
+#include <QBuffer>
 
 #include "Items/connectionlineitem.h"
 #include "Items/vertexobjectitem.h"
@@ -16,6 +18,10 @@ using namespace CommonFunctions;
 ObjectPropertyEditorForm::ObjectPropertyEditorForm(QWidget *parent)
     : QWidget(parent), ui(new Ui::ObjectPropertyEditorForm) {
   ui->setupUi(this);
+
+  ui->imageHistoryGalery->init();
+  ui->imageHistoryGalery->setSelectionColor(QColor(161, 209, 207));
+  ui->iconGalery->setSelectionColor(QColor(161, 209, 207));
 
   connect(ui->accept_pushButton, &QPushButton::clicked, this,
           &ObjectPropertyEditorForm::acceptChanges);
@@ -32,10 +38,23 @@ ObjectPropertyEditorForm::ObjectPropertyEditorForm(QWidget *parent)
     auto targetPath = QFileDialog::getOpenFileName(
         nullptr, "Выберите изображение", QDir::currentPath());
 
+    QFile targetFile(targetPath);
+    targetFile.open(QIODevice::ReadOnly);
+    auto pxmapHash = Encryption::sha256(targetFile.readAll());
+    auto hashExist = ui->imageHistoryGalery->containWidget([&pxmapHash](QWidget* pLabel) {
+        return (pxmapHash == pLabel->property("imghash").toByteArray());
+    });
+    if (hashExist) {
+        LOG_INFO("Image exist, nothing to add into galery");
+        return;
+    }
+
+    auto pxmap = pixmapFromPath(targetPath, QSize(250, 250));
     auto pLabel = new QLabel;
-    pLabel->setPixmap(
-        pixmapFromPath(targetPath, QSize(250, 250)));
-    ui->imageHistoryGalery->addWidget(pLabel);
+    pLabel->setProperty("imghash", pxmapHash);
+    pLabel->setToolTip(targetPath);
+    pLabel->setPixmap(pxmap);
+    ui->imageHistoryGalery->addWidget(pLabel, QFileInfo(targetPath).baseName());
   });
 
   ui->shortName_lineEdit->setMaxLength(Graph::GRAPH_MAX_SHORTNAME_SIZE);

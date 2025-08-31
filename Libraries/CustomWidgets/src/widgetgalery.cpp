@@ -2,12 +2,23 @@
 
 #include <QGridLayout>
 
+#include "selectablewidget.h"
+
+using ProxyWidget = WidgetGaleryHelper::SelectableWidget;
+
 WidgetGalery::WidgetGalery(QWidget *parent)
-    : QScrollArea{parent}
+    : QScrollArea(parent)
 {
-    auto centerWidget = new QWidget(this);
-    m_layout = new QGridLayout(centerWidget);
-    setWidget(centerWidget);
+
+}
+
+void WidgetGalery::init()
+{
+    auto pLayout = new QGridLayout;
+    pLayout->setVerticalSpacing(5);
+    pLayout->setSpacing(3);
+    QScrollArea::setWidget(new QWidget);
+    widget()->setLayout(pLayout);
 }
 
 void WidgetGalery::setWidgetSize(QSize wSize)
@@ -15,16 +26,47 @@ void WidgetGalery::setWidgetSize(QSize wSize)
     m_widgetSize = wSize;
 }
 
-void WidgetGalery::addWidget(QWidget *pWidget)
+void WidgetGalery::setSelectionColor(const QColor &col)
 {
-    pWidget->setParent(m_layout->parentWidget());
-    m_widgets.push_back(pWidget);
+    m_selectionColor = col;
+    for (auto* pWidget : m_widgets) {
+        static_cast<ProxyWidget*>(pWidget)->setSelectionColor(col);
+    }
+}
+
+void WidgetGalery::addWidget(QWidget *pWidget, const QString& widgetLabel)
+{
+    auto selectableWidget = new ProxyWidget(widget());
+    selectableWidget->setWidget(pWidget, widgetLabel);
+    selectableWidget->setSelectionColor(m_selectionColor);
+
+    connect(selectableWidget, &ProxyWidget::selectionToggled,
+            selectableWidget, [this, selectableWidget](bool isSelectedState){
+        if (!isSelectedState) {
+            m_currentSelectedWidget = nullptr;
+            return;
+        }
+        m_currentSelectedWidget = selectableWidget;
+
+        for (auto* pWidget : m_widgets) {
+            if (pWidget == selectableWidget) {
+                continue;
+            }
+            static_cast<ProxyWidget*>(pWidget)->setSelected(false);
+        }
+    });
+
+    pWidget->setParent(selectableWidget);
+    m_widgets.push_back(selectableWidget);
+
     updateLayout();
 }
 
 void WidgetGalery::removeWidget(QWidget *pWidget)
 {
-    auto targetWidget = std::find(m_widgets.begin(), m_widgets.end(), pWidget);
+    auto targetWidget = std::find_if(m_widgets.begin(), m_widgets.end(), [pWidget](auto* pContainerWidget){
+        return (pWidget == static_cast<ProxyWidget*>(pContainerWidget)->widget());
+    });
     if (targetWidget != m_widgets.end()) {
         m_widgets.erase(targetWidget);
         updateLayout();
@@ -33,39 +75,39 @@ void WidgetGalery::removeWidget(QWidget *pWidget)
 
 bool WidgetGalery::containWidget(const std::function<bool (QWidget *)> &predicate) const
 {
-    for (int rw = 0; rw < m_layout->rowCount(); ++rw) {
-        for (int col = 0; col < m_layout->columnCount(); ++col) {
-            auto pItem = m_layout->itemAtPosition(rw, col);
-            if (predicate(pItem->widget())) {
-                return true;
-            }
+    for (auto* pWidget : m_widgets) {
+        if (predicate(static_cast<ProxyWidget*>(pWidget)->widget())) {
+            return true;
         }
     }
     return false;
 }
 
+QWidget *WidgetGalery::getSelectedWidget() const
+{
+    return m_currentSelectedWidget;
+}
+
 void WidgetGalery::updateLayout()
 {
-    // TODO: Тут сегфолт
-    while (nullptr != m_layout->itemAt(0)) {
-        delete m_layout->takeAt(0);
+    auto pCenterWidgetLayout = static_cast<QGridLayout*>(widget()->layout());
+    auto pItem = pCenterWidgetLayout->takeAt(0);
+    while (nullptr != pItem) {
+        delete pItem;
+        pItem = pCenterWidgetLayout->takeAt(0);
     }
 
     int currentCol {0};
     int currentRow {0};
     for (auto* pWidget : m_widgets) {
-        if ((m_widgetSize.width() + m_layout->margin()) * (currentCol + 1) >= width()) {
+        if ((m_widgetSize.width() + pCenterWidgetLayout->margin()) * (currentCol + 1) >= width()) {
             currentCol = 0;
             currentRow++;
         }
+
         pWidget->setFixedSize(m_widgetSize);
-        m_layout->addWidget(pWidget, currentRow, currentCol);
+        pCenterWidgetLayout->addWidget(pWidget, currentRow, currentCol);
         ++currentCol;
     }
 }
 
-void WidgetGalery::resizeEvent(QResizeEvent *e)
-{
-    updateLayout();
-    QScrollArea::resizeEvent(e);
-}

@@ -11,24 +11,26 @@ class WidgetGalery : public QScrollArea
 public:
     explicit WidgetGalery(QWidget *parent = nullptr);
 
-    void setWidgetSize(QSize wSize);
+    void init();
 
-    void addWidget(QWidget* pWidget);
+    void setWidgetSize(QSize wSize);
+    void setSelectionColor(const QColor& col);
+
+    void addWidget(QWidget* pWidget, const QString &widgetLabel);
     void removeWidget(QWidget* pWidget);
 
     bool containWidget(const std::function<bool (QWidget *)> &predicate) const;
+    QWidget* getSelectedWidget() const;
 
 private:
+    QWidget*            m_currentSelectedWidget {nullptr};
     std::list<QWidget*> m_widgets;
-    QSize               m_widgetSize {100, 100};
-    QGridLayout*        m_layout {nullptr};
+
+    QColor m_selectionColor {Qt::green};
+    QSize  m_widgetSize     {100, 100};
 
 protected:
     void updateLayout();
-
-    // TODO: Add processing clicks as selecting widget from list
-
-    void resizeEvent(QResizeEvent* e) override;
 };
 
 #endif // WIDGETGALERY_H

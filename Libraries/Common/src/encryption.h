@@ -21,6 +21,13 @@ QByteArray encryptAes256Cbc(const QByteArray& plainText, QByteArray key);
  */
 QByteArray decryptAes256Cbc(QByteArray cipherText, QByteArray key);
 
+/**
+ * @brief sha256    Вычислить хеш по функции SHA-256
+ * @param txt       Входной массив байт (или текст)
+ * @return          Хеш (64 байт)
+ */
+QByteArray sha256(QByteArray txt);
+
 }  // namespace Encryption
 
 #endif  // ENCRYPTION_H

@@ -64,9 +64,9 @@ QColor getColor(QLabel* pLabel);
  * @brief pixmapFromPath    Считать изображение
  * @param targetPath        Путь до файла
  * @param scaleSize         Размер, до которого сжать/расширить изображение
- * @return                  NULL QPixmap если не удалось считать
+ * @return                  NULL QImage если не удалось считать
  */
-QPixmap pixmapFromPath(const QString& targetPath, const QSize& scaleSize);
+QImage imageFromPath(const QString& targetPath);
 
 /**
  * @brief encodeColor   Конвертировать цвет во внутренний способ хранения

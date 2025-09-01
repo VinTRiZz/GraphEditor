@@ -15,6 +15,7 @@ SelectableWidget::SelectableWidget(QWidget *parent) :
     layout()->addWidget(new QWidget); // TODO: Придумать другой способ
 
     m_widgetNameLabel = new QLabel(this);
+    m_widgetNameLabel->setWordWrap(true);
     layout()->addWidget(m_widgetNameLabel);
     m_widgetNameLabel->setText("Изображение");
 

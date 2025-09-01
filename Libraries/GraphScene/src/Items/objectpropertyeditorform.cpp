@@ -19,9 +19,8 @@ ObjectPropertyEditorForm::ObjectPropertyEditorForm(QWidget *parent)
     : QWidget(parent), ui(new Ui::ObjectPropertyEditorForm) {
   ui->setupUi(this);
 
-  ui->imageHistoryGalery->init();
-  ui->imageHistoryGalery->setSelectionColor(QColor(161, 209, 207));
-  ui->iconGalery->setSelectionColor(QColor(161, 209, 207));
+  initGalery();
+  initIcons();
 
   connect(ui->accept_pushButton, &QPushButton::clicked, this,
           &ObjectPropertyEditorForm::acceptChanges);
@@ -33,29 +32,6 @@ ObjectPropertyEditorForm::ObjectPropertyEditorForm(QWidget *parent)
   connectColorDialog(ui->selectBgrColor_pushButton, ui->bgrColor_label);
   connectColorDialog(ui->selectSelectionColor_pushButton,
                      ui->selectedColor_label);
-
-  connect(ui->selectIcon_pushButton, &QPushButton::clicked, this, [this]() {
-    auto targetPath = QFileDialog::getOpenFileName(
-        nullptr, "Выберите изображение", QDir::currentPath());
-
-    QFile targetFile(targetPath);
-    targetFile.open(QIODevice::ReadOnly);
-    auto pxmapHash = Encryption::sha256(targetFile.readAll());
-    auto hashExist = ui->imageHistoryGalery->containWidget([&pxmapHash](QWidget* pLabel) {
-        return (pxmapHash == pLabel->property("imghash").toByteArray());
-    });
-    if (hashExist) {
-        LOG_INFO("Image exist, nothing to add into galery");
-        return;
-    }
-
-    auto pxmap = pixmapFromPath(targetPath, QSize(250, 250));
-    auto pLabel = new QLabel;
-    pLabel->setProperty("imghash", pxmapHash);
-    pLabel->setToolTip(targetPath);
-    pLabel->setPixmap(pxmap);
-    ui->imageHistoryGalery->addWidget(pLabel, QFileInfo(targetPath).baseName());
-  });
 
   ui->shortName_lineEdit->setMaxLength(Graph::GRAPH_MAX_SHORTNAME_SIZE);
   ui->property_tabWidget->setCurrentIndex(0);
@@ -126,4 +102,55 @@ void ObjectPropertyEditorForm::cancelChanges() {
   LOG_INFO("Canceled change data of object");
   setTargetItem(m_pTargetItem); // ez
   emit editCanceled();
+}
+
+void ObjectPropertyEditorForm::initGalery()
+{
+    ui->imageHistoryGalery->init();
+    ui->imageHistoryGalery->setSelectionColor(QColor(161, 209, 207));
+
+    connect(ui->selectIcon_pushButton, &QPushButton::clicked, this, [this]() {
+      auto targetPath = QFileDialog::getOpenFileName(
+          nullptr, "Выберите изображение", QDir::currentPath());
+
+      QFile targetFile(targetPath);
+      targetFile.open(QIODevice::ReadOnly);
+      auto pxmapHash = Encryption::sha256(targetFile.readAll());
+      auto hashExist = ui->imageHistoryGalery->containWidget([&pxmapHash](QWidget* pLabel) {
+          return (pxmapHash == pLabel->property("imghash").toByteArray());
+      });
+      if (hashExist) {
+          LOG_INFO("Image exist, nothing to add into galery");
+          return;
+      }
+
+      auto img = imageFromPath(targetPath);
+      auto pxmap = QPixmap::fromImage(img.scaled(250, 250, Qt::IgnoreAspectRatio));
+      auto pLabel = new QLabel;
+      pLabel->setProperty("imghash", pxmapHash);
+      pLabel->setToolTip(targetPath);
+      pLabel->setPixmap(pxmap);
+      ui->imageHistoryGalery->addWidget(pLabel, QFileInfo(targetPath).baseName());
+    });
+}
+
+void ObjectPropertyEditorForm::initIcons()
+{
+    ui->iconGalery->init();
+    ui->iconGalery->setSelectionColor(QColor(161, 209, 207));
+
+    // Добавляем элементы из ресурсов
+    auto addIcon = [this](const QString& iconPath, const QString& iconName){
+        const QString iconBasepath = ":/common/images/vertexicons/%0";
+        auto img = imageFromPath(iconBasepath.arg(iconPath));
+        auto pxmap = QPixmap::fromImage(img.scaled(70, 70, Qt::IgnoreAspectRatio));
+        auto pLabel = new QLabel;
+        pLabel->setFixedSize(70, 70);
+        pLabel->setPixmap(pxmap);
+        pLabel->setToolTip(iconName);
+        ui->iconGalery->addWidget(pLabel, iconName);
+    };
+
+    addIcon("person/green.svg", "Человек (З)");
+    addIcon("person/red.svg", "Человек (К)");
 }

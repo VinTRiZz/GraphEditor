@@ -31,6 +31,9 @@ private:
     Ui::ObjectPropertyEditorForm* ui;
 
     ObjectViewItems::ItemBase* m_pTargetItem{nullptr};
+
+    void initGalery();
+    void initIcons();
 };
 
 #endif  // OBJECTPROPERTYEDITORFORM_H

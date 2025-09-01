@@ -133,7 +133,7 @@ QColor getColor(QLabel *pLabel) {
   return QColor(pLabel->property(LABEL_COLOR_PROPERTY_NAME).toString());
 }
 
-QPixmap pixmapFromPath(const QString &targetPath, const QSize &scaleSize) {
+QImage imageFromPath(const QString &targetPath) {
   QImageReader imgReader;
   imgReader.setAutoDetectImageFormat(true);
   imgReader.setAutoTransform(true);
@@ -145,7 +145,7 @@ QPixmap pixmapFromPath(const QString &targetPath, const QSize &scaleSize) {
     return {};
   }
 
-  return QPixmap::fromImage(imgReader.read().scaled(scaleSize));
+  return imgReader.read();
 }
 
 QByteArray encodeColor(const QColor &iCol) {

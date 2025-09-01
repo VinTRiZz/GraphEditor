@@ -1,8 +1,7 @@
 #ifndef VERTEXOBJECT_H
 #define VERTEXOBJECT_H
 
-#include <ObjectItems/ItemBase.h>
-#include <ObjectItems/LabelItem.h>
+#include <ObjectItems/PictureObjectItem.h>
 
 #include <QGraphicsItem>
 #include <QPen>
@@ -12,27 +11,10 @@ namespace ObjectViewItems {
 
 class VertexConnectionLine;
 
-class VertexObject : public ItemBase {
+class VertexObject : public PictureObjectItem {
 public:
     explicit VertexObject(QGraphicsItem* parent = nullptr);
     ~VertexObject();
-
-    LabelItem* getLabel() const;
-
-    void setImage(const QImage& img);
-    void setShortName(const QString& iText) override;
-    void setName(const QString& iText) override;
-
-    void setMainColor(const QColor& penColor) override;
-    void setSecondColor(const QColor& penColor) override;
-    void setSelectedColor(const QColor& penColor) override;
-
-    QImage getImage() const;
-    QRectF getImageRect() const;
-
-    void setRect(const QRectF& iRect);
-
-    QPainterPath shape() const override;
 
     bool isLineSubscribed(VertexConnectionLine* pLine);
 
@@ -44,18 +26,11 @@ public:
 
     void updateConnectionLines();
 
-    void setCustomProperties(const QJsonObject& props) override;
-    QJsonObject getCustomProperties() const override;
-
 private:
-    QGraphicsPathItem* m_selectedRectItem{nullptr};
-    QGraphicsPixmapItem* m_vertexImage{nullptr};
-    QGraphicsEllipseItem* m_vertexEllipse{nullptr};
-    LabelItem* m_nameItem{nullptr};
-
     std::set<VertexConnectionLine*> m_connectionsFromThis;
     std::set<VertexConnectionLine*> m_connectionsToThis;
 
+protected:
     QVariant itemChange(GraphicsItemChange change,
                         const QVariant& value) override;
 };

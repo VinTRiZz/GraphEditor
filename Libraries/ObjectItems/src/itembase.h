@@ -36,9 +36,6 @@ public:
     virtual void setDescription(const QString& text);
     virtual QString getDescription() const;
 
-    virtual void setCustomProperties(const QJsonObject& props);
-    virtual QJsonObject getCustomProperties() const;
-
     virtual void setMainColor(const QColor& penColor);
     virtual QColor getMainColor() const;
 

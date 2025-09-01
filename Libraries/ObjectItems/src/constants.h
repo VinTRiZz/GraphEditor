@@ -51,9 +51,6 @@ enum ObjectField : int {
     OBJECTFIELD_COLOR_MAIN,        //! Основной цвет (цвет пера)
     OBJECTFIELD_COLOR_SECOND,  //! Фоновый цвет (заполнения в объекте)
     OBJECTFIELD_COLOR_SELECTED,    //! Цвет индикации выбора
-
-    OBJECTFIELD_PROPERTY_JSON,  //! JSON с кастомными (не универсальными)
-                                //! свойствами объекта
 };
 
 /**
@@ -63,6 +60,7 @@ enum ObjectField : int {
 enum ObjectType : int {
     OBJECTTYPE_NONE = 0,
     OBJECTTYPE_MARKER,
+    OBJECTTYPE_PICTURE,
     OBJECTTYPE_CANVAS_CENTER,
     OBJECTTYPE_PROPERTY_EDITOR,
     OBJECTTYPE_ARROWLINE,

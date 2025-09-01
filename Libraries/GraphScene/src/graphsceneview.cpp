@@ -103,8 +103,6 @@ void GraphSceneView::writeChangesToGraph() {
 
     tmpVertex.image = vertCasted->getImage();
 
-    tmpVertex.customProperties = vertCasted->getCustomProperties();
-
     pGraph->addVertex(tmpVertex);
   }
   LOG_OK("Loaded", pGraph->getVerticesCount(), "vertices from scene");
@@ -128,8 +126,6 @@ void GraphSceneView::writeChangesToGraph() {
 
     tmpConnection.name = conCasted->getShortName();
     tmpConnection.lineColor = conCasted->getMainColor();
-
-    tmpConnection.customProperties = conCasted->getCustomProperties();
 
     pGraph->addConnection(tmpConnection);
   }
@@ -183,7 +179,6 @@ void GraphSceneView::updateGraph() {
     pVertexItem->setShortName(vert.shortName);
     pVertexItem->setName(vert.name);
     pVertexItem->setDescription(vert.description);
-    pVertexItem->setCustomProperties(vert.customProperties);
 
     pVertexItem->setPos(vert.posX, vert.posY);
     pVertexItem->setRect(vertexRect);

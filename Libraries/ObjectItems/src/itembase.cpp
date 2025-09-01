@@ -89,14 +89,6 @@ QString ItemBase::getDescription() const {
   return data(OBJECTFIELD_DESCRIPTION).toString();
 }
 
-void ItemBase::setCustomProperties(const QJsonObject &props) {
-  setData(OBJECTFIELD_PROPERTY_JSON, props);
-}
-
-QJsonObject ItemBase::getCustomProperties() const {
-  return data(OBJECTFIELD_PROPERTY_JSON).toJsonObject();
-}
-
 void ItemBase::setMainColor(const QColor &penColor) {
   setData(OBJECTFIELD_COLOR_MAIN, penColor);
 }

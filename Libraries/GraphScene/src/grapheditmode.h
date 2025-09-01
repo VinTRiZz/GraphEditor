@@ -15,13 +15,6 @@ public:
 
     void init() override;
 
-    void start() override;
-    void stop() override;
-
-    void processPress(QGraphicsItem* pItem) override;
-    void processMove(QGraphicsItem* pItem, const QPointF& currentPos) override;
-    void processRelease(QGraphicsItem* pItem) override;
-
 signals:
     void enabledEdit();
     void disabledEdit();
@@ -44,11 +37,6 @@ private:
     CurrentEditMode m_currentEditMode{CurrentEditMode::CEM_NONE};
 
     void clearMode();
-
-    ObjectViewItems::VertexObject* m_movingVertex{nullptr};
-    ObjectViewItems::VertexConnectionLine* m_movingConnectionLine{nullptr};
-    void toggleMovingItem(ObjectViewItems::ItemBase* pItem);
-    void clearMovingMode();
 
     ObjectViewItems::VertexConnectionLine* m_pendingConnectionLine{nullptr};
     void setPendingConnection(ObjectViewItems::ItemBase* pTargetVertexItem);

@@ -11,22 +11,7 @@ GraphEditMode::GraphEditMode(QWidget *parent) : GraphModeBase(parent) {}
 GraphEditMode::~GraphEditMode() {}
 
 void GraphEditMode::init() {
-  ButtonMatrix::ButtonConfig buttonConf;
 
-  buttonConf = {};
-  buttonConf.icon = QIcon(":/common/images/icons/editmode/mode_edit_move.svg");
-  buttonConf.secondIcon =
-      QIcon(":/common/images/icons/editmode/mode_edit_move_active.svg");
-  buttonConf.tooltip = "Перемещение вершин графа";
-  buttonConf.action = [this, buttonConf](QPushButton *pButton) -> void {
-    clearMode();
-    m_currentEditMode = CEM_MOVING;
-    pButton->setIcon(buttonConf.secondIcon);
-  };
-  buttonConf.positionX = -4;
-  buttonConf.positionY = 0;
-  buttonConf.isEnabled = true;
-  m_editButtons.push_back(buttonConf);
 
   buttonConf = {};
   buttonConf.icon =
@@ -93,29 +78,6 @@ void GraphEditMode::init() {
   m_editButtons.push_back(buttonConf);
 }
 
-void GraphEditMode::start() {
-  auto pButton = getScene()->getButtonMatrixHead();
-  for (auto &conf : m_editButtons) {
-    pButton->addButton(conf);
-  }
-
-  auto &firstButtonConf = m_editButtons.front();
-  pButton->getButton(firstButtonConf.positionX, firstButtonConf.positionY)
-      ->click();
-
-  setStarted();
-}
-
-void GraphEditMode::stop() {
-  clearMode();
-  auto pButton = getScene()->getButtonMatrixHead();
-  pButton->collapse(false);
-  for (auto &conf : m_editButtons) {
-    pButton->removeButton(conf.positionX, conf.positionY);
-  }
-  setStopped();
-}
-
 void GraphEditMode::processPress(QGraphicsItem *pItem) {
   auto pCastedItem = dynamic_cast<ObjectViewItems::ItemBase *>(pItem);
 
@@ -148,9 +110,6 @@ void GraphEditMode::processPress(QGraphicsItem *pItem) {
     break;
   }
 }
-
-void GraphEditMode::processMove(QGraphicsItem *pItem,
-                                const QPointF &currentPos) {}
 
 void GraphEditMode::processRelease(QGraphicsItem *pItem) {}
 

@@ -8,6 +8,8 @@
 #include "Items/connectionlineitem.h"
 #include "Items/vertexobjectitem.h"
 
+#include "sceneitemconverter.h"
+
 namespace Graph {
 
 GraphSceneView::GraphSceneView(QWidget *parent) : ObjectView(parent) {
@@ -49,6 +51,8 @@ void GraphSceneView::setMode(GraphModeBase *pMode) {
 
   connect(this, &ObjectView::pressedOnItem, m_pCurrentMode,
           &GraphModeBase::processPress);
+  connect(this, &ObjectView::mouseMoved, m_pCurrentMode,
+          &GraphModeBase::processMove);
   connect(this, &ObjectView::releasedOnItem, m_pCurrentMode,
           &GraphModeBase::processRelease);
 
@@ -58,78 +62,8 @@ void GraphSceneView::setMode(GraphModeBase *pMode) {
 
 void GraphSceneView::writeChangesToGraph() {
   auto objects = getAllObjects();
-
-  std::list<ObjectViewItems::ItemBase *> vertices;
-  std::list<ObjectViewItems::ItemBase *> connections;
-
-  LOG_INFO("Analysing objects on scene...");
-  for (auto pObject : objects) {
-    auto pCastedObject = dynamic_cast<ObjectViewItems::ItemBase *>(pObject);
-    if (nullptr == pCastedObject) {
-      continue;
-    }
-
-    if (pCastedObject->getType() == ObjectViewConstants::OBJECTTYPE_VERTEX) {
-      vertices.push_back(pCastedObject);
-      continue;
-    }
-
-    if (pCastedObject->getType() ==
-        ObjectViewConstants::OBJECTTYPE_VERTEX_CONNECTION) {
-      connections.push_back(pCastedObject);
-    }
-  }
-  LOG_OK("Found", vertices.size(), "vertices and", connections.size(),
-         "connections");
-
-  auto pGraph = m_pGraphMaintaner->getExtendedObject();
-
-  pGraph->clearVertices();
-  LOG_INFO("Loading vertices from scene...");
-  Graph::GVertex tmpVertex;
-  for (auto vert : vertices) {
-    auto vertCasted = static_cast<ObjectViewItems::VertexObject *>(vert);
-
-    tmpVertex.id = vertCasted->getObjectId();
-    tmpVertex.posX = vertCasted->x();
-    tmpVertex.posY = vertCasted->y();
-
-    tmpVertex.name = vertCasted->getName();
-    tmpVertex.shortName = vertCasted->getShortName();
-    tmpVertex.description = vertCasted->getDescription();
-
-    tmpVertex.borderColor = vertCasted->getMainColor();
-    tmpVertex.backgroundColor = vertCasted->getSecondColor();
-
-    tmpVertex.image = vertCasted->getImage();
-
-    pGraph->addVertex(tmpVertex);
-  }
-  LOG_OK("Loaded", pGraph->getVerticesCount(), "vertices from scene");
-
-  pGraph->clearConnections();
-  LOG_INFO("Loading connections from scene...");
-  Graph::GConnection tmpConnection;
-  for (auto con : connections) {
-    auto conCasted = static_cast<ObjectViewItems::VertexConnectionLine *>(con);
-
-    // Игнорируем невалидные соединения (например, которые в состоянии
-    // редактирования)
-    if (conCasted->getVertexFrom() == nullptr ||
-        conCasted->getVertexTo() == nullptr) {
-      LOG_WARNING("Skipped invalid connection:", conCasted->getName());
-      continue;
-    }
-
-    tmpConnection.idFrom = conCasted->getVertexFrom()->getObjectId();
-    tmpConnection.idTo = conCasted->getVertexTo()->getObjectId();
-
-    tmpConnection.name = conCasted->getShortName();
-    tmpConnection.lineColor = conCasted->getMainColor();
-
-    pGraph->addConnection(tmpConnection);
-  }
-  LOG_OK("Loaded", pGraph->getConnectionsCount(), "connections from scene");
+  auto pMaintainer = getGraphMaintaner();
+  SceneItemConverter::toMaintainer(pMaintainer, objects);
 }
 
 void GraphSceneView::setGraphMaintaner(
@@ -163,58 +97,8 @@ void GraphSceneView::updateGraph() {
   vertexRect.setWidth(sceneConfig.vertexWidth);
   vertexRect.setHeight(sceneConfig.vertexWidth);
 
-  auto pGraph = m_pGraphMaintaner->getExtendedObject();
-
-  auto vertices = pGraph->getAllVertices();
-  std::unordered_map<GraphCommon::graphId_t, ObjectViewItems::VertexObject *>
-      vertexObjects;
-
-  for (auto &vert : vertices) {
-    auto pVertexItem = createVertex(vert.id);
-
-    if (!vert.image.isNull()) {
-      pVertexItem->setImage(vert.image);
-    }
-
-    pVertexItem->setShortName(vert.shortName);
-    pVertexItem->setName(vert.name);
-    pVertexItem->setDescription(vert.description);
-
-    pVertexItem->setPos(vert.posX, vert.posY);
-    pVertexItem->setRect(vertexRect);
-    pVertexItem->setZValue(sceneConfig.vertexLayer);
-
-    pVertexItem->setMainColor(vert.borderColor);
-    pVertexItem->setSecondColor(vert.backgroundColor);
-
-    vertexObjects[vert.id] = pVertexItem;
-  }
-
-  const GVertex *pConnectionFrom{nullptr};
-  const GVertex *pConnectionTo{nullptr};
-
-  QHash<GraphCommon::graphId_t, std::vector<GConnection>> connectionHash;
-
-  for (auto &con : pGraph->getAllConnections()) {
-    auto pConFrom = vertexObjects.find(con.idFrom);
-    if (pConFrom == vertexObjects.end()) {
-      throw std::runtime_error("Vertex from did not found!");
-    }
-
-    auto pConTo = vertexObjects.find(con.idTo);
-    if (pConTo == vertexObjects.end()) {
-      throw std::runtime_error("Target vertex did not found!");
-    }
-
-    auto pConnection = createConnectionLine(con.idFrom, con.idTo);
-
-    pConnection->setMainColor(con.lineColor);
-    pConnection->setZValue(sceneConfig.connectionLineLayer);
-
-    pConnection->setShortName(con.name);
-
-    pConFrom->second->subscribeAsConnectionFrom(pConnection);
-    pConTo->second->subscribeAsConnectionTo(pConnection);
+  for (auto* pItem : SceneItemConverter::fromMaintainer(getGraphMaintaner())) {
+      addObject(pItem);
   }
 }
 
@@ -239,25 +123,7 @@ ObjectViewItems::VertexObject *GraphSceneView::createVertex() {
   while (!isIdAvailable(m_currentItemId)) {
     m_currentItemId++;
   }
-
-  auto pVertexItem = new ObjectViewItems::VertexObject;
-  pVertexItem->setObjectId(m_currentItemId);
-
-  pVertexItem->setShortName("My node");
-  pVertexItem->setName("My node template");
-  pVertexItem->setDescription("My example description");
-
-  auto &sceneConfig =
-      ObjectViewConstants::ObjectSceneConfiguration::getInstance();
-  pVertexItem->setZValue(sceneConfig.vertexLayer);
-
-  QRect vertexRect;
-  vertexRect.setWidth(sceneConfig.vertexWidth);
-  vertexRect.setHeight(sceneConfig.vertexWidth);
-  pVertexItem->setRect(vertexRect);
-
-  addObject(pVertexItem);
-  return pVertexItem;
+  return createVertex(m_currentItemId);
 }
 
 ObjectViewItems::VertexObject *

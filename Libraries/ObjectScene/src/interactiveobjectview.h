@@ -19,9 +19,6 @@ public:
     void setContextMenu(QMenu* pMenu);
     QGraphicsItem* getContextMenuItem();
 
-    void setMovingCallback(
-        const std::function<void(const QPointF&)>& callbackFunc);
-
     QGraphicsItem* getGrabObject() const;
 
 public slots:
@@ -30,8 +27,8 @@ public slots:
     void rejectGrabObject();
 
 signals:
-    void clickedOnItem(QGraphicsItem* pTargetItem);
     void pressedOnItem(QGraphicsItem* pTargetItem);
+    void mouseMoved(QGraphicsItem* pItem, const QPointF& currentPos);
     void releasedOnItem(QGraphicsItem* pTargetItem);
 
     void scaleChanged();
@@ -55,9 +52,6 @@ private:
         false};  //! Флаг факта того, что пользователь кникнул на сцену СКМ
     bool m_isMovingByUser{true};   //! Флаг для перемещений сцены по СКМ
     double m_currentZoomValue{1};  //! Текущий коэффициент увеличения
-
-    std::function<void(const QPointF&)>
-        m_movingCallback;  //! Колбек для обработки перемещения по сцене
 
     ObjectViewItems::CenterItem*        m_pCenterItem {nullptr}; //! Центральный элемент сцены
     ObjectViewItems::SceneMarkerItem*   m_centerPointerItem {nullptr};

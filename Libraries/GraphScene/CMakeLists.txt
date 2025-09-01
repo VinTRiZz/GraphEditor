@@ -4,3 +4,5 @@ LINK_TARGET_LIBRARY(GraphScene Common)
 LINK_TARGET_LIBRARY(GraphScene CustomWidgets)
 LINK_TARGET_LIBRARY(GraphScene ObjectItems)
 LINK_TARGET_LIBRARY(GraphScene ObjectScene)
+
+ADD_EDITOR_TEST(GraphScene)

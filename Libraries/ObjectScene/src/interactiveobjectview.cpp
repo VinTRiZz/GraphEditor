@@ -98,11 +98,6 @@ QGraphicsItem *InteractiveObjectView::getGrabObject() const {
   return getObject(m_grabObjectId.value());
 }
 
-void InteractiveObjectView::setMovingCallback(
-    const std::function<void(const QPointF &)> &callbackFunc) {
-  m_movingCallback = callbackFunc;
-}
-
 void InteractiveObjectView::setGrabObject(QGraphicsItem *pItem) {
   if (nullptr == pItem) {
     throw std::invalid_argument("Can not set grab object to nullptr");
@@ -183,18 +178,14 @@ void InteractiveObjectView::mousePressEvent(QMouseEvent *e) {
     m_prevPos = mapToScene(e->pos());
   }
 
-  if (m_movingCallback) {
-    m_movingCallback(mapToScene(e->pos()));
-  }
   QGraphicsView::mousePressEvent(e);
 }
 
 void InteractiveObjectView::mouseMoveEvent(QMouseEvent *e) {
   auto currentPos = mapToScene(e->pos());
 
-  if (m_grabObjectId.has_value()) {
-    auto pObject = getGrabObject();
-
+  auto pObject = getGrabObject();
+  if (nullptr != pObject) {
     if (getIsGridEnabled()) {
       int gridSizeHalf = std::round(getGridSize() / 2.0);
 
@@ -224,9 +215,7 @@ void InteractiveObjectView::mouseMoveEvent(QMouseEvent *e) {
     updateCenterMarker();
   }
 
-  if (m_movingCallback) {
-    m_movingCallback(mapToScene(e->pos()));
-  }
+  emit mouseMoved(pObject, mapToScene(e->pos()));
 }
 
 void InteractiveObjectView::mouseReleaseEvent(QMouseEvent *e) {
@@ -237,7 +226,6 @@ void InteractiveObjectView::mouseReleaseEvent(QMouseEvent *e) {
     if (!isNullItem(targetItem)) {
       targetItem = getParentOfComplex(targetItem);
       emit releasedOnItem(targetItem);
-      emit clickedOnItem(targetItem);
     } else {
       emit releasedOnItem(nullptr);
     }

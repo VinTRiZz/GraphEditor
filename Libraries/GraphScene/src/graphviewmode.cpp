@@ -10,25 +10,6 @@ GraphViewMode::GraphViewMode(QWidget *parent) : GraphModeBase(parent) {}
 
 void GraphViewMode::init() {}
 
-void GraphViewMode::start() {
-  // TODO: Setup button matrix
-
-  setStarted();
-}
-
-void GraphViewMode::stop() {
-  // TODO: Reset button matrix
-
-  setStopped();
-}
-
-void GraphViewMode::processPress(QGraphicsItem *pItem) {}
-
-void GraphViewMode::processMove(QGraphicsItem *pItem,
-                                const QPointF &currentPos) {}
-
-void GraphViewMode::processRelease(QGraphicsItem *pItem) {}
-
 GraphViewMode::SearchProxy
 GraphViewMode::toSearchCache(const GVertex &vert) const {
   return {};

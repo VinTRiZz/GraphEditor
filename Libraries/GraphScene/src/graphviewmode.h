@@ -16,13 +16,6 @@ public:
 
     void init() override;
 
-    void start() override;
-    void stop() override;
-
-    void processPress(QGraphicsItem* pItem) override;
-    void processMove(QGraphicsItem* pItem, const QPointF& currentPos) override;
-    void processRelease(QGraphicsItem* pItem) override;
-
 private:
     struct SearchProxy {
         QStringView name;

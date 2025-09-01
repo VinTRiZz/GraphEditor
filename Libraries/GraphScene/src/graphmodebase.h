@@ -6,18 +6,23 @@
 #include <QGraphicsItem>
 #include <QObject>
 
+#include <boost/noncopyable.hpp>
+
 namespace Graph {
 
 class GraphSceneView;
 class GraphModeBase;
 
+struct GraphModeContext {
+    // TODO: Добавить сюда поля
+};
 
 
 class GraphSubmodeBase
 {
     GraphModeBase* m_pParentMode {nullptr};
 public:
-    explicit GraphSubmodeBase(GraphModeBase* parentMode) : m_pParentMode{parentMode} {}
+    explicit GraphSubmodeBase(GraphModeBase* parentMode);
 
     virtual void clearMode() = 0;
 
@@ -29,6 +34,8 @@ public:
     virtual ButtonMatrix::ButtonConfig getStarterButton() = 0;
 
 protected:
+    GraphModeContext& m_context;
+
     GraphModeBase* getParentMode() const {
         return m_pParentMode;
     }
@@ -51,6 +58,7 @@ public:
     bool isRunning() const;
 
     GraphSceneView* getScene() const;
+    GraphModeContext& getContext();
 
 signals:
     void started();
@@ -66,6 +74,7 @@ private:
     bool m_isModeStarted{false};
     GraphSceneView* m_pScene{nullptr};
 
+    GraphModeContext m_modeContext;
     std::list<GraphSubmodeBase*> m_submodes;
     GraphSubmodeBase* m_currentSubmode {nullptr};
 

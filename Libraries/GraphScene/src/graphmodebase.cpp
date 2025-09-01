@@ -4,6 +4,13 @@
 
 namespace Graph {
 
+
+GraphSubmodeBase::GraphSubmodeBase(GraphModeBase *parentMode) :
+    m_pParentMode{parentMode},
+    m_context{parentMode->getContext()} {
+
+}
+
 GraphModeBase::GraphModeBase(QObject *parent) : QObject{parent} {}
 
 GraphModeBase::~GraphModeBase() {}
@@ -75,5 +82,10 @@ std::list<GraphSubmodeBase *> GraphModeBase::getSubmodes() const
 }
 
 GraphSceneView *GraphModeBase::getScene() const { return m_pScene; }
+
+GraphModeContext &GraphModeBase::getContext()
+{
+    return m_modeContext;
+}
 
 } // namespace Graph

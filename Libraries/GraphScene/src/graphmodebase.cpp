@@ -11,6 +11,10 @@ GraphSubmodeBase::GraphSubmodeBase(GraphModeBase *parentMode) :
 
 }
 
+bool GraphSubmodeBase::isModeActive() const {
+    return (m_pParentMode->getCurrentSubmode() == this);
+}
+
 GraphModeBase::GraphModeBase(QObject *parent) : QObject{parent} {}
 
 GraphModeBase::~GraphModeBase() {}
@@ -30,6 +34,11 @@ void GraphModeBase::processMove(QGraphicsItem *pItem, const QPointF &currentPos)
 void GraphModeBase::processRelease(QGraphicsItem *pItem)
 {
     m_currentSubmode->processRelease(pItem);
+}
+
+void GraphModeBase::clearCurrentMode()
+{
+    m_currentSubmode->clearMode();
 }
 
 void GraphModeBase::start()
@@ -63,7 +72,14 @@ void GraphModeBase::setStopped() {
 
 void GraphModeBase::setSubmode(GraphSubmodeBase *pMode)
 {
+    // Полный дисконнект
+    disconnect(m_currentSubmode, nullptr, this, nullptr);
+
     m_currentSubmode = pMode;
+
+    // Полный коннект
+    connect(m_currentSubmode, &GraphSubmodeBase::requestModeClear,
+               this, &GraphModeBase::clearCurrentMode);
 }
 
 GraphSubmodeBase *GraphModeBase::getCurrentSubmode() const

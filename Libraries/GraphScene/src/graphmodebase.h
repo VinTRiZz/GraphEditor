@@ -18,8 +18,9 @@ struct GraphModeContext {
 };
 
 
-class GraphSubmodeBase
+class GraphSubmodeBase : public QObject
 {
+    Q_OBJECT
     GraphModeBase* m_pParentMode {nullptr};
 public:
     explicit GraphSubmodeBase(GraphModeBase* parentMode);
@@ -33,8 +34,13 @@ public:
 
     virtual ButtonMatrix::ButtonConfig getStarterButton() = 0;
 
+signals:
+    void requestModeClear();
+
 protected:
     GraphModeContext& m_context;
+
+    bool isModeActive() const;
 
     GraphModeBase* getParentMode() const {
         return m_pParentMode;
@@ -70,6 +76,9 @@ public slots:
                              const QPointF& currentPos);
     void processRelease(QGraphicsItem* pItem);
 
+private slots:
+    void clearCurrentMode();
+
 private:
     bool m_isModeStarted{false};
     GraphSceneView* m_pScene{nullptr};
@@ -87,6 +96,8 @@ protected:
 
     void addSubmode(GraphSubmodeBase* pMode);
     std::list<GraphSubmodeBase*> getSubmodes() const;
+
+    friend class GraphSubmodeBase;
 };
 
 }  // namespace Graph

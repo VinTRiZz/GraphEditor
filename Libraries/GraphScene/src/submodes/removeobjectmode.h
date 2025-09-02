@@ -1,14 +1,12 @@
-#ifndef OBJECTMOVEMODE_H
-#define OBJECTMOVEMODE_H
+#ifndef REMOVEOBJECTMODE_H
+#define REMOVEOBJECTMODE_H
 
 #include "graphmodebase.h"
 
-#include "Items/vertexobjectitem.h"
-#include "Items/connectionlineitem.h"
+namespace Graph
+{
 
-namespace Graph {
-
-class ObjectMoveMode : public GraphSubmodeBase
+class RemoveObjectMode : public GraphSubmodeBase
 {
 public:
     using GraphSubmodeBase::GraphSubmodeBase;
@@ -19,12 +17,8 @@ public:
     void processMove(QGraphicsItem *pTargetItem, const QPointF &currentPos) override;
     void processRelease(QGraphicsItem *pTargetItem) override;
     ButtonMatrix::ButtonConfig getStarterButton() override;
-
-private:
-    ObjectViewItems::VertexObject* m_movingVertex{nullptr};
-    ObjectViewItems::VertexConnectionLine* m_movingConnectionLine{nullptr};
 };
 
 }
 
-#endif // OBJECTMOVEMODE_H
+#endif // REMOVEOBJECTMODE_H

@@ -12,13 +12,20 @@
   */
 
 TEST(SceneFieldItemTest, VertexConversion) {
+    QGuiApplication app(0, 0);
+
     auto vertex = Graph::TestGenerators::randomVertex();
+    LOG_DEBUG_SYNC("Test 1");
 
     auto* vertexObj = Graph::SceneItemConverter::fromVertex(vertex);
     ASSERT_NE(vertexObj, nullptr);
 
+    LOG_DEBUG_SYNC("Test 2");
+
     Graph::GVertex convertedVertex = Graph::SceneItemConverter::toVertex(vertexObj);
     EXPECT_EQ(vertex, convertedVertex);
+
+    LOG_DEBUG_SYNC("Test 3");
 
     delete vertexObj; // Очистка ресурсов
 }

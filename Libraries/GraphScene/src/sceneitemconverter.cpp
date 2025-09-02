@@ -10,10 +10,6 @@ ObjectViewItems::VertexObject *SceneItemConverter::fromVertex(const GVertex &ver
     auto pVertexItem = new ObjectViewItems::VertexObject;
     pVertexItem->setObjectId(vert.id);
 
-    pVertexItem->setShortName("My node");
-    pVertexItem->setName("My node template");
-    pVertexItem->setDescription("My example description");
-
     auto &sceneConfig =
         ObjectViewConstants::ObjectSceneConfiguration::getInstance();
     pVertexItem->setZValue(sceneConfig.vertexLayer);
@@ -88,6 +84,8 @@ std::list<ObjectViewItems::ItemBase *> SceneItemConverter::fromGraph(const Graph
       pConFrom->second->subscribeAsConnectionFrom(pConnection);
       pConTo->second->subscribeAsConnectionTo(pConnection);
     }
+
+    return res;
 }
 
 std::list<ObjectViewItems::ItemBase *> SceneItemConverter::fromMaintainer(const PMaintainer &pMaintainer)

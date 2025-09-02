@@ -1,15 +1,14 @@
-#ifndef OBJECTMOVEMODE_H
-#define OBJECTMOVEMODE_H
+#ifndef PROPERTYEDITMODE_H
+#define PROPERTYEDITMODE_H
 
 #include "graphmodebase.h"
 
-#include "Items/vertexobjectitem.h"
-#include "Items/connectionlineitem.h"
-
-namespace Graph {
-
-class ObjectMoveMode : public GraphSubmodeBase
+namespace Graph
 {
+
+class PropertyEditMode : public GraphSubmodeBase
+{
+    Q_OBJECT
 public:
     using GraphSubmodeBase::GraphSubmodeBase;
 
@@ -20,11 +19,11 @@ public:
     void processRelease(QGraphicsItem *pTargetItem) override;
     ButtonMatrix::ButtonConfig getStarterButton() override;
 
-private:
-    ObjectViewItems::VertexObject* m_movingVertex{nullptr};
-    ObjectViewItems::VertexConnectionLine* m_movingConnectionLine{nullptr};
+signals:
+    void openPropertyEditor(QGraphicsItem* pTargetItem);
+    void closePropertyEditor();
 };
 
 }
 
-#endif // OBJECTMOVEMODE_H
+#endif // PROPERTYEDITMODE_H

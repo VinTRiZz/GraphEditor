@@ -1,14 +1,15 @@
-#ifndef OBJECTMOVEMODE_H
-#define OBJECTMOVEMODE_H
+#ifndef ADDLINEMODE_H
+#define ADDLINEMODE_H
 
 #include "graphmodebase.h"
 
 #include "Items/vertexobjectitem.h"
 #include "Items/connectionlineitem.h"
 
-namespace Graph {
+namespace Graph
+{
 
-class ObjectMoveMode : public GraphSubmodeBase
+class AddLineMode : public GraphSubmodeBase
 {
 public:
     using GraphSubmodeBase::GraphSubmodeBase;
@@ -21,10 +22,9 @@ public:
     ButtonMatrix::ButtonConfig getStarterButton() override;
 
 private:
-    ObjectViewItems::VertexObject* m_movingVertex{nullptr};
-    ObjectViewItems::VertexConnectionLine* m_movingConnectionLine{nullptr};
+    ObjectViewItems::VertexConnectionLine* m_pendingConnectionLine{nullptr};
 };
 
 }
 
-#endif // OBJECTMOVEMODE_H
+#endif // ADDLINEMODE_H

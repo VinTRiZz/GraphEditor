@@ -3,20 +3,14 @@
 #include <GraphObject/TestGenerators.h>
 #include <gtest/gtest.h>
 
-#include <QGuiApplication>
+#include <QApplication>
 
-/*
-    Graph::GVertex vertex_;
-    Graph::GConnection connection_;
-    Graph::GraphObject graph_;
-    Graph::PMaintainer pMaintainer_;
-  */
+class SceneFieldItemTest : public ::testing::Test {
+protected:
+    // For imagination
+};
 
-TEST(SceneFieldItemTest, VertexConversion) {
-    int argc = 0;
-    char** argv = nullptr;
-    QGuiApplication app(argc, argv);
-
+TEST_F(SceneFieldItemTest, VertexConversion) {
     auto vertex = Graph::TestGenerators::randomVertex();
     LOG_DEBUG_SYNC("Test 1");
 
@@ -34,11 +28,7 @@ TEST(SceneFieldItemTest, VertexConversion) {
     delete vertexObj;  // Очистка ресурсов
 }
 
-TEST(SceneFieldItemTest, ConnectionConversion) {
-    int argc = 0;
-    char** argv = nullptr;
-    QGuiApplication app(argc, argv);
-
+TEST_F(SceneFieldItemTest, ConnectionConversion) {
     auto connection = Graph::TestGenerators::randomConnection({1, 2, 3});
 
     auto* conObj = Graph::SceneItemConverter::fromConnection(connection);
@@ -50,11 +40,7 @@ TEST(SceneFieldItemTest, ConnectionConversion) {
     delete conObj;  // Очистка ресурсов
 }
 
-TEST(SceneFieldItemTest, GraphConversion) {
-    int argc = 0;
-    char** argv = nullptr;
-    QGuiApplication app(argc, argv);
-
+TEST_F(SceneFieldItemTest, GraphConversion) {
     auto testMaintainer = Graph::TestGenerators::createTestGraph();
 
     auto testGraph = testMaintainer->getObject();
@@ -71,11 +57,7 @@ TEST(SceneFieldItemTest, GraphConversion) {
         delete item;
 }
 
-TEST(SceneFieldItemTest, MaintainerConversion) {
-    int argc = 0;
-    char** argv = nullptr;
-    QGuiApplication app(argc, argv);
-
+TEST_F(SceneFieldItemTest, MaintainerConversion) {
     auto testMaintainer = Graph::TestGenerators::createTestGraph();
 
     auto items = Graph::SceneItemConverter::fromMaintainer(testMaintainer);
@@ -90,3 +72,6 @@ TEST(SceneFieldItemTest, MaintainerConversion) {
     for (auto* item : items)
         delete item;
 }
+
+int argc{0};
+QApplication app(argc, nullptr);

@@ -86,7 +86,10 @@ void GraphModeBase::setStopped() {
 
 void GraphModeBase::setSubmode(GraphSubmodeBase* pMode) {
     // Полный дисконнект
-    disconnect(m_currentSubmode, nullptr, this, nullptr);
+    if (nullptr != m_currentSubmode) [[likely]] {
+        disconnect(m_currentSubmode, &GraphSubmodeBase::requestModeClear, this,
+                   &GraphModeBase::clearCurrentMode);
+    }
 
     clearCurrentMode();
     m_currentSubmode = pMode;

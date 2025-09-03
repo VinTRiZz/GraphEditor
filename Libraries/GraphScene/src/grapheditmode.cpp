@@ -22,11 +22,15 @@ void GraphEditMode::init() {
 
     // Уникальный режим
     addSubmode(new PropertyEditMode(this));
-    auto pPropEditMode = static_cast<PropertyEditMode*>(getSubmodes().back());
-    connect(pPropEditMode, &PropertyEditMode::openPropertyEditor, this,
-            &GraphEditMode::openPropertyEditor);
-    connect(pPropEditMode, &PropertyEditMode::closePropertyEditor, this,
-            &GraphEditMode::closePropertyEditor);
+}
+
+PropertyEditMode* GraphEditMode::getPropertyEditMode() {
+    for (auto* pMode : getSubmodes()) {
+        if (auto pPropMode = dynamic_cast<PropertyEditMode*>(pMode)) {
+            return pPropMode;
+        }
+    }
+    return nullptr;
 }
 
 }  // namespace Graph

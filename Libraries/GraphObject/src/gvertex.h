@@ -25,10 +25,9 @@ struct GVertex {
                      //! первой отрисовки
 
     // Основные поля
-    QString shortName{};             //! Краткое имя врешины (отображаемое)
-    QString name{};                  //! Полное имя вершины
-    QString description{};           //! Описание вершины
-    QJsonObject customProperties{};  //! JSON с пользовательскими свойствами
+    QString shortName{};    //! Краткое имя врешины (отображаемое)
+    QString name{};         //! Полное имя вершины
+    QString description{};  //! Описание вершины
 
     // Отрисовка
     QColor borderColor{Qt::black};      //! Цвет границы
@@ -58,9 +57,8 @@ struct GVertex {
     template<typename OperatorT>
     bool applyOperator(const GVertex& vert, OperatorT&& vertOperator) const {
         return vertOperator(
-            std::tie(id, shortName, name, description, customProperties),
-            std::tie(vert.id, vert.shortName, vert.name, vert.description,
-                     vert.customProperties));
+            std::tie(id, shortName, name, description),
+            std::tie(vert.id, vert.shortName, vert.name, vert.description));
     }
 
     /**

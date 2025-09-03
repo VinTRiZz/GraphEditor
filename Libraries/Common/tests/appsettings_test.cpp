@@ -1,13 +1,29 @@
 #include <gtest/gtest.h>
 
 #include <QCoreApplication>
+#include <QDebug>
 #include <QDir>
 #include <QTemporaryFile>
 
 #include "applicationsettings.h"
 
+class ApplicationSettingsTest : public ::testing::Test {
+protected:
+    static void SetUpTestSuite() {
+        auto& inst = ApplicationSettings::getInstance();
+
+        auto& instPath = inst.APPLICATION_SETTINGS_FILE_PATH;
+        const_cast<QString&>(instPath) = "test.ini";
+    }
+
+    static void TearDownTestSuite() {
+        auto& inst = ApplicationSettings::getInstance();
+        QFile::remove(inst.APPLICATION_SETTINGS_FILE_PATH);
+    }
+};
+
 // Тест работы с недавними файлами
-TEST(ApplicationSettingsTest, RecentFilesOperations) {
+TEST_F(ApplicationSettingsTest, RecentFilesOperations) {
     const QString file1 = "/path/to/file1.txt";
     const QString file2 = "/path/to/file2.txt";
 
@@ -34,7 +50,7 @@ TEST(ApplicationSettingsTest, RecentFilesOperations) {
 }
 
 // Тест уникальности файлов в списке
-TEST(ApplicationSettingsTest, RecentFilesUnique) {
+TEST_F(ApplicationSettingsTest, RecentFilesUnique) {
     auto& settings = ApplicationSettings::getInstance();
     settings.clearRecentFiles();
 
@@ -49,7 +65,7 @@ TEST(ApplicationSettingsTest, RecentFilesUnique) {
 }
 
 // Тест получения конфигураций
-TEST(ApplicationSettingsTest, ConfigurationsAccess) {
+TEST_F(ApplicationSettingsTest, ConfigurationsAccess) {
     auto& settings = ApplicationSettings::getInstance();
 
     auto& generalConfig = settings.getGeneralConfig();
@@ -66,7 +82,7 @@ TEST(ApplicationSettingsTest, ConfigurationsAccess) {
 }
 
 // Тест загрузки и сохранения настроек
-TEST(ApplicationSettingsTest, SettingsPersistence) {
+TEST_F(ApplicationSettingsTest, SettingsPersistence) {
     auto& settings = ApplicationSettings::getInstance();
 
     // Создаем временный файл для теста
@@ -95,7 +111,7 @@ TEST(ApplicationSettingsTest, SettingsPersistence) {
 }
 
 // Тест публичных методов load/save
-TEST(ApplicationSettingsTest, PublicLoadSave) {
+TEST_F(ApplicationSettingsTest, PublicLoadSave) {
     auto& settings = ApplicationSettings::getInstance();
 
     const QString testFile = qApp->applicationFilePath();

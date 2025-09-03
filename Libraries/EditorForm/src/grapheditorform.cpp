@@ -138,6 +138,9 @@ void GraphEditorForm::showObjectProperties(QGraphicsItem* pTargetItem) {
 
 void GraphEditorForm::hideObjectProperties() {
     ui->props_stackedWidget->setCurrentIndex(1);
-    CommonFunctions::hideAnimatedHorizontal(ui->props_stackedWidget,
-                                            m_propBarShowWidth);
+
+    // Чтобы не "моргало"
+    showGraphProperties();
+    //    CommonFunctions::hideAnimatedHorizontal(ui->props_stackedWidget,
+    //                                            m_propBarShowWidth);
 }

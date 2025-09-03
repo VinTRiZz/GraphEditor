@@ -60,11 +60,6 @@ bool GSJ_Format::initFromDataJson(const QJsonObject& iJson) {
             getDecodedPixmap(vObj["image"].toString().toUtf8().data())
                 .toImage();
 
-        if (vObj.contains("customProperties") &&
-            vObj["customProperties"].isObject()) {
-            vertex.customProperties = vObj["customProperties"].toObject();
-        }
-
         if (!pMaintainer->getObject().addVertex(vertex)) {
             LOG_WARNING("Failed to add vertex:", vertex.id);
         }
@@ -85,11 +80,6 @@ bool GSJ_Format::initFromDataJson(const QJsonObject& iJson) {
             conn.lineColor = CommonFunctions::decodeColor(
                 conObj["color"].toString().toUtf8());
             conn.connectionWeight = conObj["weight"].toDouble();
-
-            if (conObj.contains("customProperties") &&
-                conObj["customProperties"].isObject()) {
-                conn.customProperties = conObj["customProperties"].toObject();
-            }
 
             if (!pMaintainer->getObject().addConnection(conn)) {
                 LOG_WARNING("Failed to add connection:", conn.idFrom,
@@ -144,7 +134,6 @@ QJsonObject GSJ_Format::toDataJson() const {
             CommonFunctions::encodeColor(vertex.borderColor).data();
         vObj["backgroundColor"] =
             CommonFunctions::encodeColor(vertex.backgroundColor).data();
-        vObj["customProperties"] = vertex.customProperties;
         vObj["image"] =
             getEncodedPixmap(QPixmap::fromImage(vertex.image)).data();
 
@@ -165,7 +154,6 @@ QJsonObject GSJ_Format::toDataJson() const {
         conObj["name"] = conn.name;
         conObj["color"] = CommonFunctions::encodeColor(conn.lineColor).data();
         conObj["weight"] = conn.connectionWeight;
-        conObj["customProperties"] = conn.customProperties;
 
         const QString fromKey = QString::number(conn.idFrom);
         const QString toKey = QString::number(conn.idTo);

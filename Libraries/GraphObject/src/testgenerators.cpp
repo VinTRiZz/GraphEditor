@@ -137,6 +137,7 @@ PMaintainer createTestGraph() {
     vert.shortName = "Нода 1";
     vert.name = "Соединён с 2 и 3";
     vert.backgroundColor = Qt::green;
+    vert.borderColor = Qt::black;
     vert.image = greenPersonImage;
     vert.posX = 200;
     vert.posY = 200;
@@ -172,8 +173,8 @@ PMaintainer createTestGraph() {
     vert.id = 54;
     vert.shortName = "Тест нода";
     vert.name = "Соединён с 1";
-    vert.backgroundColor = QColor();
-    vert.borderColor = QColor();
+    vert.backgroundColor = Qt::black;
+    vert.borderColor = Qt::black;
     vert.image = {};
     vert.posX = 900;
     vert.posY = 400;
@@ -258,7 +259,6 @@ Graph::GVertex randomVertex(GraphCommon::graphId_t minId,
     vertex.borderColor = randomColor(true);
     vertex.backgroundColor = randomColor(true);
     vertex.image = randomImage();
-    vertex.customProperties = randomJsonObject();
 
     return vertex;
 }
@@ -290,7 +290,6 @@ Graph::GConnection randomConnection(
     conn.connectionWeight = weightDist(rng);
     conn.name = randomString(2, 30);
     conn.lineColor = randomColor(true);
-    conn.customProperties = randomJsonObject();
 
     return conn;
 }

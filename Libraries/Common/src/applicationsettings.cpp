@@ -3,8 +3,6 @@
 #include <QDateTime>
 #include <QFile>
 
-const QString APPLICATION_SETTINGS_FILE_PATH{"GraphEditor.ini"};
-
 ApplicationSettings& ApplicationSettings::getInstance() {
     static ApplicationSettings inst;
     return inst;

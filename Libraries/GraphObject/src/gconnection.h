@@ -22,7 +22,6 @@ struct GConnection {
     double connectionWeight{0};        //! Вес ребра
     QString name{};                    //! Название ребра
     QColor lineColor{Qt::black};       //! Цвет ребра
-    QJsonObject customProperties;
 
     /**
      * @brief isValid   Проверка на корректность данных структуры
@@ -33,20 +32,15 @@ struct GConnection {
     /**
      * @brief applyOperator Соединить вместе поля структуры для выполнения
      * бинарного оператора к ним
-     * @param vert          Вершина, с которой вместе выполнить оператор
-     * @param vertOperator  Оператор для применения
+     * @param cCon_         Соединение, с которым сравнивать
+     * @param conOperator   Оператор для применения
      * @return              То, что вернёт оператор
      */
     template<typename OperatorT>
     bool applyOperator(const GConnection& cCon_,
-                       OperatorT&& vertOperator) const {
-        auto lineColorCompare =
-            vertOperator(CommonFunctions::encodeColor(lineColor),
-                         CommonFunctions::encodeColor(cCon_.lineColor));
-
-        return vertOperator(std::tie(idFrom, idTo, name),
-                            std::tie(cCon_.idFrom, cCon_.idTo, cCon_.name)) &&
-               lineColorCompare;
+                       OperatorT&& conOperator) const {
+        return conOperator(std::tie(idFrom, idTo, name),
+                           std::tie(cCon_.idFrom, cCon_.idTo, cCon_.name));
     }
 
     /**
@@ -54,23 +48,14 @@ struct GConnection {
      * @param oVert_        Другая вершина
      * @return              true если вершина совпадает с этой
      */
-    bool operator==(const GConnection& oCon_) const {
-        auto weightEquality =
-            (fabs(oCon_.connectionWeight - connectionWeight) < 1e-6);
-        auto res = applyOperator(oCon_, std::equal_to<>{}) && weightEquality;
-        return res;
-    }
+    bool operator==(const GConnection& oCon_) const;
 
     /**
      * @brief operator !=   Оператор неравенства
      * @param oVert_        Другая вершина
      * @return              true если вершина НЕ совпадает с этой
      */
-    bool operator!=(const GConnection& oCon_) const {
-        auto weightEquality =
-            (fabs(oCon_.connectionWeight - connectionWeight) < 1e-6);
-        return applyOperator(oCon_, std::not_equal_to<>{}) && !weightEquality;
-    }
+    bool operator!=(const GConnection& oCon_) const;
 };
 
 }  // namespace Graph

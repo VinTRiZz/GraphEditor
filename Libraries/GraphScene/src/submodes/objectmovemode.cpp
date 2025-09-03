@@ -7,7 +7,6 @@ namespace Graph {
 ObjectMoveMode::ObjectMoveMode(GraphModeBase* pParentMode)
     : GraphSubmodeBase(pParentMode) {
     auto& buttonConf = getStarterButton();
-    buttonConf = {};
     buttonConf.icon =
         QIcon(":/common/images/icons/editmode/mode_edit_move.svg");
     buttonConf.secondIcon =

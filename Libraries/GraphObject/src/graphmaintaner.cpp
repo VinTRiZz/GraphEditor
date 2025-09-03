@@ -30,8 +30,9 @@ bool GraphMaintainer::operator==(const GraphMaintainer& gObj_) const {
          gObj_.m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT)) ||
         (m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT) !=
          gObj_.m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT))) {
+        LOG_INFO("GraphMaintainer::equal not equal metadata");
         // Закомментил на будущее
-        //        LOG_DEBUG("GraphMaintainer::equal common", m_name !=
+        //        LOG_DEBUG_SYNC("GraphMaintainer::equal common", m_name !=
         //        gObj_.m_name, m_description != gObj_.m_description,
         //                               m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT)
         //                               !=
@@ -40,13 +41,13 @@ bool GraphMaintainer::operator==(const GraphMaintainer& gObj_) const {
         //                               !=
         //                               gObj_.m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT));
 
-        //        LOG_DEBUG("GraphMaintainer::equal common data my:",
+        //        LOG_DEBUG_SYNC("GraphMaintainer::equal common data my:",
         //                  m_name,
         //                  m_description,
         //                  m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT),
         //                  m_editTime.toString(GraphCommon::DATE_CONVERSION_FORMAT));
 
-        //        LOG_DEBUG("GraphMaintainer::equal common data other:",
+        //        LOG_DEBUG_SYNC("GraphMaintainer::equal common data other:",
         //                  gObj_.m_name,
         //                  gObj_.m_description,
         //                  gObj_.m_createTime.toString(GraphCommon::DATE_CONVERSION_FORMAT),

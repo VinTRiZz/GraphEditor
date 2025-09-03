@@ -166,7 +166,10 @@ bool GSE_Format::save(const QString& targetPath) const {
         queryText += "'" + vert.name + "',";
         queryText += "'" + vert.description + "',";
         queryText +=
-            "'" + QJsonDocument(vert.customProperties).toJson().toHex() + "',";
+            //            "'" +
+            //            QJsonDocument(vert.customProperties).toJson().toHex()
+            //            + "',"; // OLD
+            "'{}',";
         queryText +=
             "'" + CommonFunctions::encodeColorGSE(vert.borderColor) + "',";
         queryText +=
@@ -333,9 +336,11 @@ bool GSE_Format::load(const QString& targetPath) {
         vert.shortName = q.value(valPos++).toString();
         vert.name = q.value(valPos++).toString();
         vert.description = q.value(valPos++).toString();
-        vert.customProperties =
-            QJsonDocument::fromJson(getDecoded(q.value(valPos++).toByteArray()))
-                .object();
+        //        vert.customProperties =
+        //            QJsonDocument::fromJson(getDecoded(q.value(valPos++).toByteArray()))
+        //            // OLD
+        //                .object();
+        valPos++;
         vert.borderColor =
             CommonFunctions::decodeColorGSE(q.value(valPos++).toByteArray());
         vert.backgroundColor =

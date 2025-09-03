@@ -16,7 +16,9 @@ PropertyEditMode::PropertyEditMode(GraphModeBase* pParentMode)
     buttonConf.positionY = 1;
 }
 
-void PropertyEditMode::clearMode() {}
+void PropertyEditMode::clearMode() {
+    emit closePropertyEditor();
+}
 
 void PropertyEditMode::processPress(QGraphicsItem* pTargetItem) {}
 
@@ -28,12 +30,6 @@ void PropertyEditMode::processRelease(QGraphicsItem* pTargetItem) {
     if (pItem == nullptr) {
         return;
     }
-
-    // Игнорируем это, пусть пользователь редактирует свойства
-    if (pItem->getType() == ObjectViewConstants::OBJECTTYPE_PROPERTY_EDITOR) {
-        return;
-    }
-
     emit openPropertyEditor(pItem);
 }
 

@@ -7,7 +7,16 @@ namespace Graph {
 ObjectViewItems::VertexObject* SceneItemConverter::fromVertex(
     const GVertex& vert) {
     auto pVertexItem = new ObjectViewItems::VertexObject;
+
     pVertexItem->setObjectId(vert.id);
+    pVertexItem->setPos(vert.posX, vert.posY);
+
+    pVertexItem->setShortName(vert.shortName);
+    pVertexItem->setName(vert.name);
+    pVertexItem->setDescription(vert.description);
+
+    pVertexItem->setMainColor(vert.borderColor);
+    pVertexItem->setSecondColor(vert.backgroundColor);
 
     auto& sceneConfig =
         ObjectViewConstants::ObjectSceneConfiguration::getInstance();
@@ -22,23 +31,17 @@ ObjectViewItems::VertexObject* SceneItemConverter::fromVertex(
         pVertexItem->setImage(vert.image);
     }
 
-    pVertexItem->setShortName(vert.shortName);
-    pVertexItem->setName(vert.name);
-    pVertexItem->setDescription(vert.description);
-
-    pVertexItem->setPos(vert.posX, vert.posY);
-    pVertexItem->setRect(vertexRect);
-    pVertexItem->setZValue(sceneConfig.vertexLayer);
-
-    pVertexItem->setMainColor(vert.borderColor);
-    pVertexItem->setSecondColor(vert.backgroundColor);
-
     return pVertexItem;
 }
 
 ObjectViewItems::VertexConnectionLine* SceneItemConverter::fromConnection(
     const GConnection& con) {
     auto pConnection = new ObjectViewItems::VertexConnectionLine;
+
+    pConnection->setName(con.name);
+    pConnection->setMainColor(con.lineColor);
+    pConnection->setWeight(con.connectionWeight);
+
     pConnection->setZValue(
         ObjectViewConstants::ObjectSceneConfiguration::getInstance()
             .connectionLineLayer);
@@ -59,11 +62,7 @@ std::list<ObjectViewItems::ItemBase*> SceneItemConverter::fromGraph(
             static_cast<ObjectViewItems::VertexObject*>(res.back());
     }
 
-    const GVertex* pConnectionFrom{nullptr};
-    const GVertex* pConnectionTo{nullptr};
-
     QHash<GraphCommon::graphId_t, std::vector<GConnection>> connectionHash;
-
     for (auto& con : graph.getAllConnections()) {
         auto pConFrom = vertexObjects.find(con.idFrom);
         if (pConFrom == vertexObjects.end()) {
@@ -76,13 +75,9 @@ std::list<ObjectViewItems::ItemBase*> SceneItemConverter::fromGraph(
         }
 
         auto pConnection = fromConnection(con);
-
-        pConnection->setMainColor(con.lineColor);
-
-        pConnection->setShortName(con.name);
-
         pConFrom->second->subscribeAsConnectionFrom(pConnection);
         pConTo->second->subscribeAsConnectionTo(pConnection);
+        res.push_back(pConnection);
     }
 
     return res;
@@ -106,8 +101,8 @@ GVertex SceneItemConverter::toVertex(const ObjectViewItems::ItemBase* item) {
     graphVertex.posX = vertCasted->x();
     graphVertex.posY = vertCasted->y();
 
-    graphVertex.name = vertCasted->getName();
     graphVertex.shortName = vertCasted->getShortName();
+    graphVertex.name = vertCasted->getName();
     graphVertex.description = vertCasted->getDescription();
 
     graphVertex.borderColor = vertCasted->getMainColor();
@@ -136,8 +131,9 @@ GConnection SceneItemConverter::toConnection(
     graphConnection.idFrom = conCasted->getVertexFrom()->getObjectId();
     graphConnection.idTo = conCasted->getVertexTo()->getObjectId();
 
-    graphConnection.name = conCasted->getShortName();
+    graphConnection.name = conCasted->getName();
     graphConnection.lineColor = conCasted->getMainColor();
+    graphConnection.connectionWeight = conCasted->getWeight();
 
     return graphConnection;
 }

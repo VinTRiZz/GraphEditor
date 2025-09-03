@@ -116,6 +116,14 @@ QLineF VertexConnectionLine::getLine() const {
     return m_straightLine;
 }
 
+void VertexConnectionLine::setWeight(double w) {
+    m_weight = w;
+}
+
+double VertexConnectionLine::getWeight() const {
+    return m_weight;
+}
+
 void VertexConnectionLine::setPositionFrom(const QPointF& posFrom) {
     m_straightLine.setP1(posFrom);
     m_penGradient.setStart(m_straightLine.p1());

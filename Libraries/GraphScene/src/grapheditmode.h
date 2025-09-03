@@ -1,11 +1,11 @@
 #ifndef GRAPHEDITOR_H
 #define GRAPHEDITOR_H
 
-#include "Items/connectionlineitem.h"
-#include "Items/vertexobjectitem.h"
 #include "graphmodebase.h"
 
 namespace Graph {
+
+class PropertyEditMode;
 
 class GraphEditMode : public GraphModeBase {
     Q_OBJECT
@@ -15,12 +15,11 @@ public:
 
     void init() override;
 
+    PropertyEditMode* getPropertyEditMode();
+
 signals:
     void enabledEdit();
     void disabledEdit();
-
-    void openPropertyEditor(QGraphicsItem* pTargetItem);
-    void closePropertyEditor();
 };
 
 }  // namespace Graph

@@ -2,24 +2,29 @@
 
 #include <Common/Logging.h>
 
+#include "submodes/propertyeditmode.h"
+
 namespace Graph {
 
 GraphEditView::GraphEditView(QWidget* parent) : GraphSceneView(parent) {
     connect(&m_viewMode, &GraphViewMode::started, this,
             &GraphEditView::startedView);
+    m_viewMode.setGraphScene(this);
+
     connect(&m_editMode, &GraphEditMode::started, this,
             &GraphEditView::startedEdit);
-
-    connect(&m_editMode, &GraphEditMode::openPropertyEditor, this,
-            &GraphEditView::openPropertyEditor);
-    connect(&m_editMode, &GraphEditMode::closePropertyEditor, this,
-            &GraphEditView::closePropertyEditor);
-
-    m_viewMode.setGraphScene(this);
     m_editMode.setGraphScene(this);
 
     m_viewMode.init();
+
     m_editMode.init();
+    connect(m_editMode.getPropertyEditMode(),
+            &PropertyEditMode::openPropertyEditor, this,
+            &GraphEditView::openPropertyEditor);
+    connect(m_editMode.getPropertyEditMode(),
+            &PropertyEditMode::closePropertyEditor, this,
+            &GraphEditView::closePropertyEditor);
+
     LOG_INFO("Inited graph view");
 
     startEditMode();  // TODO: Replace with VIEW mode when it's ready

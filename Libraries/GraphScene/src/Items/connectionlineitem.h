@@ -29,6 +29,9 @@ public:
     void setLine(const QPointF& p1, const QPointF& p2);
     QLineF getLine() const;
 
+    void setWeight(double w);
+    double getWeight() const;
+
     void setPositionFrom(const QPointF& posFrom);
     void setPositionTo(const QPointF& posTo);
     void resetPositions();
@@ -49,6 +52,8 @@ public:
 private:
     VertexObject* m_fromVertex{nullptr};
     VertexObject* m_toVertex{nullptr};
+
+    double m_weight{0};
 
     QLinearGradient m_penGradient;
     QPen m_drawPen;

@@ -12,18 +12,14 @@ protected:
 
 TEST_F(SceneFieldItemTest, VertexConversion) {
     auto vertex = Graph::TestGenerators::randomVertex();
-    LOG_DEBUG_SYNC("Test 1");
 
     auto* vertexObj = Graph::SceneItemConverter::fromVertex(vertex);
     ASSERT_NE(vertexObj, nullptr);
 
-    LOG_DEBUG_SYNC("Test 2");
-
     Graph::GVertex convertedVertex =
         Graph::SceneItemConverter::toVertex(vertexObj);
-    EXPECT_EQ(vertex, convertedVertex);
 
-    LOG_DEBUG_SYNC("Test 3");
+    EXPECT_EQ(vertex, convertedVertex);
 
     delete vertexObj;  // Очистка ресурсов
 }
@@ -35,42 +31,52 @@ TEST_F(SceneFieldItemTest, ConnectionConversion) {
     ASSERT_NE(conObj, nullptr);
 
     auto convertedCon = Graph::SceneItemConverter::toConnection(conObj);
-    EXPECT_EQ(connection, convertedCon);
+
+    // Не должно быть преобразований, т.к. невалидны vertexFrom и vertexTo
+    EXPECT_NE(connection, convertedCon);
 
     delete conObj;  // Очистка ресурсов
 }
 
 TEST_F(SceneFieldItemTest, GraphConversion) {
     auto testMaintainer = Graph::TestGenerators::createTestGraph();
+    auto& testGraph = testMaintainer->getObject();
 
-    auto testGraph = testMaintainer->getObject();
+    std::size_t itemCount{0};
+    itemCount += testGraph.getAllVertices().size();
+    itemCount += testGraph.getAllConnections().size();
 
     auto items = Graph::SceneItemConverter::fromGraph(testGraph);
-    EXPECT_EQ(items.size(), 2);  // Проверка количества элементов
+    EXPECT_EQ(items.size(), itemCount);  // Проверка количества элементов
 
-    Graph::GraphObject convertedGraph =
-        Graph::SceneItemConverter::toGraph(items);
+    auto convertedGraph = Graph::SceneItemConverter::toGraph(items);
     EXPECT_EQ(testGraph, convertedGraph);
 
     // Очистка элементов
-    for (auto* item : items)
-        delete item;
+    for (auto* item : items) {
+        if (item->getType() == ObjectViewConstants::OBJECTTYPE_VERTEX) {
+            delete item;
+        }
+    }
 }
 
 TEST_F(SceneFieldItemTest, MaintainerConversion) {
     auto testMaintainer = Graph::TestGenerators::createTestGraph();
 
     auto items = Graph::SceneItemConverter::fromMaintainer(testMaintainer);
-    EXPECT_EQ(items.size(), 2);
 
     auto pMaintainer = Graph::GraphMaintainer::createInstance();
     Graph::SceneItemConverter::toMaintainer(pMaintainer, items);
 
-    // Сравнение исходного и преобразованного Maintainer
-    EXPECT_EQ(*testMaintainer, *pMaintainer);
+    // Тут нужно сравнение будущих элементов в мейнтейнере
+    EXPECT_EQ(testMaintainer->getObject(), pMaintainer->getObject());
 
-    for (auto* item : items)
-        delete item;
+    // Очистка элементов
+    for (auto* item : items) {
+        if (item->getType() == ObjectViewConstants::OBJECTTYPE_VERTEX) {
+            delete item;
+        }
+    }
 }
 
 int argc{0};

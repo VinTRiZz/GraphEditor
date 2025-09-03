@@ -8,6 +8,8 @@
 
 class ApplicationSettings : public boost::noncopyable {
 public:
+    const QString APPLICATION_SETTINGS_FILE_PATH{"GraphEditor.ini"};
+
     // Работа с файлом настроек и классом
     static ApplicationSettings& getInstance();
     static QDir getApplicationDataDir();

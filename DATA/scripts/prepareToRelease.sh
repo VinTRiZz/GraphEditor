@@ -16,4 +16,14 @@ if [ "$?" != "0" ]; then
     exit 2
 fi
 
-clang-format-19 "--style=file:$PRPTC_SCRIPTDIR/../etc/.clang-format" -i $(find "$PRPTC_SCRIPTDIR/../../Libraries" -iname '*.cpp' -o -iname '*.hpp' -o -iname '*.h')
+cd "$PRPTC_SCRIPTDIR/../../BIN"
+for iTest in $PRPTC_SCRIPTDIR/../../BIN/*_TEST; do
+    echo "Performing test target: $iTest";
+    "$iTest"
+    if [ "$?" != "0" ]; then
+        echo "Test failed!"
+        exit 1
+    fi
+done
+
+echo "Prepare complete"

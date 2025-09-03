@@ -8,10 +8,9 @@
 #include "submodes/propertyeditmode.h"
 #include "submodes/removeobjectmode.h"
 
-
 namespace Graph {
 
-GraphEditMode::GraphEditMode(QWidget *parent) : GraphModeBase(parent) {}
+GraphEditMode::GraphEditMode(QWidget* parent) : GraphModeBase(parent) {}
 
 GraphEditMode::~GraphEditMode() {}
 
@@ -24,10 +23,10 @@ void GraphEditMode::init() {
     // Уникальный режим
     addSubmode(new PropertyEditMode(this));
     auto pPropEditMode = static_cast<PropertyEditMode*>(getSubmodes().back());
-    connect(pPropEditMode, &PropertyEditMode::openPropertyEditor,
-            this, &GraphEditMode::openPropertyEditor);
-    connect(pPropEditMode, &PropertyEditMode::closePropertyEditor,
-            this, &GraphEditMode::closePropertyEditor);
+    connect(pPropEditMode, &PropertyEditMode::openPropertyEditor, this,
+            &GraphEditMode::openPropertyEditor);
+    connect(pPropEditMode, &PropertyEditMode::closePropertyEditor, this,
+            &GraphEditMode::closePropertyEditor);
 }
 
-} // namespace Graph
+}  // namespace Graph

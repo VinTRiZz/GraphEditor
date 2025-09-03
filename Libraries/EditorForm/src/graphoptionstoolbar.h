@@ -4,7 +4,8 @@
 #include <CustomWidgets/ButtonToolbar.h>
 
 /**
- * @brief The GraphOptionsToolbar class Тулбар для работы с различными инструментами и режимами
+ * @brief The GraphOptionsToolbar class Тулбар для работы с различными
+ * инструментами и режимами
  */
 class GraphOptionsToolbar : public ButtonToolbar::HeadWidget {
     Q_OBJECT

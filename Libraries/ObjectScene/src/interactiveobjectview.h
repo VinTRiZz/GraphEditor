@@ -53,8 +53,9 @@ private:
     bool m_isMovingByUser{true};   //! Флаг для перемещений сцены по СКМ
     double m_currentZoomValue{1};  //! Текущий коэффициент увеличения
 
-    ObjectViewItems::CenterItem*        m_pCenterItem {nullptr}; //! Центральный элемент сцены
-    ObjectViewItems::SceneMarkerItem*   m_centerPointerItem {nullptr};
+    ObjectViewItems::CenterItem* m_pCenterItem{
+        nullptr};  //! Центральный элемент сцены
+    ObjectViewItems::SceneMarkerItem* m_centerPointerItem{nullptr};
 
     /**
      * @brief updateCenterPoint Обновить позицию центральной точки сцены

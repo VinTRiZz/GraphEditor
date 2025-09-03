@@ -2,8 +2,9 @@
 #define ObjectViewConstants_H
 
 #include <stdint.h>
-#include <boost/noncopyable.hpp>
+
 #include <QString>
+#include <boost/noncopyable.hpp>
 
 namespace ObjectViewConstants {
 
@@ -12,7 +13,6 @@ namespace ObjectViewConstants {
  * объектов на сцене
  */
 struct ObjectSceneConfiguration : public boost::noncopyable {
-
     // Уровни расположения объектов на сцене по их типу
     int connectionLineLayer = 10;  //! Уровень линий соединения вершин
     int vertexLayer = 20;          //! Уровень вершин
@@ -48,9 +48,9 @@ enum ObjectField : int {
     OBJECTFIELD_NAME,         //! Полное имя объекта
     OBJECTFIELD_DESCRIPTION,  //! Описание объекта
 
-    OBJECTFIELD_COLOR_MAIN,        //! Основной цвет (цвет пера)
-    OBJECTFIELD_COLOR_SECOND,  //! Фоновый цвет (заполнения в объекте)
-    OBJECTFIELD_COLOR_SELECTED,    //! Цвет индикации выбора
+    OBJECTFIELD_COLOR_MAIN,      //! Основной цвет (цвет пера)
+    OBJECTFIELD_COLOR_SECOND,    //! Фоновый цвет (заполнения в объекте)
+    OBJECTFIELD_COLOR_SELECTED,  //! Цвет индикации выбора
 };
 
 /**

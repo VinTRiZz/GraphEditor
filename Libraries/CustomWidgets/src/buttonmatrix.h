@@ -24,11 +24,11 @@ struct ButtonConfig {
                          //! activated и т.д.). Не используется матрицей, сугубо
                          //! для удобства
 
-    bool isEnabled{true};       //! Изначальное состояние
-    bool isMatrixHead{false};   //! Является ли матрицей кнопок (расширение)
+    bool isEnabled{true};      //! Изначальное состояние
+    bool isMatrixHead{false};  //! Является ли матрицей кнопок (расширение)
 
-    std::function<void(QPushButton *)>
-        action; //! Действие кнопки. Аргумент -- указатель на нажатую кнопку
+    std::function<void(QPushButton*)>
+        action;  //! Действие кнопки. Аргумент -- указатель на нажатую кнопку
 };
 
 /**
@@ -106,7 +106,8 @@ public:
                           unsigned bottom);
 
     /**
-     * @brief setButtonPaddingEnabled   Включить или отключить фиксацию кнопки на виджете
+     * @brief setButtonPaddingEnabled   Включить или отключить фиксацию кнопки
+     * на виджете
      * @param isPaddingEnabled          true для включения фиксации
      */
     void setButtonPaddingEnabled(bool isPaddingEnabled = true);
@@ -189,7 +190,8 @@ private:
     int m_paddingRight{};
     int m_paddingTop{};
     int m_paddingBottom{};
-    bool m_isPaddingEnabled {true}; //! Для отдельных случаев контроля кнопки (например, рекурсивные кнопки)
+    bool m_isPaddingEnabled{true};  //! Для отдельных случаев контроля кнопки
+                                    //! (например, рекурсивные кнопки)
 
     double m_buttonMargins{
         15.0};  //! Отступы между кнопками в открытом состоянии

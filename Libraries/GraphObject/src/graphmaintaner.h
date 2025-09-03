@@ -17,7 +17,7 @@ using PMaintainer = std::shared_ptr<Graph::GraphMaintainer>;
 class GraphMaintainer : public QObject {
     Q_OBJECT
 public:
-    explicit GraphMaintainer(QObject *parent = nullptr);
+    explicit GraphMaintainer(QObject* parent = nullptr);
     ~GraphMaintainer();
 
     bool operator==(const GraphMaintainer& gObj_) const;
@@ -126,7 +126,8 @@ public:
     std::map<QString, QVariant> getCustomValueMap() const;
 
     /**
-     * @brief getCustomValueMapRef  Для отдельных случаев, когда надо просто вывести данные
+     * @brief getCustomValueMapRef  Для отдельных случаев, когда надо просто
+     * вывести данные
      * @return                      Ссылка на поле класса
      */
     const std::map<QString, QVariant>& getCustomValueMapRef() const;

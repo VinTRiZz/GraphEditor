@@ -1,11 +1,10 @@
 #ifndef APPLICATIONSETTINGS_H
 #define APPLICATIONSETTINGS_H
 
-#include "applicationsettingshelper.h"
-
+#include <QSet>
 #include <boost/noncopyable.hpp>
 
-#include <QSet>
+#include "applicationsettingshelper.h"
 
 class ApplicationSettings : public boost::noncopyable {
 public:
@@ -15,15 +14,18 @@ public:
     void loadSettings();
     void saveSettings() const;
 
-    ApplicationSettingsHelper::GeneralConfiguration&    getGeneralConfig();
-    ApplicationSettingsHelper::ObjectsConfiguration&    getObjectsConfig();
-    ApplicationSettingsHelper::CanvasConfiguration&     getCanvasConfig();
+    ApplicationSettingsHelper::GeneralConfiguration& getGeneralConfig();
+    ApplicationSettingsHelper::ObjectsConfiguration& getObjectsConfig();
+    ApplicationSettingsHelper::CanvasConfiguration& getCanvasConfig();
 
     // Работа с историей файлов
-    void addRecentFile(const QString& path);     ///< Добавляет файл в список недавних
-    QStringList getRecentOpenFiles() const;      ///< Возвращает список недавних файлов
-    void removeRecentFile(const QString& path);  ///< Удаляет файл из списка недавних
-    void clearRecentFiles();                     ///< Удаляет все файлы из списка недавних
+    void addRecentFile(
+        const QString& path);  ///< Добавляет файл в список недавних
+    QStringList getRecentOpenFiles()
+        const;  ///< Возвращает список недавних файлов
+    void removeRecentFile(
+        const QString& path);  ///< Удаляет файл из списка недавних
+    void clearRecentFiles();   ///< Удаляет все файлы из списка недавних
 
 private:
     ApplicationSettings();
@@ -36,7 +38,7 @@ private:
 
     ApplicationSettingsHelper::GeneralConfiguration m_generalConfig;
     ApplicationSettingsHelper::ObjectsConfiguration m_objectsConfig;
-    ApplicationSettingsHelper::CanvasConfiguration  m_canvasConfig;
+    ApplicationSettingsHelper::CanvasConfiguration m_canvasConfig;
 };
 
 #endif  // APPLICATIONSETTINGS_H

@@ -17,14 +17,16 @@ public:
     ~GSJ_Format();
 
     /**
-     * @brief initFromDataJson  Инициализировать мейнтейнер из JSON. Требует задания мейнтейнера перед вызовом
+     * @brief initFromDataJson  Инициализировать мейнтейнер из JSON. Требует
+     * задания мейнтейнера перед вызовом
      * @param iJson             JSON сохранения
      * @return                  true при успешной инициализации
      */
     bool initFromDataJson(const QJsonObject& iJson);
 
     /**
-     * @brief toDataJson    Конвертировать данные мейнтейнера в JSON. Требует задания мейнтейнера перед вызовом
+     * @brief toDataJson    Конвертировать данные мейнтейнера в JSON. Требует
+     * задания мейнтейнера перед вызовом
      * @return              объект с заданными полями
      */
     QJsonObject toDataJson() const;
@@ -34,7 +36,7 @@ public:
     bool load(const QString& targetPath) override;
     bool isFileValid(const QString& targetPath) const override;
 
-protected:    
+protected:
     /**
      * @brief createSystemJson  Креатор системного JSON
      * @return                  Системный JSON (имеет некоторые нужные поля)
@@ -44,7 +46,8 @@ protected:
     /**
      * @brief isStructureValid  Проверка структуры JSON на валидность
      * @param iJson             JSON для проверки
-     * @return                  true если структура может быть использована для инициализации
+     * @return                  true если структура может быть использована для
+     * инициализации
      */
     bool isStructureValid(const QJsonObject& iJson) const;
 };

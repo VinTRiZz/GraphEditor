@@ -1,12 +1,12 @@
 #ifndef PICTUREOBJECTITEM_H
 #define PICTUREOBJECTITEM_H
 
-#include "itembase.h"
-#include "labelitem.h"
-
 #include <QGraphicsItem>
 #include <QPen>
 #include <set>
+
+#include "itembase.h"
+#include "labelitem.h"
 
 namespace ObjectViewItems {
 

@@ -19,7 +19,8 @@ public:
 
     /**
      * @brief getPassword   Получить пароль после ввода
-     * @return              NULL QString, если пароль не был введён или предыдущий введённый пароль
+     * @return              NULL QString, если пароль не был введён или
+     * предыдущий введённый пароль
      */
     QString getPassword() const;
 

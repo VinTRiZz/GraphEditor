@@ -66,8 +66,10 @@ public slots:
 
 private slots:
     /**
-     * @brief setCanvasSizeType Слот задания типа соотношения размеров в полотне (внутренний)
-     * @param sizesTypeInt      Тип соотношения размеров (см. enum внутри cpp файла)
+     * @brief setCanvasSizeType Слот задания типа соотношения размеров в полотне
+     * (внутренний)
+     * @param sizesTypeInt      Тип соотношения размеров (см. enum внутри cpp
+     * файла)
      */
     void setCanvasSizeType(int sizesTypeInt);
 
@@ -75,10 +77,11 @@ private:
     Ui::GraphEditorSettingsForm* ui;
 
     QSize m_screenSize;
-    double m_widthMultiplyCoefficient {1};
+    double m_widthMultiplyCoefficient{1};
 
     /**
-     * @brief connectSizesSignals   Соединяет сигналы, связанные с заданием размеров и соотношений
+     * @brief connectSizesSignals   Соединяет сигналы, связанные с заданием
+     * размеров и соотношений
      */
     void connectSizesSignals();
 

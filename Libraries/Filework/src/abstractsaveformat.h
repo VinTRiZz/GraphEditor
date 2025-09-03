@@ -11,10 +11,13 @@ class AbstractSaveFormat {
 public:
     /**
      * @brief AbstractSaveFormat    Конструктор класса формата
-     * @param formatVersion         Версия формата (любой удобный набор символов)
+     * @param formatVersion         Версия формата (любой удобный набор
+     * символов)
      * @param formatExtension       Расширение формата в виде "ext"
-     * @param formatDescription     Описание формата (желательно с указанием расширения)
-     * @param backwardCompatible    Является ли формат обратно совместимым с общепринятыми форматами (имеет ли уникальные объекты)
+     * @param formatDescription     Описание формата (желательно с указанием
+     * расширения)
+     * @param backwardCompatible    Является ли формат обратно совместимым с
+     * общепринятыми форматами (имеет ли уникальные объекты)
      */
     AbstractSaveFormat(const QString& formatVersion,
                        const QString& formatExtension,
@@ -23,7 +26,8 @@ public:
     virtual ~AbstractSaveFormat();
 
     /**
-     * @brief isBackwardCompatible  Проверка, что формат обратно совместимый с общепринятыми форматами (без уникальных объектов)
+     * @brief isBackwardCompatible  Проверка, что формат обратно совместимый с
+     * общепринятыми форматами (без уникальных объектов)
      * @return
      */
     bool isBackwardCompatible() const;
@@ -54,7 +58,8 @@ public:
 
     /**
      * @brief getGraphMaintainer Получить мейнтейнер графа
-     * @return                   Мейнтейнер графа. Если не был задан, будет не валидным
+     * @return                   Мейнтейнер графа. Если не был задан, будет не
+     * валидным
      */
     Graph::PMaintainer getGraphMaintainer() const;
 
@@ -68,10 +73,9 @@ private:
     QString m_formatVersion;
     QString m_formatExtension;
     QString m_formatDescription;
-    bool    m_isBackwardCompatible {false};
+    bool m_isBackwardCompatible{false};
 
 protected:
-
     /**
      * @brief replaceFileData   Заменить данные в файле
      * @param filePath          Путь до файла
@@ -104,8 +108,8 @@ protected:
      * @param iPxmap            Входное изображение
      * @return                  Массив байт
      */
-    QByteArray  getEncodedPixmap(const QPixmap& iPxmap) const;
-    QPixmap     getDecodedPixmap(const QByteArray& iBytes) const;
+    QByteArray getEncodedPixmap(const QPixmap& iPxmap) const;
+    QPixmap getDecodedPixmap(const QByteArray& iBytes) const;
 };
 
 }  // namespace Filework

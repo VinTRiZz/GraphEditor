@@ -1,18 +1,15 @@
 #include "selectablewidget.h"
 
 #include <QGridLayout>
-
-#include <QPainter>
-
 #include <QLabel>
+#include <QPainter>
 
 namespace WidgetGaleryHelper {
 
-SelectableWidget::SelectableWidget(QWidget *parent) :
-    QWidget(parent) {
+SelectableWidget::SelectableWidget(QWidget* parent) : QWidget(parent) {
     setLayout(new QGridLayout);
 
-    layout()->addWidget(new QWidget); // TODO: Придумать другой способ
+    layout()->addWidget(new QWidget);  // TODO: Придумать другой способ
 
     m_widgetNameLabel = new QLabel(this);
     m_widgetNameLabel->setWordWrap(true);
@@ -23,7 +20,7 @@ SelectableWidget::SelectableWidget(QWidget *parent) :
     static_cast<QGridLayout*>(layout())->setRowStretch(1, 1);
 }
 
-void SelectableWidget::setWidget(QWidget *w, const QString &widgetLabel) {
+void SelectableWidget::setWidget(QWidget* w, const QString& widgetLabel) {
     auto pItem = layout()->itemAt(0);
     pItem->widget()->deleteLater();
     static_cast<QGridLayout*>(layout())->addWidget(w, 0, 0);
@@ -33,11 +30,11 @@ void SelectableWidget::setWidget(QWidget *w, const QString &widgetLabel) {
     m_widget = w;
 }
 
-QWidget *SelectableWidget::widget() const {
+QWidget* SelectableWidget::widget() const {
     return m_widget;
 }
 
-void SelectableWidget::setSelectionColor(const QColor &col) {
+void SelectableWidget::setSelectionColor(const QColor& col) {
     m_selectionColor = col;
 }
 
@@ -52,7 +49,7 @@ void SelectableWidget::setSelected(bool isSelected) {
     }
 }
 
-void SelectableWidget::paintEvent(QPaintEvent *e) {
+void SelectableWidget::paintEvent(QPaintEvent* e) {
     QWidget::paintEvent(e);
     if (isSelected()) {
         QPainter p(this);
@@ -61,10 +58,10 @@ void SelectableWidget::paintEvent(QPaintEvent *e) {
     }
 }
 
-void SelectableWidget::mouseReleaseEvent(QMouseEvent *e) {
+void SelectableWidget::mouseReleaseEvent(QMouseEvent* e) {
     QWidget::mouseReleaseEvent(e);
     setSelected(!isSelected());
     emit selectionToggled(isSelected());
 }
 
-}
+}  // namespace WidgetGaleryHelper

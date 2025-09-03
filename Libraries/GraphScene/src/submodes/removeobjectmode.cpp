@@ -2,12 +2,10 @@
 
 #include "graphsceneview.h"
 
-namespace Graph
-{
+namespace Graph {
 
-RemoveObjectMode::RemoveObjectMode(GraphModeBase *pParentMode) :
-    GraphSubmodeBase(pParentMode)
-{
+RemoveObjectMode::RemoveObjectMode(GraphModeBase* pParentMode)
+    : GraphSubmodeBase(pParentMode) {
     auto& buttonConf = getStarterButton();
     buttonConf.icon =
         QIcon(":/common/images/icons/editmode/mode_edit_remove.svg");
@@ -18,29 +16,19 @@ RemoveObjectMode::RemoveObjectMode(GraphModeBase *pParentMode) :
     buttonConf.positionY = 0;
 }
 
-void RemoveObjectMode::clearMode()
-{
+void RemoveObjectMode::clearMode() {}
 
-}
-
-void RemoveObjectMode::processPress(QGraphicsItem *pTargetItem)
-{
+void RemoveObjectMode::processPress(QGraphicsItem* pTargetItem) {
     auto pItem = dynamic_cast<ObjectViewItems::ItemBase*>(pTargetItem);
     if (nullptr == pItem) {
-      return;
+        return;
     }
     getParentMode()->getScene()->removeObject(pItem->getObjectId());
 }
 
-void RemoveObjectMode::processMove(QGraphicsItem *pTargetItem, const QPointF &currentPos)
-{
+void RemoveObjectMode::processMove(QGraphicsItem* pTargetItem,
+                                   const QPointF& currentPos) {}
 
-}
+void RemoveObjectMode::processRelease(QGraphicsItem* pTargetItem) {}
 
-void RemoveObjectMode::processRelease(QGraphicsItem *pTargetItem)
-{
-
-}
-
-
-}
+}  // namespace Graph

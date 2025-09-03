@@ -1,10 +1,10 @@
 #ifndef CENTERITEM_H
 #define CENTERITEM_H
 
+#include <QGraphicsEllipseItem>
+
 #include "itembase.h"
 #include "scenemarkeritem.h"
-
-#include <QGraphicsEllipseItem>
 
 namespace ObjectViewItems {
 
@@ -16,13 +16,13 @@ public:
     QPainterPath shape() const override;
 
 private:
-    QSize m_centerSize {30, 30};
+    QSize m_centerSize{30, 30};
 
-    QGraphicsEllipseItem*   m_pCenterEllipse {nullptr};
+    QGraphicsEllipseItem* m_pCenterEllipse{nullptr};
 
-    QGraphicsEllipseItem*   m_pCenterTargetEllipse {nullptr};
-    QGraphicsLineItem*      m_pCenterVerticalLine {nullptr};
-    QGraphicsLineItem*      m_pCenterHorizontalLine {nullptr};
+    QGraphicsEllipseItem* m_pCenterTargetEllipse{nullptr};
+    QGraphicsLineItem* m_pCenterVerticalLine{nullptr};
+    QGraphicsLineItem* m_pCenterHorizontalLine{nullptr};
 };
 
 }  // namespace ObjectViewItems

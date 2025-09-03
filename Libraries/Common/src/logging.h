@@ -12,13 +12,12 @@
 #include <boost/fusion/include/make_tuple.hpp>
 #endif  // C++ 17
 
-#include <boost/noncopyable.hpp>
-
+#include <QCoreApplication>
 #include <QDebug>
 #include <QDir>
 #include <QFile>
 #include <QPoint>
-#include <QCoreApplication>
+#include <boost/noncopyable.hpp>
 
 #include "applicationsettings.h"
 
@@ -79,7 +78,6 @@ constexpr const char* logTypeString() {
  * @brief The LoggingMaster class Мастер вывода информации (логов). Синглетон
  */
 class LoggingMaster : public boost::noncopyable {
-
     QFile logfile;                        //! Логфайл
     QTextStream logfileStream{&logfile};  //! Поток ввода в файл данных
 
@@ -126,7 +124,7 @@ class LoggingMaster : public boost::noncopyable {
     bool isThreadExited{true};  //! Флаг для определения, закончил ли выполнение
                                 //! поток вывода логов
     std::thread logThread;      //! Поток вывода логов
-    std::list<std::function<void()> >
+    std::list<std::function<void()>>
         taskList;           //! Список задач по выводу данных в поток логов
     std::mutex taskListMx;  //! Мьютекс для получения данных из списка задач по
                             //! выводу данных
@@ -263,7 +261,9 @@ public:
 
             logfile.open(QIODevice::Append);
             if (!logfile.isOpen()) {
-                throw std::runtime_error(std::string("Error opening logfile (logfile path: ") + logfile.fileName().toStdString());
+                throw std::runtime_error(
+                    std::string("Error opening logfile (logfile path: ") +
+                    logfile.fileName().toStdString());
             }
 
             LoggingHelper logger;

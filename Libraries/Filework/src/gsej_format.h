@@ -1,21 +1,24 @@
 #ifndef GSEJE_FORMAT_H
 #define GSEJE_FORMAT_H
 
-#include "gsj_format.h"
 #include "encryptedsaveformat.h"
+#include "gsj_format.h"
 
 namespace Filework {
 
 /**
  * @brief The GSEJ_Format class Формат gsj с шифрованием
  */
-class GSEJ_Format : public AbstractSaveFormat, public EncryptedSaveFormat {
+class GSEJ_Format
+    : public AbstractSaveFormat
+    , public EncryptedSaveFormat {
 public:
     GSEJ_Format();
     ~GSEJ_Format();
 
     /**
-     * @brief setGraphMaintainer    Переопределение задания мейнтейнера для работы с композицией
+     * @brief setGraphMaintainer    Переопределение задания мейнтейнера для
+     * работы с композицией
      * @param pMaintainer           Мейнтейнер
      */
     void setGraphMaintainer(Graph::PMaintainer pMaintainer) override;
@@ -26,8 +29,10 @@ public:
     bool isFileValid(const QString& targetPath) const override;
 
 private:
-    QString m_key;              //! Ключ шифрования
-    GSJ_Format m_rootFormat;    //! Композиция с JSON форматом, по факту класс GSEJ_Format просто шифрует его данные и добавляет свои
+    QString m_key;            //! Ключ шифрования
+    GSJ_Format m_rootFormat;  //! Композиция с JSON форматом, по факту класс
+                              //! GSEJ_Format просто шифрует его данные и
+                              //! добавляет свои
 
     /**
      * @brief createSystemJson  Создать системный JSON, идентифицирующий формат

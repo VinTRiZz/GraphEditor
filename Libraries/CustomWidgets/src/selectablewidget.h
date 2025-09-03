@@ -12,7 +12,7 @@ class SelectableWidget : public QWidget {
 public:
     explicit SelectableWidget(QWidget* parent = nullptr);
 
-    void setWidget(QWidget * w, const QString& widgetLabel);
+    void setWidget(QWidget* w, const QString& widgetLabel);
     QWidget* widget() const;
 
     void setSelectionColor(const QColor& col);
@@ -26,15 +26,15 @@ signals:
     void selectionToggled(bool isWidgetSelected);
 
 protected:
-    bool        m_isSelected {false};
-    QColor      m_selectionColor {Qt::green};
-    QLabel*     m_widgetNameLabel;
-    QWidget*    m_widget {nullptr}; // Для упрощения доступа
+    bool m_isSelected{false};
+    QColor m_selectionColor{Qt::green};
+    QLabel* m_widgetNameLabel;
+    QWidget* m_widget{nullptr};  // Для упрощения доступа
 
     void paintEvent(QPaintEvent* e) override;
-    void mouseReleaseEvent(QMouseEvent *e) override;
+    void mouseReleaseEvent(QMouseEvent* e) override;
 };
 
-}
+}  // namespace WidgetGaleryHelper
 
-#endif // SELECTABLEWIDGET_H
+#endif  // SELECTABLEWIDGET_H

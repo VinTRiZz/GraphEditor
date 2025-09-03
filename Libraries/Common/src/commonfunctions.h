@@ -8,7 +8,8 @@
 namespace CommonFunctions {
 
 /**
- * @brief showAnimatedVertical  Анимированно показывает виджет по вертикали (сверху вниз)
+ * @brief showAnimatedVertical  Анимированно показывает виджет по вертикали
+ * (сверху вниз)
  * @param pTarget               Целевой виджет
  * @param maxHeight             Высота после анимации
  * @param timeMs                Время анимации, мс
@@ -16,7 +17,8 @@ namespace CommonFunctions {
 void showAnimatedVertical(QWidget* pTarget, int maxHeight, int timeMs = 150);
 
 /**
- * @brief hideAnimatedVertical  Анимированно скрывает виджет по вертикали (снизу вверх)
+ * @brief hideAnimatedVertical  Анимированно скрывает виджет по вертикали (снизу
+ * вверх)
  * @param pTarget               Целевой виджет
  * @param maxHeight             Высота до анимации
  * @param timeMs                Время анимации, мс
@@ -24,7 +26,8 @@ void showAnimatedVertical(QWidget* pTarget, int maxHeight, int timeMs = 150);
 void hideAnimatedVertical(QWidget* pTarget, int maxHeight, int timeMs = 150);
 
 /**
- * @brief showAnimatedHorizontal Анимированно показывает виджет по горизонтали (справа налево)
+ * @brief showAnimatedHorizontal Анимированно показывает виджет по горизонтали
+ * (справа налево)
  * @param pTarget               Целевой виджет
  * @param maxWidth              Ширина до анимации
  * @param timeMs                Время анимации, мс
@@ -32,7 +35,8 @@ void hideAnimatedVertical(QWidget* pTarget, int maxHeight, int timeMs = 150);
 void showAnimatedHorizontal(QWidget* pTarget, int maxWidth, int timeMs = 150);
 
 /**
- * @brief hideAnimatedHorizontal Анимированно скрывает виджет по горизонтали (слева направо)
+ * @brief hideAnimatedHorizontal Анимированно скрывает виджет по горизонтали
+ * (слева направо)
  * @param pTarget               Целевой виджет
  * @param maxWidth              Ширина до анимации
  * @param timeMs                Время анимации, мс
@@ -42,7 +46,8 @@ void hideAnimatedHorizontal(QWidget* pTarget, int maxWidth, int timeMs = 150);
 /**
  * @brief connectColorDialog    Соединить кнопку с открытием файлового диалога
  * @param pButton               Указатель на кнопку
- * @param pTargetLabel          Указатель на QLabel, которая после задания будет иметь выбранный цвет
+ * @param pTargetLabel          Указатель на QLabel, которая после задания будет
+ * иметь выбранный цвет
  */
 void connectColorDialog(QPushButton* pButton, QLabel* pTargetLabel);
 

@@ -3,21 +3,20 @@
 
 #include "graphmodebase.h"
 
-namespace Graph
-{
+namespace Graph {
 
-class RemoveObjectMode : public GraphSubmodeBase
-{
+class RemoveObjectMode : public GraphSubmodeBase {
 public:
     RemoveObjectMode(GraphModeBase* pParentMode);
 
     // GraphSubmodeBase interface
     void clearMode() override;
-    void processPress(QGraphicsItem *pTargetItem) override;
-    void processMove(QGraphicsItem *pTargetItem, const QPointF &currentPos) override;
-    void processRelease(QGraphicsItem *pTargetItem) override;
+    void processPress(QGraphicsItem* pTargetItem) override;
+    void processMove(QGraphicsItem* pTargetItem,
+                     const QPointF& currentPos) override;
+    void processRelease(QGraphicsItem* pTargetItem) override;
 };
 
-}
+}  // namespace Graph
 
-#endif // REMOVEOBJECTMODE_H
+#endif  // REMOVEOBJECTMODE_H

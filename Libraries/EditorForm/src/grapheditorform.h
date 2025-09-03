@@ -4,11 +4,10 @@
 #include <CustomWidgets/ButtonMatrix.h>
 #include <GraphObject/ExtendedObject.h>
 #include <GraphObject/Maintainer.h>
+#include <GraphScene/EditView.h>
 
 #include <QStandardItemModel>
 #include <QWidget>
-
-#include <GraphScene/EditView.h>
 
 namespace Ui {
 class GraphEditorForm;
@@ -73,8 +72,10 @@ public slots:
     bool loadGraph(const QString& targetPath = {});
 
     /**
-     * @brief getScene  Получить сцену, на которой отрисовывается граф. Вместо проброса коннектов
-     * @return          Указатель на сцену. Всегда валидный (если его никто не удалил)
+     * @brief getScene  Получить сцену, на которой отрисовывается граф. Вместо
+     * проброса коннектов
+     * @return          Указатель на сцену. Всегда валидный (если его никто не
+     * удалил)
      */
     Graph::GraphSceneView* getScene() const;
 

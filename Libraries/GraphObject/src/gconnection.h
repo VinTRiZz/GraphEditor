@@ -1,6 +1,7 @@
 #ifndef GCONNECTION_H
 #define GCONNECTION_H
 
+#include <Common/CommonFunctions.h>
 #include <Common/Logging.h>
 #include <math.h>
 
@@ -9,8 +10,6 @@
 #include <QString>
 
 #include "graphcommon.h"
-
-#include <Common/CommonFunctions.h>
 
 namespace Graph {
 
@@ -39,7 +38,8 @@ struct GConnection {
      * @return              То, что вернёт оператор
      */
     template<typename OperatorT>
-    bool applyOperator(const GConnection& cCon_, OperatorT&& vertOperator) const {
+    bool applyOperator(const GConnection& cCon_,
+                       OperatorT&& vertOperator) const {
         auto lineColorCompare =
             vertOperator(CommonFunctions::encodeColor(lineColor),
                          CommonFunctions::encodeColor(cCon_.lineColor));

@@ -6,14 +6,9 @@
 
 using ProxyWidget = WidgetGaleryHelper::SelectableWidget;
 
-WidgetGalery::WidgetGalery(QWidget *parent)
-    : QScrollArea(parent)
-{
+WidgetGalery::WidgetGalery(QWidget* parent) : QScrollArea(parent) {}
 
-}
-
-void WidgetGalery::init()
-{
+void WidgetGalery::init() {
     auto pLayout = new QGridLayout;
     pLayout->setVerticalSpacing(5);
     pLayout->setSpacing(3);
@@ -21,40 +16,37 @@ void WidgetGalery::init()
     widget()->setLayout(pLayout);
 }
 
-void WidgetGalery::setWidgetSize(QSize wSize)
-{
+void WidgetGalery::setWidgetSize(QSize wSize) {
     m_widgetSize = wSize;
 }
 
-void WidgetGalery::setSelectionColor(const QColor &col)
-{
+void WidgetGalery::setSelectionColor(const QColor& col) {
     m_selectionColor = col;
     for (auto* pWidget : m_widgets) {
         static_cast<ProxyWidget*>(pWidget)->setSelectionColor(col);
     }
 }
 
-void WidgetGalery::addWidget(QWidget *pWidget, const QString& widgetLabel)
-{
+void WidgetGalery::addWidget(QWidget* pWidget, const QString& widgetLabel) {
     auto selectableWidget = new ProxyWidget(widget());
     selectableWidget->setWidget(pWidget, widgetLabel);
     selectableWidget->setSelectionColor(m_selectionColor);
 
-    connect(selectableWidget, &ProxyWidget::selectionToggled,
-            selectableWidget, [this, selectableWidget](bool isSelectedState){
-        if (!isSelectedState) {
-            m_currentSelectedWidget = nullptr;
-            return;
-        }
-        m_currentSelectedWidget = selectableWidget;
+    connect(selectableWidget, &ProxyWidget::selectionToggled, selectableWidget,
+            [this, selectableWidget](bool isSelectedState) {
+                if (!isSelectedState) {
+                    m_currentSelectedWidget = nullptr;
+                    return;
+                }
+                m_currentSelectedWidget = selectableWidget;
 
-        for (auto* pWidget : m_widgets) {
-            if (pWidget == selectableWidget) {
-                continue;
-            }
-            static_cast<ProxyWidget*>(pWidget)->setSelected(false);
-        }
-    });
+                for (auto* pWidget : m_widgets) {
+                    if (pWidget == selectableWidget) {
+                        continue;
+                    }
+                    static_cast<ProxyWidget*>(pWidget)->setSelected(false);
+                }
+            });
 
     pWidget->setParent(selectableWidget);
     m_widgets.push_back(selectableWidget);
@@ -62,19 +54,20 @@ void WidgetGalery::addWidget(QWidget *pWidget, const QString& widgetLabel)
     updateLayout();
 }
 
-void WidgetGalery::removeWidget(QWidget *pWidget)
-{
-    auto targetWidget = std::find_if(m_widgets.begin(), m_widgets.end(), [pWidget](auto* pContainerWidget){
-        return (pWidget == static_cast<ProxyWidget*>(pContainerWidget)->widget());
-    });
+void WidgetGalery::removeWidget(QWidget* pWidget) {
+    auto targetWidget = std::find_if(
+        m_widgets.begin(), m_widgets.end(), [pWidget](auto* pContainerWidget) {
+            return (pWidget ==
+                    static_cast<ProxyWidget*>(pContainerWidget)->widget());
+        });
     if (targetWidget != m_widgets.end()) {
         m_widgets.erase(targetWidget);
         updateLayout();
     }
 }
 
-bool WidgetGalery::containWidget(const std::function<bool (QWidget *)> &predicate) const
-{
+bool WidgetGalery::containWidget(
+    const std::function<bool(QWidget*)>& predicate) const {
     for (auto* pWidget : m_widgets) {
         if (predicate(static_cast<ProxyWidget*>(pWidget)->widget())) {
             return true;
@@ -83,13 +76,11 @@ bool WidgetGalery::containWidget(const std::function<bool (QWidget *)> &predicat
     return false;
 }
 
-QWidget *WidgetGalery::getSelectedWidget() const
-{
+QWidget* WidgetGalery::getSelectedWidget() const {
     return m_currentSelectedWidget;
 }
 
-void WidgetGalery::updateLayout()
-{
+void WidgetGalery::updateLayout() {
     auto pCenterWidgetLayout = static_cast<QGridLayout*>(widget()->layout());
     auto pItem = pCenterWidgetLayout->takeAt(0);
     while (nullptr != pItem) {
@@ -97,10 +88,12 @@ void WidgetGalery::updateLayout()
         pItem = pCenterWidgetLayout->takeAt(0);
     }
 
-    int currentCol {0};
-    int currentRow {0};
+    int currentCol{0};
+    int currentRow{0};
     for (auto* pWidget : m_widgets) {
-        if ((m_widgetSize.width() + pCenterWidgetLayout->margin()) * (currentCol + 1) >= width()) {
+        if ((m_widgetSize.width() + pCenterWidgetLayout->margin()) *
+                (currentCol + 1) >=
+            width()) {
             currentCol = 0;
             currentRow++;
         }
@@ -110,4 +103,3 @@ void WidgetGalery::updateLayout()
         ++currentCol;
     }
 }
-

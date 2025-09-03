@@ -51,7 +51,6 @@ private:
     QRectF m_boundingRect;
 
 protected:
-
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option,
                QWidget* widget) override;
     void setBoundingRect(const QRectF& bRect);

@@ -1,12 +1,11 @@
 #include "encryption.h"
 
-#include <openssl/aes.h> // Для AES_BLOCK_SIZE
+#include <openssl/aes.h>  // Для AES_BLOCK_SIZE
 #include <openssl/err.h>
 #include <openssl/evp.h>
 
 #include <QByteArray>
 #include <QDebug>
-
 #include <iomanip>
 #include <random>
 
@@ -17,14 +16,14 @@ QByteArray generateSecureIV() {
     static std::mt19937 gen(rd());
     static std::uniform_int_distribution<char> dist(-127, 127);
 
-    QByteArray iv(AES_BLOCK_SIZE, 0); // 16 байт
+    QByteArray iv(AES_BLOCK_SIZE, 0);  // 16 байт
     std::generate_n(iv.data(), AES_BLOCK_SIZE - 1,
                     []() -> char { return dist(gen); });
     return iv;
 }
 
-QByteArray encryptAes256Cbc(const QByteArray &plainText, QByteArray key) {
-    EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
+QByteArray encryptAes256Cbc(const QByteArray& plainText, QByteArray key) {
+    EVP_CIPHER_CTX* ctx = EVP_CIPHER_CTX_new();
     if (!ctx)
         return QByteArray();
 
@@ -38,9 +37,9 @@ QByteArray encryptAes256Cbc(const QByteArray &plainText, QByteArray key) {
     }
 
     if (EVP_EncryptInit_ex(ctx, EVP_aes_256_cbc(), NULL,
-                           reinterpret_cast<const unsigned char *>(key.data()),
-                           reinterpret_cast<const unsigned char *>(iv.data())) !=
-            1) {
+                           reinterpret_cast<const unsigned char*>(key.data()),
+                           reinterpret_cast<const unsigned char*>(iv.data())) !=
+        1) {
         return QByteArray();
     }
 
@@ -50,17 +49,17 @@ QByteArray encryptAes256Cbc(const QByteArray &plainText, QByteArray key) {
     int cipherTextLen = 0;
 
     if (EVP_EncryptUpdate(
-                ctx, reinterpret_cast<unsigned char *>(cipherText.data()), &len,
-                reinterpret_cast<const unsigned char *>(plainText.data()),
-                plainText.size()) != 1) {
+            ctx, reinterpret_cast<unsigned char*>(cipherText.data()), &len,
+            reinterpret_cast<const unsigned char*>(plainText.data()),
+            plainText.size()) != 1) {
         EVP_CIPHER_CTX_free(ctx);
         return QByteArray();
     }
     cipherTextLen = len;
 
     if (EVP_EncryptFinal_ex(
-                ctx, reinterpret_cast<unsigned char *>(cipherText.data()) + len,
-                &len) != 1) {
+            ctx, reinterpret_cast<unsigned char*>(cipherText.data()) + len,
+            &len) != 1) {
         EVP_CIPHER_CTX_free(ctx);
         return QByteArray();
     }
@@ -72,7 +71,7 @@ QByteArray encryptAes256Cbc(const QByteArray &plainText, QByteArray key) {
 }
 
 QByteArray decryptAes256Cbc(QByteArray cipherText, QByteArray key) {
-    EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
+    EVP_CIPHER_CTX* ctx = EVP_CIPHER_CTX_new();
     if (!ctx)
         return QByteArray();
 
@@ -88,9 +87,9 @@ QByteArray decryptAes256Cbc(QByteArray cipherText, QByteArray key) {
     }
 
     if (EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL,
-                           reinterpret_cast<const unsigned char *>(key.data()),
-                           reinterpret_cast<const unsigned char *>(iv.data())) !=
-            1) {
+                           reinterpret_cast<const unsigned char*>(key.data()),
+                           reinterpret_cast<const unsigned char*>(iv.data())) !=
+        1) {
         return QByteArray();
     }
 
@@ -100,17 +99,17 @@ QByteArray decryptAes256Cbc(QByteArray cipherText, QByteArray key) {
     int plainTextLen = 0;
 
     if (EVP_DecryptUpdate(
-                ctx, reinterpret_cast<unsigned char *>(plainText.data()), &len,
-                reinterpret_cast<const unsigned char *>(cipherText.data()),
-                cipherText.size()) != 1) {
+            ctx, reinterpret_cast<unsigned char*>(plainText.data()), &len,
+            reinterpret_cast<const unsigned char*>(cipherText.data()),
+            cipherText.size()) != 1) {
         EVP_CIPHER_CTX_free(ctx);
         return QByteArray();
     }
     plainTextLen = len;
 
     if (EVP_DecryptFinal_ex(
-                ctx, reinterpret_cast<unsigned char *>(plainText.data()) + len,
-                &len) != 1) {
+            ctx, reinterpret_cast<unsigned char*>(plainText.data()) + len,
+            &len) != 1) {
         EVP_CIPHER_CTX_free(ctx);
         return QByteArray();
     }
@@ -121,13 +120,14 @@ QByteArray decryptAes256Cbc(QByteArray cipherText, QByteArray key) {
     return plainText;
 }
 
-QByteArray sha256(QByteArray txt)
-{
+QByteArray sha256(QByteArray txt) {
     auto input = txt.toStdString();
-    std::shared_ptr<EVP_MD_CTX> context(EVP_MD_CTX_new(), [](auto* ctx){
-        if (ctx) EVP_MD_CTX_free(ctx);
+    std::shared_ptr<EVP_MD_CTX> context(EVP_MD_CTX_new(), [](auto* ctx) {
+        if (ctx)
+            EVP_MD_CTX_free(ctx);
     });
-    if (!context) throw std::runtime_error("Failed to create EVP_MD_CTX");
+    if (!context)
+        throw std::runtime_error("Failed to create EVP_MD_CTX");
 
     if (EVP_DigestInit_ex(context.get(), EVP_sha256(), nullptr) != 1)
         throw std::runtime_error("EVP_DigestInit_ex failed");
@@ -148,4 +148,4 @@ QByteArray sha256(QByteArray txt)
     return ss.str().c_str();
 }
 
-} // namespace Encryption
+}  // namespace Encryption

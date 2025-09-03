@@ -2,12 +2,10 @@
 
 #include "graphsceneview.h"
 
-namespace Graph
-{
+namespace Graph {
 
-PropertyEditMode::PropertyEditMode(GraphModeBase *pParentMode) :
-    GraphSubmodeBase(pParentMode)
-{
+PropertyEditMode::PropertyEditMode(GraphModeBase* pParentMode)
+    : GraphSubmodeBase(pParentMode) {
     auto& buttonConf = getStarterButton();
     buttonConf.icon =
         QIcon(":/common/images/icons/editmode/mode_edit_properties.svg");
@@ -18,34 +16,25 @@ PropertyEditMode::PropertyEditMode(GraphModeBase *pParentMode) :
     buttonConf.positionY = 1;
 }
 
-void PropertyEditMode::clearMode()
-{
+void PropertyEditMode::clearMode() {}
 
-}
+void PropertyEditMode::processPress(QGraphicsItem* pTargetItem) {}
 
-void PropertyEditMode::processPress(QGraphicsItem *pTargetItem)
-{
+void PropertyEditMode::processMove(QGraphicsItem* pTargetItem,
+                                   const QPointF& currentPos) {}
 
-}
-
-void PropertyEditMode::processMove(QGraphicsItem *pTargetItem, const QPointF &currentPos)
-{
-
-}
-
-void PropertyEditMode::processRelease(QGraphicsItem *pTargetItem)
-{
+void PropertyEditMode::processRelease(QGraphicsItem* pTargetItem) {
     auto pItem = dynamic_cast<ObjectViewItems::ItemBase*>(pTargetItem);
     if (pItem == nullptr) {
-      return;
+        return;
     }
 
     // Игнорируем это, пусть пользователь редактирует свойства
     if (pItem->getType() == ObjectViewConstants::OBJECTTYPE_PROPERTY_EDITOR) {
-      return;
+        return;
     }
 
     emit openPropertyEditor(pItem);
 }
 
-}
+}  // namespace Graph

@@ -16,7 +16,8 @@ class GraphPropertyEditForm;
 namespace Graph {
 
 /**
- * @brief The GraphPropertyEditForm class   Форма редактирования метаинформации о графе
+ * @brief The GraphPropertyEditForm class   Форма редактирования метаинформации
+ * о графе
  */
 class GraphPropertyEditForm : public QWidget {
     Q_OBJECT

@@ -24,7 +24,8 @@ struct ButtonConfig {
 };
 
 /**
- * @brief The HeadWidget class Форма для отображения тулбара кнопок, слева направо или сверху вниз
+ * @brief The HeadWidget class Форма для отображения тулбара кнопок, слева
+ * направо или сверху вниз
  */
 class HeadWidget : public QWidget {
 public:
@@ -48,7 +49,8 @@ public:
     void addButton(const ButtonConfig& conf);
 
     /**
-     * @brief updateButton  Обновить конфигурацию кнопки. Задайте верно позицию кнопки для работы
+     * @brief updateButton  Обновить конфигурацию кнопки. Задайте верно позицию
+     * кнопки для работы
      * @param conf          Новая конфигурация
      */
     void updateButton(const ButtonConfig& conf);
@@ -74,7 +76,8 @@ public:
 
 private:
     /**
-     * @brief updateLayout  Обновить тулбар, разместив кнопки вертикально или горизонтально
+     * @brief updateLayout  Обновить тулбар, разместив кнопки вертикально или
+     * горизонтально
      */
     void updateLayout();
 
@@ -92,10 +95,13 @@ private:
         ButtonConfig config;
         QPushButton* pButton{nullptr};
     };
-    std::list<ButtonInfo> m_buttons;    //! Кнопки
+    std::list<ButtonInfo> m_buttons;  //! Кнопки
 
-    bool m_isVertical{false};       //! Тип расположения кнопок. Если false, то горизонтальный
-    QSize m_buttonsSize{50, 50};    //! Размер кнопок для коррекции из-за Qt-вских особенностей работы
+    bool m_isVertical{
+        false};  //! Тип расположения кнопок. Если false, то горизонтальный
+    QSize m_buttonsSize{
+        50,
+        50};  //! Размер кнопок для коррекции из-за Qt-вских особенностей работы
 
     void resizeEvent(QResizeEvent* e) override;
 };

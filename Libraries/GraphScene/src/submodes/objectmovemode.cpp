@@ -4,11 +4,12 @@
 
 namespace Graph {
 
-ObjectMoveMode::ObjectMoveMode(GraphModeBase *pParentMode) :
-    GraphSubmodeBase(pParentMode)
-{
+ObjectMoveMode::ObjectMoveMode(GraphModeBase* pParentMode)
+    : GraphSubmodeBase(pParentMode) {
     auto& buttonConf = getStarterButton();
-    buttonConf.icon = QIcon(":/common/images/icons/editmode/mode_edit_move.svg");
+    buttonConf = {};
+    buttonConf.icon =
+        QIcon(":/common/images/icons/editmode/mode_edit_move.svg");
     buttonConf.secondIcon =
         QIcon(":/common/images/icons/editmode/mode_edit_move_active.svg");
     buttonConf.tooltip = "Перемещение вершин графа";
@@ -16,43 +17,38 @@ ObjectMoveMode::ObjectMoveMode(GraphModeBase *pParentMode) :
     buttonConf.positionY = 0;
 }
 
-void ObjectMoveMode::clearMode()
-{
+void ObjectMoveMode::clearMode() {
     auto pScene = getParentMode()->getScene();
     if (nullptr != pScene->getGrabObject()) {
-      pScene->rejectGrabObject();
+        pScene->rejectGrabObject();
     }
 
     if (nullptr != m_movingVertex) {
-      m_movingVertex->updateConnectionLines();
-      m_movingVertex->setSelected(false);
-      m_movingVertex = nullptr;
+        m_movingVertex->updateConnectionLines();
+        m_movingVertex->setSelected(false);
+        m_movingVertex = nullptr;
     }
 
     if (nullptr != m_movingConnectionLine) {
-      m_movingConnectionLine->resetPositions();
-      m_movingConnectionLine->setSelected(false);
-      m_movingConnectionLine = nullptr;
+        m_movingConnectionLine->resetPositions();
+        m_movingConnectionLine->setSelected(false);
+        m_movingConnectionLine = nullptr;
     }
 }
 
-void ObjectMoveMode::processPress(QGraphicsItem *pTargetItem)
-{
+void ObjectMoveMode::processPress(QGraphicsItem* pTargetItem) {}
 
-}
-
-void ObjectMoveMode::processMove(QGraphicsItem *pTargetItem, const QPointF &currentPos)
-{
+void ObjectMoveMode::processMove(QGraphicsItem* pTargetItem,
+                                 const QPointF& currentPos) {
     if (nullptr != m_movingConnectionLine) {
         m_movingConnectionLine->setPositionTo(currentPos);
     }
 }
 
-void ObjectMoveMode::processRelease(QGraphicsItem *pTargetItem)
-{
+void ObjectMoveMode::processRelease(QGraphicsItem* pTargetItem) {
     auto pItem = dynamic_cast<ObjectViewItems::ItemBase*>(pTargetItem);
     if (pItem == nullptr) {
-      return;
+        return;
     }
 
     auto pScene = getParentMode()->getScene();
@@ -60,48 +56,48 @@ void ObjectMoveMode::processRelease(QGraphicsItem *pTargetItem)
     // Если соединение, перемещаем точку целевую
     if (pItem->getType() == ObjectViewConstants::OBJECTTYPE_VERTEX_CONNECTION &&
         pItem != m_movingConnectionLine) {
-      pItem->setSelected(true);
-      m_movingConnectionLine =
-          static_cast<ObjectViewItems::VertexConnectionLine *>(pItem);
-      return;
+        pItem->setSelected(true);
+        m_movingConnectionLine =
+            static_cast<ObjectViewItems::VertexConnectionLine*>(pItem);
+        return;
     }
 
     // Для соединений -- применить изменения
     if (nullptr != m_movingConnectionLine) {
-      // Отменяем если не вершина
-      if (pItem->getType() != ObjectViewConstants::OBJECTTYPE_VERTEX ||
-          pItem == m_movingConnectionLine->getVertexFrom()) {
-        m_movingConnectionLine->resetPositions();
+        // Отменяем если не вершина
+        if (pItem->getType() != ObjectViewConstants::OBJECTTYPE_VERTEX ||
+            pItem == m_movingConnectionLine->getVertexFrom()) {
+            m_movingConnectionLine->resetPositions();
+            clearMode();
+            return;
+        }
+
+        // Соединяем
+        static_cast<ObjectViewItems::VertexObject*>(pItem)
+            ->subscribeAsConnectionTo(m_movingConnectionLine);
+
+        // Забываем, что соединяли только что. Теперь это не наша забота
         clearMode();
         return;
-      }
-
-      // Соединяем
-      static_cast<ObjectViewItems::VertexObject *>(pItem)
-          ->subscribeAsConnectionTo(m_movingConnectionLine);
-
-      // Забываем, что соединяли только что. Теперь это не наша забота
-      clearMode();
-      return;
     }
 
     // Если вершина, прикрепляем её к курсору
     if (pItem->getType() == ObjectViewConstants::OBJECTTYPE_VERTEX &&
         pItem != m_movingVertex) {
-      if (nullptr != m_movingVertex) {
-        pScene->rejectGrabObject();
-      }
-      pScene->setGrabObject(pItem);
-      m_movingVertex = static_cast<ObjectViewItems::VertexObject *>(pItem);
-      return;
+        if (nullptr != m_movingVertex) {
+            pScene->rejectGrabObject();
+        }
+        pScene->setGrabObject(pItem);
+        m_movingVertex = static_cast<ObjectViewItems::VertexObject*>(pItem);
+        return;
     }
 
     // Забываем, что делали только что (по сути применяем изменения). Теперь это
     // не наша забота
     if (nullptr != m_movingVertex) {
-      pScene->acceptGrabObject();
-      clearMode();
+        pScene->acceptGrabObject();
+        clearMode();
     }
 }
 
-}
+}  // namespace Graph

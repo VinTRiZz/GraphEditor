@@ -5,7 +5,6 @@
 
 #include <QGraphicsItem>
 #include <QObject>
-
 #include <boost/noncopyable.hpp>
 
 namespace Graph {
@@ -17,11 +16,10 @@ struct GraphModeContext {
     // TODO: Добавить сюда поля
 };
 
-
-class GraphSubmodeBase : public QObject
-{
+class GraphSubmodeBase : public QObject {
     Q_OBJECT
-    GraphModeBase* m_pParentMode {nullptr};
+    GraphModeBase* m_pParentMode{nullptr};
+
 public:
     explicit GraphSubmodeBase(GraphModeBase* parentMode);
 
@@ -46,12 +44,8 @@ protected:
 
     bool isModeActive() const;
 
-    GraphModeBase* getParentMode() const {
-        return m_pParentMode;
-    }
+    GraphModeBase* getParentMode() const { return m_pParentMode; }
 };
-
-
 
 class GraphModeBase : public QObject {
     Q_OBJECT
@@ -76,8 +70,7 @@ signals:
 
 public slots:
     void processPress(QGraphicsItem* pItem);
-    void processMove(QGraphicsItem* pItem,
-                             const QPointF& currentPos);
+    void processMove(QGraphicsItem* pItem, const QPointF& currentPos);
     void processRelease(QGraphicsItem* pItem);
 
 private slots:
@@ -89,7 +82,7 @@ private:
 
     GraphModeContext m_modeContext;
     std::list<GraphSubmodeBase*> m_submodes;
-    GraphSubmodeBase* m_currentSubmode {nullptr};
+    GraphSubmodeBase* m_currentSubmode{nullptr};
 
 protected:
     void setStarted();

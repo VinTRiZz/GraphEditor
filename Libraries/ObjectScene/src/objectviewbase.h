@@ -1,9 +1,9 @@
 #ifndef OBJECTVIEWBASE_H
 #define OBJECTVIEWBASE_H
 
+#include <ObjectItems/CenterItem.h>
 #include <ObjectItems/Constants.h>
 #include <ObjectItems/SceneFieltItem.h>
-#include <ObjectItems/CenterItem.h>
 
 #include <QGraphicsView>
 #include <optional>

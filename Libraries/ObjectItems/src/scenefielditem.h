@@ -3,7 +3,6 @@
 
 #include <QBrush>
 #include <QPen>
-
 #include <map>
 
 #include "itembase.h"
@@ -21,7 +20,10 @@ public:
     void setPen(const QPen& iPen);
 
     void registerItem(ItemBase* pItem);
-    ItemBase* getItem(ObjectViewConstants::objectId_t targetItemId, ObjectViewConstants::ObjectType targetItemType = ObjectViewConstants::ObjectType::OBJECTTYPE_NONE) const;
+    ItemBase* getItem(
+        ObjectViewConstants::objectId_t targetItemId,
+        ObjectViewConstants::ObjectType targetItemType =
+            ObjectViewConstants::ObjectType::OBJECTTYPE_NONE) const;
     std::list<ItemBase*> getRegisteredItems() const;
     std::list<ObjectViewConstants::objectId_t> getRegisteredIds() const;
     void clearRegisteredItems();
@@ -34,7 +36,8 @@ public:
 
 private:
     QGraphicsRectItem* m_canvasRect{nullptr};
-    std::map<ObjectViewConstants::ObjectType, std::list<ItemBase*> > m_registeredItems;
+    std::map<ObjectViewConstants::ObjectType, std::list<ItemBase*>>
+        m_registeredItems;
 };
 
 }  // namespace ObjectViewItems

@@ -16,5 +16,4 @@ if [ "$?" != "0" ]; then
     exit 2
 fi
 
-cd "$PRPTC_SCRIPTDIR/../etc"
-clang-format-19 -i $(find "$PRPTC_SCRIPTDIR/../.." -iname '*.cpp' -o -iname '*.hpp')
+clang-format-19 "--style=file:$PRPTC_SCRIPTDIR/../etc/.clang-format" -i $(find "$PRPTC_SCRIPTDIR/../../Libraries" -iname '*.cpp' -o -iname '*.hpp' -o -iname '*.h')

@@ -3,11 +3,9 @@
 
 #include "itembase.h"
 
-namespace ObjectViewItems
-{
+namespace ObjectViewItems {
 
-class SceneMarkerItem : public ItemBase
-{
+class SceneMarkerItem : public ItemBase {
 public:
     explicit SceneMarkerItem(ItemBase* parent = nullptr);
 
@@ -17,18 +15,20 @@ public:
     void setTargetIcon(const QImage& targetImage);
 
 private:
-    QGraphicsItem*  m_pTarget {nullptr};
+    QGraphicsItem* m_pTarget{nullptr};
 
-    QPainterPath    m_objectFigurePath;
-    QImage          m_targetImage;
+    QPainterPath m_objectFigurePath;
+    QImage m_targetImage;
 
-    QSize           m_markerSize {30, 30};
+    QSize m_markerSize{30, 30};
 
 protected:
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option,
+               QWidget* widget = nullptr) override;
+    QVariant itemChange(GraphicsItemChange change,
+                        const QVariant& value) override;
 };
 
-}
+}  // namespace ObjectViewItems
 
-#endif // SCENEMARKERITEM_H
+#endif  // SCENEMARKERITEM_H

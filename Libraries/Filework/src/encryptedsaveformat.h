@@ -3,15 +3,14 @@
 
 #include "abstractsaveformat.h"
 
-namespace Filework
-{
+namespace Filework {
 
 /**
- * @brief The AbstractEncryptedFormatMixin class Миксин для добавления функций шифрования в класс
+ * @brief The AbstractEncryptedFormatMixin class Миксин для добавления функций
+ * шифрования в класс
  */
-template <typename T>
-class EncryptedFormatMixin
-{
+template<typename T>
+class EncryptedFormatMixin {
 public:
     /**
      * @brief setEncryptionKey  Задать ключ шифрования
@@ -25,9 +24,7 @@ public:
      * @brief getEncryptionKey  Получить ключ шифрования
      * @return                  Строка-ключ шифрования
      */
-    QString getEncryptionKey() const {
-        return m_encryptedKey;
-    }
+    QString getEncryptionKey() const { return m_encryptedKey; }
 
 protected:
     QString m_encryptedKey;
@@ -35,6 +32,6 @@ protected:
 
 using EncryptedSaveFormat = EncryptedFormatMixin<AbstractSaveFormat>;
 
-}
+}  // namespace Filework
 
-#endif // ABSTRACTENCRYPTEDFORMAT_H
+#endif  // ABSTRACTENCRYPTEDFORMAT_H

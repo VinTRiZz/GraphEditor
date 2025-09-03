@@ -5,6 +5,19 @@
 namespace Graph
 {
 
+PropertyEditMode::PropertyEditMode(GraphModeBase *pParentMode) :
+    GraphSubmodeBase(pParentMode)
+{
+    auto& buttonConf = getStarterButton();
+    buttonConf.icon =
+        QIcon(":/common/images/icons/editmode/mode_edit_properties.svg");
+    buttonConf.secondIcon =
+        QIcon(":/common/images/icons/editmode/mode_edit_properties_active.svg");
+    buttonConf.tooltip = "Изменение свойств вершины";
+    buttonConf.positionX = 0;
+    buttonConf.positionY = 1;
+}
+
 void PropertyEditMode::clearMode()
 {
 
@@ -33,24 +46,6 @@ void PropertyEditMode::processRelease(QGraphicsItem *pTargetItem)
     }
 
     emit openPropertyEditor(pItem);
-}
-
-ButtonMatrix::ButtonConfig PropertyEditMode::getStarterButton()
-{
-    ButtonMatrix::ButtonConfig buttonConf;
-    buttonConf.icon =
-        QIcon(":/common/images/icons/editmode/mode_edit_properties.svg");
-    buttonConf.secondIcon =
-        QIcon(":/common/images/icons/editmode/mode_edit_properties_active.svg");
-    buttonConf.tooltip = "Изменение свойств вершины";
-    buttonConf.action = [this, buttonConf](QPushButton *pButton) -> void {
-      emit requestModeClear();
-      pButton->setIcon(buttonConf.secondIcon);
-    };
-    buttonConf.positionX = 0;
-    buttonConf.positionY = 1;
-    buttonConf.isEnabled = true;
-    return buttonConf;
 }
 
 }

@@ -32,10 +32,14 @@ public:
                              const QPointF& currentPos) = 0;
     virtual void processRelease(QGraphicsItem* pItem) = 0;
 
-    virtual ButtonMatrix::ButtonConfig getStarterButton() = 0;
+    ButtonMatrix::ButtonConfig& getStarterButton();
 
 signals:
+    void requestModeStart();
     void requestModeClear();
+
+private:
+    ButtonMatrix::ButtonConfig m_starterButton;
 
 protected:
     GraphModeContext& m_context;

@@ -4,6 +4,18 @@
 
 namespace Graph {
 
+ObjectMoveMode::ObjectMoveMode(GraphModeBase *pParentMode) :
+    GraphSubmodeBase(pParentMode)
+{
+    auto& buttonConf = getStarterButton();
+    buttonConf = {};
+    buttonConf.icon = QIcon(":/common/images/icons/editmode/mode_edit_move.svg");
+    buttonConf.secondIcon =
+        QIcon(":/common/images/icons/editmode/mode_edit_move_active.svg");
+    buttonConf.tooltip = "Перемещение вершин графа";
+    buttonConf.positionX = -4;
+    buttonConf.positionY = 0;
+}
 
 void ObjectMoveMode::clearMode()
 {
@@ -91,26 +103,6 @@ void ObjectMoveMode::processRelease(QGraphicsItem *pTargetItem)
       pScene->acceptGrabObject();
       clearMode();
     }
-}
-
-ButtonMatrix::ButtonConfig ObjectMoveMode::getStarterButton()
-{
-    ButtonMatrix::ButtonConfig buttonConf;
-
-    buttonConf = {};
-    buttonConf.icon = QIcon(":/common/images/icons/editmode/mode_edit_move.svg");
-    buttonConf.secondIcon =
-        QIcon(":/common/images/icons/editmode/mode_edit_move_active.svg");
-    buttonConf.tooltip = "Перемещение вершин графа";
-    buttonConf.action = [this, buttonConf](QPushButton *pButton) -> void {
-      emit requestModeClear();
-      pButton->setIcon(buttonConf.secondIcon);
-    };
-    buttonConf.positionX = -4;
-    buttonConf.positionY = 0;
-    buttonConf.isEnabled = true;
-
-    return buttonConf;
 }
 
 }

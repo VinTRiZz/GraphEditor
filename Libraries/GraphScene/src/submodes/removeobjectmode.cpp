@@ -5,6 +5,19 @@
 namespace Graph
 {
 
+RemoveObjectMode::RemoveObjectMode(GraphModeBase *pParentMode) :
+    GraphSubmodeBase(pParentMode)
+{
+    auto& buttonConf = getStarterButton();
+    buttonConf.icon =
+        QIcon(":/common/images/icons/editmode/mode_edit_remove.svg");
+    buttonConf.secondIcon =
+        QIcon(":/common/images/icons/editmode/mode_edit_remove_active.svg");
+    buttonConf.tooltip = "Удаление элементов графа";
+    buttonConf.positionX = -1;
+    buttonConf.positionY = 0;
+}
+
 void RemoveObjectMode::clearMode()
 {
 
@@ -28,26 +41,6 @@ void RemoveObjectMode::processRelease(QGraphicsItem *pTargetItem)
 {
 
 }
-
-ButtonMatrix::ButtonConfig RemoveObjectMode::getStarterButton()
-{
-    ButtonMatrix::ButtonConfig buttonConf;
-    buttonConf.icon =
-        QIcon(":/common/images/icons/editmode/mode_edit_remove.svg");
-    buttonConf.secondIcon =
-        QIcon(":/common/images/icons/editmode/mode_edit_remove_active.svg");
-    buttonConf.tooltip = "Удаление элементов графа";
-    buttonConf.action = [this, buttonConf](QPushButton *pButton) -> void {
-      emit requestModeClear();
-      pButton->setIcon(buttonConf.secondIcon);
-    };
-    buttonConf.positionX = -1;
-    buttonConf.positionY = 0;
-    buttonConf.isEnabled = true;
-    return buttonConf;
-}
-
-
 
 
 }

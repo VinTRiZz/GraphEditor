@@ -16,14 +16,12 @@ LabelItem::LabelItem(QGraphicsItem *parent) : ItemBase(parent) {
   m_vertexText = new QGraphicsTextItem(this);
   registerSubitem(m_vertexText);
 
-  m_vertexText->setDefaultTextColor(Qt::black);
-  m_vertexText->setZValue(0);
-
   QFont font = m_vertexText->font();
   font.setPixelSize(14);
   font.setStyle(QFont::StyleItalic);
   m_vertexText->setFont(font);
   m_vertexText->setDefaultTextColor(Qt::black);
+  m_vertexText->setZValue(0);
 
   QTextDocument *doc = m_vertexText->document();
   QTextOption option = doc->defaultTextOption();

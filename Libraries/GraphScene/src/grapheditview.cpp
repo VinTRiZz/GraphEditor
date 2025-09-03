@@ -22,7 +22,7 @@ GraphEditView::GraphEditView(QWidget *parent) : GraphSceneView(parent) {
   m_editMode.init();
   LOG_INFO("Inited graph view");
 
-  startViewMode();
+  startEditMode(); // TODO: Replace with VIEW mode when it's ready
 }
 
 void GraphEditView::setGraphMaintaner(const PMaintainer &pGraphMaintaner) {

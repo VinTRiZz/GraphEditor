@@ -4,6 +4,19 @@
 
 namespace Graph {
 
+AddObjectMode::AddObjectMode(GraphModeBase *pParentMode) :
+    GraphSubmodeBase(pParentMode)
+{
+    auto& buttonConf = getStarterButton();
+    buttonConf.icon =
+        QIcon(":/common/images/icons/editmode/mode_edit_add_vertex.svg");
+    buttonConf.secondIcon =
+        QIcon(":/common/images/icons/editmode/mode_edit_add_vertex_active.svg");
+    buttonConf.tooltip = "Добавление вершин графа";
+    buttonConf.positionX = -3;
+    buttonConf.positionY = 0;
+}
+
 void AddObjectMode::clearMode()
 {
     if (nullptr == m_pendingVertex) {
@@ -38,24 +51,6 @@ void AddObjectMode::processMove(QGraphicsItem *pTargetItem, const QPointF &curre
 void AddObjectMode::processRelease(QGraphicsItem *pTargetItem)
 {
 
-}
-
-ButtonMatrix::ButtonConfig AddObjectMode::getStarterButton()
-{
-    ButtonMatrix::ButtonConfig buttonConf;
-    buttonConf.icon =
-        QIcon(":/common/images/icons/editmode/mode_edit_add_vertex.svg");
-    buttonConf.secondIcon =
-        QIcon(":/common/images/icons/editmode/mode_edit_add_vertex_active.svg");
-    buttonConf.tooltip = "Добавление вершин графа";
-    buttonConf.action = [this, buttonConf](QPushButton *pButton) -> void {
-      emit requestModeClear();
-      pButton->setIcon(buttonConf.secondIcon);
-    };
-    buttonConf.positionX = -3;
-    buttonConf.positionY = 0;
-    buttonConf.isEnabled = true;
-    return buttonConf;
 }
 
 }

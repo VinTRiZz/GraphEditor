@@ -11,14 +11,13 @@ namespace Graph {
 class ObjectMoveMode : public GraphSubmodeBase
 {
 public:
-    using GraphSubmodeBase::GraphSubmodeBase;
+    ObjectMoveMode(GraphModeBase* pParentMode);
 
     // GraphSubmodeBase interface
     void clearMode() override;
     void processPress(QGraphicsItem *pTargetItem) override;
     void processMove(QGraphicsItem *pTargetItem, const QPointF &currentPos) override;
     void processRelease(QGraphicsItem *pTargetItem) override;
-    ButtonMatrix::ButtonConfig getStarterButton() override;
 
 private:
     ObjectViewItems::VertexObject* m_movingVertex{nullptr};

@@ -4,6 +4,8 @@
 
 #include <gtest/gtest.h>
 
+#include <QGuiApplication>
+
 /*
     Graph::GVertex vertex_;
     Graph::GConnection connection_;
@@ -12,7 +14,9 @@
   */
 
 TEST(SceneFieldItemTest, VertexConversion) {
-    QGuiApplication app(0, 0);
+    int argc = 0;
+    char **argv = nullptr;
+    QGuiApplication app(argc, argv);
 
     auto vertex = Graph::TestGenerators::randomVertex();
     LOG_DEBUG_SYNC("Test 1");
@@ -31,6 +35,10 @@ TEST(SceneFieldItemTest, VertexConversion) {
 }
 
 TEST(SceneFieldItemTest, ConnectionConversion) {
+    int argc = 0;
+    char **argv = nullptr;
+    QGuiApplication app(argc, argv);
+
     auto connection = Graph::TestGenerators::randomConnection({1, 2, 3});
 
     auto* conObj = Graph::SceneItemConverter::fromConnection(connection);
@@ -43,6 +51,10 @@ TEST(SceneFieldItemTest, ConnectionConversion) {
 }
 
 TEST(SceneFieldItemTest, GraphConversion) {
+    int argc = 0;
+    char **argv = nullptr;
+    QGuiApplication app(argc, argv);
+
     auto testMaintainer = Graph::TestGenerators::createTestGraph();
 
     auto testGraph = testMaintainer->getObject();
@@ -58,6 +70,10 @@ TEST(SceneFieldItemTest, GraphConversion) {
 }
 
 TEST(SceneFieldItemTest, MaintainerConversion) {
+    int argc = 0;
+    char **argv = nullptr;
+    QGuiApplication app(argc, argv);
+
     auto testMaintainer = Graph::TestGenerators::createTestGraph();
 
     auto items = Graph::SceneItemConverter::fromMaintainer(testMaintainer);

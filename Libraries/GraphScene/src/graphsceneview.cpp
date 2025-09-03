@@ -48,6 +48,11 @@ void GraphSceneView::setMode(GraphModeBase *pMode) {
   }
 
   m_pCurrentMode = pMode;
+  if (nullptr == pMode) {
+      return;
+  }
+
+  pMode->setGraphScene(this);
 
   connect(this, &ObjectView::pressedOnItem, m_pCurrentMode,
           &GraphModeBase::processPress);

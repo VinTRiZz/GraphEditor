@@ -9,6 +9,16 @@ GraphSubmodeBase::GraphSubmodeBase(GraphModeBase *parentMode) :
     m_pParentMode{parentMode},
     m_context{parentMode->getContext()} {
 
+    // Дефолтный конфиг
+    m_starterButton.action = [this](QPushButton *pButton) -> void {
+        emit requestModeStart();
+    };
+    m_starterButton.isEnabled = true;
+}
+
+ButtonMatrix::ButtonConfig &GraphSubmodeBase::getStarterButton()
+{
+    return m_starterButton;
 }
 
 bool GraphSubmodeBase::isModeActive() const {
@@ -38,7 +48,14 @@ void GraphModeBase::processRelease(QGraphicsItem *pItem)
 
 void GraphModeBase::clearCurrentMode()
 {
+    if (nullptr == m_currentSubmode) {
+        return;
+    }
+
     m_currentSubmode->clearMode();
+    auto& buttonConf = m_currentSubmode->getStarterButton();
+    auto pButton = getScene()->getButtonMatrixHead()->getButton(buttonConf.positionX, buttonConf.positionY);
+    pButton->setIcon(buttonConf.icon);
 }
 
 void GraphModeBase::start()
@@ -47,6 +64,7 @@ void GraphModeBase::start()
     for (auto* pMode : m_submodes) {
         pButtonMatrix->addButton(pMode->getStarterButton());
     }
+    setSubmode(m_submodes.front());
 }
 
 void GraphModeBase::stop()
@@ -75,7 +93,12 @@ void GraphModeBase::setSubmode(GraphSubmodeBase *pMode)
     // Полный дисконнект
     disconnect(m_currentSubmode, nullptr, this, nullptr);
 
+    clearCurrentMode();
     m_currentSubmode = pMode;
+
+    auto& buttonConf = m_currentSubmode->getStarterButton();
+    auto pButton = getScene()->getButtonMatrixHead()->getButton(buttonConf.positionX, buttonConf.positionY);
+    pButton->setIcon(buttonConf.secondIcon);
 
     // Полный коннект
     connect(m_currentSubmode, &GraphSubmodeBase::requestModeClear,
@@ -90,6 +113,10 @@ GraphSubmodeBase *GraphModeBase::getCurrentSubmode() const
 void GraphModeBase::addSubmode(GraphSubmodeBase *pMode)
 {
     m_submodes.push_back(pMode);
+    connect(pMode, &GraphSubmodeBase::requestModeStart,
+            pMode, [this, pMode](){
+        setSubmode(pMode);
+    });
 }
 
 std::list<GraphSubmodeBase *> GraphModeBase::getSubmodes() const

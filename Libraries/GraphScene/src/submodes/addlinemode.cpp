@@ -5,6 +5,19 @@
 namespace Graph
 {
 
+AddLineMode::AddLineMode(GraphModeBase *pParentMode) :
+    GraphSubmodeBase(pParentMode)
+{
+    auto& buttonConf = getStarterButton();
+    buttonConf.icon =
+        QIcon(":/common/images/icons/editmode/mode_edit_add_connection.svg");
+    buttonConf.secondIcon = QIcon(
+        ":/common/images/icons/editmode/mode_edit_add_connection_active.svg");
+    buttonConf.tooltip = "Добавление соединений";
+    buttonConf.positionX = -2;
+    buttonConf.positionY = 0;
+}
+
 void AddLineMode::clearMode()
 {
     if (nullptr != m_pendingConnectionLine) {
@@ -48,6 +61,7 @@ void AddLineMode::processRelease(QGraphicsItem *pTargetItem)
           ->subscribeAsConnectionFrom(m_pendingConnectionLine);
 
       m_pendingConnectionLine->show();
+      m_pendingConnectionLine->setPositionTo(pTargetVertexItem->pos());
       return;
     }
 
@@ -65,24 +79,6 @@ void AddLineMode::processRelease(QGraphicsItem *pTargetItem)
     pCastedVertex->subscribeAsConnectionTo(m_pendingConnectionLine);
     m_pendingConnectionLine = nullptr; // Теперь эта линия не удалится
     clearMode();
-}
-
-ButtonMatrix::ButtonConfig AddLineMode::getStarterButton()
-{
-    ButtonMatrix::ButtonConfig buttonConf;
-    buttonConf.icon =
-        QIcon(":/common/images/icons/editmode/mode_edit_add_connection.svg");
-    buttonConf.secondIcon = QIcon(
-        ":/common/images/icons/editmode/mode_edit_add_connection_active.svg");
-    buttonConf.tooltip = "Добавление соединений";
-    buttonConf.action = [this, buttonConf](QPushButton *pButton) -> void {
-      emit requestModeClear();
-      pButton->setIcon(buttonConf.secondIcon);
-    };
-    buttonConf.positionX = -2;
-    buttonConf.positionY = 0;
-    buttonConf.isEnabled = true;
-    return buttonConf;
 }
 
 }

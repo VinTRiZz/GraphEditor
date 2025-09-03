@@ -10,14 +10,13 @@ class PropertyEditMode : public GraphSubmodeBase
 {
     Q_OBJECT
 public:
-    using GraphSubmodeBase::GraphSubmodeBase;
+    PropertyEditMode(GraphModeBase* pParentMode);
 
     // GraphSubmodeBase interface
     void clearMode() override;
     void processPress(QGraphicsItem *pTargetItem) override;
     void processMove(QGraphicsItem *pTargetItem, const QPointF &currentPos) override;
     void processRelease(QGraphicsItem *pTargetItem) override;
-    ButtonMatrix::ButtonConfig getStarterButton() override;
 
 signals:
     void openPropertyEditor(QGraphicsItem* pTargetItem);

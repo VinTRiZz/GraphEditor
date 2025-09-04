@@ -74,20 +74,12 @@ void ItemBase::registerSubitem(QGraphicsItem* pItem) {
                    getObjectId());
 }
 
-void ItemBase::setShortName(const QString& text) {
-    setData(OBJECTFIELD_NAME_SHORT, text);
+void ItemBase::setDisplayName(const QString& text) {
+    setData(OBJECTFIELD_DISPLAY_NAME, text);
 }
 
-QString ItemBase::getShortName() const {
-    return data(OBJECTFIELD_NAME_SHORT).toString();
-}
-
-void ItemBase::setName(const QString& text) {
-    setData(OBJECTFIELD_NAME, text);
-}
-
-QString ItemBase::getName() const {
-    return data(OBJECTFIELD_NAME).toString();
+QString ItemBase::getDisplayName() const {
+    return data(OBJECTFIELD_DISPLAY_NAME).toString();
 }
 
 void ItemBase::setDescription(const QString& text) {
@@ -98,27 +90,27 @@ QString ItemBase::getDescription() const {
     return data(OBJECTFIELD_DESCRIPTION).toString();
 }
 
-void ItemBase::setMainColor(const QColor& penColor) {
-    setData(OBJECTFIELD_COLOR_MAIN, penColor);
+void ItemBase::setBorderColor(const QColor& penColor) {
+    setData(OBJECTFIELD_COLOR_BORDER, penColor);
 }
 
-QColor ItemBase::getMainColor() const {
-    return QColor(data(OBJECTFIELD_COLOR_MAIN).toString());
+QColor ItemBase::getBorderColor() const {
+    return QColor(data(OBJECTFIELD_COLOR_BORDER).toString());
 }
 
-void ItemBase::setSecondColor(const QColor& penColor) {
-    setData(OBJECTFIELD_COLOR_SECOND, penColor);
+void ItemBase::setBackgroundColor(const QColor& penColor) {
+    setData(OBJECTFIELD_COLOR_BACKGROUND, penColor);
 }
 
-QColor ItemBase::getSecondColor() const {
-    return QColor(data(OBJECTFIELD_COLOR_SECOND).toString());
+QColor ItemBase::getBackgroundColor() const {
+    return QColor(data(OBJECTFIELD_COLOR_BACKGROUND).toString());
 }
 
-void ItemBase::setSelectedColor(const QColor& penColor) {
+void ItemBase::setSelectionColor(const QColor& penColor) {
     setData(OBJECTFIELD_COLOR_SELECTED, penColor);
 }
 
-QColor ItemBase::getSelectedColor() const {
+QColor ItemBase::getSelectionColor() const {
     return QColor(data(OBJECTFIELD_COLOR_SELECTED).toString());
 }
 

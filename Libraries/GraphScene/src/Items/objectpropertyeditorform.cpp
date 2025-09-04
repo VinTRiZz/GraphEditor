@@ -44,14 +44,14 @@ ObjectPropertyEditorForm::~ObjectPropertyEditorForm() {
 void ObjectPropertyEditorForm::setTargetItem(
     ObjectViewItems::ItemBase* pTargetItem) {
     m_pTargetItem = pTargetItem;
-    ui->name_lineEdit->setText(m_pTargetItem->getName());
-    ui->shortName_lineEdit->setText(m_pTargetItem->getShortName());
+    ui->name_lineEdit->setText(m_pTargetItem->toolTip());
+    ui->shortName_lineEdit->setText(m_pTargetItem->getDisplayName());
     ui->description_plainTextEdit->setPlainText(
         m_pTargetItem->getDescription());
 
-    setColor(ui->mainColor_label, pTargetItem->getMainColor());
-    setColor(ui->bgrColor_label, pTargetItem->getSecondColor());
-    setColor(ui->selectedColor_label, pTargetItem->getSelectedColor());
+    setColor(ui->mainColor_label, pTargetItem->getBorderColor());
+    setColor(ui->bgrColor_label, pTargetItem->getBackgroundColor());
+    setColor(ui->selectedColor_label, pTargetItem->getSelectionColor());
 
     auto pVertex = dynamic_cast<ObjectViewItems::VertexObject*>(m_pTargetItem);
 
@@ -76,13 +76,13 @@ void ObjectPropertyEditorForm::setTargetItem(
 
 void ObjectPropertyEditorForm::acceptChanges() {
     LOG_INFO("Changing data of object");
-    m_pTargetItem->setShortName(ui->shortName_lineEdit->text());
-    m_pTargetItem->setName(ui->name_lineEdit->text());
+    m_pTargetItem->setDisplayName(ui->shortName_lineEdit->text());
+    m_pTargetItem->setToolTip(ui->name_lineEdit->text());
     m_pTargetItem->setDescription(ui->description_plainTextEdit->toPlainText());
 
-    m_pTargetItem->setMainColor(getColor(ui->mainColor_label));
-    m_pTargetItem->setSecondColor(getColor(ui->bgrColor_label));
-    m_pTargetItem->setSelectedColor(getColor(ui->selectedColor_label));
+    m_pTargetItem->setBorderColor(getColor(ui->mainColor_label));
+    m_pTargetItem->setBackgroundColor(getColor(ui->bgrColor_label));
+    m_pTargetItem->setSelectionColor(getColor(ui->selectedColor_label));
 
     // TODO: Setup everything
     //  if (auto pVertex =

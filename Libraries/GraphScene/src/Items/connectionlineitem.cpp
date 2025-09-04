@@ -57,15 +57,15 @@ VertexConnectionLine::VertexConnectionLine(QGraphicsItem* parent)
 
     m_selectedPen.setWidth(8);
     m_selectedPen.setCapStyle(Qt::RoundCap);
-    VertexConnectionLine::setSelectedColor(
+    VertexConnectionLine::setSelectionColor(
         appSettings.getObjectsConfig().getLineSelectionColor());
 
     m_labelItem = new LabelItem(this);
     registerSubitem(m_labelItem);
     m_labelItem->setZValue(1);
-    m_labelItem->setMainColor(
+    m_labelItem->setBorderColor(
         appSettings.getObjectsConfig().getLabelTextColor());
-    m_labelItem->setSecondColor(
+    m_labelItem->setSelectionColor(
         appSettings.getObjectsConfig().getLabelBackgroundColor());
 }
 
@@ -143,8 +143,8 @@ void VertexConnectionLine::resetPositions() {
     m_toVertex->updateConnectionLines();
 }
 
-void VertexConnectionLine::setMainColor(const QColor& penColor) {
-    ItemBase::setMainColor(penColor);
+void VertexConnectionLine::setBorderColor(const QColor& penColor) {
+    ItemBase::setBorderColor(penColor);
 
     m_penGradient.setColorAt(0.0, penColor);
     m_drawPen.setBrush(m_penGradient);
@@ -153,8 +153,8 @@ void VertexConnectionLine::setMainColor(const QColor& penColor) {
     m_pArrowHeadPolygon->setPen(currentPen);
 }
 
-void VertexConnectionLine::setSecondColor(const QColor& penColor) {
-    ItemBase::setSecondColor(penColor);
+void VertexConnectionLine::setBackgroundColor(const QColor& penColor) {
+    ItemBase::setBackgroundColor(penColor);
 
     m_penGradient.setColorAt(1.0, penColor);
     m_drawPen.setBrush(m_penGradient);
@@ -163,18 +163,18 @@ void VertexConnectionLine::setSecondColor(const QColor& penColor) {
     m_pArrowHeadPolygon->setPen(currentPen);
 }
 
-void VertexConnectionLine::setSelectedColor(const QColor& penColor) {
-    ItemBase::setSelectedColor(penColor);
+void VertexConnectionLine::setSelectionColor(const QColor& penColor) {
+    ItemBase::setSelectionColor(penColor);
 
-    auto selectedPen = QPen(getSelectedColor(), 5);
+    auto selectedPen = QPen(getSelectionColor(), 5);
     m_lineSelected->setPen(selectedPen);
     auto currentPen = isSelected() ? m_selectedPen : m_drawPen;
     m_pArrowHeadPolygon->setPen(currentPen);
 }
 
-void VertexConnectionLine::setShortName(const QString& iText) {
-    m_labelItem->setShortName(iText);
-    ItemBase::setShortName(iText);
+void VertexConnectionLine::setDisplayName(const QString& iText) {
+    m_labelItem->setDisplayName(iText);
+    ItemBase::setDisplayName(iText);
 }
 
 void VertexConnectionLine::setArrowSize(qreal size) {

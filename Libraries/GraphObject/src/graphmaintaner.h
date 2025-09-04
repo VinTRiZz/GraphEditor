@@ -50,10 +50,10 @@ public:
     // ================= Стандартные свойства графа ================= //
     // ============================================================== //
     /**
-     * @brief setName   Изменить название графа
+     * @brief setToolTip   Изменить название графа
      * @param iName     Новое название
      */
-    void setName(const QString& iName);
+    void setToolTip(const QString& iName);
 
     /**
      * @brief getName   Получить название графа

@@ -294,7 +294,7 @@ bool GSE_Format::load(const QString& targetPath) {
         return false;
     }
 
-    graphMaintaner->setName(commonValues["name"].toString());
+    graphMaintaner->setToolTip(commonValues["name"].toString());
     graphMaintaner->setDescription(commonValues["description"].toString());
     graphMaintaner->setCreateTime(
         QDateTime::fromString(commonValues["create time"].toString(),

@@ -31,21 +31,21 @@ LabelItem::LabelItem(QGraphicsItem* parent) : ItemBase(parent) {
     m_vertexText->setTextWidth(100);
 }
 
-void LabelItem::setShortName(const QString& iText) {
+void LabelItem::setDisplayName(const QString& iText) {
     m_vertexText->setPlainText(iText);
-    ItemBase::setShortName(iText);
+    ItemBase::setDisplayName(iText);
     m_vertexTextRect->setRect(m_vertexText->boundingRect());
     setVisible(!iText.isEmpty());
 }
 
-void LabelItem::setMainColor(const QColor& iColor) {
+void LabelItem::setBorderColor(const QColor& iColor) {
     m_vertexText->setDefaultTextColor(iColor);
-    ItemBase::setMainColor(iColor);
+    ItemBase::setBorderColor(iColor);
 }
 
-void LabelItem::setSecondColor(const QColor& iColor) {
+void LabelItem::setBackgroundColor(const QColor& iColor) {
     m_vertexTextRect->setBrush(iColor);
-    ItemBase::setSecondColor(iColor);
+    ItemBase::setBackgroundColor(iColor);
 }
 
 void LabelItem::setTextStyle(QFont::Style fStyle) {

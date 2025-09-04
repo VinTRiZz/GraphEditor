@@ -11,10 +11,10 @@ class LabelItem : public ItemBase {
 public:
     explicit LabelItem(QGraphicsItem* parent = nullptr);
 
-    void setShortName(const QString& iText) override;
+    void setDisplayName(const QString& iText) override;
 
-    void setMainColor(const QColor& iColor) override;
-    void setSecondColor(const QColor& iColor) override;
+    void setBorderColor(const QColor& iColor) override;
+    void setBackgroundColor(const QColor& iColor) override;
 
     void setTextStyle(QFont::Style fStyle);
     void setTextSize(int pixelSize);

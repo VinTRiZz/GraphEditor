@@ -18,12 +18,11 @@ public:
     LabelItem* getLabel() const;
 
     void setImage(const QImage& img);
-    void setShortName(const QString& iText) override;
-    void setName(const QString& iText) override;
+    void setDisplayName(const QString& iText) override;
 
-    void setMainColor(const QColor& penColor) override;
-    void setSecondColor(const QColor& penColor) override;
-    void setSelectedColor(const QColor& penColor) override;
+    void setBorderColor(const QColor& penColor) override;
+    void setBackgroundColor(const QColor& penColor) override;
+    void setSelectionColor(const QColor& penColor) override;
 
     QImage getImage() const;
     QRectF getImageRect() const;

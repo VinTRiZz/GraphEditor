@@ -28,7 +28,7 @@ bool GSJ_Format::initFromDataJson(const QJsonObject& iJson) {
     const QJsonObject props = iJson["properties"].toObject();
 
     const QJsonObject common = props["common"].toObject();
-    pMaintainer->setName(common["name"].toString());
+    pMaintainer->setToolTip(common["name"].toString());
     pMaintainer->setDescription(common["descr"].toString());
     pMaintainer->setCreateTime(QDateTime::fromString(
         common["created"].toString(), GraphCommon::DATE_CONVERSION_FORMAT));

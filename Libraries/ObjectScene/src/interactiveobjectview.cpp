@@ -20,7 +20,7 @@ InteractiveObjectView::InteractiveObjectView(QWidget* parent)
 
     m_centerPointerItem = new ObjectViewItems::SceneMarkerItem();
     m_centerPointerItem->setTarget(m_pCenterItem);
-    m_centerPointerItem->setMainColor(QColor(5, 5, 5, 15));
+    m_centerPointerItem->setBorderColor(QColor(5, 5, 5, 15));
 
     // TODO: Рисовать иначе
     QImage centerImage(50, 50, QImage::Format_RGBA64);

@@ -94,7 +94,7 @@ bool GraphCommonPropertiesModel::setData(const QModelIndex& index,
     if (index.column() == 1) {
         switch (index.row()) {
             case CPR_NAME:
-                m_pMaintainer->setName(value.toString());
+                m_pMaintainer->setToolTip(value.toString());
                 return true;
 
             case CPR_DESCRIPTION:

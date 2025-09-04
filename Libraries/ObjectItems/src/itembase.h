@@ -27,23 +27,20 @@ public:
     virtual void setObjectId(ObjectViewConstants::objectId_t id);
     virtual ObjectViewConstants::objectId_t getObjectId() const;
 
-    virtual void setShortName(const QString& text);
-    virtual QString getShortName() const;
-
-    virtual void setName(const QString& text);
-    virtual QString getName() const;
+    virtual void setDisplayName(const QString& text);
+    virtual QString getDisplayName() const;
 
     virtual void setDescription(const QString& text);
     virtual QString getDescription() const;
 
-    virtual void setMainColor(const QColor& penColor);
-    virtual QColor getMainColor() const;
+    virtual void setBorderColor(const QColor& penColor);
+    virtual QColor getBorderColor() const;
 
-    virtual void setSecondColor(const QColor& penColor);
-    virtual QColor getSecondColor() const;
+    virtual void setBackgroundColor(const QColor& penColor);
+    virtual QColor getBackgroundColor() const;
 
-    virtual void setSelectedColor(const QColor& penColor);
-    virtual QColor getSelectedColor() const;
+    virtual void setSelectionColor(const QColor& penColor);
+    virtual QColor getSelectionColor() const;
 
     QRectF boundingRect() const override;
 

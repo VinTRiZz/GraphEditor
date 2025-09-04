@@ -74,7 +74,7 @@ void SceneMarkerItem::paint(QPainter* painter,
 
     painter->setPen(QPen(Qt::black, 2));
     painter->drawPath(m_objectFigurePath);
-    painter->fillPath(m_objectFigurePath, getMainColor());
+    painter->fillPath(m_objectFigurePath, getBorderColor());
     if (!m_targetImage.isNull()) {
         QRectF targetImageRect = m_objectFigurePath.boundingRect();
         targetImageRect.moveTo(-m_markerSize.width() / 2.0,

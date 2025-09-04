@@ -115,7 +115,7 @@ QJsonObject randomJsonObject(int maxDepth = 2) {
 PMaintainer createTestGraph() {
     auto testGeneratedGraph = Graph::GraphMaintainer::createInstance();
 
-    testGeneratedGraph->setName("Test example graph");
+    testGeneratedGraph->setToolTip("Test example graph");
     testGeneratedGraph->setDescription("Example description");
     testGeneratedGraph->setCreateTime(QDateTime::currentDateTime());
     testGeneratedGraph->setEditTime(QDateTime::currentDateTime());
@@ -297,7 +297,7 @@ Graph::GConnection randomConnection(
 PMaintainer createRandomGraph() {
     auto testGeneratedGraph = Graph::GraphMaintainer::createInstance();
 
-    testGeneratedGraph->setName(randomString());
+    testGeneratedGraph->setToolTip(randomString());
     testGeneratedGraph->setDescription(randomString());
     testGeneratedGraph->setCreateTime(QDateTime::currentDateTime());
     testGeneratedGraph->setEditTime(QDateTime::currentDateTime());

@@ -36,11 +36,11 @@ public:
     void setPositionTo(const QPointF& posTo);
     void resetPositions();
 
-    void setMainColor(const QColor& penColor) override;
-    void setSecondColor(const QColor& penColor) override;
-    void setSelectedColor(const QColor& penColor) override;
+    void setBorderColor(const QColor& penColor) override;
+    void setBackgroundColor(const QColor& penColor) override;
+    void setSelectionColor(const QColor& penColor) override;
 
-    void setShortName(const QString& iText) override;
+    void setDisplayName(const QString& iText) override;
 
     void setArrowSize(qreal size);
     qreal getArrowSize() const;

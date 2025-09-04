@@ -75,18 +75,18 @@ PictureObjectItem::PictureObjectItem(QGraphicsItem* parent) : ItemBase(parent) {
 
     auto& appSettings = ApplicationSettings::getInstance();
 
-    PictureObjectItem::setSelectedColor(
+    PictureObjectItem::setSelectionColor(
         appSettings.getObjectsConfig().getNodeSelectionColor());
-    PictureObjectItem::setSecondColor(
+    PictureObjectItem::setBackgroundColor(
         appSettings.getObjectsConfig().getNodeSecondColor());
-    PictureObjectItem::setMainColor(
+    PictureObjectItem::setBorderColor(
         appSettings.getObjectsConfig().getNodeMainColor());
 
     m_nameItem = new LabelItem(this);
     registerSubitem(m_nameItem);
-    m_nameItem->setSecondColor(
+    m_nameItem->setSelectionColor(
         appSettings.getObjectsConfig().getLabelBackgroundColor());
-    m_nameItem->setMainColor(
+    m_nameItem->setBorderColor(
         appSettings.getObjectsConfig().getLabelTextColor());
     m_nameItem->setZValue(0);
 }
@@ -113,20 +113,15 @@ void PictureObjectItem::setImage(const QImage& img) {
     setRect(boundingRect());
 }
 
-void PictureObjectItem::setShortName(const QString& iText) {
-    m_nameItem->setShortName(iText);
-    ItemBase::setShortName(iText);
+void PictureObjectItem::setDisplayName(const QString& iText) {
+    m_nameItem->setDisplayName(iText);
+    ItemBase::setDisplayName(iText);
 
     // Апдейт области
     setRect(boundingRect());
 }
 
-void PictureObjectItem::setName(const QString& iText) {
-    m_nameItem->setName(iText);
-    ItemBase::setName(iText);
-}
-
-void PictureObjectItem::setMainColor(const QColor& penColor) {
+void PictureObjectItem::setBorderColor(const QColor& penColor) {
     if (penColor.isValid()) {
         m_vertexEllipse->setPen(QPen(penColor, 5));
     } else {
@@ -134,10 +129,10 @@ void PictureObjectItem::setMainColor(const QColor& penColor) {
         m_vertexEllipse->setPen(
             QPen(appSettings.getObjectsConfig().getNodeMainColor(), 5));
     }
-    ItemBase::setMainColor(m_vertexEllipse->pen().color());
+    ItemBase::setBorderColor(m_vertexEllipse->pen().color());
 }
 
-void PictureObjectItem::setSecondColor(const QColor& penColor) {
+void PictureObjectItem::setBackgroundColor(const QColor& penColor) {
     if (penColor.isValid()) {
         m_vertexEllipse->setBrush(penColor);
     } else {
@@ -145,17 +140,17 @@ void PictureObjectItem::setSecondColor(const QColor& penColor) {
         m_vertexEllipse->setBrush(
             appSettings.getObjectsConfig().getNodeSecondColor());
     }
-    ItemBase::setSecondColor(m_vertexEllipse->brush().color());
+    ItemBase::setBackgroundColor(m_vertexEllipse->brush().color());
 }
 
-void PictureObjectItem::setSelectedColor(const QColor& penColor) {
-    ItemBase::setSelectedColor(penColor);
+void PictureObjectItem::setSelectionColor(const QColor& penColor) {
+    ItemBase::setSelectionColor(penColor);
 
     auto selectedPen = QPen(Qt::black, 4, Qt::SolidLine, Qt::RoundCap);
     QRadialGradient gradient(0, 0, 100);
     gradient.setColorAt(0, QColor("#c5ffb3"));
     gradient.setColorAt(0.5, QColor("#a3ff8a"));
-    gradient.setColorAt(1, getSelectedColor());
+    gradient.setColorAt(1, getSelectionColor());
     selectedPen.setBrush(gradient);
     m_selectedRectItem->setPen(selectedPen);
 }

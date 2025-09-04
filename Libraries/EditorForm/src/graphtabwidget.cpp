@@ -170,7 +170,7 @@ void GraphTabWidget::removeTab(const QString& graphName) {
 
 void GraphTabWidget::createGraph() {
     auto pEditorForm = new GraphEditorForm(this);
-    pEditorForm->getGraph()->setName("Новый граф");
+    pEditorForm->getGraph()->setToolTip("Новый граф");
     pEditorForm->getGraph()->setCreateTime(QDateTime::currentDateTime());
 
     ui->editorForms_tabWidget->addTab(pEditorForm,

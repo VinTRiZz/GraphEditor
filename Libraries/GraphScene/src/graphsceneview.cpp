@@ -141,8 +141,8 @@ ObjectViewItems::VertexObject* GraphSceneView::createVertex(
     auto pVertexItem = new ObjectViewItems::VertexObject;
     pVertexItem->setObjectId(vId);
 
-    pVertexItem->setShortName("My node");
-    pVertexItem->setName("My node template");
+    pVertexItem->setDisplayName("My node");
+    pVertexItem->setToolTip("My node template");
     pVertexItem->setDescription("My example description");
 
     auto& sceneConfig =

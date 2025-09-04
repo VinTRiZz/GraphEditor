@@ -91,7 +91,7 @@ void GraphMaintainer::resetMaintainer() {
     m_description.clear();
 }
 
-void GraphMaintainer::setName(const QString& iName) {
+void GraphMaintainer::setToolTip(const QString& iName) {
     m_name = iName;
     emit changedCommonProperty();
 }

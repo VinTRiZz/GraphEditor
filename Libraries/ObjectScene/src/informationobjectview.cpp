@@ -7,8 +7,8 @@
 InformationObjectView::InformationObjectView(QWidget* parent)
     : InteractiveObjectView(parent) {
     m_pCursorLabel = new ObjectViewItems::LabelItem();
-    m_pCursorLabel->setSecondColor(QColor(200, 240, 210, 80));
-    m_pCursorLabel->setMainColor(Qt::black);
+    m_pCursorLabel->setBackgroundColor(QColor(200, 240, 210, 80));
+    m_pCursorLabel->setBorderColor(Qt::black);
     m_pCursorLabel->setTextSize(10);
     m_pCursorLabel->setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
     m_pCursorLabel->setZValue(1e6);  // Чтобы точно не закрыло
@@ -73,7 +73,7 @@ void InformationObjectView::updateCursorLabel(const QPoint& currentPos) {
                     .toString();
         }
     }
-    m_pCursorLabel->setShortName(QString("X: %0\nY: %1%2")
+    m_pCursorLabel->setDisplayName(QString("X: %0\nY: %1%2")
                                      .arg(QString::number(currentPosMapped.x()),
                                           QString::number(currentPosMapped.y()),
                                           !hoverItemName.isEmpty()

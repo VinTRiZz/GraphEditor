@@ -11,12 +11,12 @@ ObjectViewItems::VertexObject* SceneItemConverter::fromVertex(
     pVertexItem->setObjectId(vert.id);
     pVertexItem->setPos(vert.posX, vert.posY);
 
-    pVertexItem->setShortName(vert.shortName);
-    pVertexItem->setName(vert.name);
+    pVertexItem->setDisplayName(vert.shortName);
+    pVertexItem->setToolTip(vert.name);
     pVertexItem->setDescription(vert.description);
 
-    pVertexItem->setMainColor(vert.borderColor);
-    pVertexItem->setSecondColor(vert.backgroundColor);
+    pVertexItem->setBorderColor(vert.borderColor);
+    pVertexItem->setBackgroundColor(vert.backgroundColor);
 
     auto& sceneConfig =
         ObjectViewConstants::ObjectSceneConfiguration::getInstance();
@@ -38,8 +38,8 @@ ObjectViewItems::VertexConnectionLine* SceneItemConverter::fromConnection(
     const GConnection& con) {
     auto pConnection = new ObjectViewItems::VertexConnectionLine;
 
-    pConnection->setName(con.name);
-    pConnection->setMainColor(con.lineColor);
+    pConnection->setToolTip(con.name);
+    pConnection->setBorderColor(con.lineColor);
     pConnection->setWeight(con.connectionWeight);
 
     pConnection->setZValue(
@@ -101,12 +101,12 @@ GVertex SceneItemConverter::toVertex(const ObjectViewItems::ItemBase* item) {
     graphVertex.posX = vertCasted->x();
     graphVertex.posY = vertCasted->y();
 
-    graphVertex.shortName = vertCasted->getShortName();
-    graphVertex.name = vertCasted->getName();
+    graphVertex.shortName = vertCasted->getDisplayName();
+    graphVertex.name = vertCasted->toolTip();
     graphVertex.description = vertCasted->getDescription();
 
-    graphVertex.borderColor = vertCasted->getMainColor();
-    graphVertex.backgroundColor = vertCasted->getSecondColor();
+    graphVertex.borderColor = vertCasted->getBorderColor();
+    graphVertex.backgroundColor = vertCasted->getBackgroundColor();
 
     graphVertex.image = vertCasted->getImage();
 
@@ -122,7 +122,7 @@ GConnection SceneItemConverter::toConnection(
     // редактирования)
     if (conCasted->getVertexFrom() == nullptr ||
         conCasted->getVertexTo() == nullptr) {
-        LOG_WARNING("Skipped invalid connection:", conCasted->getName());
+        LOG_WARNING("Skipped invalid connection:", conCasted->toolTip());
         return {};
     }
 
@@ -131,8 +131,8 @@ GConnection SceneItemConverter::toConnection(
     graphConnection.idFrom = conCasted->getVertexFrom()->getObjectId();
     graphConnection.idTo = conCasted->getVertexTo()->getObjectId();
 
-    graphConnection.name = conCasted->getName();
-    graphConnection.lineColor = conCasted->getMainColor();
+    graphConnection.name = conCasted->toolTip();
+    graphConnection.lineColor = conCasted->getBorderColor();
     graphConnection.connectionWeight = conCasted->getWeight();
 
     return graphConnection;

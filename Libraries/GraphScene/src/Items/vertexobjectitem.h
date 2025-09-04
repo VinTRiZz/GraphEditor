@@ -16,6 +16,9 @@ public:
     explicit VertexObject(QGraphicsItem* parent = nullptr);
     ~VertexObject();
 
+    void setBorderColor(const QColor& penColor) override;
+    void setBackgroundColor(const QColor& penColor) override;
+
     bool isLineSubscribed(VertexConnectionLine* pLine);
 
     void subscribeAsConnectionFrom(VertexConnectionLine* pLine);

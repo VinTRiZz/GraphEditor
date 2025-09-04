@@ -170,4 +170,42 @@ QColor decodeColorGSE(const QString& iName) {
     return QColor(iName.data());
 }
 
+QPixmap loadImageWithAlpha(const QString& path) {
+    QImageReader reader(path);
+    reader.setAutoTransform(true);  // Автоповорот по EXIF
+    reader.setDecideFormatFromContent(
+        true);  // Определение формата по содержимому
+
+    if (reader.supportsAnimation()) {  // Для GIF/APNG
+        return QPixmap::fromImage(reader.read());
+    }
+    return QPixmap(path);  // Для PNG/JPEG/BMP/etc
+}
+
+QString rectToString(const QRectF& iRect) {
+    QString res;
+
+    res = QString("%0:%1:%2:%3")
+              .arg(QString::number(iRect.left()), QString::number(iRect.top()),
+                   QString::number(iRect.width()),
+                   QString::number(iRect.height()));
+
+    return res;
+}
+
+QRectF rectFromString(const QString& iString) {
+    auto valuesSplitted = iString.split(":");
+    if (valuesSplitted.count() < 4) {
+        LOG_WARNING("Invalid format of rect save:", iString);
+        return {};
+    }
+
+    QRectF res;
+    res.setTopLeft(
+        QPointF(valuesSplitted[0].toDouble(), valuesSplitted[1].toDouble()));
+    res.setWidth(valuesSplitted[2].toDouble());
+    res.setHeight(valuesSplitted[3].toDouble());
+    return res;
+}
+
 }  // namespace CommonFunctions

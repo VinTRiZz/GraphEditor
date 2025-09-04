@@ -105,8 +105,7 @@ bool ObjectViewBase::isCanvasItem(QGraphicsItem* pItem) const {
     return (dynamic_cast<ObjectViewItems::SceneFieldItem*>(pItem) != nullptr);
 }
 
-ObjectViewItems::SceneFieldItem *ObjectViewBase::sceneCanvas() const
-{
+ObjectViewItems::SceneFieldItem* ObjectViewBase::sceneCanvas() const {
     return m_pCanvasItem;
 }
 

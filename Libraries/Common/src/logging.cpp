@@ -1,8 +1,9 @@
 #include "logging.h"
 
+#include <QDateTime>
+
 #include "applicationsettings.h"
 #include "directorymanager.h"
-#include <QDateTime>
 
 namespace Logging {
 
@@ -28,11 +29,11 @@ std::string LoggingMaster::getCurrentTimestamp() const {
 
     // TODO: Вынести в отдельную функцию из логгера для инкапсуляции формата
     return {formattedNumber(locTime->tm_mday) + "." +
-                formattedNumber(locTime->tm_mon) + ".20" +
-                formattedNumber(locTime->tm_year - 100) + " " +
-                formattedNumber(locTime->tm_hour) + ":" +
-                formattedNumber(locTime->tm_min) + ":" +
-                formattedNumber(locTime->tm_sec)};
+            formattedNumber(locTime->tm_mon) + ".20" +
+            formattedNumber(locTime->tm_year - 100) + " " +
+            formattedNumber(locTime->tm_hour) + ":" +
+            formattedNumber(locTime->tm_min) + ":" +
+            formattedNumber(locTime->tm_sec)};
 }
 
 std::string LoggingMaster::getCurrentTimestampFormatted() const {
@@ -46,42 +47,43 @@ std::string LoggingMaster::getCurrentTimestampFormatted() const {
     };
 
     return {formattedNumber(locTime->tm_hour) + "-" +
-                formattedNumber(locTime->tm_min) + "-" +
-                formattedNumber(locTime->tm_sec) + "_" +
-                formattedNumber(locTime->tm_mday) + "-" +
-                formattedNumber(locTime->tm_mon) + "-20" +
-                formattedNumber(locTime->tm_year - 100)};
+            formattedNumber(locTime->tm_min) + "-" +
+            formattedNumber(locTime->tm_sec) + "_" +
+            formattedNumber(locTime->tm_mday) + "-" +
+            formattedNumber(locTime->tm_mon) + "-20" +
+            formattedNumber(locTime->tm_year - 100)};
 }
 
 void LoggingMaster::clearExtraLogs() {
-    auto logdir = DirectoryManager::getDirectory(DirectoryManager::DirectoryType::Logs);
+    auto logdir =
+        DirectoryManager::getDirectory(DirectoryManager::DirectoryType::Logs);
     auto logfiles = logdir.entryList();
     logfiles.removeOne(".");
     logfiles.removeOne("..");  // Игнорируем текущую и директорию выше (кьют
     // багованный в этом плане)
 
     auto maxLogCount = ApplicationSettings::getInstance()
-            .getGeneralConfig()
-            .getMaxLogFileCount();
+                           .getGeneralConfig()
+                           .getMaxLogFileCount();
     if (logfiles.size() > maxLogCount) {
         LOG_INFO("Removing logfiles");
         auto currentLogfile =
-                QFileInfo(Logging::LoggingMaster::getCurrentLogfile()).baseName();
+            QFileInfo(Logging::LoggingMaster::getCurrentLogfile()).baseName();
         std::sort(logfiles.begin(), logfiles.end(),
                   [](const QString& logFilePathLeft,
-                  const QString& logFilePathRight) {
-            // TODO: Вынести в отдельную функцию из логгера
-            // Текущий формат: 20-59-44_03-07-2025
-            auto leftBasenameDate = QDateTime::fromString(
-                        QFileInfo(logFilePathLeft).baseName(), "");
-            auto rightBasenameDate = QDateTime::fromString(
-                        QFileInfo(logFilePathRight).baseName(), "");
-            return (leftBasenameDate < rightBasenameDate);
-        });
+                     const QString& logFilePathRight) {
+                      // TODO: Вынести в отдельную функцию из логгера
+                      // Текущий формат: 20-59-44_03-07-2025
+                      auto leftBasenameDate = QDateTime::fromString(
+                          QFileInfo(logFilePathLeft).baseName(), "");
+                      auto rightBasenameDate = QDateTime::fromString(
+                          QFileInfo(logFilePathRight).baseName(), "");
+                      return (leftBasenameDate < rightBasenameDate);
+                  });
         std::reverse(logfiles.begin(), logfiles.end());
         logfiles.erase(
-                    logfiles.begin(),
-                    logfiles.begin() + maxLogCount);  // Игнорируем первые N файлов
+            logfiles.begin(),
+            logfiles.begin() + maxLogCount);  // Игнорируем первые N файлов
 
         unsigned removedLogFileCount{0};
         for (auto& logfile : logfiles) {
@@ -98,7 +100,8 @@ void LoggingMaster::clearExtraLogs() {
 }
 
 LoggingMaster::LoggingMaster() {
-    logfile.setFileName(DirectoryManager::getDirectoryPath(DirectoryManager::DirectoryType::Logs) +
+    logfile.setFileName(DirectoryManager::getDirectoryPath(
+                            DirectoryManager::DirectoryType::Logs) +
                         getCurrentTimestampFormatted().c_str() + ".log");
 
     isWorking = true;
@@ -138,9 +141,9 @@ QString LoggingMaster::getCurrentLogfile() {
     return getInstance().logfile.fileName();
 }
 
-LoggingMaster &LoggingMaster::getInstance() {
+LoggingMaster& LoggingMaster::getInstance() {
     static LoggingMaster inst;
     return inst;
 }
 
-}
+}  // namespace Logging

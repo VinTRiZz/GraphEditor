@@ -15,11 +15,14 @@ int main(int argc, char* argv[]) {
     a.setApplicationVersion(GRAPH_EDITOR_VERSION);
 
     QCommandLineParser parser;
-    parser.setApplicationDescription("Graph editor -- application for editing graphs, structuring data, etc.");
+    parser.setApplicationDescription(
+        "Graph editor -- application for editing graphs, structuring data, "
+        "etc.");
     parser.addHelpOption();
     parser.addVersionOption();
 
-    QCommandLineOption dirOption(QStringList() << "d" << "dir", "Data directory of an app", "DataDir", ".");
+    QCommandLineOption dirOption(QStringList() << "d" << "dir",
+                                 "Data directory of an app", "DataDir", ".");
     parser.addOption(dirOption);
 
     parser.process(a);

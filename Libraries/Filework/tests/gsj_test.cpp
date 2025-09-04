@@ -1,10 +1,9 @@
+#include <Common/DirectoryManager.h>
 #include <GraphObject/TestGenerators.h>
 #include <gtest/gtest.h>
 
 #include <QFile>
 #include <QGuiApplication>
-
-#include <Common/DirectoryManager.h>
 
 #include "../src/gsj_format.h"
 TEST(FormatSaving, GSE_JSON_Format) {
@@ -21,7 +20,9 @@ TEST(FormatSaving, GSE_JSON_Format) {
                                   // затирание данных)
     saveFormat.setGraphMaintainer(gMaintaner);
 
-    QString testTargetPath = DirectoryManager::getDirectoryPath(DirectoryManager::DirectoryType::Temporary) + "GraphEditorSaveTest.gsj";
+    QString testTargetPath = DirectoryManager::getDirectoryPath(
+                                 DirectoryManager::DirectoryType::Temporary) +
+                             "GraphEditorSaveTest.gsj";
     EXPECT_TRUE(saveFormat.save(testTargetPath));
     EXPECT_EQ(graphCopy, savedGraph);
 

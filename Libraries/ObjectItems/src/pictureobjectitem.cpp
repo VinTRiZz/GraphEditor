@@ -1,8 +1,7 @@
 #include "pictureobjectitem.h"
 
-#include <Common/ApplicationSettings.h>
+#include <Common/CommonFunctions.h>
 #include <Common/Logging.h>
-#include <GraphObject/Object.h>
 
 #include <QBuffer>
 #include <QFileInfo>
@@ -16,45 +15,6 @@
 using namespace ObjectViewConstants;
 
 namespace ObjectViewItems {
-
-// Загрузка изображения с поддержкой прозрачности
-QPixmap loadImageWithAlpha(const QString& path) {
-    QImageReader reader(path);
-    reader.setAutoTransform(true);  // Автоповорот по EXIF
-    reader.setDecideFormatFromContent(
-        true);  // Определение формата по содержимому
-
-    if (reader.supportsAnimation()) {  // Для GIF/APNG
-        return QPixmap::fromImage(reader.read());
-    }
-    return QPixmap(path);  // Для PNG/JPEG/BMP/etc
-}
-
-QString rectToString(const QRectF& iRect) {
-    QString res;
-
-    res = QString("%0:%1:%2:%3")
-              .arg(QString::number(iRect.left()), QString::number(iRect.top()),
-                   QString::number(iRect.width()),
-                   QString::number(iRect.height()));
-
-    return res;
-}
-
-QRectF rectFromString(const QString& iString) {
-    auto valuesSplitted = iString.split(":");
-    if (valuesSplitted.count() < 4) {
-        LOG_WARNING("Invalid format of rect save:", iString);
-        return {};
-    }
-
-    QRectF res;
-    res.setTopLeft(
-        QPointF(valuesSplitted[0].toDouble(), valuesSplitted[1].toDouble()));
-    res.setWidth(valuesSplitted[2].toDouble());
-    res.setHeight(valuesSplitted[3].toDouble());
-    return res;
-}
 
 PictureObjectItem::PictureObjectItem(QGraphicsItem* parent) : ItemBase(parent) {
     setSystemName("Изображение");
@@ -73,21 +33,9 @@ PictureObjectItem::PictureObjectItem(QGraphicsItem* parent) : ItemBase(parent) {
     m_vertexEllipse = new QGraphicsEllipseItem(this);
     registerSubitem(m_vertexEllipse);
 
-    auto& appSettings = ApplicationSettings::getInstance();
-
-    PictureObjectItem::setSelectionColor(
-        appSettings.getObjectsConfig().getNodeSelectionColor());
-    PictureObjectItem::setBackgroundColor(
-        appSettings.getObjectsConfig().getNodeSecondColor());
-    PictureObjectItem::setBorderColor(
-        appSettings.getObjectsConfig().getNodeMainColor());
-
     m_nameItem = new LabelItem(this);
     registerSubitem(m_nameItem);
-    m_nameItem->setSelectionColor(
-        appSettings.getObjectsConfig().getLabelBackgroundColor());
-    m_nameItem->setBorderColor(
-        appSettings.getObjectsConfig().getLabelTextColor());
+    m_nameItem->setBorderColor(Qt::black);
     m_nameItem->setZValue(0);
 }
 
@@ -122,24 +70,12 @@ void PictureObjectItem::setDisplayName(const QString& iText) {
 }
 
 void PictureObjectItem::setBorderColor(const QColor& penColor) {
-    if (penColor.isValid()) {
-        m_vertexEllipse->setPen(QPen(penColor, 5));
-    } else {
-        auto& appSettings = ApplicationSettings::getInstance();
-        m_vertexEllipse->setPen(
-            QPen(appSettings.getObjectsConfig().getNodeMainColor(), 5));
-    }
+    m_vertexEllipse->setPen(QPen(penColor, 5));
     ItemBase::setBorderColor(m_vertexEllipse->pen().color());
 }
 
 void PictureObjectItem::setBackgroundColor(const QColor& penColor) {
-    if (penColor.isValid()) {
-        m_vertexEllipse->setBrush(penColor);
-    } else {
-        auto& appSettings = ApplicationSettings::getInstance();
-        m_vertexEllipse->setBrush(
-            appSettings.getObjectsConfig().getNodeSecondColor());
-    }
+    m_vertexEllipse->setBrush(penColor);
     ItemBase::setBackgroundColor(m_vertexEllipse->brush().color());
 }
 

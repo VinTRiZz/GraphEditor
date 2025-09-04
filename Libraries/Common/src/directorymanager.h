@@ -1,16 +1,14 @@
 #ifndef DIRECTORYMANAGER_H
 #define DIRECTORYMANAGER_H
 
-#include <boost/noncopyable.hpp>
-
-#include <QString>
 #include <QDir>
-
+#include <QString>
+#include <boost/noncopyable.hpp>
 #include <map>
 
-class DirectoryManager : public boost::noncopyable
-{
-    DirectoryManager(const QString &rootdir);
+class DirectoryManager : public boost::noncopyable {
+    DirectoryManager(const QString& rootdir);
+
 public:
     enum class DirectoryType : int {
         Root,
@@ -26,11 +24,12 @@ public:
     static QString getDocumentsPath();
 
     static QDir getDirectory(DirectoryType dtype);
-    static QString getDirectoryPath(DirectoryType dtype, bool withNativeSeparator = true);
+    static QString getDirectoryPath(DirectoryType dtype,
+                                    bool withNativeSeparator = true);
 
 private:
-    void checkup(const QString &rootdir);
+    void checkup(const QString& rootdir);
     std::map<DirectoryType, QString> m_directoryPaths;
 };
 
-#endif // DIRECTORYMANAGER_H
+#endif  // DIRECTORYMANAGER_H

@@ -90,6 +90,28 @@ QByteArray encodeColorGSE(const QColor& iCol);
 QColor decodeColor(const QString& iName);
 QColor decodeColorGSE(const QString& iName);
 
+/**
+ * @brief loadImageWithAlpha    Выгрузка изображения из файла с учётом
+ * прозрачности
+ * @param path                  Путь до файла
+ * @return                      NULL QPixmap при ошибке
+ */
+QPixmap loadImageWithAlpha(const QString& path);
+
+/**
+ * @brief rectToString  Сериализация QRectF в строку
+ * @param iRect
+ * @return
+ */
+QString rectToString(const QRectF& iRect);
+
+/**
+ * @brief rectFromString    Десериализация QRectF из строки
+ * @param iString
+ * @return
+ */
+QRectF rectFromString(const QString& iString);
+
 }  // namespace CommonFunctions
 
 #endif  // COMMONFUNCTIONS_H

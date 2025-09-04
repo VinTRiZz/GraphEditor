@@ -26,6 +26,15 @@ VertexObject::VertexObject(QGraphicsItem* parent) : PictureObjectItem(parent) {
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setFlag(QGraphicsItem::ItemClipsToShape, true);
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges, true);
+
+    auto& appSettings = ApplicationSettings::getInstance();
+
+    PictureObjectItem::setSelectionColor(
+        appSettings.getObjectsConfig().getNodeSelectionColor());
+    PictureObjectItem::setBackgroundColor(
+        appSettings.getObjectsConfig().getNodeSecondColor());
+    PictureObjectItem::setBorderColor(
+        appSettings.getObjectsConfig().getNodeMainColor());
 }
 
 VertexObject::~VertexObject() {
@@ -38,6 +47,22 @@ VertexObject::~VertexObject() {
         pLine->setVertexFrom(nullptr);
         pLine->unregister();
     }
+}
+
+void VertexObject::setBorderColor(const QColor& penColor) {
+    PictureObjectItem::setBorderColor(penColor.isValid()
+                                          ? penColor
+                                          : ApplicationSettings::getInstance()
+                                                .getObjectsConfig()
+                                                .getNodeMainColor());
+}
+
+void VertexObject::setBackgroundColor(const QColor& penColor) {
+    PictureObjectItem::setBackgroundColor(
+        penColor.isValid() ? penColor
+                           : ApplicationSettings::getInstance()
+                                 .getObjectsConfig()
+                                 .getNodeSecondColor());
 }
 
 bool VertexObject::isLineSubscribed(VertexConnectionLine* pLine) {

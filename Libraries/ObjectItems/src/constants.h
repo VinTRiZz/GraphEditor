@@ -44,12 +44,12 @@ enum ObjectField : int {
     OBJECTFIELD_NAME_SYSTEM,  //! Имя объекта в системе (изменять только в
                               //! конструкторе)
 
-    OBJECTFIELD_DISPLAY_NAME, //! Короткое имя объекта
-    OBJECTFIELD_DESCRIPTION,  //! Описание объекта
+    OBJECTFIELD_DISPLAY_NAME,  //! Короткое имя объекта
+    OBJECTFIELD_DESCRIPTION,   //! Описание объекта
 
-    OBJECTFIELD_COLOR_BORDER,       //! Основной цвет (цвет пера)
-    OBJECTFIELD_COLOR_BACKGROUND,   //! Фоновый цвет (заполнения в объекте)
-    OBJECTFIELD_COLOR_SELECTED,     //! Цвет индикации выбора
+    OBJECTFIELD_COLOR_BORDER,      //! Основной цвет (цвет пера)
+    OBJECTFIELD_COLOR_BACKGROUND,  //! Фоновый цвет (заполнения в объекте)
+    OBJECTFIELD_COLOR_SELECTED,    //! Цвет индикации выбора
 };
 
 /**

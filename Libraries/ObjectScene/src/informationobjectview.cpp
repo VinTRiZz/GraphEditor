@@ -71,12 +71,12 @@ void InformationObjectView::updateCursorLabel(const QPoint& currentPos) {
                     .toString();
         }
     }
-    m_pCursorLabel->setDisplayName(QString("X: %0\nY: %1%2")
-                                     .arg(QString::number(currentPosMapped.x()),
-                                          QString::number(currentPosMapped.y()),
-                                          !hoverItemName.isEmpty()
-                                              ? QString("\n") + hoverItemName
-                                              : QString()));
+    m_pCursorLabel->setDisplayName(
+        QString("X: %0\nY: %1%2")
+            .arg(QString::number(currentPosMapped.x()),
+                 QString::number(currentPosMapped.y()),
+                 !hoverItemName.isEmpty() ? QString("\n") + hoverItemName
+                                          : QString()));
 }
 
 void InformationObjectView::setCurrentToolName(const QString& toolName) {

@@ -11,12 +11,14 @@ ApplicationSettings& ApplicationSettings::getInstance() {
 }
 
 void ApplicationSettings::loadSettings() {
-    return loadSettings(DirectoryManager::getDirectoryPath(DirectoryManager::DirectoryType::Config) +
+    return loadSettings(DirectoryManager::getDirectoryPath(
+                            DirectoryManager::DirectoryType::Config) +
                         APPLICATION_SETTINGS_FILE_PATH);
 }
 
 void ApplicationSettings::saveSettings() const {
-    return saveSettings(DirectoryManager::getDirectoryPath(DirectoryManager::DirectoryType::Config) +
+    return saveSettings(DirectoryManager::getDirectoryPath(
+                            DirectoryManager::DirectoryType::Config) +
                         APPLICATION_SETTINGS_FILE_PATH);
 }
 

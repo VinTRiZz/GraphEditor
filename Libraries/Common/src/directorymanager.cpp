@@ -3,14 +3,14 @@
 #include <QDir>
 #include <QDebug>
 
-DirectoryManager::DirectoryManager()
+DirectoryManager::DirectoryManager(const QString &rootdir)
 {
-    checkup();
+    checkup(rootdir);
 }
 
-DirectoryManager &DirectoryManager::getInstance()
+DirectoryManager &DirectoryManager::getInstance(const QString &rootdir)
 {
-    static DirectoryManager inst;
+    static DirectoryManager inst(rootdir);
     return inst;
 }
 
@@ -43,9 +43,19 @@ QString DirectoryManager::getDirectoryPath(DirectoryType dtype, bool withNativeS
                 inst.m_directoryPaths.at(dtype));
 }
 
-void DirectoryManager::checkup()
+void DirectoryManager::checkup(const QString& rootdir)
 {
-    m_directoryPaths[DirectoryType::Root] = qApp->applicationDirPath() + QDir::separator() + "GraphEditor";
+    qDebug() << "CALLED CHECKUP";
+    if (rootdir.isEmpty()) {
+        m_directoryPaths[DirectoryType::Root] = qApp->applicationDirPath() + QDir::separator() + "GraphEditor";
+    } else {
+        auto rdir = QDir(rootdir);
+        if (!rdir.exists() || !rdir.isReadable()) {
+            throw std::invalid_argument("Invalid directory (not exist or not readable)");
+        }
+        m_directoryPaths[DirectoryType::Root] = rootdir;
+    }
+
     m_directoryPaths[DirectoryType::Config] = "config";
     m_directoryPaths[DirectoryType::Logs] = "logs";
     m_directoryPaths[DirectoryType::Documents] = "documents";

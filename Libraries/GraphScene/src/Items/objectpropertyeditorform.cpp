@@ -1,6 +1,7 @@
 #include "objectpropertyeditorform.h"
 
 #include <Common/CommonFunctions.h>
+#include <Common/DirectoryManager.h>
 #include <Common/Encryption.h>
 #include <Common/Logging.h>
 #include <GraphObject/Components.h>

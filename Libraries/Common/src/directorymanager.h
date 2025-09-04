@@ -10,7 +10,7 @@
 
 class DirectoryManager : public boost::noncopyable
 {
-    DirectoryManager();
+    DirectoryManager(const QString &rootdir);
 public:
     enum class DirectoryType : int {
         Root,
@@ -21,7 +21,7 @@ public:
         Backup,
     };
 
-    static DirectoryManager& getInstance();
+    static DirectoryManager& getInstance(const QString& rootdir = {});
 
     static QString getDocumentsPath();
 
@@ -29,7 +29,7 @@ public:
     static QString getDirectoryPath(DirectoryType dtype, bool withNativeSeparator = true);
 
 private:
-    void checkup();
+    void checkup(const QString &rootdir);
     std::map<DirectoryType, QString> m_directoryPaths;
 };
 

@@ -19,8 +19,6 @@
 #include <QPoint>
 #include <boost/noncopyable.hpp>
 
-#include "directorymanager.h"
-
 namespace Logging {
 
 /**
@@ -136,104 +134,30 @@ class LoggingMaster : public boost::noncopyable {
     /**
      * @brief waitForTasks Ожидать сигнала о добавлении задачи на вывод
      */
-    void waitForTasks() {
-        std::unique_lock<std::mutex> lock(addTaskMx);
-        addTaskCV.wait(lock);
-    }
+    void waitForTasks();
 
     /**
      * @brief taskAdded Уведомить о получении задачи на вывод
      */
-    void taskAdded() {
-        std::unique_lock<std::mutex> lock(addTaskMx);
-        addTaskCV.notify_one();
-    }
+    void taskAdded();
 
-    std::string getCurrentTimestamp() const {
-        // System time value
-        auto timeValue = std::time(nullptr);
-        auto locTime = std::localtime(&timeValue);
+    std::string getCurrentTimestamp() const;
 
-        auto formattedNumber = [](uint8_t iNum) -> std::string {
-            return (iNum > 9 ? std::to_string(iNum)
-                             : std::string("0") + std::to_string(iNum));
-        };
+    std::string getCurrentTimestampFormatted() const;
 
-        // TODO: Вынести в отдельную функцию из логгера для инкапсуляции формата
-        return {formattedNumber(locTime->tm_mday) + "." +
-                formattedNumber(locTime->tm_mon) + ".20" +
-                formattedNumber(locTime->tm_year - 100) + " " +
-                formattedNumber(locTime->tm_hour) + ":" +
-                formattedNumber(locTime->tm_min) + ":" +
-                formattedNumber(locTime->tm_sec)};
-    }
+    void clearExtraLogs();
 
-    std::string getCurrentTimestampFormatted() const {
-        // System time value
-        auto timeValue = std::time(nullptr);
-        auto locTime = std::localtime(&timeValue);
-
-        auto formattedNumber = [](uint8_t iNum) -> std::string {
-            return (iNum > 9 ? std::to_string(iNum)
-                             : std::string("0") + std::to_string(iNum));
-        };
-
-        return {formattedNumber(locTime->tm_hour) + "-" +
-                formattedNumber(locTime->tm_min) + "-" +
-                formattedNumber(locTime->tm_sec) + "_" +
-                formattedNumber(locTime->tm_mday) + "-" +
-                formattedNumber(locTime->tm_mon) + "-20" +
-                formattedNumber(locTime->tm_year - 100)};
-    }
-
-    LoggingMaster() {
-        logfile.setFileName(DirectoryManager::getDirectoryPath(DirectoryManager::DirectoryType::Logs) +
-                            getCurrentTimestampFormatted().c_str() + ".log");
-
-        isWorking = true;
-        logThread = std::thread([this]() {
-            isThreadExited = false;
-            while (isWorking) {
-                waitForTasks();
-
-                taskListMx.lock();
-                while (!taskList.empty()) {
-                    auto nextTask = taskList.front();
-                    taskList.pop_front();
-                    taskListMx.unlock();
-
-                    nextTask();
-                    taskListMx.lock();
-                }
-                taskListMx.unlock();
-            }
-            isThreadExited = true;
-        });
-    }
-
-    ~LoggingMaster() {
-        isWorking = false;
-        while (!isThreadExited) {
-            taskAdded();
-        }
-        if (logThread.joinable()) {
-            logThread.join();
-        }
-    }
+    LoggingMaster();
+    ~LoggingMaster();
 
 public:
-    static QString getCurrentLogfile() {
-        return getInstance().logfile.fileName();
-    }
+    static QString getCurrentLogfile();
 
     /**
      * @brief getInstance Получить объект сигнлетона мастера логгирования
      * @return
      */
-    static LoggingMaster& getInstance() {
-        static LoggingMaster inst;
-        return inst;
-    }
+    static LoggingMaster& getInstance();
 
     /**
      * @brief log Вывести данные в потоке логгирования. Для синхронного вывода

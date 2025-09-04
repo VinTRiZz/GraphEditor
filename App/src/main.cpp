@@ -3,59 +3,34 @@
 #include <Common/Logging.h>
 
 #include <QApplication>
+#include <QCommandLineParser>
 #include <QDateTime>
 
 #include "mainwindow.h"
 
-void removeExtraLogs() {
-    auto logdir = DirectoryManager::getDirectory(DirectoryManager::DirectoryType::Logs);
-    auto logfiles = logdir.entryList();
-    logfiles.removeOne(".");
-    logfiles.removeOne("..");  // Игнорируем текущую и директорию выше (кьют
-                               // багованный в этом плане)
-
-    auto maxLogCount = ApplicationSettings::getInstance()
-                           .getGeneralConfig()
-                           .getMaxLogFileCount();
-    if (logfiles.size() > maxLogCount) {
-        LOG_INFO("Removing logfiles");
-        auto currentLogfile =
-            QFileInfo(Logging::LoggingMaster::getCurrentLogfile()).baseName();
-        std::sort(logfiles.begin(), logfiles.end(),
-                  [](const QString& logFilePathLeft,
-                     const QString& logFilePathRight) {
-                      // TODO: Вынести в отдельную функцию из логгера
-                      // Текущий формат: 20-59-44_03-07-2025
-                      auto leftBasenameDate = QDateTime::fromString(
-                          QFileInfo(logFilePathLeft).baseName(), "");
-                      auto rightBasenameDate = QDateTime::fromString(
-                          QFileInfo(logFilePathRight).baseName(), "");
-                      return (leftBasenameDate < rightBasenameDate);
-                  });
-        std::reverse(logfiles.begin(), logfiles.end());
-        logfiles.erase(
-            logfiles.begin(),
-            logfiles.begin() + maxLogCount);  // Игнорируем первые N файлов
-
-        unsigned removedLogFileCount{0};
-        for (auto& logfile : logfiles) {
-            if (removedLogFileCount > maxLogCount) {
-                break;
-            }
-            if (logfile != currentLogfile) {
-                QFile::remove(logdir.absoluteFilePath(logfile));
-                removedLogFileCount++;
-            }
-        }
-        LOG_OK("Removed", removedLogFileCount, "logfiles");
-    }
-}
-
 int main(int argc, char* argv[]) {
     QApplication a(argc, argv);
+
+    a.setApplicationName("GraphEditor");
+    a.setApplicationVersion(GRAPH_EDITOR_VERSION);
+
+    QCommandLineParser parser;
+    parser.setApplicationDescription("Graph editor -- application for editing graphs, structuring data, etc.");
+    parser.addHelpOption();
+    parser.addVersionOption();
+
+    QCommandLineOption dirOption(QStringList() << "d" << "dir", "Data directory of an app", "DataDir", ".");
+    parser.addOption(dirOption);
+
+    parser.process(a);
+
+    QString dirPath = parser.value(dirOption);
+    if (!dirPath.isEmpty()) {
+        auto& directoryManager = DirectoryManager::getInstance(dirPath);
+    }
+
     auto& settingsInstance = ApplicationSettings::getInstance();
 
-    removeExtraLogs();
     LOG_INFO_SYNC("Started GraphEditor");
     settingsInstance.loadSettings();
 

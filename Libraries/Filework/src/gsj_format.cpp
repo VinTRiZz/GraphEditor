@@ -4,7 +4,6 @@
 #include <Common/Logging.h>
 
 #include <QColor>
-#include <QDir>
 #include <QFileInfo>
 #include <QJsonArray>
 #include <QJsonDocument>

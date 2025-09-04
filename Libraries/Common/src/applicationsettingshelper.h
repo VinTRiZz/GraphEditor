@@ -2,7 +2,6 @@
 #define APPLICATIONSETTINGSHELPER_H
 
 #include <QColor>
-#include <QDir>
 #include <QGradient>
 #include <QSettings>
 #include <QString>

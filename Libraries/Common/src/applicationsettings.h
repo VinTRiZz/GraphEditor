@@ -12,7 +12,6 @@ public:
 
     // Работа с файлом настроек и классом
     static ApplicationSettings& getInstance();
-    static QDir getApplicationDataDir();
     void loadSettings();
     void saveSettings() const;
 

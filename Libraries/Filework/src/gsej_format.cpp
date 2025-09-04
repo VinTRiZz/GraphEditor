@@ -3,7 +3,6 @@
 #include <Common/Encryption.h>
 #include <Common/Logging.h>
 
-#include <QDir>
 #include <QFileInfo>
 #include <QJsonDocument>
 

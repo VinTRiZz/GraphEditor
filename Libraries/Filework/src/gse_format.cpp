@@ -5,7 +5,6 @@
 #include <GraphObject/Object.h>
 
 #include <QBuffer>
-#include <QDir>
 #include <QFileInfo>
 #include <QJsonDocument>
 #include <QSqlDatabase>

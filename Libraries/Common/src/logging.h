@@ -19,7 +19,7 @@
 #include <QPoint>
 #include <boost/noncopyable.hpp>
 
-#include "applicationsettings.h"
+#include "directorymanager.h"
 
 namespace Logging {
 
@@ -187,8 +187,7 @@ class LoggingMaster : public boost::noncopyable {
     }
 
     LoggingMaster() {
-        auto logsDir = getLogsDir();
-        logfile.setFileName(logsDir.absolutePath() + QDir::separator() +
+        logfile.setFileName(DirectoryManager::getDirectoryPath(DirectoryManager::DirectoryType::Logs) +
                             getCurrentTimestampFormatted().c_str() + ".log");
 
         isWorking = true;
@@ -223,17 +222,6 @@ class LoggingMaster : public boost::noncopyable {
     }
 
 public:
-    /**
-     * @brief getLogsDir    Получить директорию логов
-     * @return              Директория логов, созданная при отсутствии
-     */
-    static QDir getLogsDir() {
-        auto logsDir = ApplicationSettings::getApplicationDataDir();
-        logsDir.mkdir("logs");
-        logsDir.cd("logs");
-        return logsDir;
-    }
-
     static QString getCurrentLogfile() {
         return getInstance().logfile.fileName();
     }

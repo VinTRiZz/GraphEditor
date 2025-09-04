@@ -1,9 +1,10 @@
 #include "savemaster.h"
 
 #include <Common/Logging.h>
+#include <Common/ApplicationSettings.h>
+#include <Common/DirectoryManager.h>
 #include <CustomWidgets/PasswordInsertDialog.h>
 
-#include <QDir>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
@@ -28,13 +29,13 @@ QStringList SaveMaster::getAvailableFormats() {
 
 QString SaveMaster::getSavePath() {
     return QFileDialog::getSaveFileName(nullptr, "Файл для сохранения графа",
-                                        QDir::homePath(),
+                                        DirectoryManager::getDirectoryPath(DirectoryManager::DirectoryType::Documents),
                                         getAvailableFormats().join(";;"));
 }
 
 QString SaveMaster::getLoadPath() {
     return QFileDialog::getOpenFileName(nullptr, "Файл для загрузки",
-                                        QDir::homePath(),
+                                        DirectoryManager::getDirectoryPath(DirectoryManager::DirectoryType::Documents),
                                         getAvailableFormats().join(";;"));
 }
 

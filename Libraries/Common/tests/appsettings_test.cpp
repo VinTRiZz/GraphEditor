@@ -2,7 +2,6 @@
 
 #include <QCoreApplication>
 #include <QDebug>
-#include <QDir>
 #include <QTemporaryFile>
 
 #include "applicationsettings.h"

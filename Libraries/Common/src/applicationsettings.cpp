@@ -3,29 +3,21 @@
 #include <QDateTime>
 #include <QFile>
 
+#include "directorymanager.h"
+
 ApplicationSettings& ApplicationSettings::getInstance() {
     static ApplicationSettings inst;
     return inst;
 }
 
-QDir ApplicationSettings::getApplicationDataDir() {
-    auto appDir = QDir::current();
-    if (!QFileInfo(appDir.absolutePath() + QDir::separator() + "GraphEditor")
-             .exists()) {
-        appDir.mkdir("GraphEditor");
-    }
-    appDir.cd("GraphEditor");
-    return appDir;
-}
-
 void ApplicationSettings::loadSettings() {
-    return loadSettings(getApplicationDataDir().absolutePath() +
-                        QDir::separator() + APPLICATION_SETTINGS_FILE_PATH);
+    return loadSettings(DirectoryManager::getDirectoryPath(DirectoryManager::DirectoryType::Config) +
+                        APPLICATION_SETTINGS_FILE_PATH);
 }
 
 void ApplicationSettings::saveSettings() const {
-    return saveSettings(getApplicationDataDir().absolutePath() +
-                        QDir::separator() + APPLICATION_SETTINGS_FILE_PATH);
+    return saveSettings(DirectoryManager::getDirectoryPath(DirectoryManager::DirectoryType::Config) +
+                        APPLICATION_SETTINGS_FILE_PATH);
 }
 
 void ApplicationSettings::loadSettings(const QString& configPath) {

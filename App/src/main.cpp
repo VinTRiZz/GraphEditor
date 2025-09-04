@@ -1,4 +1,5 @@
 #include <Common/ApplicationSettings.h>
+#include <Common/DirectoryManager.h>
 #include <Common/Logging.h>
 
 #include <QApplication>
@@ -7,7 +8,7 @@
 #include "mainwindow.h"
 
 void removeExtraLogs() {
-    auto logdir = Logging::LoggingMaster::getLogsDir();
+    auto logdir = DirectoryManager::getDirectory(DirectoryManager::DirectoryType::Logs);
     auto logfiles = logdir.entryList();
     logfiles.removeOne(".");
     logfiles.removeOne("..");  // Игнорируем текущую и директорию выше (кьют

@@ -20,7 +20,7 @@ void GSEJ_Format::setGraphMaintainer(Graph::PMaintainer pMaintainer) {
 
 bool GSEJ_Format::save(const QString& targetPath) const {
     auto targetDir = QFileInfo(targetPath).dir();
-    if (!targetDir.exists() || targetDir.isReadable()) {
+    if (!targetDir.exists() || !targetDir.isReadable()) {
         LOG_ERROR("Directory not exist or not readable");
         return false;
     }

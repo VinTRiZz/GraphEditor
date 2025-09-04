@@ -4,6 +4,8 @@
 #include <QFile>
 #include <QGuiApplication>
 
+#include <Common/DirectoryManager.h>
+
 #include "../src/gsj_format.h"
 TEST(FormatSaving, GSE_JSON_Format) {
     int argc = 0;
@@ -19,7 +21,7 @@ TEST(FormatSaving, GSE_JSON_Format) {
                                   // затирание данных)
     saveFormat.setGraphMaintainer(gMaintaner);
 
-    QString testTargetPath = "/tmp/GraphEditorSaveTest.gsj";
+    QString testTargetPath = DirectoryManager::getDirectoryPath(DirectoryManager::DirectoryType::Temporary) + "GraphEditorSaveTest.gsj";
     EXPECT_TRUE(saveFormat.save(testTargetPath));
     EXPECT_EQ(graphCopy, savedGraph);
 

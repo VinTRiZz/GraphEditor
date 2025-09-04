@@ -17,6 +17,8 @@ public:
         Config,
         Logs,
         Documents,
+        Temporary,
+        Backup,
     };
 
     static DirectoryManager& getInstance();

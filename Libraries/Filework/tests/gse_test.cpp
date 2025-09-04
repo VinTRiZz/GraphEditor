@@ -4,6 +4,8 @@
 #include <QFile>
 #include <QGuiApplication>
 
+#include <Common/DirectoryManager.h>
+
 #include "../src/gse_format.h"
 TEST(FormatSaving, GSE_Format) {
     int argc = 0;
@@ -19,7 +21,7 @@ TEST(FormatSaving, GSE_Format) {
                                   // затирание данных)
     saveFormat.setGraphMaintainer(gMaintaner);
 
-    QString testTargetPath = "/tmp/GraphEditorSaveTest.gse";
+    QString testTargetPath = DirectoryManager::getDirectoryPath(DirectoryManager::DirectoryType::Temporary) + "GraphEditorSaveTest.gse";
 
     // С расширением
     EXPECT_TRUE(saveFormat.save(testTargetPath));

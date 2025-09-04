@@ -49,6 +49,8 @@ void DirectoryManager::checkup()
     m_directoryPaths[DirectoryType::Config] = "config";
     m_directoryPaths[DirectoryType::Logs] = "logs";
     m_directoryPaths[DirectoryType::Documents] = "documents";
+    m_directoryPaths[DirectoryType::Temporary] = "tmp";
+    m_directoryPaths[DirectoryType::Backup] = "backups";
 
     auto curdir = QDir::current();
     auto& rootdirpath = m_directoryPaths[DirectoryType::Root];

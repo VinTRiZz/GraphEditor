@@ -4,6 +4,8 @@
 #include <boost/noncopyable.hpp>
 
 #include <QString>
+#include <QDir>
+
 #include <map>
 
 class DirectoryManager : public boost::noncopyable
@@ -18,6 +20,8 @@ public:
     };
 
     static DirectoryManager& getInstance();
+
+    static QString getDocumentsPath();
 
     static QDir getDirectory(DirectoryType dtype);
     static QString getDirectoryPath(DirectoryType dtype, bool withNativeSeparator = true);

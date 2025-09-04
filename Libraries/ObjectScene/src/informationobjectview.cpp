@@ -1,7 +1,5 @@
 #include "informationobjectview.h"
 
-#include <Common/Logging.h>
-
 #include <QMouseEvent>
 
 InformationObjectView::InformationObjectView(QWidget* parent)

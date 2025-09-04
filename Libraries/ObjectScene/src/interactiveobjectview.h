@@ -35,6 +35,7 @@ signals:
 
 private:
     QMenu* m_mainContextMenu{nullptr};  //! Основное контекстное меню
+    QAction* m_opacityAction {nullptr}; //! Для переключения прозрачности объектов
     QAction* m_contextAction{
         nullptr};  //! Действие с пометкой "Контекст" в контестном меню
     QGraphicsItem* m_contextMenuItem{

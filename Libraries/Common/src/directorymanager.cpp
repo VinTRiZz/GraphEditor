@@ -14,6 +14,11 @@ DirectoryManager &DirectoryManager::getInstance()
     return inst;
 }
 
+QString DirectoryManager::getDocumentsPath()
+{
+    return QDir::homePath() + QDir::separator() + "Documents"; // TODO: Добавить для Windows
+}
+
 QDir DirectoryManager::getDirectory(DirectoryType dtype)
 {
     return QDir(getDirectoryPath(dtype));
@@ -43,7 +48,7 @@ void DirectoryManager::checkup()
     m_directoryPaths[DirectoryType::Root] = qApp->applicationDirPath() + QDir::separator() + "GraphEditor";
     m_directoryPaths[DirectoryType::Config] = "config";
     m_directoryPaths[DirectoryType::Logs] = "logs";
-    m_directoryPaths[DirectoryType::Documents] = QDir::homePath() + QDir::separator() + "Documents";
+    m_directoryPaths[DirectoryType::Documents] = "documents";
 
     auto curdir = QDir::current();
     auto& rootdirpath = m_directoryPaths[DirectoryType::Root];

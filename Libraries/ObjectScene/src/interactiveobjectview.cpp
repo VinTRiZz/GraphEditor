@@ -11,9 +11,33 @@ InteractiveObjectView::InteractiveObjectView(QWidget* parent)
     : ObjectViewBase(parent) {
     m_mainContextMenu = new QMenu(this);
 
-    m_mainContextMenu->addAction("Переключить сетку", [this]() {
+    auto pGridAction = m_mainContextMenu->addAction("Сетка", [this]() {
         scene()->setGridEnabled(!scene()->getIsGridEnabled());
+        for (auto* pAction : m_mainContextMenu->actions()) {
+            if (pAction->text() == "Сетка") {
+                pAction->setChecked(scene()->getIsGridEnabled());
+                break;
+            }
+        }
     });
+    pGridAction->setCheckable(true);
+
+    m_opacityAction = m_mainContextMenu->addAction("Прозрачный", [this]() {
+        auto currentCursorPos = mapFromGlobal(m_mainContextMenu->pos());
+        auto pCanvas = getParentOfComplex(itemAt(currentCursorPos));
+        if (pCanvas == nullptr) {
+            return;
+        }
+        auto currentOpacity = pCanvas->opacity();
+        if (currentOpacity < 0.9) {
+            pCanvas->setOpacity(1);
+        } else {
+            pCanvas->setOpacity(0.2);
+        }
+        m_opacityAction->setChecked(currentOpacity > 0.9);
+    });
+    m_opacityAction->setCheckable(true);
+    m_opacityAction->setEnabled(false);
 
     m_pCenterItem = new ObjectViewItems::CenterItem();
     addObject(m_pCenterItem);
@@ -165,7 +189,7 @@ void InteractiveObjectView::mousePressEvent(QMouseEvent* e) {
     m_isHoldingLeftButton = (e->button() == Qt::LeftButton);
     if (m_isHoldingLeftButton) {
         auto targetItem = itemAt(e->pos());
-        if (!isNullItem(targetItem)) {
+        if (!isCanvasItem(targetItem)) {
             targetItem = getParentOfComplex(targetItem);
             emit pressedOnItem(targetItem);
         } else {
@@ -184,6 +208,14 @@ void InteractiveObjectView::mousePressEvent(QMouseEvent* e) {
 
 void InteractiveObjectView::mouseMoveEvent(QMouseEvent* e) {
     auto currentPos = mapToScene(e->pos());
+
+    auto pHoverItem = getParentOfComplex(itemAt(e->pos()));
+    if (nullptr != pHoverItem) {
+        m_opacityAction->setEnabled(true);
+        m_opacityAction->setChecked(pHoverItem->opacity() < 0.9);
+    } else {
+        m_opacityAction->setEnabled(false);
+    }
 
     auto pObject = getGrabObject();
     if (nullptr != pObject) {
@@ -226,7 +258,7 @@ void InteractiveObjectView::mouseReleaseEvent(QMouseEvent* e) {
 
     if (m_isHoldingLeftButton) {
         auto targetItem = itemAt(e->pos());
-        if (!isNullItem(targetItem)) {
+        if (!isCanvasItem(targetItem)) {
             targetItem = getParentOfComplex(targetItem);
             emit releasedOnItem(targetItem);
         } else {

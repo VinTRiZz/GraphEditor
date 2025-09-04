@@ -178,6 +178,7 @@ QJsonObject GSJ_Format::toDataJson() const {
 bool GSJ_Format::save(const QString& targetPath) const {
     auto targetDir = QFileInfo(targetPath).dir();
     if (!targetDir.exists() || !targetDir.isReadable()) {
+        LOG_ERROR("Directory not exist or not readable");
         return false;
     }
 
@@ -197,6 +198,7 @@ bool GSJ_Format::load(const QString& targetPath) {
 bool GSJ_Format::isFileValid(const QString& targetPath) const {
     auto fileInfo = QFileInfo(targetPath);
     if (!fileInfo.exists()) {
+        LOG_ERROR("File not found");
         return false;
     }
 
@@ -204,6 +206,7 @@ bool GSJ_Format::isFileValid(const QString& targetPath) const {
     auto testJson = QJsonDocument::fromJson(iFile.readAll());
 
     if (testJson.isNull()) {
+        LOG_ERROR("No valid data found in GSJ file");
         return false;
     }
 
@@ -263,6 +266,7 @@ bool GSJ_Format::isStructureValid(const QJsonObject& iJson) const {
         return false;
     }
 
+    LOG_OK("Structure check succeed");
     return true;
 }
 

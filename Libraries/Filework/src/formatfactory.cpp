@@ -11,6 +11,8 @@ FormatFactory::FormatFactory() {
     registerFormat<GSE_Format>();
     registerFormat<GSJ_Format>();
     registerFormat<GSEJ_Format>();
+
+    LOG_INFO("Formats configured");
 }
 
 FormatFactory& FormatFactory::getInstance() {

@@ -8,11 +8,11 @@ ObjectViewBase::ObjectViewBase(QWidget* parent) : QGraphicsView(parent) {
     m_pScene = new ObjectsInternalScene(this);
     setScene(m_pScene);
 
-    m_pNullItem = new ObjectViewItems::SceneFieldItem();
-    m_pNullItem->setBrush(QColor(220, 220, 220));
-    m_pNullItem->setPen(QPen(QColor(70, 60, 60), 2));
-    m_pNullItem->setZValue(-1);
-    m_pScene->addItem(m_pNullItem);
+    m_pCanvasItem = new ObjectViewItems::SceneFieldItem();
+    m_pCanvasItem->setBrush(QColor(220, 220, 220));
+    m_pCanvasItem->setPen(QPen(QColor(70, 60, 60), 2));
+    m_pCanvasItem->setZValue(-1);
+    m_pScene->addItem(m_pCanvasItem);
 }
 
 bool ObjectViewBase::getIsInited() const {
@@ -21,7 +21,7 @@ bool ObjectViewBase::getIsInited() const {
 
 bool ObjectViewBase::isIdAvailable(
     ObjectViewConstants::objectId_t itemId) const {
-    return m_pNullItem->isIdAvailable(itemId);
+    return m_pCanvasItem->isIdAvailable(itemId);
 }
 
 void ObjectViewBase::setGridEnabled(bool isGEnabled) {
@@ -49,7 +49,7 @@ double ObjectViewBase::getGridLineWidth() const {
 }
 
 QRectF ObjectViewBase::getCanvasRect() const {
-    return m_pNullItem->getFieldRect();
+    return m_pCanvasItem->getFieldRect();
 }
 
 void ObjectViewBase::setSceneBrush(const QBrush& sceneBrush) {
@@ -57,11 +57,11 @@ void ObjectViewBase::setSceneBrush(const QBrush& sceneBrush) {
 }
 
 void ObjectViewBase::setCanvasBrush(const QBrush& canvasBrush) {
-    m_pNullItem->setBrush(canvasBrush);
+    m_pCanvasItem->setBrush(canvasBrush);
 }
 
 void ObjectViewBase::setCanvasOpacity(double opac) {
-    m_pNullItem->setOpacity(opac);
+    m_pCanvasItem->setOpacity(opac);
 }
 
 void ObjectViewBase::setGridColor(const QColor& gColor) {
@@ -69,7 +69,7 @@ void ObjectViewBase::setGridColor(const QColor& gColor) {
 }
 
 void ObjectViewBase::setCanvasRect(const QRectF& iRect) {
-    m_pNullItem->setFieldRect(iRect);
+    m_pCanvasItem->setFieldRect(iRect);
 
     resetTransform();
 
@@ -90,6 +90,9 @@ void ObjectViewBase::setCanvasRect(const QRectF& iRect) {
 
 ObjectViewItems::ItemBase* ObjectViewBase::getParentOfComplex(
     QGraphicsItem* pItem) {
+    if (nullptr == pItem) [[unlikely]] {
+        return nullptr;
+    }
     auto itemParentIdVariant =
         pItem->data(ObjectViewConstants::OBJECTFIELD_PARENTITEM_ID);
     if (itemParentIdVariant.isNull()) {
@@ -98,13 +101,18 @@ ObjectViewItems::ItemBase* ObjectViewBase::getParentOfComplex(
     return getObject(itemParentIdVariant.toLongLong());
 }
 
-bool ObjectViewBase::isNullItem(QGraphicsItem* pItem) const {
+bool ObjectViewBase::isCanvasItem(QGraphicsItem* pItem) const {
     return (dynamic_cast<ObjectViewItems::SceneFieldItem*>(pItem) != nullptr);
+}
+
+ObjectViewItems::SceneFieldItem *ObjectViewBase::sceneCanvas() const
+{
+    return m_pCanvasItem;
 }
 
 void ObjectViewBase::removeSpecialObjects(
     ObjectViewConstants::ObjectType objT) {
-    m_pNullItem->removeRegisteredItems(objT);
+    m_pCanvasItem->removeRegisteredItems(objT);
 }
 
 ObjectsInternalScene* ObjectViewBase::scene() const {
@@ -117,12 +125,12 @@ void ObjectViewBase::addObject(ObjectViewItems::ItemBase* pItem) {
         throw std::invalid_argument(
             "ObjectsScene-internal: invalid (nullptr) item");
     }
-    m_pNullItem->registerItem(pItem);
+    m_pCanvasItem->registerItem(pItem);
 }
 
 ObjectViewItems::ItemBase* ObjectViewBase::getObject(
     ObjectViewConstants::objectId_t objectId) const {
-    auto targetObject = m_pNullItem->getItem(objectId);
+    auto targetObject = m_pCanvasItem->getItem(objectId);
     if (targetObject == nullptr) {
         return nullptr;
     }
@@ -130,16 +138,16 @@ ObjectViewItems::ItemBase* ObjectViewBase::getObject(
 }
 
 std::list<ObjectViewItems::ItemBase*> ObjectViewBase::getAllObjects() const {
-    return m_pNullItem->getRegisteredItems();
+    return m_pCanvasItem->getRegisteredItems();
 }
 
 std::list<ObjectViewConstants::objectId_t> ObjectViewBase::getAllObjectIds()
     const {
-    return m_pNullItem->getRegisteredIds();
+    return m_pCanvasItem->getRegisteredIds();
 }
 
 void ObjectViewBase::removeAllObjects() {}
 
 void ObjectViewBase::removeObject(ObjectViewConstants::objectId_t itemId) {
-    m_pNullItem->removeRegisteredItemById(itemId);
+    m_pCanvasItem->removeRegisteredItemById(itemId);
 }

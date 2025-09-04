@@ -89,6 +89,7 @@ void GraphMaintainer::resetMaintainer() {
     m_customDataValues.clear();
     m_name.clear();
     m_description.clear();
+    LOG_INFO("Maintainer reset");
 }
 
 void GraphMaintainer::setToolTip(const QString& iName) {

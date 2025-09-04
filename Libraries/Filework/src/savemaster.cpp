@@ -29,18 +29,19 @@ QStringList SaveMaster::getAvailableFormats() {
 
 QString SaveMaster::getSavePath() {
     return QFileDialog::getSaveFileName(nullptr, "Файл для сохранения графа",
-                                        DirectoryManager::getDirectoryPath(DirectoryManager::DirectoryType::Documents),
+                                        DirectoryManager::getDocumentsPath(),
                                         getAvailableFormats().join(";;"));
 }
 
 QString SaveMaster::getLoadPath() {
     return QFileDialog::getOpenFileName(nullptr, "Файл для загрузки",
-                                        DirectoryManager::getDirectoryPath(DirectoryManager::DirectoryType::Documents),
+                                        DirectoryManager::getDocumentsPath(),
                                         getAvailableFormats().join(";;"));
 }
 
 bool SaveMaster::save(const QString& oFilePath,
                       Graph::PMaintainer iGraphMaintaner) {
+    LOG_INFO("Saving graph data as:", oFilePath);
     auto fileSuffix = QFileInfo(oFilePath).completeSuffix();
     auto& formatFactory = Filework::FormatFactory::getInstance();
     if (fileSuffix.isEmpty()) {
@@ -107,6 +108,7 @@ bool SaveMaster::save(const QString& oFilePath,
 
 bool SaveMaster::load(const QString& iFilePath,
                       Graph::PMaintainer oGraphMaintaner) {
+    LOG_INFO("Loading graph data from:", iFilePath);
     auto fileSuffix = QFileInfo(iFilePath).completeSuffix();
     auto& formatFactory = Filework::FormatFactory::getInstance();
     auto pFormat = formatFactory.getFormat(fileSuffix);

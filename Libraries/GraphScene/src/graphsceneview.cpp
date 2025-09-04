@@ -62,12 +62,14 @@ void GraphSceneView::setMode(GraphModeBase* pMode) {
 
     m_buttonMatrixHead->show();
     pMode->start();
+    LOG_INFO("Changed interaction mode");
 }
 
 void GraphSceneView::writeChangesToGraph() {
     auto objects = getAllObjects();
     auto pMaintainer = getGraphMaintaner();
     SceneItemConverter::toMaintainer(pMaintainer, objects);
+    LOG_INFO("Graph data cached");
 }
 
 void GraphSceneView::setGraphMaintaner(
@@ -86,6 +88,7 @@ ButtonMatrix::HeadButton* GraphSceneView::getButtonMatrixHead() const {
 
 void GraphSceneView::updateGraph() {
     if (!m_pGraphMaintaner) {
+        LOG_WARNING("Invalid graph to update data");
         return;
     }
 
@@ -105,6 +108,7 @@ void GraphSceneView::updateGraph() {
          SceneItemConverter::fromMaintainer(getGraphMaintaner())) {
         addObject(pItem);
     }
+    LOG_INFO("Graph data updated");
 }
 
 ObjectViewItems::VertexConnectionLine* GraphSceneView::createConnectionLine(

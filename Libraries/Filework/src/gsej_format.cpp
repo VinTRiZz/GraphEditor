@@ -20,7 +20,8 @@ void GSEJ_Format::setGraphMaintainer(Graph::PMaintainer pMaintainer) {
 
 bool GSEJ_Format::save(const QString& targetPath) const {
     auto targetDir = QFileInfo(targetPath).dir();
-    if (!targetDir.exists()) {
+    if (!targetDir.exists() || targetDir.isReadable()) {
+        LOG_ERROR("Directory not exist or not readable");
         return false;
     }
 
@@ -42,7 +43,7 @@ bool GSEJ_Format::save(const QString& targetPath) const {
 
 bool GSEJ_Format::load(const QString& targetPath) {
     if (!isFileValid(targetPath)) {
-        LOG_WARNING("Invalid path:", targetPath);
+        LOG_WARNING("Invalid file to load");
         return false;
     }
     // незачем проверять, что считалось, как и структуру JSON (она проверяется в
@@ -55,7 +56,7 @@ bool GSEJ_Format::load(const QString& targetPath) {
     auto systemSection = inputJson["system"];
     if (!systemSection["is_encrypted"]
              .toBool()) {  // Не работаем с "чистыми" данными
-        LOG_WARNING("Not encrypted data in GSJE format found");
+        LOG_WARNING("Data not encrypted (invalid format)");
         return false;
     }
 

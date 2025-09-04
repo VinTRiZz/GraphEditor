@@ -53,14 +53,15 @@ public slots:
 private:
     ObjectsInternalScene* m_pScene{
         nullptr};  //! Сцена для отображения объектов (внутренний класс)
-    ObjectViewItems::SceneFieldItem* m_pNullItem{
+    ObjectViewItems::SceneFieldItem* m_pCanvasItem{
         nullptr};  //! Объект, который являет собой пространство сцены (как бы
                    //! ограниченная плоскость для расположения объектов)
 
 protected:
     ObjectsInternalScene* scene() const;
     ObjectViewItems::ItemBase* getParentOfComplex(QGraphicsItem* pItem);
-    bool isNullItem(QGraphicsItem* pItem) const;
+    bool isCanvasItem(QGraphicsItem* pItem) const;
+    ObjectViewItems::SceneFieldItem* sceneCanvas() const;
 };
 
 #endif  // OBJECTVIEWBASE_H

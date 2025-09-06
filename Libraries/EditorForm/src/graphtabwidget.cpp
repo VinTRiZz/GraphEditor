@@ -26,9 +26,37 @@ GraphTabWidget::GraphTabWidget(QWidget* parent)
             [this](int tabIndex) {
                 auto tabTargetWidget =
                     ui->editorForms_tabWidget->widget(tabIndex);
-                removeTab(static_cast<GraphEditorForm*>(tabTargetWidget)
-                              ->getGraph()
-                              ->getName());
+                auto pTargetForm = static_cast<GraphEditorForm*>(ui->editorForms_tabWidget->widget(tabIndex));
+
+                if (nullptr == pTargetForm) {
+                    LOG_ERROR("Did not found target text to remove tab!");
+                    return;
+                }
+
+                if (ApplicationSettings::getInstance()
+                        .getGeneralConfig()
+                        .getNeedConfirmClose() &&
+                    pTargetForm->getIsSavepathValid()) {
+                    auto userResponse = QMessageBox::warning(
+                        this, "Внимание!", "Сохранить перед закрытием?",
+                        QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::No);
+                    if (userResponse == QMessageBox::StandardButton::Yes) {
+                        pTargetForm->saveGraph();
+                    }
+                }
+                ui->editorForms_tabWidget->removeTab(tabIndex);
+                ApplicationSettings::getInstance().removeRecentFile(
+                    pTargetForm->getSavefilePath());
+                pTargetForm->deleteLater();
+
+                if (ui->editorForms_tabWidget->count() == 0) {
+                    ui->editorForms_tabWidget->hide();
+                    ui->placeholder_label->show();
+                    ui->filesToolBar->setSaveAsEnabled(false);
+                    ui->filesToolBar->setSaveEnabled(false);
+                    ui->filesToolBar->setLoadEnabled(false);
+                    ui->filesToolBar->setShowPropertiesEnabled(false);
+                }
             });
 
     connect(ui->editorForms_tabWidget, &QTabWidget::currentChanged, this,
@@ -122,54 +150,9 @@ void GraphTabWidget::addTab(const QString& filePath) {
     setupEditorForm(pEditorForm);
 }
 
-void GraphTabWidget::removeTab(const QString& graphName) {
-    GraphEditorForm* pTargetForm{nullptr};
-    int targetIndex{0};
-
-    for (int i = 0; i < ui->editorForms_tabWidget->count(); ++i) {
-        auto tabTargetWidget = ui->editorForms_tabWidget->widget(i);
-        if (static_cast<GraphEditorForm*>(tabTargetWidget)
-                ->getGraph()
-                ->getName() == graphName) {
-            targetIndex = i;
-            pTargetForm = static_cast<GraphEditorForm*>(tabTargetWidget);
-            break;
-        }
-    }
-
-    if (nullptr == pTargetForm) {
-        LOG_ERROR("Did not found target text to remove tab!");
-        return;
-    }
-
-    if (ApplicationSettings::getInstance()
-            .getGeneralConfig()
-            .getNeedConfirmClose() &&
-        pTargetForm->getIsSavepathValid()) {
-        auto userResponse = QMessageBox::warning(
-            this, "Внимание!", "Сохранить перед закрытием?",
-            QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::No);
-        if (userResponse == QMessageBox::StandardButton::Yes) {
-            pTargetForm->saveGraph();
-        }
-    }
-    ui->editorForms_tabWidget->removeTab(targetIndex);
-    ApplicationSettings::getInstance().removeRecentFile(
-        pTargetForm->getSavefilePath());
-    delete pTargetForm;
-
-    if (ui->editorForms_tabWidget->count() == 0) {
-        ui->editorForms_tabWidget->hide();
-        ui->placeholder_label->show();
-        ui->filesToolBar->setSaveAsEnabled(false);
-        ui->filesToolBar->setSaveEnabled(false);
-        ui->filesToolBar->setLoadEnabled(false);
-        ui->filesToolBar->setShowPropertiesEnabled(false);
-    }
-}
-
 void GraphTabWidget::createGraph() {
     auto pEditorForm = new GraphEditorForm(this);
+
     pEditorForm->getGraph()->setToolTip("Новый граф");
     pEditorForm->getGraph()->setCreateTime(QDateTime::currentDateTime());
 

@@ -28,12 +28,6 @@ public slots:
     void addTab(const QString& filePath);
 
     /**
-     * @brief removeTab Удалить граф по его названию
-     * @param graphName
-     */
-    void removeTab(const QString& graphName);
-
-    /**
      * @brief createGraph   Создать граф (добавить вкладку с новым)
      */
     void createGraph();

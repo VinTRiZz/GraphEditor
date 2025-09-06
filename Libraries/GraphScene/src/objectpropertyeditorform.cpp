@@ -14,6 +14,8 @@
 #include "Items/vertexobjectitem.h"
 #include "ui_objectpropertyeditorform.h"
 
+const auto PROPEDITORFORM_PROPERTY_IMAGEHASH {"imagehash"};
+
 using namespace CommonFunctions;
 
 ObjectPropertyEditorForm::ObjectPropertyEditorForm(QWidget* parent)
@@ -82,7 +84,7 @@ void ObjectPropertyEditorForm::acceptChanges() {
               dynamic_cast<ObjectViewItems::VertexObject *>(m_pTargetItem);
           nullptr != pVertex) {
           auto& imgManager = ImageManager::getInstance();
-          auto imgHash = imgManager.getImageHash(m_selectedIconLabel);
+          auto imgHash = m_selectedIconLabel->property(PROPEDITORFORM_PROPERTY_IMAGEHASH).toString();
         pVertex->setImageByHash(imgHash);
       }
 
@@ -144,7 +146,16 @@ void ObjectPropertyEditorForm::initIcons() {
     auto addIcon = [this](const QString& iconPath, const QString& iconName) {
         const QString iconBasepath = ":/common/images/vertexicons/%0";
         auto& imgmanager = ImageManager::getInstance();
-        auto pLabel = imgmanager.getLabelFromImage(imgmanager.getImageFromPath(iconBasepath.arg(iconPath)), QSize(70, 70));
+
+        auto img = imgmanager.getImageFromPath(iconBasepath.arg(iconPath));
+        auto labelFixedSize = QSize(70, 70);
+
+        auto pxmap =
+            QPixmap::fromImage(img.second.scaled(labelFixedSize));
+        auto pLabel = new QLabel(this);
+        pLabel->setPixmap(pxmap);
+        pLabel->setFixedSize(labelFixedSize);
+        pLabel->setProperty(PROPEDITORFORM_PROPERTY_IMAGEHASH, img.first);
         ui->iconGalery->addWidget(pLabel, iconName);
     };
 
@@ -159,7 +170,7 @@ void ObjectPropertyEditorForm::addHistoryImage(const QString &targetPath)
     auto imgName = QFileInfo(targetPath).baseName();
     auto existWidget = ui->imageHistoryGalery->getWidget(
         [&img](QWidget* pLabel) {
-            return (img.first == ImageManager::getInstance().getImageHash(pLabel));
+            return (img.first == pLabel->property(PROPEDITORFORM_PROPERTY_IMAGEHASH).toString());
         });
     if (nullptr != existWidget) {
         ui->imageHistoryGalery->setLabel(existWidget, imgName);
@@ -168,9 +179,14 @@ void ObjectPropertyEditorForm::addHistoryImage(const QString &targetPath)
     }
 
     auto& imgManager = ImageManager::getInstance();
+    auto labelFixedSize = QSize(70, 70);
+    auto pxmap =
+        QPixmap::fromImage(img.second.scaled(labelFixedSize.width(), labelFixedSize.height()));
 
-    auto pLabel = imgManager.getLabelFromImage(img, QSize(250, 250));
-    pLabel->setParent(this);
+    auto pLabel = new QLabel(this);
+    pLabel->setFixedSize(labelFixedSize);
+    pLabel->setPixmap(pxmap);
+    pLabel->setProperty(PROPEDITORFORM_PROPERTY_IMAGEHASH, img.first);
     ui->imageHistoryGalery->addWidget(pLabel, imgName);
 
     auto imageHistoryDir = DirectoryManager::getTmpDirectoryPath(DirectoryManager::DirectoryTypeTmp::ImportedImages);
@@ -180,7 +196,7 @@ void ObjectPropertyEditorForm::addHistoryImage(const QString &targetPath)
 void ObjectPropertyEditorForm::selectImage(const QString &imageHash)
 {
     auto selectResult = ui->imageHistoryGalery->selectWidget([&](auto* pWidget) -> bool {
-        auto res = (imageHash == ImageManager::getInstance().getImageHash(pWidget));
+        auto res = (imageHash == pWidget->property(PROPEDITORFORM_PROPERTY_IMAGEHASH).toString());
         if (res) {
             m_selectedIconLabel = pWidget;
         }
@@ -191,7 +207,7 @@ void ObjectPropertyEditorForm::selectImage(const QString &imageHash)
     }
 
     ui->iconGalery->selectWidget([&](auto* pWidget) -> bool {
-        auto res = (imageHash == ImageManager::getInstance().getImageHash(pWidget));
+        auto res = (imageHash == pWidget->property(PROPEDITORFORM_PROPERTY_IMAGEHASH).toString());
         if (res) {
             m_selectedIconLabel = pWidget;
         }

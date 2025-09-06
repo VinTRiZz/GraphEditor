@@ -8,8 +8,6 @@
 #include <QFile>
 #include "encryption.h"
 
-const auto IMAGEMANAGER_PROPERTY_IMAGEHASH {"imagehash"};
-
 ImageManager::ImageManager()
 {
     updateCache();
@@ -27,22 +25,6 @@ void ImageManager::updateCache()
     for (auto& pth : getImageHistoryPaths()) {
         getImageFromPath(pth);
     }
-}
-
-QLabel *ImageManager::getLabelFromImage(const std::pair<QString, QImage>& img, const QSize& labelFixedSize) const
-{
-    auto pxmap =
-        QPixmap::fromImage(img.second.scaled(labelFixedSize, Qt::IgnoreAspectRatio));
-    auto pLabel = new QLabel;
-    pLabel->setFixedSize(labelFixedSize);
-    pLabel->setPixmap(pxmap);
-    pLabel->setProperty(IMAGEMANAGER_PROPERTY_IMAGEHASH, img.second);
-    return pLabel;
-}
-
-QString ImageManager::getImageHash(const QWidget *pWidget) const
-{
-    return pWidget->property(IMAGEMANAGER_PROPERTY_IMAGEHASH).toString();
 }
 
 std::pair<QString, QImage> ImageManager::getImageFromPath(const QString& targetPath) {
@@ -71,6 +53,14 @@ std::pair<QString, QImage> ImageManager::getImageFromPath(const QString& targetP
         res->second = imgReader.read();
     }
     res->second = QImage(targetPath);  // Для PNG/JPEG/BMP/etc
+
+    if (res->second.isNull()) {
+        LOG_ERROR("Loading image from path:", targetPath);
+    } else {
+        LOG_OK("Loaded image from path:", targetPath);
+        LOG_OK("Loaded image hash:", res->first);
+    }
+
     return *res;
 }
 
@@ -79,14 +69,6 @@ QImage ImageManager::getImageByHash(const QString &hash) const
     if (auto targetImg = m_imagesCache.find(hash); targetImg != m_imagesCache.end()) {
         return targetImg->second;
     }
-
-    LOG_WARNING("Not found hash:", hash);
-    LOG_DEBUG("Exist:");
-    for (auto& [hsh, img] : m_imagesCache) {
-        LOG_DEBUG(hsh);
-    }
-    LOG_DEBUG("==============");
-
     return {};
 }
 

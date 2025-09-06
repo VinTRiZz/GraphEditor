@@ -21,20 +21,6 @@ public:
     QPixmap scaleImage(const QImage& img) const;
 
     /**
-     * @brief labelFromImage    Создать QLabel объект с записанным изображением. Не будет иметь parent
-     * @param img
-     * @return                  QLabel без заданного parent
-     */
-    QLabel* getLabelFromImage(const std::pair<QString, QImage> &img, const QSize &labelFixedSize) const;
-
-    /**
-     * @brief getImageHash  Получает хеш картинки, которая была задана в виджет
-     * @param pWidget
-     * @return
-     */
-    QString getImageHash(const QWidget *pWidget) const;
-
-    /**
      * @brief pixmapFromPath    Считать изображение
      * @param targetPath        Путь до файла
      * @return                  NULL QImage если не удалось считать и хэш изображения

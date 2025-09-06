@@ -42,8 +42,6 @@ VertexConnectionLine::VertexConnectionLine(QGraphicsItem* parent)
     registerSubitem(m_pArrowHeadPolygon);
 
     auto& appSettings = ApplicationSettings::getInstance();
-    m_drawPen.setWidth(3);
-    m_drawPen.setCapStyle(Qt::RoundCap);
 
     m_penGradient.setColorAt(0.0,
                              appSettings.getObjectsConfig().getLineMainColor());
@@ -51,12 +49,10 @@ VertexConnectionLine::VertexConnectionLine(QGraphicsItem* parent)
     m_penGradient.setColorAt(
         1.0, appSettings.getObjectsConfig().getLineSecondColor());
     m_penGradient.setCoordinateMode(QLinearGradient::ObjectMode);
-    m_drawPen.setBrush(m_penGradient);
-    m_line->setPen(m_drawPen);
-    m_pArrowHeadPolygon->setPen(m_drawPen);
+    m_line->setBrush(m_penGradient);
+    m_line->setPen(QPen(Qt::transparent));
+    m_pArrowHeadPolygon->setPen(QPen(Qt::transparent));
 
-    m_selectedPen.setWidth(8);
-    m_selectedPen.setCapStyle(Qt::RoundCap);
     VertexConnectionLine::setSelectionColor(
         appSettings.getObjectsConfig().getLineSelectionColor());
 
@@ -147,29 +143,30 @@ void VertexConnectionLine::setBorderColor(const QColor& penColor) {
     ItemBase::setBorderColor(penColor);
 
     m_penGradient.setColorAt(0.0, penColor);
-    m_drawPen.setBrush(m_penGradient);
-    m_line->setPen(m_drawPen);
-    auto currentPen = isSelected() ? m_selectedPen : m_drawPen;
-    m_pArrowHeadPolygon->setPen(currentPen);
-}
+    m_line->setBrush(m_penGradient);
+    m_pArrowHeadPolygon->setBrush(m_penGradient);
 
-void VertexConnectionLine::setBackgroundColor(const QColor& penColor) {
-    ItemBase::setBackgroundColor(penColor);
-
-    m_penGradient.setColorAt(1.0, penColor);
-    m_drawPen.setBrush(m_penGradient);
-    m_line->setPen(m_drawPen);
-    auto currentPen = isSelected() ? m_selectedPen : m_drawPen;
-    m_pArrowHeadPolygon->setPen(currentPen);
+    if (isSelected()) {
+        m_pArrowHeadPolygon->setPen(QPen(getSelectionColor(), 8, Qt::SolidLine, Qt::RoundCap));
+    } else {
+        m_pArrowHeadPolygon->setPen(QPen(Qt::transparent));
+    }
 }
 
 void VertexConnectionLine::setSelectionColor(const QColor& penColor) {
     ItemBase::setSelectionColor(penColor);
 
-    auto selectedPen = QPen(getSelectionColor(), 5);
-    m_lineSelected->setPen(selectedPen);
-    auto currentPen = isSelected() ? m_selectedPen : m_drawPen;
-    m_pArrowHeadPolygon->setPen(currentPen);
+    m_penGradient.setColorAt(0.0, penColor);
+    m_line->setBrush(m_penGradient);
+    m_pArrowHeadPolygon->setBrush(m_penGradient);
+
+    m_lineSelected->setPen(QPen(penColor, 8, Qt::SolidLine, Qt::RoundCap));
+
+    if (isSelected()) {
+        m_pArrowHeadPolygon->setPen(QPen(penColor, 8, Qt::SolidLine, Qt::RoundCap));
+    } else {
+        m_pArrowHeadPolygon->setPen(QPen(Qt::transparent));
+    }
 }
 
 void VertexConnectionLine::setDisplayName(const QString& iText) {
@@ -253,7 +250,13 @@ QPainterPath VertexConnectionLine::createLinePath() {
         p.lineTo(arrowP1);
     }
 
-    return p;
+    QPainterPathStroker stroker;
+    stroker.setWidth(6.0);
+    stroker.setCapStyle(Qt::RoundCap);
+    stroker.setJoinStyle(Qt::RoundJoin);
+
+    // Возвращаем "обведенную" форму
+    return stroker.createStroke(p);
 }
 
 QPolygonF VertexConnectionLine::createPolygon(const QLineF& line) {
@@ -282,7 +285,7 @@ void VertexConnectionLine::updatePen() {
     }
     m_prevSelectedState = isSelected();
 
-    auto currentPen = isSelected() ? m_selectedPen : m_drawPen;
+    auto currentPen = isSelected() ? getSelectionColor() : Qt::transparent;
     m_pArrowHeadPolygon->setPen(currentPen);
 }
 

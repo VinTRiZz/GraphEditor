@@ -37,7 +37,6 @@ public:
     void resetPositions();
 
     void setBorderColor(const QColor& penColor) override;
-    void setBackgroundColor(const QColor& penColor) override;
     void setSelectionColor(const QColor& penColor) override;
 
     void setDisplayName(const QString& iText) override;
@@ -56,8 +55,6 @@ private:
     double m_weight{0};
 
     QLinearGradient m_penGradient;
-    QPen m_drawPen;
-    QPen m_selectedPen;
     QLineF m_straightLine;
 
     QRectF m_boundingRect;

@@ -66,14 +66,6 @@ void setColor(QLabel* pLabel, const QColor& color);
 QColor getColor(QLabel* pLabel);
 
 /**
- * @brief pixmapFromPath    Считать изображение
- * @param targetPath        Путь до файла
- * @param scaleSize         Размер, до которого сжать/расширить изображение
- * @return                  NULL QImage если не удалось считать
- */
-QImage imageFromPath(const QString& targetPath);
-
-/**
  * @brief encodeColor   Конвертировать цвет во внутренний способ хранения
  * @param iCol          Входной цвет
  * @return              Массив байт с кодом цвета
@@ -89,26 +81,6 @@ QByteArray encodeColorGSE(const QColor& iCol);
  */
 QColor decodeColor(const QString& iName);
 QColor decodeColorGSE(const QString& iName);
-
-/**
- * @brief loadImageWithAlpha    Выгрузка изображения из файла с учётом
- * прозрачности
- * @param path                  Путь до файла
- * @return                      NULL QPixmap при ошибке
- */
-QPixmap loadImageWithAlpha(const QString& path);
-
-/**
- * @brief loadImageHistory  Загрузить все изображения, которые были использованы в редакторе
- * @return                  Список, может быть пустым
- */
-std::list<QImage> loadImageHistory();
-
-/**
- * @brief loadImageHistoryPaths Аналогичен loadImageHistory(), но не выгружает изображения
- * @return                      Пути до изображений истории
- */
-QStringList loadImageHistoryPaths();
 
 /**
  * @brief rectToString  Сериализация QRectF в строку

@@ -2,7 +2,7 @@
 
 #include <Common/CommonFunctions.h>
 #include <Common/DirectoryManager.h>
-#include <Common/Encryption.h>
+#include <Common/ImageManager.h>
 #include <Common/Logging.h>
 #include <GraphObject/Components.h>
 
@@ -15,8 +15,6 @@
 #include "ui_objectpropertyeditorform.h"
 
 using namespace CommonFunctions;
-
-const auto PROPEDITORFORM_IMAGE_HASH_PROPERTY_NAME {"imghash"};
 
 ObjectPropertyEditorForm::ObjectPropertyEditorForm(QWidget* parent)
     : QWidget(parent), ui(new Ui::ObjectPropertyEditorForm) {
@@ -83,8 +81,9 @@ void ObjectPropertyEditorForm::acceptChanges() {
       if (auto pVertex =
               dynamic_cast<ObjectViewItems::VertexObject *>(m_pTargetItem);
           nullptr != pVertex) {
-        auto pxmap = static_cast<QLabel*>(m_selectedIconLabel)->pixmap(Qt::ReturnByValue);
-        pVertex->setImage(pxmap.toImage(), m_selectedIconLabel->property(PROPEDITORFORM_IMAGE_HASH_PROPERTY_NAME).toString());
+          auto& imgManager = ImageManager::getInstance();
+          auto imgHash = imgManager.getImageHash(m_selectedIconLabel);
+        pVertex->setImageByHash(imgHash);
       }
 
     if (auto pConnection =
@@ -123,7 +122,7 @@ void ObjectPropertyEditorForm::initHistoryGalery() {
         m_selectedIconLabel = pWidget;
     });
 
-    auto history = loadImageHistoryPaths();
+    auto history = ImageManager::getImageHistoryPaths();
     for (auto& img : history) {
         addHistoryImage(img);
     }
@@ -144,20 +143,8 @@ void ObjectPropertyEditorForm::initIcons() {
     // Добавляем элементы из ресурсов
     auto addIcon = [this](const QString& iconPath, const QString& iconName) {
         const QString iconBasepath = ":/common/images/vertexicons/%0";
-
-        auto img = imageFromPath(iconBasepath.arg(iconPath));
-        auto pxmap =
-            QPixmap::fromImage(img.scaled(70, 70, Qt::IgnoreAspectRatio));
-        auto pLabel = new QLabel;
-        pLabel->setFixedSize(70, 70);
-        pLabel->setPixmap(pxmap);
-        pLabel->setToolTip(iconName);
-
-        QFile targetFile(iconPath);
-        targetFile.open(QIODevice::ReadOnly);
-        auto pxmapHash = Encryption::sha256(targetFile.readAll());
-        pLabel->setProperty(PROPEDITORFORM_IMAGE_HASH_PROPERTY_NAME, pxmapHash);
-
+        auto& imgmanager = ImageManager::getInstance();
+        auto pLabel = imgmanager.getLabelFromImage(imgmanager.getImageFromPath(iconBasepath.arg(iconPath)), QSize(70, 70));
         ui->iconGalery->addWidget(pLabel, iconName);
     };
 
@@ -167,14 +154,12 @@ void ObjectPropertyEditorForm::initIcons() {
 
 void ObjectPropertyEditorForm::addHistoryImage(const QString &targetPath)
 {
-    QFile targetFile(targetPath);
-    targetFile.open(QIODevice::ReadOnly);
-    auto pxmapHash = Encryption::sha256(targetFile.readAll());
+    auto img = ImageManager::getInstance().getImageFromPath(targetPath);
 
     auto imgName = QFileInfo(targetPath).baseName();
     auto existWidget = ui->imageHistoryGalery->getWidget(
-        [&pxmapHash](QWidget* pLabel) {
-            return (pxmapHash == pLabel->property(PROPEDITORFORM_IMAGE_HASH_PROPERTY_NAME).toByteArray());
+        [&img](QWidget* pLabel) {
+            return (img.first == ImageManager::getInstance().getImageHash(pLabel));
         });
     if (nullptr != existWidget) {
         ui->imageHistoryGalery->setLabel(existWidget, imgName);
@@ -182,15 +167,11 @@ void ObjectPropertyEditorForm::addHistoryImage(const QString &targetPath)
         return;
     }
 
-    auto img = imageFromPath(targetPath);
-    auto pxmap =
-        QPixmap::fromImage(img.scaled(250, 250, Qt::IgnoreAspectRatio));
-    auto pLabel = new QLabel;
-    pLabel->setProperty(PROPEDITORFORM_IMAGE_HASH_PROPERTY_NAME, pxmapHash);
-    pLabel->setToolTip(targetPath);
-    pLabel->setPixmap(pxmap);
+    auto& imgManager = ImageManager::getInstance();
+
+    auto pLabel = imgManager.getLabelFromImage(img, QSize(250, 250));
+    pLabel->setParent(this);
     ui->imageHistoryGalery->addWidget(pLabel, imgName);
-    LOG_OK("Added image:", imgName);
 
     auto imageHistoryDir = DirectoryManager::getTmpDirectoryPath(DirectoryManager::DirectoryTypeTmp::ImportedImages);
     QFile::copy(targetPath, imageHistoryDir + QFileInfo(targetPath).fileName());
@@ -199,7 +180,7 @@ void ObjectPropertyEditorForm::addHistoryImage(const QString &targetPath)
 void ObjectPropertyEditorForm::selectImage(const QString &imageHash)
 {
     auto selectResult = ui->imageHistoryGalery->selectWidget([&](auto* pWidget) -> bool {
-        auto res = (imageHash == pWidget->property(PROPEDITORFORM_IMAGE_HASH_PROPERTY_NAME).toString());
+        auto res = (imageHash == ImageManager::getInstance().getImageHash(pWidget));
         if (res) {
             m_selectedIconLabel = pWidget;
         }
@@ -210,7 +191,7 @@ void ObjectPropertyEditorForm::selectImage(const QString &imageHash)
     }
 
     ui->iconGalery->selectWidget([&](auto* pWidget) -> bool {
-        auto res = (imageHash == pWidget->property(PROPEDITORFORM_IMAGE_HASH_PROPERTY_NAME).toString());
+        auto res = (imageHash == ImageManager::getInstance().getImageHash(pWidget));
         if (res) {
             m_selectedIconLabel = pWidget;
         }

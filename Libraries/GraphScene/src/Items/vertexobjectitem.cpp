@@ -1,6 +1,7 @@
 #include "vertexobjectitem.h"
 
 #include <Common/ApplicationSettings.h>
+#include <Common/ImageManager.h>
 #include <Common/Logging.h>
 #include <GraphObject/Object.h>
 #include <ObjectItems/Constants.h>
@@ -8,7 +9,6 @@
 #include <QBuffer>
 #include <QFileInfo>
 #include <QGraphicsSceneMouseEvent>
-#include <QImageReader>
 #include <QLabel>
 #include <QTextOption>
 
@@ -47,6 +47,13 @@ VertexObject::~VertexObject() {
         pLine->setVertexFrom(nullptr);
         pLine->unregister();
     }
+}
+
+void VertexObject::setImageByHash(const QString &imageHash)
+{
+    auto& imgManager = ImageManager::getInstance();
+    auto img = imgManager.getImageByHash(imageHash);
+    PictureObjectItem::setImage(img, imageHash);
 }
 
 void VertexObject::setBorderColor(const QColor& penColor) {

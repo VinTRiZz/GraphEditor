@@ -16,6 +16,8 @@ public:
     explicit VertexObject(QGraphicsItem* parent = nullptr);
     ~VertexObject();
 
+    void setImageByHash(const QString& imageHash);
+
     void setBorderColor(const QColor& penColor) override;
     void setBackgroundColor(const QColor& penColor) override;
 

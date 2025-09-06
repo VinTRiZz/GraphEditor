@@ -6,9 +6,10 @@
 #include <QBuffer>
 #include <QFileInfo>
 #include <QGraphicsSceneMouseEvent>
-#include <QImageReader>
 #include <QLabel>
 #include <QTextOption>
+
+#include <QImage>
 
 #include "constants.h"
 

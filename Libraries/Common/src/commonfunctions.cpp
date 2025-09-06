@@ -2,10 +2,10 @@
 
 #include <QColorDialog>
 #include <QFileInfo>
-#include <QImage>
-#include <QImageReader>
 #include <QPainter>
 #include <QPropertyAnimation>
+
+#include <QImage>
 
 #include "logging.h"
 
@@ -133,21 +133,6 @@ QColor getColor(QLabel* pLabel) {
     return QColor(pLabel->property(LABEL_COLOR_PROPERTY_NAME).toString());
 }
 
-QImage imageFromPath(const QString& targetPath) {
-    QImageReader imgReader;
-    imgReader.setAutoDetectImageFormat(true);
-    imgReader.setAutoTransform(true);
-    imgReader.setDecideFormatFromContent(true);
-    imgReader.setFileName(targetPath);
-
-    if (imgReader.imageCount() == 0) {
-        LOG_WARNING("Not an image:", targetPath);
-        return {};
-    }
-
-    return imgReader.read();
-}
-
 QByteArray encodeColor(const QColor& iCol) {
     return iCol.name(QColor::HexArgb).toUtf8();
 }
@@ -168,18 +153,6 @@ QColor decodeColorGSE(const QString& iName) {
         return {};
     }
     return QColor(iName.data());
-}
-
-QPixmap loadImageWithAlpha(const QString& path) {
-    QImageReader reader(path);
-    reader.setAutoTransform(true);  // Автоповорот по EXIF
-    reader.setDecideFormatFromContent(
-        true);  // Определение формата по содержимому
-
-    if (reader.supportsAnimation()) {  // Для GIF/APNG
-        return QPixmap::fromImage(reader.read());
-    }
-    return QPixmap(path);  // Для PNG/JPEG/BMP/etc
 }
 
 QString rectToString(const QRectF& iRect) {
@@ -205,35 +178,6 @@ QRectF rectFromString(const QString& iString) {
         QPointF(valuesSplitted[0].toDouble(), valuesSplitted[1].toDouble()));
     res.setWidth(valuesSplitted[2].toDouble());
     res.setHeight(valuesSplitted[3].toDouble());
-    return res;
-}
-
-std::list<QImage> loadImageHistory()
-{
-    auto imagesDir = DirectoryManager::getTmpDirectory(DirectoryManager::DirectoryTypeTmp::ImportedImages);
-    auto imgFiles = imagesDir.entryList();
-    imgFiles.removeAll("."); imgFiles.removeAll(".."); // Обход бага кьюта
-
-    std::list<QImage> res;
-    for (auto& entr : imgFiles) {
-        auto img = imageFromPath(imagesDir.absoluteFilePath(entr));
-        if (!img.isNull()) {
-            res.push_back(img);
-        }
-    }
-    return res;
-}
-
-QStringList loadImageHistoryPaths()
-{
-    auto imagesDir = DirectoryManager::getTmpDirectory(DirectoryManager::DirectoryTypeTmp::ImportedImages);
-    auto imgFiles = imagesDir.entryList();
-    imgFiles.removeAll("."); imgFiles.removeAll(".."); // Обход бага кьюта
-
-    QStringList res;
-    for (auto& entr : imgFiles) {
-        res.push_back(imagesDir.absoluteFilePath(entr));
-    }
     return res;
 }
 

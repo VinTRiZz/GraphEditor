@@ -36,8 +36,7 @@ QWidget* SelectableWidget::widget() const {
     return m_widget;
 }
 
-void SelectableWidget::setLabel(const QString &labelText)
-{
+void SelectableWidget::setLabel(const QString& labelText) {
     m_widgetNameLabel->setText(labelText);
 }
 
@@ -49,8 +48,7 @@ bool SelectableWidget::isSelected() const {
     return m_isSelected;
 }
 
-void SelectableWidget::setSelectedSilent(bool isSelected)
-{
+void SelectableWidget::setSelectedSilent(bool isSelected) {
     if (isSelected != m_isSelected) {
         m_isSelected = isSelected;
         repaint();

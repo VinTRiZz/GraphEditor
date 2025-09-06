@@ -28,7 +28,8 @@ ObjectViewItems::VertexObject* SceneItemConverter::fromVertex(
     pVertexItem->setRect(vertexRect);
 
     if (!vert.image.isNull()) {
-        pVertexItem->setImage(vert.image, {}); // TODO: Задавать изображение корректным образом
+        pVertexItem->setImage(
+            vert.image, {});  // TODO: Задавать изображение корректным образом
     }
 
     return pVertexItem;

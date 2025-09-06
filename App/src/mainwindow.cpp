@@ -1,15 +1,15 @@
 #include "mainwindow.h"
 
-#include <Common/Logging.h>
 #include <Common/ImageManager.h>
+#include <Common/Logging.h>
 #include <CustomWidgets/WaitIndicatorDialog.h>
+
 #include <QFile>
 
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
-
     auto& waitDialog = WaitIndicatorDialog::getInstance();
     waitDialog.setWindowTitle("GraphEditor");
     waitDialog.setButtonsEnabled(false);
@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget* parent)
     QIcon windowIcon(":/common/images/icons/app/grapheditor.svg");
     setWindowIcon(windowIcon);
 
-    ImageManager::getInstance(); // Выгружает кэш автоматически
+    ImageManager::getInstance();  // Выгружает кэш автоматически
 
     waitDialog.setProgressBarEnabled(false);
     waitDialog.setDescriptionHidden(true);

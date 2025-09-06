@@ -1,31 +1,26 @@
 #include "imagemanager.h"
 
-#include "logging.h"
-
-#include <QImage>
-#include <QImageReader>
-
-#include <QLabel>
+#include <CustomWidgets/WaitIndicatorDialog.h>
 
 #include <QFile>
-#include "encryption.h"
+#include <QImage>
+#include <QImageReader>
+#include <QLabel>
 
-#include <CustomWidgets/WaitIndicatorDialog.h>
 #include "directorymanager.h"
+#include "encryption.h"
+#include "logging.h"
 
-ImageManager::ImageManager()
-{
+ImageManager::ImageManager() {
     updateCache();
 }
 
-ImageManager &ImageManager::getInstance()
-{
+ImageManager& ImageManager::getInstance() {
     static ImageManager inst;
     return inst;
 }
 
-void ImageManager::updateCache()
-{
+void ImageManager::updateCache() {
     auto& waitDialog = WaitIndicatorDialog::getInstance();
     waitDialog.setDescription("Анализ кэша...");
 
@@ -41,9 +36,10 @@ void ImageManager::updateCache()
     }
 }
 
-std::pair<QString, QImage> ImageManager::getImageFromPath(const QString& targetPath) {
-
-    if (auto existingHash = m_imagePathCache.find(targetPath); existingHash != m_imagePathCache.end()) {
+std::pair<QString, QImage> ImageManager::getImageFromPath(
+    const QString& targetPath) {
+    if (auto existingHash = m_imagePathCache.find(targetPath);
+        existingHash != m_imagePathCache.end()) {
         return *m_imagesCache.find(existingHash->second);
     }
 
@@ -77,26 +73,26 @@ std::pair<QString, QImage> ImageManager::getImageFromPath(const QString& targetP
     return *res;
 }
 
-QImage ImageManager::getImageByHash(const QString &hash) const
-{
-    if (auto targetImg = m_imagesCache.find(hash); targetImg != m_imagesCache.end()) {
+QImage ImageManager::getImageByHash(const QString& hash) const {
+    if (auto targetImg = m_imagesCache.find(hash);
+        targetImg != m_imagesCache.end()) {
         return targetImg->second;
     }
     return {};
 }
 
-QString ImageManager::calculateImageHash(const QString &imagePath)
-{
+QString ImageManager::calculateImageHash(const QString& imagePath) {
     QFile targetFile(imagePath);
     targetFile.open(QIODevice::ReadOnly);
     return Encryption::sha256(targetFile.readAll());
 }
 
-QStringList ImageManager::getImageHistoryPaths()
-{
-    auto imagesDir = DirectoryManager::getTmpDirectory(DirectoryManager::DirectoryTypeTmp::ImportedImages);
+QStringList ImageManager::getImageHistoryPaths() {
+    auto imagesDir = DirectoryManager::getTmpDirectory(
+        DirectoryManager::DirectoryTypeTmp::ImportedImages);
     auto imgFiles = imagesDir.entryList();
-    imgFiles.removeAll("."); imgFiles.removeAll(".."); // Обход бага кьюта
+    imgFiles.removeAll(".");
+    imgFiles.removeAll("..");  // Обход бага кьюта
 
     QStringList res;
     for (auto& entr : imgFiles) {

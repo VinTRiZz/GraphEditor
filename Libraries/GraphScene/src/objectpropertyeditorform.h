@@ -32,7 +32,7 @@ private:
 
     ObjectViewItems::ItemBase* m_pTargetItem{nullptr};
 
-    QWidget* m_selectedIconLabel {nullptr};
+    QWidget* m_selectedIconLabel{nullptr};
     void initHistoryGalery();
     void initIcons();
 

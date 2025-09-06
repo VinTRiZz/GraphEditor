@@ -147,7 +147,8 @@ void VertexConnectionLine::setBorderColor(const QColor& penColor) {
     m_pArrowHeadPolygon->setBrush(m_penGradient);
 
     if (isSelected()) {
-        m_pArrowHeadPolygon->setPen(QPen(getSelectionColor(), 8, Qt::SolidLine, Qt::RoundCap));
+        m_pArrowHeadPolygon->setPen(
+            QPen(getSelectionColor(), 8, Qt::SolidLine, Qt::RoundCap));
     } else {
         m_pArrowHeadPolygon->setPen(QPen(Qt::transparent));
     }
@@ -163,7 +164,8 @@ void VertexConnectionLine::setSelectionColor(const QColor& penColor) {
     m_lineSelected->setPen(QPen(penColor, 8, Qt::SolidLine, Qt::RoundCap));
 
     if (isSelected()) {
-        m_pArrowHeadPolygon->setPen(QPen(penColor, 8, Qt::SolidLine, Qt::RoundCap));
+        m_pArrowHeadPolygon->setPen(
+            QPen(penColor, 8, Qt::SolidLine, Qt::RoundCap));
     } else {
         m_pArrowHeadPolygon->setPen(QPen(Qt::transparent));
     }

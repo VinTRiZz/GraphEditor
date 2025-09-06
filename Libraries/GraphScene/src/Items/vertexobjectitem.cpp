@@ -49,8 +49,7 @@ VertexObject::~VertexObject() {
     }
 }
 
-void VertexObject::setImageByHash(const QString &imageHash)
-{
+void VertexObject::setImageByHash(const QString& imageHash) {
     auto& imgManager = ImageManager::getInstance();
     auto img = imgManager.getImageByHash(imageHash);
     PictureObjectItem::setImage(img, imageHash);

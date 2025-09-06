@@ -19,8 +19,8 @@ TEST(FormatSaving, GSE_Format) {
                                   // затирание данных)
     saveFormat.setGraphMaintainer(gMaintaner);
 
-    QString testTargetPath = QDir::tempPath() + QDir::separator() +
-                             "GraphEditorSaveTest.gse";
+    QString testTargetPath =
+        QDir::tempPath() + QDir::separator() + "GraphEditorSaveTest.gse";
 
     // С расширением
     EXPECT_TRUE(saveFormat.save(testTargetPath));

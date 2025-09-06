@@ -37,28 +37,30 @@ std::string LoggingMaster::getCurrentTimestamp() const {
 }
 
 std::string LoggingMaster::getCurrentTimestampFormatted() const {
-    return QDateTime::currentDateTime().toString("yyyy-MM-dd_hh-mm-ss").toStdString();
+    return QDateTime::currentDateTime()
+        .toString("yyyy-MM-dd_hh-mm-ss")
+        .toStdString();
 
     // Предыдущая версия
-//    // System time value
-//    auto timeValue = std::time(nullptr);
-//    auto locTime = std::localtime(&timeValue);
+    //    // System time value
+    //    auto timeValue = std::time(nullptr);
+    //    auto locTime = std::localtime(&timeValue);
 
-//    auto formattedNumber = [](uint8_t iNum) -> std::string {
-//        return (iNum > 9 ? std::to_string(iNum)
-//                         : std::string("0") + std::to_string(iNum));
-//    };
-//    return {formattedNumber(locTime->tm_hour) + "-" +
-//            formattedNumber(locTime->tm_min) + "-" +
-//            formattedNumber(locTime->tm_sec) + "_" +
-//            formattedNumber(locTime->tm_mday) + "-" +
-//            formattedNumber(locTime->tm_mon) + "-20" +
-//            formattedNumber(locTime->tm_year - 100)};
+    //    auto formattedNumber = [](uint8_t iNum) -> std::string {
+    //        return (iNum > 9 ? std::to_string(iNum)
+    //                         : std::string("0") + std::to_string(iNum));
+    //    };
+    //    return {formattedNumber(locTime->tm_hour) + "-" +
+    //            formattedNumber(locTime->tm_min) + "-" +
+    //            formattedNumber(locTime->tm_sec) + "_" +
+    //            formattedNumber(locTime->tm_mday) + "-" +
+    //            formattedNumber(locTime->tm_mon) + "-20" +
+    //            formattedNumber(locTime->tm_year - 100)};
 }
 
 void LoggingMaster::clearExtraLogs() {
-    auto logdir =
-        DirectoryManager::getSystemDirectory(DirectoryManager::DirectoryTypeSystem::Logs);
+    auto logdir = DirectoryManager::getSystemDirectory(
+        DirectoryManager::DirectoryTypeSystem::Logs);
     auto logfiles = logdir.entryList();
     logfiles.removeOne(".");
     logfiles.removeOne("..");  // Игнорируем текущую и директорию выше (кьют
@@ -101,7 +103,8 @@ void LoggingMaster::clearExtraLogs() {
 }
 
 LoggingMaster::LoggingMaster() {
-    logfile.setFileName(DirectoryManager::getSystemDirectoryPath(DirectoryManager::DirectoryTypeSystem::Logs) +
+    logfile.setFileName(DirectoryManager::getSystemDirectoryPath(
+                            DirectoryManager::DirectoryTypeSystem::Logs) +
                         getCurrentTimestampFormatted().c_str() + ".log");
 
     isWorking = true;

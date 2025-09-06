@@ -6,10 +6,9 @@
 #include <QBuffer>
 #include <QFileInfo>
 #include <QGraphicsSceneMouseEvent>
+#include <QImage>
 #include <QLabel>
 #include <QTextOption>
-
-#include <QImage>
 
 #include "constants.h"
 
@@ -46,7 +45,7 @@ LabelItem* PictureObjectItem::getLabel() const {
     return m_nameItem;
 }
 
-void PictureObjectItem::setImage(const QImage& img, const QString &imageHash) {
+void PictureObjectItem::setImage(const QImage& img, const QString& imageHash) {
     if (img.isNull()) {
         setData(ObjectViewConstants::OBJECTFIELD_PICTURE_HASH, {});
         m_vertexImage->setPixmap({});
@@ -58,8 +57,8 @@ void PictureObjectItem::setImage(const QImage& img, const QString &imageHash) {
     setData(ObjectViewConstants::OBJECTFIELD_PICTURE_HASH, imageHash);
 
     auto newImage = QPixmap::fromImage(img);
-//    newImage = newImage.scaled(m_vertexEllipse->boundingRect().width(),
-//                               m_vertexEllipse->boundingRect().height());
+    //    newImage = newImage.scaled(m_vertexEllipse->boundingRect().width(),
+    //                               m_vertexEllipse->boundingRect().height());
     newImage = newImage.scaled(1000, 1000);
     m_vertexImage->setPixmap(newImage);
     m_vertexImage->show();
@@ -69,8 +68,7 @@ void PictureObjectItem::setImage(const QImage& img, const QString &imageHash) {
     setRect(boundingRect());
 }
 
-QString PictureObjectItem::getImageHash() const
-{
+QString PictureObjectItem::getImageHash() const {
     return data(ObjectViewConstants::OBJECTFIELD_PICTURE_HASH).toString();
 }
 

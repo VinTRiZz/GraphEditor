@@ -2,10 +2,9 @@
 
 #include <QColorDialog>
 #include <QFileInfo>
+#include <QImage>
 #include <QPainter>
 #include <QPropertyAnimation>
-
-#include <QImage>
 
 #include "logging.h"
 

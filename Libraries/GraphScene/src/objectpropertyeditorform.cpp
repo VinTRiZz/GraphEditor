@@ -14,7 +14,7 @@
 #include "Items/vertexobjectitem.h"
 #include "ui_objectpropertyeditorform.h"
 
-const auto PROPEDITORFORM_PROPERTY_IMAGEHASH {"imagehash"};
+const auto PROPEDITORFORM_PROPERTY_IMAGEHASH{"imagehash"};
 
 using namespace CommonFunctions;
 
@@ -58,9 +58,9 @@ void ObjectPropertyEditorForm::setTargetItem(
 
     auto pVertex = dynamic_cast<ObjectViewItems::VertexObject*>(m_pTargetItem);
 
-      if (nullptr != pVertex) {
-          selectImage(pVertex->getImageHash());
-      }
+    if (nullptr != pVertex) {
+        selectImage(pVertex->getImageHash());
+    }
     ui->property_tabWidget->setTabEnabled(1, nullptr != pVertex);
 
     auto isConnectionEditing =
@@ -80,17 +80,19 @@ void ObjectPropertyEditorForm::acceptChanges() {
     m_pTargetItem->setBackgroundColor(getColor(ui->bgrColor_label));
     m_pTargetItem->setSelectionColor(getColor(ui->selectedColor_label));
 
-      if (auto pVertex =
-              dynamic_cast<ObjectViewItems::VertexObject *>(m_pTargetItem);
-          nullptr != pVertex) {
-          if (nullptr != m_selectedIconLabel) {
-              auto& imgManager = ImageManager::getInstance();
-              auto imgHash = m_selectedIconLabel->property(PROPEDITORFORM_PROPERTY_IMAGEHASH).toString();
-              pVertex->setImageByHash(imgHash);
-          } else {
-              pVertex->setImageByHash({});
-          }
-      }
+    if (auto pVertex =
+            dynamic_cast<ObjectViewItems::VertexObject*>(m_pTargetItem);
+        nullptr != pVertex) {
+        if (nullptr != m_selectedIconLabel) {
+            auto& imgManager = ImageManager::getInstance();
+            auto imgHash =
+                m_selectedIconLabel->property(PROPEDITORFORM_PROPERTY_IMAGEHASH)
+                    .toString();
+            pVertex->setImageByHash(imgHash);
+        } else {
+            pVertex->setImageByHash({});
+        }
+    }
 
     if (auto pConnection =
             dynamic_cast<ObjectViewItems::VertexConnectionLine*>(m_pTargetItem);
@@ -114,20 +116,20 @@ void ObjectPropertyEditorForm::initHistoryGalery() {
     ui->imageHistoryGalery->setSelectionColor(QColor(161, 209, 207));
 
     connect(ui->openImage_pushButton, &QPushButton::clicked, this, [this]() {
-        auto targetPath = QFileDialog::getOpenFileName(
-            nullptr, "Выберите изображение",
-            DirectoryManager::getDocumentsPath());
+        auto targetPath =
+            QFileDialog::getOpenFileName(nullptr, "Выберите изображение",
+                                         DirectoryManager::getDocumentsPath());
 
         addHistoryImage(targetPath);
     });
 
-    connect(ui->imageHistoryGalery, &WidgetGalery::selectionChanged,
-            this, [this](QWidget* pWidget){
-        if (nullptr != pWidget) {
-            ui->iconGalery->clearSelection();
-        }
-        m_selectedIconLabel = pWidget;
-    });
+    connect(ui->imageHistoryGalery, &WidgetGalery::selectionChanged, this,
+            [this](QWidget* pWidget) {
+                if (nullptr != pWidget) {
+                    ui->iconGalery->clearSelection();
+                }
+                m_selectedIconLabel = pWidget;
+            });
 
     auto history = ImageManager::getImageHistoryPaths();
     for (auto& img : history) {
@@ -140,13 +142,13 @@ void ObjectPropertyEditorForm::initIcons() {
     ui->iconGalery->setColumnCount(3);
     ui->iconGalery->setSelectionColor(QColor(161, 209, 207));
 
-    connect(ui->iconGalery, &WidgetGalery::selectionChanged,
-            this, [this](QWidget* pWidget){
-        if (nullptr != pWidget) {
-            ui->imageHistoryGalery->clearSelection();
-        }
-        m_selectedIconLabel = pWidget;
-    });
+    connect(ui->iconGalery, &WidgetGalery::selectionChanged, this,
+            [this](QWidget* pWidget) {
+                if (nullptr != pWidget) {
+                    ui->imageHistoryGalery->clearSelection();
+                }
+                m_selectedIconLabel = pWidget;
+            });
 
     // Добавляем элементы из ресурсов
     auto addIcon = [this](const QString& iconPath, const QString& iconName) {
@@ -156,8 +158,7 @@ void ObjectPropertyEditorForm::initIcons() {
         auto img = imgmanager.getImageFromPath(iconBasepath.arg(iconPath));
         auto labelFixedSize = QSize(80, 80);
 
-        auto pxmap =
-            QPixmap::fromImage(img.second.scaled(labelFixedSize));
+        auto pxmap = QPixmap::fromImage(img.second.scaled(labelFixedSize));
         auto pLabel = new QLabel(this);
         pLabel->setPixmap(pxmap);
         pLabel->setProperty(PROPEDITORFORM_PROPERTY_IMAGEHASH, img.first);
@@ -168,15 +169,15 @@ void ObjectPropertyEditorForm::initIcons() {
     addIcon("person/red.svg", "Человек (К)");
 }
 
-void ObjectPropertyEditorForm::addHistoryImage(const QString &targetPath)
-{
+void ObjectPropertyEditorForm::addHistoryImage(const QString& targetPath) {
     auto img = ImageManager::getInstance().getImageFromPath(targetPath);
 
     auto imgName = QFileInfo(targetPath).baseName();
-    auto existWidget = ui->imageHistoryGalery->getWidget(
-        [&img](QWidget* pLabel) {
-            return (img.first == pLabel->property(PROPEDITORFORM_PROPERTY_IMAGEHASH).toString());
-        });
+    auto existWidget = ui->imageHistoryGalery->getWidget([&img](
+                                                             QWidget* pLabel) {
+        return (img.first ==
+                pLabel->property(PROPEDITORFORM_PROPERTY_IMAGEHASH).toString());
+    });
     if (nullptr != existWidget) {
         ui->imageHistoryGalery->setLabel(existWidget, imgName);
         LOG_INFO("Image exist, nothing to add into galery");
@@ -185,22 +186,25 @@ void ObjectPropertyEditorForm::addHistoryImage(const QString &targetPath)
 
     auto& imgManager = ImageManager::getInstance();
     auto labelFixedSize = QSize(80, 80);
-    auto pxmap =
-        QPixmap::fromImage(img.second.scaled(labelFixedSize.width(), labelFixedSize.height()));
+    auto pxmap = QPixmap::fromImage(
+        img.second.scaled(labelFixedSize.width(), labelFixedSize.height()));
 
     auto pLabel = new QLabel(this);
     pLabel->setPixmap(pxmap);
     pLabel->setProperty(PROPEDITORFORM_PROPERTY_IMAGEHASH, img.first);
     ui->imageHistoryGalery->addWidget(pLabel, imgName);
 
-    auto imageHistoryDir = DirectoryManager::getTmpDirectoryPath(DirectoryManager::DirectoryTypeTmp::ImportedImages);
+    auto imageHistoryDir = DirectoryManager::getTmpDirectoryPath(
+        DirectoryManager::DirectoryTypeTmp::ImportedImages);
     QFile::copy(targetPath, imageHistoryDir + QFileInfo(targetPath).fileName());
 }
 
-void ObjectPropertyEditorForm::selectImage(const QString &imageHash)
-{
-    auto selectResult = ui->imageHistoryGalery->selectWidget([&](auto* pWidget) -> bool {
-        auto res = (imageHash == pWidget->property(PROPEDITORFORM_PROPERTY_IMAGEHASH).toString());
+void ObjectPropertyEditorForm::selectImage(const QString& imageHash) {
+    auto selectResult = ui->imageHistoryGalery->selectWidget([&](auto* pWidget)
+                                                                 -> bool {
+        auto res =
+            (imageHash ==
+             pWidget->property(PROPEDITORFORM_PROPERTY_IMAGEHASH).toString());
         if (res) {
             m_selectedIconLabel = pWidget;
         }
@@ -211,7 +215,9 @@ void ObjectPropertyEditorForm::selectImage(const QString &imageHash)
     }
 
     ui->iconGalery->selectWidget([&](auto* pWidget) -> bool {
-        auto res = (imageHash == pWidget->property(PROPEDITORFORM_PROPERTY_IMAGEHASH).toString());
+        auto res =
+            (imageHash ==
+             pWidget->property(PROPEDITORFORM_PROPERTY_IMAGEHASH).toString());
         if (res) {
             m_selectedIconLabel = pWidget;
         }

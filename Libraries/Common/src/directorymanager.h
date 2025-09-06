@@ -15,16 +15,17 @@ public:
     static QString getDocumentsPath();
 
     /**
-     * @brief The DirectoryTypeSystem enum  Необходимые для работы приложения директории
+     * @brief The DirectoryTypeSystem enum  Необходимые для работы приложения
+     * директории
      */
     enum class DirectoryTypeSystem : int {
         Root,
-        Logs,           // Логи приложения
-        Profiles,       // Профили работы (конфиги)
-        Backup,         // Бэкапы файлов
-        Sections,       // Предустановленные тематические разделы
-        Vertices,       // Предустановленные виды вершин
-        Connections,    // Предустановленные виды соединений
+        Logs,         // Логи приложения
+        Profiles,     // Профили работы (конфиги)
+        Backup,       // Бэкапы файлов
+        Sections,     // Предустановленные тематические разделы
+        Vertices,     // Предустановленные виды вершин
+        Connections,  // Предустановленные виды соединений
     };
     static QDir getSystemDirectory(DirectoryTypeSystem dtype);
     static QString getSystemDirectoryPath(DirectoryTypeSystem dtype,
@@ -35,26 +36,27 @@ public:
      */
     enum class DirectoryTypeTmp : int {
         Root,
-        ImportedImages,    // Импортированные изображения (для восст. истории)
-        Unsaved,           // Изменения в файлах до сохранения
-        Cache,             // Прочие объекты кэша
+        ImportedImages,  // Импортированные изображения (для восст. истории)
+        Unsaved,         // Изменения в файлах до сохранения
+        Cache,           // Прочие объекты кэша
     };
     static QDir getTmpDirectory(DirectoryTypeTmp dtype);
     static QString getTmpDirectoryPath(DirectoryTypeTmp dtype,
-                                          bool withNativeSeparator = true);
-
+                                       bool withNativeSeparator = true);
 
 private:
     void checkup(const QString& rootdir);
 
-    template <typename MapT, typename TypeT>
-    static QString getDirectoryPath(const MapT& typeMap, TypeT dtype, bool withNativeSeparator = true);
+    template<typename MapT, typename TypeT>
+    static QString getDirectoryPath(const MapT& typeMap, TypeT dtype,
+                                    bool withNativeSeparator = true);
 
-    template <typename MapT>
-    void createDirectories(const MapT& dirsMap, const QString& rootdir, const QString& dirsType);
+    template<typename MapT>
+    void createDirectories(const MapT& dirsMap, const QString& rootdir,
+                           const QString& dirsType);
 
     void checkupSystem(const QString& rootdir);
-    std::map<DirectoryTypeSystem, QString>  m_systemDirectoryPaths;
+    std::map<DirectoryTypeSystem, QString> m_systemDirectoryPaths;
 
     void checkupTmp();
     std::map<DirectoryTypeTmp, QString> m_tmpDirectoryPaths;

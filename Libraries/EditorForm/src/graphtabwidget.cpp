@@ -26,7 +26,8 @@ GraphTabWidget::GraphTabWidget(QWidget* parent)
             [this](int tabIndex) {
                 auto tabTargetWidget =
                     ui->editorForms_tabWidget->widget(tabIndex);
-                auto pTargetForm = static_cast<GraphEditorForm*>(ui->editorForms_tabWidget->widget(tabIndex));
+                auto pTargetForm = static_cast<GraphEditorForm*>(
+                    ui->editorForms_tabWidget->widget(tabIndex));
 
                 if (nullptr == pTargetForm) {
                     LOG_ERROR("Did not found target text to remove tab!");
@@ -39,7 +40,8 @@ GraphTabWidget::GraphTabWidget(QWidget* parent)
                     pTargetForm->getIsSavepathValid()) {
                     auto userResponse = QMessageBox::warning(
                         this, "Внимание!", "Сохранить перед закрытием?",
-                        QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::No);
+                        QMessageBox::StandardButton::Yes |
+                            QMessageBox::StandardButton::No);
                     if (userResponse == QMessageBox::StandardButton::Yes) {
                         pTargetForm->saveGraph();
                     }

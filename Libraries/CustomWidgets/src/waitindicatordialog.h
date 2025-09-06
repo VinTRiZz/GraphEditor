@@ -2,18 +2,16 @@
 #define WAITINDICATORDIALOG_H
 
 #include <QDialog>
-
 #include <QTimer>
 
 namespace Ui {
 class WaitIndicatorDialog;
 }
 
-class WaitIndicatorDialog : public QDialog
-{
+class WaitIndicatorDialog : public QDialog {
     Q_OBJECT
 public:
-    explicit WaitIndicatorDialog(QWidget *parent = nullptr);
+    explicit WaitIndicatorDialog(QWidget* parent = nullptr);
     ~WaitIndicatorDialog();
 
     static WaitIndicatorDialog& getInstance();
@@ -41,10 +39,10 @@ public slots:
     void setPercent(int perc);
 
 private:
-    Ui::WaitIndicatorDialog *ui;
+    Ui::WaitIndicatorDialog* ui;
 
     QTimer m_deadTimer;
     QTimer m_hideTimer;
 };
 
-#endif // WAITINDICATORDIALOG_H
+#endif  // WAITINDICATORDIALOG_H

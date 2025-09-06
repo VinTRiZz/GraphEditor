@@ -19,8 +19,8 @@ TEST(FormatSaving, GSE_JSON_Format) {
                                   // затирание данных)
     saveFormat.setGraphMaintainer(gMaintaner);
 
-    QString testTargetPath = QDir::tempPath() + QDir::separator() +
-                             "GraphEditorSaveTest.gsj";
+    QString testTargetPath =
+        QDir::tempPath() + QDir::separator() + "GraphEditorSaveTest.gsj";
     EXPECT_TRUE(saveFormat.save(testTargetPath));
     EXPECT_EQ(graphCopy, savedGraph);
 

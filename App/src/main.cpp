@@ -31,7 +31,8 @@ int main(int argc, char* argv[]) {
     parser.addVersionOption();
 
     QCommandLineOption dirOption(QStringList() << "d" << "dir",
-                                 "Data directory of an app", "DataDir", QString());
+                                 "Data directory of an app", "DataDir",
+                                 QString());
     parser.addOption(dirOption);
 
     parser.process(a);

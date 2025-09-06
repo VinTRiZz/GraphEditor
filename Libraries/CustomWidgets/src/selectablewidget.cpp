@@ -13,6 +13,8 @@ SelectableWidget::SelectableWidget(QWidget* parent) : QWidget(parent) {
 
     m_widgetNameLabel = new QLabel(this);
     m_widgetNameLabel->setWordWrap(true);
+    m_widgetNameLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+
     layout()->addWidget(m_widgetNameLabel);
     m_widgetNameLabel->setText("Изображение");
 

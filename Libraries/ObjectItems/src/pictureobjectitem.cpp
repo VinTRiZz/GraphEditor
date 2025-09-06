@@ -55,8 +55,9 @@ void PictureObjectItem::setImage(const QImage& img, const QString &imageHash) {
     setData(ObjectViewConstants::OBJECTFIELD_PICTURE_HASH, imageHash);
 
     auto newImage = QPixmap::fromImage(img);
-    newImage = newImage.scaled(m_vertexEllipse->boundingRect().width(),
-                               m_vertexEllipse->boundingRect().height());
+//    newImage = newImage.scaled(m_vertexEllipse->boundingRect().width(),
+//                               m_vertexEllipse->boundingRect().height());
+    newImage = newImage.scaled(1000, 1000);
     m_vertexImage->setPixmap(newImage);
     m_vertexImage->show();
     m_vertexEllipse->hide();

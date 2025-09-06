@@ -31,6 +31,7 @@ void WidgetGalery::addWidget(QWidget* pWidget, const QString& widgetLabel) {
     auto selectableWidget = new ProxyWidget(widget());
     selectableWidget->setWidget(pWidget, widgetLabel);
     selectableWidget->setSelectionColor(m_selectionColor);
+    selectableWidget->setFixedSize(m_widgetSize);
 
     connect(selectableWidget, &ProxyWidget::selectionToggled, selectableWidget,
             [this, selectableWidget](bool isSelectedState) {

@@ -150,13 +150,12 @@ void ObjectPropertyEditorForm::initIcons() {
         auto& imgmanager = ImageManager::getInstance();
 
         auto img = imgmanager.getImageFromPath(iconBasepath.arg(iconPath));
-        auto labelFixedSize = QSize(70, 70);
+        auto labelFixedSize = QSize(80, 80);
 
         auto pxmap =
             QPixmap::fromImage(img.second.scaled(labelFixedSize));
         auto pLabel = new QLabel(this);
         pLabel->setPixmap(pxmap);
-        pLabel->setFixedSize(labelFixedSize);
         pLabel->setProperty(PROPEDITORFORM_PROPERTY_IMAGEHASH, img.first);
         ui->iconGalery->addWidget(pLabel, iconName);
     };
@@ -181,12 +180,11 @@ void ObjectPropertyEditorForm::addHistoryImage(const QString &targetPath)
     }
 
     auto& imgManager = ImageManager::getInstance();
-    auto labelFixedSize = QSize(70, 70);
+    auto labelFixedSize = QSize(80, 80);
     auto pxmap =
         QPixmap::fromImage(img.second.scaled(labelFixedSize.width(), labelFixedSize.height()));
 
     auto pLabel = new QLabel(this);
-    pLabel->setFixedSize(labelFixedSize);
     pLabel->setPixmap(pxmap);
     pLabel->setProperty(PROPEDITORFORM_PROPERTY_IMAGEHASH, img.first);
     ui->imageHistoryGalery->addWidget(pLabel, imgName);

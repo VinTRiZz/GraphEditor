@@ -30,10 +30,10 @@ signals:
     void selectionToggled(bool isWidgetSelected);
 
 protected:
-    bool m_isSelected{false};
-    QColor m_selectionColor{Qt::green};
-    QLabel* m_widgetNameLabel;
-    QWidget* m_widget{nullptr};  // Для упрощения доступа
+    bool        m_isSelected{false};
+    QColor      m_selectionColor{Qt::green};
+    QLabel*     m_widgetNameLabel;
+    QWidget*    m_widget{nullptr};  // Для упрощения доступа
 
     void paintEvent(QPaintEvent* e) override;
     void mouseReleaseEvent(QMouseEvent* e) override;

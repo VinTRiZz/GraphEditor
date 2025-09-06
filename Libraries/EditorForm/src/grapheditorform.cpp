@@ -138,6 +138,9 @@ void GraphEditorForm::showObjectProperties(QGraphicsItem* pTargetItem) {
 
 void GraphEditorForm::hideObjectProperties() {
     ui->props_stackedWidget->setCurrentIndex(1);
+    if (ui->props_stackedWidget->isHidden()) {
+        return;
+    }
 
     // Чтобы не "моргало"
     showGraphProperties();

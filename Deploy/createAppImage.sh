@@ -25,12 +25,18 @@ cd $APPIMAGE_DIR
 
 # Копирование библиотек проекта
 cp -r "$CREATEAPPIMAGE_BUILDS_DIR/../lib/" ../
-cp "$CREATEAPPIMAGE_SCRIPTDIR/../DATA/images/icons/app/GraphEditor.png" "$CREATEAPPIMAGE_BUILDS_DIR/GraphEditor.png"
 sed "s/^Exec\=.*/Exec=GraphEditor-$CURRENT_PROJECT_VERSION.bin/; s/^Name\=.*/Name=GraphEditor-$CURRENT_PROJECT_VERSION/" "$CREATEAPPIMAGE_SCRIPTDIR/../DATA/desktop/GraphEditor.desktop" > "$CREATEAPPIMAGE_BUILDS_DIR/PREPARE_GraphEditor.desktop"
 
 # Для того, чтобы linuxdeploy нашёл плагин Qt
 set PATH "$PATH:$CREATEAPPIMAGE_SCRIPTDIR/tools"
 
 # Создание непосредственно AppImage
-"$CREATEAPPIMAGE_SCRIPTDIR/tools/linuxdeploy-x86_64.AppImage" --plugin qt --appdir "$CREATEAPPIMAGE_BUILDS_DIR" --output appimage -e "$CREATEAPPIMAGE_BUILDS_DIR/GraphEditor-$CURRENT_PROJECT_VERSION.bin" --icon-file="$CREATEAPPIMAGE_BUILDS_DIR/GraphEditor.png" --desktop-file="$CREATEAPPIMAGE_BUILDS_DIR/PREPARE_GraphEditor.desktop"
+"$CREATEAPPIMAGE_SCRIPTDIR/tools/linuxdeploy-x86_64.AppImage" \
+    --plugin qt \
+    --appdir "$CREATEAPPIMAGE_BUILDS_DIR" \
+    --output appimage \
+    -e "$CREATEAPPIMAGE_BUILDS_DIR/GraphEditor-$CURRENT_PROJECT_VERSION.bin" \
+    --icon-file="$CREATEAPPIMAGE_SCRIPTDIR/../DATA/images/icons/app/GraphEditor.png" \
+    --desktop-file="$CREATEAPPIMAGE_BUILDS_DIR/PREPARE_GraphEditor.desktop" \
+    #--custom-apprun="$CREATEAPPIMAGE_SCRIPTDIR/../DATA/desktop/AppRun"
 rm -r ../lib

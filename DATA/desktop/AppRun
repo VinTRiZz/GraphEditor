@@ -1,0 +1,8 @@
+#! /usr/bin/env bash
+
+set -e
+
+this_dir="$(readlink -f "$(dirname "$0")")"
+source "$this_dir"/apprun-hooks/"linuxdeploy-plugin-qt-hook.sh"
+
+exec "$this_dir"/usr/bin/GraphEditor-2.40.39.bin "$@"

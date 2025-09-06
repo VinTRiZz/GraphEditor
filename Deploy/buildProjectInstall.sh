@@ -6,8 +6,8 @@ BUILDPROJINST_SCRIPTDIR=$(realpath $(dirname "$0"))
 BUILDPROJINST_BUILDS_DIR="$BUILDPROJINST_SCRIPTDIR/../BIN/Package"
 
 # Очистка созданного ранее билда (для гарантий, что не использовался кэш)
-rm -r "$BUILDPROJINST_SCRIPTDIR/../build" &> /dev/null
-rm -r "$BUILDPROJINST_SCRIPTDIR/../BIN" &> /dev/null
+#rm -r "$BUILDPROJINST_SCRIPTDIR/../build" &> /dev/null
+#rm -r "$BUILDPROJINST_SCRIPTDIR/../BIN" &> /dev/null
 
 # Настройка проекта
 mkdir "$BUILDPROJINST_SCRIPTDIR/../build" &> /dev/null

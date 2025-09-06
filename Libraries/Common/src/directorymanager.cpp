@@ -2,6 +2,7 @@
 
 #include <QDebug>
 #include <QDir>
+#include <QFileInfo>
 
 template<typename MapT, typename TypeT>
 QString DirectoryManager::getDirectoryPath(const MapT& typeMap, TypeT dtype,
@@ -67,21 +68,15 @@ template<typename MapT>
 void DirectoryManager::createDirectories(const MapT& dirsMap,
                                          const QString& rootdir,
                                          const QString& dirsType) {
-    auto curdir = QDir::current();
-    if (!QDir(rootdir).exists()) {
-        if (!curdir.mkdir(rootdir)) {
-            throw std::domain_error(
-                std::string("DirectoryManager check: Error creating root "
-                            "directory. Type: ") +
-                dirsType.toStdString());
-        }
-        qDebug() << "[  OK  ] DirectoryManager check: Root dir created. Type:"
-                 << dirsType;
-    } else {
-        qDebug() << "[  OK  ] DirectoryManager check: Root dir exist. Type:"
-                 << dirsType;
+    QDir::current().mkdir(rootdir);
+    auto curdir = QDir(rootdir);
+    if (    !curdir.exists() ||
+            !curdir.isReadable()) {
+        qCritical() << "Root dir:       " << rootdir;
+        qCritical() << "Current dir:    " << QDir::currentPath();
+        throw std::invalid_argument(
+            "Invalid directory (not exist or not readable)");
     }
-    curdir.cd(rootdir);
 
     for (auto& [dirtype, dirpath] : dirsMap) {
         if (dirtype == MapT::key_type::Root) {
@@ -107,17 +102,16 @@ void DirectoryManager::createDirectories(const MapT& dirsMap,
 }
 
 void DirectoryManager::checkupSystem(const QString& rootdir) {
-    if (rootdir.isEmpty()) {
-        m_systemDirectoryPaths[DirectoryTypeSystem::Root] =
-            qApp->applicationDirPath() + QDir::separator() + "GraphEditor";
-    } else {
-        auto rdir = QDir(rootdir);
-        if (!rdir.exists() || !rdir.isReadable()) {
-            throw std::invalid_argument(
-                "Invalid directory (not exist or not readable)");
-        }
-        m_systemDirectoryPaths[DirectoryTypeSystem::Root] = rootdir;
+    QDir::current().mkdir(rootdir);
+    auto rdir = QDir(rootdir);
+    if (    !rdir.exists() ||
+            !rdir.isReadable()) {
+        qCritical() << "Root dir:       " << rootdir;
+        qCritical() << "Current dir:    " << QDir::currentPath();
+        throw std::invalid_argument(
+            "Invalid directory (not exist or not readable)");
     }
+    m_systemDirectoryPaths[DirectoryTypeSystem::Root] = rootdir;
 
     m_systemDirectoryPaths[DirectoryTypeSystem::Logs] = "logs";
     m_systemDirectoryPaths[DirectoryTypeSystem::Profiles] = "profiles";
@@ -125,8 +119,6 @@ void DirectoryManager::checkupSystem(const QString& rootdir) {
     m_systemDirectoryPaths[DirectoryTypeSystem::Vertices] = "vertices";
     m_systemDirectoryPaths[DirectoryTypeSystem::Connections] = "connections";
     m_systemDirectoryPaths[DirectoryTypeSystem::Backup] = "backups";
-
-    auto& rootdirpath = m_systemDirectoryPaths[DirectoryTypeSystem::Root];
 
     createDirectories(m_systemDirectoryPaths,
                       m_systemDirectoryPaths[DirectoryTypeSystem::Root],

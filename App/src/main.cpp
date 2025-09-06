@@ -4,24 +4,24 @@
 
 #include <QApplication>
 #include <QCommandLineParser>
-#include <QDateTime>
+
+#include <QDir>
 
 #include "mainwindow.h"
 
 int main(int argc, char* argv[]) {
     QApplication a(argc, argv);
 
+    qDebug() << "STARTED WITH ARGS:";
+    qDebug() << "===============";
+    for (int i = 1; i < argc; ++i) {
+        qDebug() << i << ":" << argv[i];
+    }
+    qDebug() << "===============";
+
     // Независимые настройки
     a.setApplicationName("GraphEditor");
     a.setApplicationVersion(GRAPH_EDITOR_VERSION);
-
-    QFile stylesFile(":/common/styles/mainstyles.qss");
-    if (stylesFile.open(QIODevice::ReadOnly)) {
-        a.setStyleSheet(stylesFile.readAll());
-        LOG_OK("Styles set");
-    } else {
-        LOG_ERROR("Error opening styles:", stylesFile.errorString());
-    }
 
     QCommandLineParser parser;
     parser.setApplicationDescription(
@@ -39,7 +39,18 @@ int main(int argc, char* argv[]) {
 
     // Инициализация директорий
     QString dirPath = parser.value(dirOption);
-    auto& directoryManager = DirectoryManager::getInstance(dirPath);
+    if (dirPath.isNull()) {
+        dirPath = "GraphEditor";
+    }
+    auto& inst = DirectoryManager::getInstance(dirPath);
+
+    QFile stylesFile(":/common/styles/mainstyles.qss");
+    if (stylesFile.open(QIODevice::ReadOnly)) {
+        a.setStyleSheet(stylesFile.readAll());
+        LOG_OK("Styles set");
+    } else {
+        LOG_ERROR("Error opening styles:", stylesFile.errorString());
+    }
 
     Logging::LoggingMaster::getInstance().clearExtraLogs();
     LOG_INFO_SYNC("Started GraphEditor");

@@ -1,0 +1,1 @@
+#include "../../src/waitindicatordialog.h"

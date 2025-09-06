@@ -1,4 +1,5 @@
 CONFIGURE_LIBRARY(Common)
+LINK_TARGET_LIBRARY(Common CustomWidgets)
 
 ADD_EDITOR_TEST(Common)
 

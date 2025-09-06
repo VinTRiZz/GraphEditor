@@ -127,6 +127,12 @@ void WidgetGalery::clearSelection()
     m_currentSelectedWidget = nullptr;
 }
 
+void WidgetGalery::setColumnCount(int colCount)
+{
+    m_columnCount = colCount;
+    updateLayout();
+}
+
 void WidgetGalery::updateLayout() {
     auto pCenterWidgetLayout = static_cast<QGridLayout*>(widget()->layout());
     auto pItem = pCenterWidgetLayout->takeAt(0);
@@ -140,7 +146,8 @@ void WidgetGalery::updateLayout() {
     for (auto* pWidget : m_widgets) {
         if ((m_widgetSize.width() + pCenterWidgetLayout->margin()) *
                 (currentCol + 1) >=
-            width()) {
+            width() ||
+                (currentCol == m_columnCount)) {
             currentCol = 0;
             currentRow++;
         }

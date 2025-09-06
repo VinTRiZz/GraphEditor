@@ -3,6 +3,8 @@
 
 #include <boost/noncopyable.hpp>
 
+#include <QImage>
+
 class QLabel;
 
 class ImageManager : public boost::noncopyable

@@ -106,6 +106,7 @@ void ObjectPropertyEditorForm::cancelChanges() {
 
 void ObjectPropertyEditorForm::initHistoryGalery() {
     ui->imageHistoryGalery->init();
+    ui->imageHistoryGalery->setColumnCount(3);
     ui->imageHistoryGalery->setSelectionColor(QColor(161, 209, 207));
 
     connect(ui->openImage_pushButton, &QPushButton::clicked, this, [this]() {
@@ -132,6 +133,7 @@ void ObjectPropertyEditorForm::initHistoryGalery() {
 
 void ObjectPropertyEditorForm::initIcons() {
     ui->iconGalery->init();
+    ui->iconGalery->setColumnCount(3);
     ui->iconGalery->setSelectionColor(QColor(161, 209, 207));
 
     connect(ui->iconGalery, &WidgetGalery::selectionChanged,

@@ -25,12 +25,16 @@ public:
     QWidget*    getSelectedWidget() const;
     void        clearSelection();
 
+    void setColumnCount(int colCount);
+
 signals:
     void selectionChanged(QWidget* currentSelected);
 
 private:
     QWidget* m_currentSelectedWidget{nullptr};
     std::list<QWidget*> m_widgets;
+
+    int m_columnCount {-1};
 
     QColor m_selectionColor{Qt::green};
     QSize m_widgetSize{100, 100};

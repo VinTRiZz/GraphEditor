@@ -11,8 +11,17 @@
 int main(int argc, char* argv[]) {
     QApplication a(argc, argv);
 
+    // Независимые настройки
     a.setApplicationName("GraphEditor");
     a.setApplicationVersion(GRAPH_EDITOR_VERSION);
+
+    QFile stylesFile(":/common/styles/mainstyles.qss");
+    if (stylesFile.open(QIODevice::ReadOnly)) {
+        a.setStyleSheet(stylesFile.readAll());
+        LOG_OK("Styles set");
+    } else {
+        LOG_ERROR("Error opening styles:", stylesFile.errorString());
+    }
 
     QCommandLineParser parser;
     parser.setApplicationDescription(
@@ -27,29 +36,19 @@ int main(int argc, char* argv[]) {
 
     parser.process(a);
 
+    // Инициализация директорий
     QString dirPath = parser.value(dirOption);
-    if (!dirPath.isEmpty()) {
-        auto& directoryManager = DirectoryManager::getInstance(dirPath);
-    }
-
-    auto& settingsInstance = ApplicationSettings::getInstance();
+    auto& directoryManager = DirectoryManager::getInstance(dirPath);
 
     Logging::LoggingMaster::getInstance().clearExtraLogs();
     LOG_INFO_SYNC("Started GraphEditor");
+
+    auto& settingsInstance = ApplicationSettings::getInstance();
     settingsInstance.loadSettings();
 
-    QFile stylesFile(":/common/styles/mainstyles.qss");
-    if (stylesFile.open(QIODevice::ReadOnly)) {
-        a.setStyleSheet(stylesFile.readAll());
-        LOG_OK("Styles set");
-    } else {
-        LOG_ERROR("Error opening styles:", stylesFile.errorString());
-    }
-
+    LOG_INFO("Starting app...");
     MainWindow w;
     w.show();
-
-    LOG_INFO("Starting app...");
     auto res = a.exec();
     LOG_OK("App exited normally");
 

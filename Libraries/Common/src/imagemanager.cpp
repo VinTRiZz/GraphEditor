@@ -1,5 +1,7 @@
 #include "imagemanager.h"
 
+#include "logging.h"
+
 #include <QImage>
 #include <QImageReader>
 
@@ -7,6 +9,9 @@
 
 #include <QFile>
 #include "encryption.h"
+
+#include <CustomWidgets/WaitIndicatorDialog.h>
+#include "directorymanager.h"
 
 ImageManager::ImageManager()
 {
@@ -21,9 +26,18 @@ ImageManager &ImageManager::getInstance()
 
 void ImageManager::updateCache()
 {
+    auto& waitDialog = WaitIndicatorDialog::getInstance();
+    waitDialog.setDescription("Анализ кэша...");
+
+    auto imagePaths = getImageHistoryPaths();
+    double currentStep = waitDialog.getCurrentPercent();
+    auto deltaStep = 30.0 / static_cast<double>(imagePaths.size());
+
     // Кэшируем изображения, возвращаемый результат не интересует
-    for (auto& pth : getImageHistoryPaths()) {
+    for (auto& pth : imagePaths) {
         getImageFromPath(pth);
+        currentStep += deltaStep;
+        waitDialog.setPercent(currentStep);
     }
 }
 
@@ -57,7 +71,6 @@ std::pair<QString, QImage> ImageManager::getImageFromPath(const QString& targetP
     if (res->second.isNull()) {
         LOG_ERROR("Loading image from path:", targetPath);
     } else {
-        LOG_OK("Loaded image from path:", targetPath);
         LOG_OK("Loaded image hash:", res->first);
     }
 

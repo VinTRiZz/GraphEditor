@@ -145,12 +145,12 @@ class LoggingMaster : public boost::noncopyable {
 
     std::string getCurrentTimestampFormatted() const;
 
-    void clearExtraLogs();
-
     LoggingMaster();
     ~LoggingMaster();
 
 public:
+    void clearExtraLogs();
+
     static QString getCurrentLogfile();
 
     /**

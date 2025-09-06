@@ -74,7 +74,6 @@ void LoggingMaster::clearExtraLogs() {
         std::sort(logfiles.begin(), logfiles.end(),
                   [](const QString& logFilePathLeft,
                      const QString& logFilePathRight) {
-                      // TODO: Вынести в отдельную функцию из логгера
                       // Текущий формат: 20-59-44_03-07-2025
                       auto leftBasenameDate = QDateTime::fromString(
                           QFileInfo(logFilePathLeft).baseName(), "");
@@ -124,8 +123,6 @@ LoggingMaster::LoggingMaster() {
         }
         isThreadExited = true;
     });
-
-    clearExtraLogs();
 }
 
 LoggingMaster::~LoggingMaster() {

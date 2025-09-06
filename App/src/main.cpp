@@ -34,6 +34,7 @@ int main(int argc, char* argv[]) {
 
     auto& settingsInstance = ApplicationSettings::getInstance();
 
+    Logging::LoggingMaster::getInstance().clearExtraLogs();
     LOG_INFO_SYNC("Started GraphEditor");
     settingsInstance.loadSettings();
 

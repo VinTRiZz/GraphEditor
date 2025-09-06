@@ -13,20 +13,20 @@ TEST(DirectoryManagerTest, NativePathsCheck) {
     DirectoryManager& dm = DirectoryManager::getInstance();
 
     QString rootPath =
-        dm.getDirectoryPath(DirectoryManager::DirectoryType::Root);
+        dm.getSystemDirectoryPath(DirectoryManager::DirectoryTypeSystem::Root);
     QString configPath =
-        dm.getDirectoryPath(DirectoryManager::DirectoryType::Config);
+        dm.getSystemDirectoryPath(DirectoryManager::DirectoryTypeSystem::Profiles);
     QString logsPath =
-        dm.getDirectoryPath(DirectoryManager::DirectoryType::Logs);
+        dm.getSystemDirectoryPath(DirectoryManager::DirectoryTypeSystem::Logs);
 
     EXPECT_FALSE(rootPath.isEmpty());
     EXPECT_FALSE(configPath.isEmpty());
     EXPECT_FALSE(logsPath.isEmpty());
 
     QString rootPathNative =
-        dm.getDirectoryPath(DirectoryManager::DirectoryType::Root, true);
+        dm.getSystemDirectoryPath(DirectoryManager::DirectoryTypeSystem::Root, true);
     QString rootPathUniversal =
-        dm.getDirectoryPath(DirectoryManager::DirectoryType::Root, false);
+        dm.getSystemDirectoryPath(DirectoryManager::DirectoryTypeSystem::Root, false);
 
 #ifdef Q_OS_WIN
     EXPECT_TRUE(rootPathNative.contains('\\'));
@@ -40,35 +40,29 @@ TEST(DirectoryManagerTest, NativePathsCheck) {
 TEST(DirectoryManagerTest, DirectoryExistanceCheck) {
     DirectoryManager& dm = DirectoryManager::getInstance();
 
-    QDir rootDir = dm.getDirectory(DirectoryManager::DirectoryType::Root);
+    QDir rootDir = dm.getSystemDirectoryPath(DirectoryManager::DirectoryTypeSystem::Root);
     EXPECT_TRUE(rootDir.exists());
 
-    QDir configDir = dm.getDirectory(DirectoryManager::DirectoryType::Config);
+    QDir configDir = dm.getSystemDirectoryPath(DirectoryManager::DirectoryTypeSystem::Profiles);
     EXPECT_TRUE(configDir.exists());
 
-    QDir logsDir = dm.getDirectory(DirectoryManager::DirectoryType::Logs);
+    QDir logsDir = dm.getSystemDirectoryPath(DirectoryManager::DirectoryTypeSystem::Logs);
     EXPECT_TRUE(logsDir.exists());
 
-    QDir docsDir = dm.getDirectory(DirectoryManager::DirectoryType::Documents);
-    EXPECT_TRUE(docsDir.exists());
-
-    QDir tempDir = dm.getDirectory(DirectoryManager::DirectoryType::Temporary);
-    EXPECT_TRUE(tempDir.exists());
-
-    QDir backupDir = dm.getDirectory(DirectoryManager::DirectoryType::Backup);
+    QDir backupDir = dm.getSystemDirectoryPath(DirectoryManager::DirectoryTypeSystem::Backup);
     EXPECT_TRUE(backupDir.exists());
 }
 
 TEST(DirectoryManagerTest, DirectoryIdentityCheck) {
     DirectoryManager& dm = DirectoryManager::getInstance();
 
-    QDir configDir1 = dm.getDirectory(DirectoryManager::DirectoryType::Config);
-    QDir configDir2 = dm.getDirectory(DirectoryManager::DirectoryType::Config);
+    QDir configDir1 = dm.getSystemDirectoryPath(DirectoryManager::DirectoryTypeSystem::Profiles);
+    QDir configDir2 = dm.getSystemDirectoryPath(DirectoryManager::DirectoryTypeSystem::Profiles);
     EXPECT_EQ(configDir1.absolutePath(), configDir2.absolutePath());
 
     QString configPath1 =
-        dm.getDirectoryPath(DirectoryManager::DirectoryType::Config);
+        dm.getSystemDirectoryPath(DirectoryManager::DirectoryTypeSystem::Profiles);
     QString configPath2 =
-        dm.getDirectoryPath(DirectoryManager::DirectoryType::Config);
+        dm.getSystemDirectoryPath(DirectoryManager::DirectoryTypeSystem::Profiles);
     EXPECT_EQ(configPath1, configPath2);
 }

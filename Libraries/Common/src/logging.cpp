@@ -56,7 +56,7 @@ std::string LoggingMaster::getCurrentTimestampFormatted() const {
 
 void LoggingMaster::clearExtraLogs() {
     auto logdir =
-        DirectoryManager::getDirectory(DirectoryManager::DirectoryType::Logs);
+        DirectoryManager::getSystemDirectory(DirectoryManager::DirectoryTypeSystem::Logs);
     auto logfiles = logdir.entryList();
     logfiles.removeOne(".");
     logfiles.removeOne("..");  // Игнорируем текущую и директорию выше (кьют
@@ -100,8 +100,7 @@ void LoggingMaster::clearExtraLogs() {
 }
 
 LoggingMaster::LoggingMaster() {
-    logfile.setFileName(DirectoryManager::getDirectoryPath(
-                            DirectoryManager::DirectoryType::Logs) +
+    logfile.setFileName(DirectoryManager::getSystemDirectoryPath(DirectoryManager::DirectoryTypeSystem::Logs) +
                         getCurrentTimestampFormatted().c_str() + ".log");
 
     isWorking = true;

@@ -116,8 +116,7 @@ void ObjectPropertyEditorForm::initGalery() {
     connect(ui->selectIcon_pushButton, &QPushButton::clicked, this, [this]() {
         auto targetPath = QFileDialog::getOpenFileName(
             nullptr, "Выберите изображение",
-            DirectoryManager::getDirectoryPath(
-                DirectoryManager::DirectoryType::Documents));
+            DirectoryManager::getDocumentsPath());
 
         QFile targetFile(targetPath);
         targetFile.open(QIODevice::ReadOnly);

@@ -1,4 +1,3 @@
-#include <Common/DirectoryManager.h>
 #include <GraphObject/TestGenerators.h>
 #include <gtest/gtest.h>
 
@@ -20,8 +19,7 @@ TEST(FormatSaving, GSE_Format) {
                                   // затирание данных)
     saveFormat.setGraphMaintainer(gMaintaner);
 
-    QString testTargetPath = DirectoryManager::getDirectoryPath(
-                                 DirectoryManager::DirectoryType::Temporary) +
+    QString testTargetPath = QDir::tempPath() + QDir::separator() +
                              "GraphEditorSaveTest.gse";
 
     // С расширением

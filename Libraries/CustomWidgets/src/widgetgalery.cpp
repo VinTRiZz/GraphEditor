@@ -45,7 +45,7 @@ void WidgetGalery::addWidget(QWidget* pWidget, const QString& widgetLabel) {
                     if (pWidget == selectableWidget) {
                         continue;
                     }
-                    static_cast<ProxyWidget*>(pWidget)->setSelected(false);
+                    static_cast<ProxyWidget*>(pWidget)->setSelectedSilent(false);
                 }
                 emit selectionChanged(selectableWidget->widget());
             });
@@ -125,7 +125,6 @@ void WidgetGalery::clearSelection()
     }
     static_cast<ProxyWidget*>(m_currentSelectedWidget)->setSelected(false);
     m_currentSelectedWidget = nullptr;
-    emit selectionChanged(nullptr);
 }
 
 void WidgetGalery::updateLayout() {

@@ -47,11 +47,17 @@ bool SelectableWidget::isSelected() const {
     return m_isSelected;
 }
 
-void SelectableWidget::setSelected(bool isSelected) {
+void SelectableWidget::setSelectedSilent(bool isSelected)
+{
     if (isSelected != m_isSelected) {
         m_isSelected = isSelected;
         repaint();
     }
+}
+
+void SelectableWidget::setSelected(bool isSelected) {
+    setSelectedSilent(isSelected);
+    emit selectionToggled(isSelected);
 }
 
 void SelectableWidget::paintEvent(QPaintEvent* e) {
@@ -66,7 +72,6 @@ void SelectableWidget::paintEvent(QPaintEvent* e) {
 void SelectableWidget::mouseReleaseEvent(QMouseEvent* e) {
     QWidget::mouseReleaseEvent(e);
     setSelected(!isSelected());
-    emit selectionToggled(isSelected());
 }
 
 }  // namespace WidgetGaleryHelper

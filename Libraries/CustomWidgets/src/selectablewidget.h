@@ -21,6 +21,8 @@ public:
 
     bool isSelected() const;
 
+    void setSelectedSilent(bool isSelected);
+
 public slots:
     void setSelected(bool isSelected);
 

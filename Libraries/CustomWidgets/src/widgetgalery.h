@@ -19,9 +19,14 @@ public:
     void setLabel(QWidget* pWidget, const QString& widgetLabel);
     void removeWidget(QWidget* pWidget);
 
-    bool containWidget(const std::function<bool(QWidget*)>& predicate) const;
-    QWidget* getWidget(const std::function<bool(QWidget*)>& predicate) const;
-    QWidget* getSelectedWidget() const;
+    bool        selectWidget(const std::function<bool(QWidget*)>& predicate) const;
+    bool        containWidget(const std::function<bool(QWidget*)>& predicate) const;
+    QWidget*    getWidget(const std::function<bool(QWidget*)>& predicate) const;
+    QWidget*    getSelectedWidget() const;
+    void        clearSelection();
+
+signals:
+    void selectionChanged(QWidget* currentSelected);
 
 private:
     QWidget* m_currentSelectedWidget{nullptr};

@@ -65,7 +65,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>2</number>
         </property>
         <property name="documentMode">
          <bool>true</bool>
@@ -227,7 +227,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="selectIcon_pushButton">
+           <widget class="QPushButton" name="openImage_pushButton">
             <property name="text">
              <string>Открыть...</string>
             </property>

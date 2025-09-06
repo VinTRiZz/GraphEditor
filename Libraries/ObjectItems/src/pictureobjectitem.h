@@ -17,7 +17,9 @@ public:
 
     LabelItem* getLabel() const;
 
-    void setImage(const QImage& img);
+    void setImage(const QImage& img, const QString& imageHash);
+    QString getImageHash() const;
+
     void setDisplayName(const QString& iText) override;
 
     void setBorderColor(const QColor& penColor) override;

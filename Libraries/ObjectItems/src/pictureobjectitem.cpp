@@ -45,10 +45,13 @@ LabelItem* PictureObjectItem::getLabel() const {
     return m_nameItem;
 }
 
-void PictureObjectItem::setImage(const QImage& img) {
+void PictureObjectItem::setImage(const QImage& img, const QString &imageHash) {
     if (img.isNull()) {
+        setData(ObjectViewConstants::OBJECTFIELD_PICTURE_HASH, {});
         return;
     }
+
+    setData(ObjectViewConstants::OBJECTFIELD_PICTURE_HASH, imageHash);
 
     auto newImage = QPixmap::fromImage(img);
     newImage = newImage.scaled(m_vertexEllipse->boundingRect().width(),
@@ -59,6 +62,11 @@ void PictureObjectItem::setImage(const QImage& img) {
 
     // Апдейт области
     setRect(boundingRect());
+}
+
+QString PictureObjectItem::getImageHash() const
+{
+    return data(ObjectViewConstants::OBJECTFIELD_PICTURE_HASH).toString();
 }
 
 void PictureObjectItem::setDisplayName(const QString& iText) {

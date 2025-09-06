@@ -32,10 +32,12 @@ private:
 
     ObjectViewItems::ItemBase* m_pTargetItem{nullptr};
 
-    void initGalery();
+    QWidget* m_selectedIconLabel {nullptr};
+    void initHistoryGalery();
     void initIcons();
 
     void addHistoryImage(const QString& targetPath);
+    void selectImage(const QString& imageHash);
 };
 
 #endif  // OBJECTPROPERTYEDITORFORM_H

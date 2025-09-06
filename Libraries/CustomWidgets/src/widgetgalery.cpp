@@ -36,6 +36,7 @@ void WidgetGalery::addWidget(QWidget* pWidget, const QString& widgetLabel) {
             [this, selectableWidget](bool isSelectedState) {
                 if (!isSelectedState) {
                     m_currentSelectedWidget = nullptr;
+                    emit selectionChanged(nullptr);
                     return;
                 }
                 m_currentSelectedWidget = selectableWidget;
@@ -46,6 +47,7 @@ void WidgetGalery::addWidget(QWidget* pWidget, const QString& widgetLabel) {
                     }
                     static_cast<ProxyWidget*>(pWidget)->setSelected(false);
                 }
+                emit selectionChanged(selectableWidget->widget());
             });
 
     pWidget->setParent(selectableWidget);
@@ -79,6 +81,18 @@ void WidgetGalery::removeWidget(QWidget* pWidget) {
     }
 }
 
+bool WidgetGalery::selectWidget(const std::function<bool (QWidget *)> &predicate) const
+{
+    for (auto* pWidget : m_widgets) {
+        auto pCastedWidget = static_cast<ProxyWidget*>(pWidget);
+        if (predicate(pCastedWidget->widget())) {
+            pCastedWidget->setSelected(true);
+            return true;
+        }
+    }
+    return false;
+}
+
 bool WidgetGalery::containWidget(
     const std::function<bool(QWidget*)>& predicate) const {
     for (auto* pWidget : m_widgets) {
@@ -101,7 +115,17 @@ QWidget *WidgetGalery::getWidget(const std::function<bool (QWidget *)> &predicat
 }
 
 QWidget* WidgetGalery::getSelectedWidget() const {
-    return m_currentSelectedWidget;
+    return static_cast<ProxyWidget*>(m_currentSelectedWidget)->widget();
+}
+
+void WidgetGalery::clearSelection()
+{
+    if (m_currentSelectedWidget == nullptr) {
+        return;
+    }
+    static_cast<ProxyWidget*>(m_currentSelectedWidget)->setSelected(false);
+    m_currentSelectedWidget = nullptr;
+    emit selectionChanged(nullptr);
 }
 
 void WidgetGalery::updateLayout() {

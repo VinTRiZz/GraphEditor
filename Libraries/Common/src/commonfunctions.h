@@ -99,6 +99,18 @@ QColor decodeColorGSE(const QString& iName);
 QPixmap loadImageWithAlpha(const QString& path);
 
 /**
+ * @brief loadImageHistory  Загрузить все изображения, которые были использованы в редакторе
+ * @return                  Список, может быть пустым
+ */
+std::list<QImage> loadImageHistory();
+
+/**
+ * @brief loadImageHistoryPaths Аналогичен loadImageHistory(), но не выгружает изображения
+ * @return                      Пути до изображений истории
+ */
+QStringList loadImageHistoryPaths();
+
+/**
  * @brief rectToString  Сериализация QRectF в строку
  * @param iRect
  * @return

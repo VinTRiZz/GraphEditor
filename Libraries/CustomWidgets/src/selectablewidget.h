@@ -15,6 +15,8 @@ public:
     void setWidget(QWidget* w, const QString& widgetLabel);
     QWidget* widget() const;
 
+    void setLabel(const QString& labelText);
+
     void setSelectionColor(const QColor& col);
 
     bool isSelected() const;

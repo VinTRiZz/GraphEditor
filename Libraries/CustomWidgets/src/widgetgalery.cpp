@@ -54,6 +54,19 @@ void WidgetGalery::addWidget(QWidget* pWidget, const QString& widgetLabel) {
     updateLayout();
 }
 
+void WidgetGalery::setLabel(QWidget *pWidget, const QString &widgetLabel)
+{
+    auto targetWidget = std::find_if(
+        m_widgets.begin(), m_widgets.end(), [pWidget](auto* pContainerWidget) {
+            return (pWidget ==
+                    static_cast<ProxyWidget*>(pContainerWidget)->widget());
+        });
+    if (targetWidget != m_widgets.end()) {
+        auto targetContainer = *targetWidget;
+        static_cast<ProxyWidget*>(targetContainer)->setLabel(widgetLabel);
+    }
+}
+
 void WidgetGalery::removeWidget(QWidget* pWidget) {
     auto targetWidget = std::find_if(
         m_widgets.begin(), m_widgets.end(), [pWidget](auto* pContainerWidget) {
@@ -74,6 +87,17 @@ bool WidgetGalery::containWidget(
         }
     }
     return false;
+}
+
+QWidget *WidgetGalery::getWidget(const std::function<bool (QWidget *)> &predicate) const
+{
+    for (auto* pWidget : m_widgets) {
+        auto castedWidget = static_cast<ProxyWidget*>(pWidget);
+        if (predicate(castedWidget->widget())) {
+            return castedWidget->widget();
+        }
+    }
+    return nullptr;
 }
 
 QWidget* WidgetGalery::getSelectedWidget() const {

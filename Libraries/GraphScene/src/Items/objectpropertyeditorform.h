@@ -34,6 +34,8 @@ private:
 
     void initGalery();
     void initIcons();
+
+    void addHistoryImage(const QString& targetPath);
 };
 
 #endif  // OBJECTPROPERTYEDITORFORM_H

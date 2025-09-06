@@ -34,6 +34,11 @@ QWidget* SelectableWidget::widget() const {
     return m_widget;
 }
 
+void SelectableWidget::setLabel(const QString &labelText)
+{
+    m_widgetNameLabel->setText(labelText);
+}
+
 void SelectableWidget::setSelectionColor(const QColor& col) {
     m_selectionColor = col;
 }

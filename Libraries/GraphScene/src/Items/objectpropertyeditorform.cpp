@@ -118,28 +118,13 @@ void ObjectPropertyEditorForm::initGalery() {
             nullptr, "Выберите изображение",
             DirectoryManager::getDocumentsPath());
 
-        QFile targetFile(targetPath);
-        targetFile.open(QIODevice::ReadOnly);
-        auto pxmapHash = Encryption::sha256(targetFile.readAll());
-        auto hashExist = ui->imageHistoryGalery->containWidget(
-            [&pxmapHash](QWidget* pLabel) {
-                return (pxmapHash == pLabel->property("imghash").toByteArray());
-            });
-        if (hashExist) {
-            LOG_INFO("Image exist, nothing to add into galery");
-            return;
-        }
-
-        auto img = imageFromPath(targetPath);
-        auto pxmap =
-            QPixmap::fromImage(img.scaled(250, 250, Qt::IgnoreAspectRatio));
-        auto pLabel = new QLabel;
-        pLabel->setProperty("imghash", pxmapHash);
-        pLabel->setToolTip(targetPath);
-        pLabel->setPixmap(pxmap);
-        ui->imageHistoryGalery->addWidget(pLabel,
-                                          QFileInfo(targetPath).baseName());
+        addHistoryImage(targetPath);
     });
+
+    auto history = loadImageHistoryPaths();
+    for (auto& img : history) {
+        addHistoryImage(img);
+    }
 }
 
 void ObjectPropertyEditorForm::initIcons() {
@@ -161,4 +146,35 @@ void ObjectPropertyEditorForm::initIcons() {
 
     addIcon("person/green.svg", "Человек (З)");
     addIcon("person/red.svg", "Человек (К)");
+}
+
+void ObjectPropertyEditorForm::addHistoryImage(const QString &targetPath)
+{
+    QFile targetFile(targetPath);
+    targetFile.open(QIODevice::ReadOnly);
+    auto imgName = QFileInfo(targetPath).baseName();
+
+    auto pxmapHash = Encryption::sha256(targetFile.readAll());
+    auto existWidget = ui->imageHistoryGalery->getWidget(
+        [&pxmapHash](QWidget* pLabel) {
+            return (pxmapHash == pLabel->property("imghash").toByteArray());
+        });
+    if (nullptr != existWidget) {
+        ui->imageHistoryGalery->setLabel(existWidget, imgName);
+        LOG_INFO("Image exist, nothing to add into galery");
+        return;
+    }
+
+    auto img = imageFromPath(targetPath);
+    auto pxmap =
+        QPixmap::fromImage(img.scaled(250, 250, Qt::IgnoreAspectRatio));
+    auto pLabel = new QLabel;
+    pLabel->setProperty("imghash", pxmapHash);
+    pLabel->setToolTip(targetPath);
+    pLabel->setPixmap(pxmap);
+    ui->imageHistoryGalery->addWidget(pLabel, imgName);
+    LOG_OK("Added image:", imgName);
+
+    auto imageHistoryDir = DirectoryManager::getTmpDirectoryPath(DirectoryManager::DirectoryTypeTmp::ImportedImages);
+    QFile::copy(targetPath, imageHistoryDir + QFileInfo(targetPath).fileName());
 }

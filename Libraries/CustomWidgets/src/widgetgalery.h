@@ -16,9 +16,11 @@ public:
     void setSelectionColor(const QColor& col);
 
     void addWidget(QWidget* pWidget, const QString& widgetLabel);
+    void setLabel(QWidget* pWidget, const QString& widgetLabel);
     void removeWidget(QWidget* pWidget);
 
     bool containWidget(const std::function<bool(QWidget*)>& predicate) const;
+    QWidget* getWidget(const std::function<bool(QWidget*)>& predicate) const;
     QWidget* getSelectedWidget() const;
 
 private:

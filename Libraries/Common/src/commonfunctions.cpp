@@ -208,4 +208,33 @@ QRectF rectFromString(const QString& iString) {
     return res;
 }
 
+std::list<QImage> loadImageHistory()
+{
+    auto imagesDir = DirectoryManager::getTmpDirectory(DirectoryManager::DirectoryTypeTmp::ImportedImages);
+    auto imgFiles = imagesDir.entryList();
+    imgFiles.removeAll("."); imgFiles.removeAll(".."); // Обход бага кьюта
+
+    std::list<QImage> res;
+    for (auto& entr : imgFiles) {
+        auto img = imageFromPath(imagesDir.absoluteFilePath(entr));
+        if (!img.isNull()) {
+            res.push_back(img);
+        }
+    }
+    return res;
+}
+
+QStringList loadImageHistoryPaths()
+{
+    auto imagesDir = DirectoryManager::getTmpDirectory(DirectoryManager::DirectoryTypeTmp::ImportedImages);
+    auto imgFiles = imagesDir.entryList();
+    imgFiles.removeAll("."); imgFiles.removeAll(".."); // Обход бага кьюта
+
+    QStringList res;
+    for (auto& entr : imgFiles) {
+        res.push_back(imagesDir.absoluteFilePath(entr));
+    }
+    return res;
+}
+
 }  // namespace CommonFunctions

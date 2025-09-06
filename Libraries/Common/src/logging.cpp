@@ -37,21 +37,23 @@ std::string LoggingMaster::getCurrentTimestamp() const {
 }
 
 std::string LoggingMaster::getCurrentTimestampFormatted() const {
-    // System time value
-    auto timeValue = std::time(nullptr);
-    auto locTime = std::localtime(&timeValue);
+    return QDateTime::currentDateTime().toString("yyyy-MM-dd_hh-mm-ss").toStdString();
 
-    auto formattedNumber = [](uint8_t iNum) -> std::string {
-        return (iNum > 9 ? std::to_string(iNum)
-                         : std::string("0") + std::to_string(iNum));
-    };
+    // Предыдущая версия
+//    // System time value
+//    auto timeValue = std::time(nullptr);
+//    auto locTime = std::localtime(&timeValue);
 
-    return {formattedNumber(locTime->tm_hour) + "-" +
-            formattedNumber(locTime->tm_min) + "-" +
-            formattedNumber(locTime->tm_sec) + "_" +
-            formattedNumber(locTime->tm_mday) + "-" +
-            formattedNumber(locTime->tm_mon) + "-20" +
-            formattedNumber(locTime->tm_year - 100)};
+//    auto formattedNumber = [](uint8_t iNum) -> std::string {
+//        return (iNum > 9 ? std::to_string(iNum)
+//                         : std::string("0") + std::to_string(iNum));
+//    };
+//    return {formattedNumber(locTime->tm_hour) + "-" +
+//            formattedNumber(locTime->tm_min) + "-" +
+//            formattedNumber(locTime->tm_sec) + "_" +
+//            formattedNumber(locTime->tm_mday) + "-" +
+//            formattedNumber(locTime->tm_mon) + "-20" +
+//            formattedNumber(locTime->tm_year - 100)};
 }
 
 void LoggingMaster::clearExtraLogs() {

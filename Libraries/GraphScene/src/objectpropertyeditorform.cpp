@@ -83,9 +83,13 @@ void ObjectPropertyEditorForm::acceptChanges() {
       if (auto pVertex =
               dynamic_cast<ObjectViewItems::VertexObject *>(m_pTargetItem);
           nullptr != pVertex) {
-          auto& imgManager = ImageManager::getInstance();
-          auto imgHash = m_selectedIconLabel->property(PROPEDITORFORM_PROPERTY_IMAGEHASH).toString();
-        pVertex->setImageByHash(imgHash);
+          if (nullptr != m_selectedIconLabel) {
+              auto& imgManager = ImageManager::getInstance();
+              auto imgHash = m_selectedIconLabel->property(PROPEDITORFORM_PROPERTY_IMAGEHASH).toString();
+              pVertex->setImageByHash(imgHash);
+          } else {
+              pVertex->setImageByHash({});
+          }
       }
 
     if (auto pConnection =

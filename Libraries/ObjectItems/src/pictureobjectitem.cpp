@@ -49,6 +49,9 @@ LabelItem* PictureObjectItem::getLabel() const {
 void PictureObjectItem::setImage(const QImage& img, const QString &imageHash) {
     if (img.isNull()) {
         setData(ObjectViewConstants::OBJECTFIELD_PICTURE_HASH, {});
+        m_vertexImage->setPixmap({});
+        m_vertexImage->hide();
+        m_vertexEllipse->show();
         return;
     }
 

@@ -2,6 +2,7 @@
 
 #include <QCoreApplication>
 #include <QDebug>
+#include <QDir>
 #include <QTemporaryFile>
 
 #include "applicationsettings.h"
@@ -22,9 +23,17 @@ protected:
 };
 
 // Тест работы с недавними файлами
-TEST_F(ApplicationSettingsTest, RecentFilesOperations) {
-    const QString file1 = "/path/to/file1.txt";
-    const QString file2 = "/path/to/file2.txt";
+TEST_F(ApplicationSettingsTest, HistorySaveAccuracy) {
+    QFile tstfile1(QDir::tempPath() + QDir::separator() + "test1.txt");
+    tstfile1.open(QIODevice::Truncate | QIODevice::WriteOnly);
+    tstfile1.close();
+
+    QFile tstfile2(QDir::tempPath() + QDir::separator() + "test2.txt");
+    tstfile2.open(QIODevice::Truncate | QIODevice::WriteOnly);
+    tstfile2.close();
+
+    const QString file1 = tstfile1.fileName();
+    const QString file2 = tstfile2.fileName();
 
     auto& settings = ApplicationSettings::getInstance();
 
@@ -45,7 +54,7 @@ TEST_F(ApplicationSettingsTest, RecentFilesOperations) {
     ASSERT_TRUE(recentFiles.contains(file2));
 
     // Удаление несуществующего файла
-    EXPECT_NO_THROW(settings.removeRecentFile("/non/existent/file.txt"));
+    EXPECT_NO_THROW(settings.removeRecentFile("/aaaaaaaaaaaa/aaaaaaaaaaaaaaaaaaaaa/aaaaaaaaaaaa/file.txt"));
 }
 
 // Тест уникальности файлов в списке
@@ -83,6 +92,7 @@ TEST_F(ApplicationSettingsTest, ConfigurationsAccess) {
 // Тест загрузки и сохранения настроек
 TEST_F(ApplicationSettingsTest, SettingsPersistence) {
     auto& settings = ApplicationSettings::getInstance();
+    QString testSettingsFile = "persistancetest.ini";
 
     // Создаем временный файл для теста
     QTemporaryFile tempFile;
@@ -96,32 +106,33 @@ TEST_F(ApplicationSettingsTest, SettingsPersistence) {
 
     // Сохраняем в временный файл (используем приватный метод через
     // дружественный тест)
-    settings.saveSettings();
+    settings.saveSettings(testSettingsFile);
 
     // Очищаем текущие настройки
     settings.removeRecentFile(testFile);
     ASSERT_FALSE(settings.getRecentOpenFiles().contains(testFile));
 
     // Загружаем из временного файла
-    settings.loadSettings();
+    settings.loadSettings(testSettingsFile);
 
     // Проверяем восстановление данных
     ASSERT_TRUE(settings.getRecentOpenFiles().contains(testFile));
 }
 
 // Тест публичных методов load/save
-TEST_F(ApplicationSettingsTest, PublicLoadSave) {
+TEST_F(ApplicationSettingsTest, SaveLoad) {
     auto& settings = ApplicationSettings::getInstance();
+    QString testSettingsFile = "saveload.ini";
 
     const QString testFile = qApp->applicationFilePath();
 
     settings.addRecentFile(testFile);
-    EXPECT_NO_THROW(settings.saveSettings());
+    EXPECT_NO_THROW(settings.saveSettings(testSettingsFile));
 
     // Очищаем текущее состояние
     settings.removeRecentFile(testFile);
 
     // Загружаем и проверяем восстановление
-    EXPECT_NO_THROW(settings.loadSettings());
+    EXPECT_NO_THROW(settings.loadSettings(testSettingsFile));
     ASSERT_TRUE(settings.getRecentOpenFiles().contains(testFile));
 }

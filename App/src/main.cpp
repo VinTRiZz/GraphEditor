@@ -35,6 +35,11 @@ int main(int argc, char* argv[]) {
                                  QString());
     parser.addOption(dirOption);
 
+    QCommandLineOption profileTypeOption(QStringList() << "p" << "profile",
+                                 "Profile to open with", "Profile",
+                                 QString());
+    parser.addOption(profileTypeOption);
+
     parser.process(a);
 
     // Инициализация директорий
@@ -56,7 +61,9 @@ int main(int argc, char* argv[]) {
     LOG_INFO_SYNC("Started GraphEditor");
 
     auto& settingsInstance = ApplicationSettings::getInstance();
-    settingsInstance.loadSettings();
+
+    auto profileFile = parser.value(profileTypeOption);
+    settingsInstance.loadSettings(profileFile);
 
     LOG_INFO("Starting app...");
     MainWindow w;
@@ -64,6 +71,6 @@ int main(int argc, char* argv[]) {
     auto res = a.exec();
     LOG_OK("App exited normally");
 
-    settingsInstance.saveSettings();
+    settingsInstance.saveSettings(profileFile);
     return res;
 }

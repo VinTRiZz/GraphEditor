@@ -12,8 +12,6 @@ public:
 
     // Работа с файлом настроек и классом
     static ApplicationSettings& getInstance();
-    void loadSettings();
-    void saveSettings() const;
 
     // Работа с файлом настроек для внешних целей (загрузка профилей, например)
     void loadSettings(const QString& configPath);

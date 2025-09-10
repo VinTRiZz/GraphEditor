@@ -10,20 +10,14 @@ ApplicationSettings& ApplicationSettings::getInstance() {
     return inst;
 }
 
-void ApplicationSettings::loadSettings() {
-    return loadSettings(DirectoryManager::getSystemDirectoryPath(
-                            DirectoryManager::DirectoryTypeSystem::Profiles) +
-                        APPLICATION_SETTINGS_FILE_PATH);
-}
-
-void ApplicationSettings::saveSettings() const {
-    return saveSettings(DirectoryManager::getSystemDirectoryPath(
-                            DirectoryManager::DirectoryTypeSystem::Profiles) +
-                        APPLICATION_SETTINGS_FILE_PATH);
-}
-
 void ApplicationSettings::loadSettings(const QString& configPath) {
+    if (configPath.isNull()) {
+        return loadSettings(DirectoryManager::getSystemDirectoryPath(
+                                     DirectoryManager::DirectoryTypeSystem::Profiles) +
+                                 APPLICATION_SETTINGS_FILE_PATH);
+    }
     LOG_INFO("Loading settings from file:", configPath);
+
     QSettings settings(configPath, QSettings::IniFormat);
 
     settings.beginGroup("APPSETTINGS");
@@ -55,6 +49,12 @@ void ApplicationSettings::loadSettings(const QString& configPath) {
 }
 
 void ApplicationSettings::saveSettings(const QString& configPath) const {
+    if (configPath.isNull()) {
+        return saveSettings(DirectoryManager::getSystemDirectoryPath(
+                                     DirectoryManager::DirectoryTypeSystem::Profiles) +
+                                 APPLICATION_SETTINGS_FILE_PATH);
+    }
+
     LOG_INFO("Saving settings to file:", configPath);
 
     QSettings settings(configPath, QSettings::IniFormat);

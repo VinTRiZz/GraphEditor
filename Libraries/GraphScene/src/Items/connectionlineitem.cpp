@@ -303,7 +303,7 @@ QVariant VertexConnectionLine::itemChange(GraphicsItemChange change,
         }
     }
 
-    return QGraphicsItem::itemChange(change, value);
+    return ItemBase::itemChange(change, value);
 }
 
 QRectF VertexConnectionLine::boundingRect() const {

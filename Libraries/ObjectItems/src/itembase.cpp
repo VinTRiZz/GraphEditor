@@ -74,6 +74,35 @@ void ItemBase::registerSubitem(QGraphicsItem* pItem) {
                    getObjectId());
 }
 
+void ItemBase::processEvent([[maybe_unused]] ItemBase *pSenderItem, [[maybe_unused]] EventType eventType)
+{
+    // Must be implemented in child items
+}
+
+QVariant ItemBase::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+    auto res = QGraphicsItem::itemChange(change, value);
+    switch (change)
+    {
+    case GraphicsItemChange::ItemSelectedHasChanged:
+        for  (auto& item : m_subscribedItems[EventType::Selection]) {
+            processEvent(this, EventType::Selection);
+        }
+        break;
+
+    case GraphicsItemChange::ItemPositionHasChanged:
+        for  (auto& item : m_subscribedItems[EventType::Move]) {
+            processEvent(this, EventType::Move);
+        }
+        break;
+
+    default:
+        // Do nothing
+        break;
+    }
+    return res;
+}
+
 void ItemBase::setDisplayName(const QString& text) {
     setData(OBJECTFIELD_DISPLAY_NAME, text);
 }
@@ -116,6 +145,50 @@ QColor ItemBase::getSelectionColor() const {
 
 QRectF ItemBase::boundingRect() const {
     return m_boundingRect;
+}
+
+void ItemBase::subscribeForEvent(ItemBase *pItem, EventType etype)
+{
+    if (etype == EventType::All) {
+        m_subscribedItems[EventType::Move].push_back(pItem);
+        m_subscribedItems[EventType::Selection].push_back(pItem);
+
+        // TODO: Сюда добавлять новые ивенты обязательно
+        return;
+    }
+
+    m_subscribedItems[etype].push_back(pItem);
+}
+
+void ItemBase::unsbscribeFromEvent(ItemBase *pItem, EventType etype)
+{
+    if (etype == EventType::All) {
+        unsbscribeFromEvent(pItem, EventType::Move);
+        unsbscribeFromEvent(pItem, EventType::Selection);
+
+        // TODO: Сюда добавлять новые ивенты обязательно
+        return;
+    }
+
+    auto& targetList = m_subscribedItems[etype];
+    auto targetIt = std::find(targetList.begin(), targetList.end(), pItem);
+    if (targetIt != targetList.end()) {
+        targetList.erase(targetIt);
+    }
+}
+
+std::list<ItemBase *> ItemBase::getSubscribed(EventType etype)
+{
+    if (etype == EventType::All) {
+        auto& res = m_subscribedItems[EventType::Move];
+
+        auto& res2 = m_subscribedItems[EventType::Selection];
+        std::copy(res2.begin(), res2.end(), std::back_inserter(res));
+
+        // TODO: Сюда добавлять новые ивенты обязательно
+        return res;
+    }
+    return m_subscribedItems[etype];
 }
 
 }  // namespace ObjectViewItems

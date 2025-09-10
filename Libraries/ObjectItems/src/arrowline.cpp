@@ -92,7 +92,7 @@ QVariant ArrowedLine::itemChange(GraphicsItemChange change,
         }
     }
 
-    return QGraphicsItem::itemChange(change, value);
+    return ItemBase::itemChange(change, value);
 }
 
 }  // namespace ObjectViewItems

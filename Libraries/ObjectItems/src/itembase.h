@@ -44,8 +44,19 @@ public:
 
     QRectF boundingRect() const override;
 
+    enum class EventType : int {
+        All,
+        Move,
+        Selection,
+    };
+
+    void subscribeForEvent(ItemBase* pItem, EventType etype);
+    void unsbscribeFromEvent(ItemBase* pItem, EventType etype);
+    std::list<ItemBase*> getSubscribed(EventType etype);
+
 private:
     QRectF m_boundingRect;
+    std::map<EventType, std::list<ItemBase*> > m_subscribedItems;
 
 protected:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option,
@@ -55,6 +66,11 @@ protected:
     void setSystemName(const QString& iText);
 
     void registerSubitem(QGraphicsItem* pItem);
+
+    virtual void processEvent(ItemBase* pSenderItem, EventType eventType);
+
+    // QGraphicsItem interface
+    virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 };
 
 }  // namespace ObjectViewItems

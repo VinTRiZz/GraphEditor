@@ -146,19 +146,7 @@ void VertexObject::updateConnectionLines() {
 
     connectionNumber = 0;
     for (auto pConTo : m_connectionsToThis) {
-        auto conLine = pConTo->getLine();
-
-        auto isConnectionFromLeft = conLine.x1() < x();
-        double connectionOffsetMultiplier = (isConnectionFromLeft ? -1 : 1);
-
-        auto lineOffset = static_cast<double>(connectionNumber) /
-                          (static_cast<double>(m_connectionsToThis.size() + 1));
-        auto xOffset = (isConnectionFromLeft ? 0 : vertexRadius) +
-                       lineOffset * vertexRadius -
-                       connectionOffsetMultiplier * pConTo->getArrowSize();
-
-        auto toPos = QPointF(x() + xOffset, y() - pConTo->getArrowSize());
-
+        auto toPos = QPointF(x() + vertexRadius, y() - pConTo->getArrowSize());
         pConTo->setPositionTo(toPos);
         connectionNumber++;
     }

@@ -45,7 +45,6 @@ VertexConnectionLine::VertexConnectionLine(QGraphicsItem* parent)
 
     m_penGradient.setColorAt(0.0,
                              appSettings.getObjectsConfig().getLineMainColor());
-    m_penGradient.setColorAt(0.5, Qt::lightGray);
     m_penGradient.setColorAt(
         1.0, appSettings.getObjectsConfig().getLineSecondColor());
     m_penGradient.setCoordinateMode(QLinearGradient::ObjectMode);
@@ -63,6 +62,8 @@ VertexConnectionLine::VertexConnectionLine(QGraphicsItem* parent)
         appSettings.getObjectsConfig().getLabelTextColor());
     m_labelItem->setSelectionColor(
         appSettings.getObjectsConfig().getLabelBackgroundColor());
+
+    VertexConnectionLine::setWeight(1);
 }
 
 VertexConnectionLine::~VertexConnectionLine() {
@@ -114,6 +115,13 @@ QLineF VertexConnectionLine::getLine() const {
 
 void VertexConnectionLine::setWeight(double w) {
     m_weight = w;
+    auto linePen = m_line->pen();
+    linePen.setWidth(m_weight + 1);
+    m_line->setPen(linePen);
+
+    auto lineSelPen = m_lineSelected->pen();
+    lineSelPen.setWidth(linePen.width() + 4);
+    m_lineSelected->setPen(lineSelPen);
 }
 
 double VertexConnectionLine::getWeight() const {
@@ -156,10 +164,6 @@ void VertexConnectionLine::setBorderColor(const QColor& penColor) {
 
 void VertexConnectionLine::setSelectionColor(const QColor& penColor) {
     ItemBase::setSelectionColor(penColor);
-
-    m_penGradient.setColorAt(0.0, penColor);
-    m_line->setBrush(m_penGradient);
-    m_pArrowHeadPolygon->setBrush(m_penGradient);
 
     m_lineSelected->setPen(QPen(penColor, 8, Qt::SolidLine, Qt::RoundCap));
 

@@ -30,11 +30,11 @@ VertexObject::VertexObject(QGraphicsItem* parent) : PictureObjectItem(parent) {
     auto& appSettings = ApplicationSettings::getInstance();
 
     PictureObjectItem::setSelectionColor(
-        appSettings.getObjectsConfig().getNodeSelectionColor());
+        appSettings.getObjectsConfig().m_defaultSelectionColor);
     PictureObjectItem::setBackgroundColor(
-        appSettings.getObjectsConfig().getNodeSecondColor());
+        appSettings.getObjectsConfig().m_defaultSecondColor);
     PictureObjectItem::setBorderColor(
-        appSettings.getObjectsConfig().getNodeMainColor());
+        appSettings.getObjectsConfig().m_defaultMainColor);
 }
 
 VertexObject::~VertexObject() {
@@ -60,7 +60,7 @@ void VertexObject::setBorderColor(const QColor& penColor) {
                                           ? penColor
                                           : ApplicationSettings::getInstance()
                                                 .getObjectsConfig()
-                                                .getNodeMainColor());
+                                                .m_defaultMainColor);
 }
 
 void VertexObject::setBackgroundColor(const QColor& penColor) {
@@ -68,7 +68,7 @@ void VertexObject::setBackgroundColor(const QColor& penColor) {
         penColor.isValid() ? penColor
                            : ApplicationSettings::getInstance()
                                  .getObjectsConfig()
-                                 .getNodeSecondColor());
+                                 .m_defaultSecondColor);
 }
 
 bool VertexObject::isLineSubscribed(VertexConnectionLine* pLine) {

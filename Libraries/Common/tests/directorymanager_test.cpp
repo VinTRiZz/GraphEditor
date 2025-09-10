@@ -23,18 +23,18 @@ TEST(DirectoryManagerTest, NativePathsCheck) {
     EXPECT_FALSE(configPath.isEmpty());
     EXPECT_FALSE(logsPath.isEmpty());
 
-    QString rootPathNative = dm.getSystemDirectoryPath(
-        DirectoryManager::DirectoryTypeSystem::Root, true);
-    QString rootPathUniversal = dm.getSystemDirectoryPath(
-        DirectoryManager::DirectoryTypeSystem::Root, false);
+    QString logsPathNative = dm.getSystemDirectoryPath(
+        DirectoryManager::DirectoryTypeSystem::Logs, true);
+    QString logsPathUniversal = dm.getSystemDirectoryPath(
+        DirectoryManager::DirectoryTypeSystem::Logs, false);
 
 #ifdef Q_OS_WIN
-    EXPECT_TRUE(rootPathNative.contains('\\'));
+    EXPECT_TRUE(logsPathNative.contains('\\'));
 #else
-    EXPECT_TRUE(rootPathNative.contains('/'));
+    EXPECT_TRUE(logsPathNative.contains('/'));
 #endif
 
-    EXPECT_TRUE(rootPathUniversal.contains('/'));
+    EXPECT_TRUE(logsPathUniversal.contains('/'));
 }
 
 TEST(DirectoryManagerTest, DirectoryExistanceCheck) {

@@ -15,6 +15,10 @@ public:
     void loadSettings();
     void saveSettings() const;
 
+    // Работа с файлом настроек для внешних целей (загрузка профилей, например)
+    void loadSettings(const QString& configPath);
+    void saveSettings(const QString& configPath) const;
+
     ApplicationSettingsHelper::GeneralConfiguration& getGeneralConfig();
     ApplicationSettingsHelper::ObjectsConfiguration& getObjectsConfig();
     ApplicationSettingsHelper::CanvasConfiguration& getCanvasConfig();
@@ -31,9 +35,6 @@ public:
 private:
     ApplicationSettings();
     ~ApplicationSettings();
-
-    void loadSettings(const QString& configPath);
-    void saveSettings(const QString& configPath) const;
 
     QSet<QString> m_recentFiles;
 

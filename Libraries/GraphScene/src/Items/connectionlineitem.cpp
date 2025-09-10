@@ -44,24 +44,22 @@ VertexConnectionLine::VertexConnectionLine(QGraphicsItem* parent)
     auto& appSettings = ApplicationSettings::getInstance();
 
     m_penGradient.setColorAt(0.0,
-                             appSettings.getObjectsConfig().getLineMainColor());
+                             appSettings.getObjectsConfig().m_defaultLineMainColor);
     m_penGradient.setColorAt(
-        1.0, appSettings.getObjectsConfig().getLineSecondColor());
+        1.0, appSettings.getObjectsConfig().m_defaultLineSecondColor);
     m_penGradient.setCoordinateMode(QLinearGradient::ObjectMode);
     m_line->setBrush(m_penGradient);
     m_line->setPen(QPen(Qt::transparent));
     m_pArrowHeadPolygon->setPen(QPen(Qt::transparent));
 
     VertexConnectionLine::setSelectionColor(
-        appSettings.getObjectsConfig().getLineSelectionColor());
+        appSettings.getObjectsConfig().m_defaultLineSelectionColor);
 
     m_labelItem = new LabelItem(this);
     registerSubitem(m_labelItem);
     m_labelItem->setZValue(1);
     m_labelItem->setBorderColor(
-        appSettings.getObjectsConfig().getLabelTextColor());
-    m_labelItem->setSelectionColor(
-        appSettings.getObjectsConfig().getLabelBackgroundColor());
+        appSettings.getObjectsConfig().m_defaultLabelTextColor);
 
     VertexConnectionLine::setWeight(1);
 }

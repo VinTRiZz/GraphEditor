@@ -48,45 +48,6 @@ public:
      */
     Theme stringToTheme(const QString& str) const;
 
-    // Геттеры
-    Theme getThemeType() const;  ///< Возвращает текущую тему оформления
-    bool getNeedConfirmClose()
-        const;  ///< Проверяет, требуется ли подтверждение при закрытии
-    bool getNeedBackwardCompatible()
-        const;  ///< Необходимо ли требовать обратную
-                ///< совместимость при сохранении
-    int getAutoSaveInterval()
-        const;  ///< Возвращает интервал автосохранения (в секундах)
-    bool getNeedRemoveMetadata()
-        const;  ///< Проверяет, нужно ли удалять метаданные
-    bool getNeedCleanupTempFiles()
-        const;  ///< Проверяет, нужно ли очищать временные файлы
-    unsigned getMaxLogFileCount()
-        const;  ///< Возвращает максимальное количество файлов логов
-    bool getNeedMinimizeToTray()
-        const;  ///< Проверяет, нужно ли сворачивать в трей
-    QString getDateTimeFormat() const;  ///< Возвращает формат даты/времени
-
-    // Сеттеры
-    void setThemeType(Theme theme);  ///< Устанавливает тему оформления
-    void setNeedConfirmClose(
-        bool confirm);  ///< Включает/отключает подтверждение закрытия
-    void setNeedBackwardCompatible(bool ask);  ///< Включает требование обратной
-                                               ///< совместимости при сохранении
-    void setAutoSaveInterval(
-        int seconds);  ///< Устанавливает интервал автосохранения
-    void setNeedRemoveMetadata(
-        bool remove);  ///< Включает/отключает удаление метаданных
-    void setNeedCleanupTempFiles(
-        bool cleanup);  ///< Включает/отключает очистку временных файлов
-    void setMaxLogFileCount(
-        int maxFiles);  ///< Устанавливает лимит файлов логов
-    void setMinimizeToTray(
-        bool minimize);  ///< Включает/отключает сворачивание в трей
-    void setDateTimeFormat(
-        const QString& format);  ///< Устанавливает формат даты/времени
-
-private:
     Theme m_themeType = Theme::System;
     bool m_needConfirmSave = true;
     bool m_needBackwardCompatibility = false;
@@ -119,29 +80,6 @@ public:
      */
     void addToSettingsFile(QSettings& iFile) const;
 
-    // Геттеры
-    QSize getCanvasSize() const;   ///< Возвращает размер холста по умолчанию
-    int getCanvasOpacity() const;  ///< Возвращает прозрачность холста (0-100%)
-    QColor getBackgroundColor() const;  ///< Возвращает цвет фона холста
-    QColor getGridColor() const;        ///< Возвращает цвет сетки
-    bool getIsGridEnabled() const;      ///< Проверяет, включена ли сетка
-    int getGridSize() const;            ///< Возвращает размер ячейки сетки
-    double getGridLineWidth() const;    ///< Возвращает ширину линий сетки
-    QColor getCanvasColor() const;      ///< Возвращает цвет полотна
-
-    // Сеттеры
-    void setCanvasOpacity(int opacity);  ///< Устанавливает прозрачность холста
-    void setBackgroundColor(const QColor& col);  ///< Устанавливает цвет фона
-    void setGridColor(const QColor& col);        ///< Устанавливает цвет сетки
-    void setIsGridEnabled(bool hasGrid);         ///< Включает/отключает сетку
-    void setGridSize(int size);  ///< Устанавливает размер ячейки сетки
-    void setCanvasSize(
-        const QSize& canvasSize);  ///< Устанавливает размер холста
-    void setGridLineWidth(
-        double gridLineWidth);                ///< Устанавливает ширину линий
-    void setCanvasColor(const QColor& iCol);  ///< Устанавливает цвет полотна
-
-private:
     QSize m_canvasSize{QSize(2000, 1000)};
     int m_canvasOpacity = 90;
     QColor m_backgroundColor{QColor(170, 170, 170)};
@@ -202,52 +140,6 @@ public:
         Circle,
     };
 
-    // Геттеры
-    NodeShape getDefaultNodeShape()
-        const;                         ///< Возвращает форму узлов по умолчанию
-    NodeSize getNodeSize() const;      ///< Возвращает размер узлов
-    int getLineThickness() const;      ///< Возвращает толщину линий
-    ArrowStyle getArrowStyle() const;  ///< Возвращает стиль стрелок
-
-    QColor getNodeMainColor() const;  ///< Возвращает основной цвет узлов
-    QColor getNodeSecondColor()
-        const;  ///< Возвращает дополнительный цвет узлов
-    QColor getNodeSelectionColor() const;  ///< Возвращает цвет выделения узлов
-
-    QColor getLabelTextColor() const;        ///< Возвращает цвет текста меток
-    QColor getLabelBackgroundColor() const;  ///< Возвращает цвет фона меток
-
-    QColor getLineMainColor() const;  ///< Возвращает основной цвет линий
-    QColor getLineSecondColor()
-        const;  ///< Возвращает дополнительный цвет линий
-    QColor getLineSelectionColor() const;  ///< Возвращает цвет выделения линий
-
-    // Сеттеры
-    void setDefaultNodeShape(NodeShape shape);  ///< Устанавливает форму узлов
-    void setNodeSize(NodeSize size);            ///< Устанавливает размер узлов
-    void setLineThickness(int thickness);       ///< Устанавливает толщину линий
-    void setArrowStyle(ArrowStyle style);       ///< Устанавливает стиль стрелок
-
-    void setNodeMainColor(
-        const QColor& iCol);  ///< Устанавливает основной цвет узлов
-    void setNodeSecondColor(
-        const QColor& iCol);  ///< Устанавливает доп. цвет узлов
-    void setNodeSelectionColor(
-        const QColor& iCol);  ///< Устанавливает цвет выделения узлов
-
-    void setLabelTextColor(
-        const QColor& iCol);  ///< Устанавливает цвет текста меток
-    void setLabelBackgroundColor(
-        const QColor& iCol);  ///< Устанавливает цвет фона меток
-
-    void setLineMainColor(
-        const QColor& col);  ///< Устанавливает основной цвет линий
-    void setLineSecondColor(
-        const QColor& col);  ///< Устанавливает доп. цвет линий
-    void setLineSelectionColor(
-        const QColor& col);  ///< Устанавливает цвет выделения линий
-
-private:
     NodeShape m_defaultNodeShape = NodeShape::Circle;
     NodeSize m_nodeSize = NodeSize::Medium;
     int m_lineThickness = 2;

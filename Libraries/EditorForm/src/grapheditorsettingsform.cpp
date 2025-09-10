@@ -58,34 +58,34 @@ void GraphEditorSettingsForm::loadSettings() {
 
     auto& appSettings = ApplicationSettings::getInstance();
 
-    auto canvasSizes = appSettings.getCanvasConfig().getCanvasSize();
+    auto canvasSizes = appSettings.getCanvasConfig().m_canvasSize;
     ui->spinBox_width->setValue(canvasSizes.width());
     ui->spinBox_height->setValue(canvasSizes.height());
-    ui->spinBox_gridSize->setValue(appSettings.getCanvasConfig().getGridSize());
+    ui->spinBox_gridSize->setValue(appSettings.getCanvasConfig().m_gridSize);
     ui->doubleSpinBox_gridLineWidth->setValue(
-        appSettings.getCanvasConfig().getGridLineWidth());
+        appSettings.getCanvasConfig().m_gridLineWidth);
     ui->checkBox_enableGrid->setChecked(
-        appSettings.getCanvasConfig().getIsGridEnabled());
+        appSettings.getCanvasConfig().m_isGridEnabled);
 
     setColor(ui->label_colorTheme,
-             appSettings.getCanvasConfig().getBackgroundColor());
+             appSettings.getCanvasConfig().m_backgroundColor);
     setColor(ui->label_colorCanvas,
-             appSettings.getCanvasConfig().getCanvasColor());
-    setColor(ui->label_colorGrid, appSettings.getCanvasConfig().getGridColor());
+             appSettings.getCanvasConfig().m_canvasColor);
+    setColor(ui->label_colorGrid, appSettings.getCanvasConfig().m_gridColor);
 
     setColor(ui->label_cMain,
-             appSettings.getObjectsConfig().getNodeMainColor());
+             appSettings.getObjectsConfig().m_defaultMainColor);
     setColor(ui->label_cSecond,
-             appSettings.getObjectsConfig().getNodeSecondColor());
+             appSettings.getObjectsConfig().m_defaultSecondColor);
     setColor(ui->label_cSelect,
-             appSettings.getObjectsConfig().getNodeSelectionColor());
+             appSettings.getObjectsConfig().m_defaultSelectionColor);
 
     setColor(ui->label_cMain_line,
-             appSettings.getObjectsConfig().getLineMainColor());
+             appSettings.getObjectsConfig().m_defaultLineMainColor);
     setColor(ui->label_cSecond_line,
-             appSettings.getObjectsConfig().getLineSecondColor());
+             appSettings.getObjectsConfig().m_defaultLineSecondColor);
     setColor(ui->label_cSelect_line,
-             appSettings.getObjectsConfig().getLineSelectionColor());
+             appSettings.getObjectsConfig().m_defaultLineSelectionColor);
 
     LOG_OK("Settings loaded");
 }
@@ -94,45 +94,45 @@ void GraphEditorSettingsForm::applySettings() {
     LOG_INFO_SYNC("Applying settings");
 
     auto& appSettings = ApplicationSettings::getInstance();
-    appSettings.getCanvasConfig().setCanvasSize(
-        QSize(ui->spinBox_width->value(), ui->spinBox_height->value()));
+    appSettings.getCanvasConfig().m_canvasSize =
+        QSize(ui->spinBox_width->value(), ui->spinBox_height->value());
     emit updateCanvasSize();
 
     auto sceneColor = getColor(ui->label_colorTheme);
-    appSettings.getCanvasConfig().setBackgroundColor(sceneColor);
+    appSettings.getCanvasConfig().m_backgroundColor = sceneColor;
     emit updateSceneBrush(sceneColor);
 
     auto canvasBrush = getColor(ui->label_colorCanvas);
-    appSettings.getCanvasConfig().setCanvasColor(canvasBrush);
+    appSettings.getCanvasConfig().m_canvasColor = canvasBrush;
     emit updateCanvasBrush(canvasBrush);
 
     auto gridColor = getColor(ui->label_colorGrid);
-    appSettings.getCanvasConfig().setGridColor(gridColor);
+    appSettings.getCanvasConfig().m_gridColor = gridColor;
     emit updateGridColor(gridColor);
 
-    appSettings.getCanvasConfig().setGridLineWidth(
-        ui->doubleSpinBox_gridLineWidth->value());
-    emit updateGridLineWidth(appSettings.getCanvasConfig().getGridLineWidth());
+    appSettings.getCanvasConfig().m_gridLineWidth =
+        ui->doubleSpinBox_gridLineWidth->value();
+    emit updateGridLineWidth(appSettings.getCanvasConfig().m_gridLineWidth);
 
     auto mainColor = getColor(ui->label_cMain);
     auto secondColor = getColor(ui->label_cSecond);
     auto selectedColor = getColor(ui->label_cSelect);
-    appSettings.getObjectsConfig().setNodeMainColor(mainColor);
-    appSettings.getObjectsConfig().setNodeSecondColor(secondColor);
-    appSettings.getObjectsConfig().setNodeSelectionColor(selectedColor);
+    appSettings.getObjectsConfig().m_defaultMainColor = mainColor;
+    appSettings.getObjectsConfig().m_defaultSecondColor = secondColor;
+    appSettings.getObjectsConfig().m_defaultSelectionColor = selectedColor;
 
     mainColor = getColor(ui->label_cMain_line);
     secondColor = getColor(ui->label_cSecond_line);
     selectedColor = getColor(ui->label_cSelect_line);
-    appSettings.getObjectsConfig().setLineMainColor(mainColor);
-    appSettings.getObjectsConfig().setLineSecondColor(secondColor);
-    appSettings.getObjectsConfig().setLineSelectionColor(selectedColor);
+    appSettings.getObjectsConfig().m_defaultLineMainColor = mainColor;
+    appSettings.getObjectsConfig().m_defaultLineSecondColor = secondColor;
+    appSettings.getObjectsConfig().m_defaultLineSelectionColor = selectedColor;
 
-    appSettings.getCanvasConfig().setGridSize(ui->spinBox_gridSize->value());
+    appSettings.getCanvasConfig().m_gridSize = ui->spinBox_gridSize->value();
     emit updateGridSize(ui->spinBox_gridSize->value());
 
-    appSettings.getCanvasConfig().setIsGridEnabled(
-        ui->checkBox_enableGrid->isChecked());
+    appSettings.getCanvasConfig().m_isGridEnabled =
+        ui->checkBox_enableGrid->isChecked();
 
     LOG_OK("Settings applied");
 }

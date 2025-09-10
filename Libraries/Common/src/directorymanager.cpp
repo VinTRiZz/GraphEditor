@@ -60,7 +60,11 @@ QString DirectoryManager::getTmpDirectoryPath(DirectoryTypeTmp dtype,
 }
 
 void DirectoryManager::checkup(const QString& rootdir) {
-    checkupSystem(rootdir);
+    if (rootdir.isNull()) {
+        checkupSystem("GraphEditor");
+    } else {
+        checkupSystem(rootdir);
+    }
     checkupTmp();
 }
 

@@ -68,7 +68,7 @@ void LoggingMaster::clearExtraLogs() {
 
     auto maxLogCount = ApplicationSettings::getInstance()
                            .getGeneralConfig()
-                           .getMaxLogFileCount();
+                           .m_maxLogFiles;
     if (logfiles.size() > maxLogCount) {
         LOG_INFO("Removing logfiles");
         auto currentLogfile =

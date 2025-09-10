@@ -28,7 +28,7 @@ GraphSceneView::GraphSceneView(QWidget* parent) : ObjectView(parent) {
 
     setSceneBrush(ApplicationSettings::getInstance()
                       .getCanvasConfig()
-                      .getBackgroundColor());
+                      .m_canvasColor);
     setCanvasRect(QRectF(0, 0, 2000, 2000));
     customZoom(1.0 / 200.0);
 }

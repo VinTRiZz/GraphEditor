@@ -51,7 +51,7 @@ bool SaveMaster::save(const QString& oFilePath,
     auto pFormat = formatFactory.getFormat(fileSuffix);
     if (!pFormat->isBackwardCompatible() && ApplicationSettings::getInstance()
                                                 .getGeneralConfig()
-                                                .getNeedBackwardCompatible()) {
+                                                .m_needBackwardCompatibility) {
         auto userResponse = QMessageBox::question(
             nullptr, "Обратная совместимость",
             "Формат не является обратно совместимым.\nПри сохранении в этом "

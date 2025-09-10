@@ -31,7 +31,6 @@ GraphEditorForm::GraphEditorForm(QWidget* parent)
 
     ui->graphScene->setGraphMaintaner(m_graphMaintainer);
     ui->propertyEditForm->setCurrentGraph(m_graphMaintainer);
-    ui->props_stackedWidget->hide();
 
     // Коннекты для редактора свойств объектов
     connect(ui->graphScene, &Graph::GraphEditView::openPropertyEditor, this,

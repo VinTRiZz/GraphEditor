@@ -3,8 +3,6 @@
 
 #include <GraphObject/Maintainer.h>
 
-#include <QSqlQuery>
-
 namespace Filework {
 class AbstractSaveFormat;
 }

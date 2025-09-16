@@ -1,6 +1,5 @@
 #include "formatfactory.h"
 
-#include "gse_format.h"
 #include "gsej_format.h"
 #include "gsj_format.h"
 
@@ -8,7 +7,6 @@ namespace Filework {
 
 FormatFactory::FormatFactory() {
     // Хотелось бы иначе, но никак
-    registerFormat<GSE_Format>();
     registerFormat<GSJ_Format>();
     registerFormat<GSEJ_Format>();
 

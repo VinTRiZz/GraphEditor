@@ -62,8 +62,8 @@ set(
 
 
 # Qt
-find_package(QT NAMES Qt5 REQUIRED COMPONENTS Widgets Core Gui Sql)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core Gui Sql)
+find_package(QT NAMES Qt5 REQUIRED COMPONENTS Widgets Core Gui)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core Gui)
 
 # Qt configuration
 set(CMAKE_AUTOUIC ON)

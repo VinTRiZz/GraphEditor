@@ -1,8 +1,9 @@
 #ifndef ADDOBJECTMODE_H
 #define ADDOBJECTMODE_H
 
-#include "Items/connectionlineitem.h"
-#include "Items/vertexobjectitem.h"
+#include <GraphItems/VertexConnectionItem.h>
+#include <GraphItems/VertexObjectItem.h>
+
 #include "graphmodebase.h"
 
 namespace Graph {

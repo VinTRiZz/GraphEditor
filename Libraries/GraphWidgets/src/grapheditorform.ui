@@ -100,7 +100,7 @@
   <customwidget>
    <class>ObjectPropertyEditorForm</class>
    <extends>QWidget</extends>
-   <header location="global">GraphScene/ObjectPropertyEditorForm.h</header>
+   <header>objectpropertyeditorform.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -1,8 +1,8 @@
 #ifndef OBJECTMOVEMODE_H
 #define OBJECTMOVEMODE_H
 
-#include "Items/connectionlineitem.h"
-#include "Items/vertexobjectitem.h"
+#include <GraphItems/VertexObjectItem.h>
+#include <GraphItems/VertexConnectionItem.h>
 #include "graphmodebase.h"
 
 namespace Graph {

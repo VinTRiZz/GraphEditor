@@ -1,11 +1,13 @@
 #ifndef INFORMATIONOBJECTVIEWMX_H
 #define INFORMATIONOBJECTVIEWMX_H
 
-#include <ObjectItems/LabelItem.h>
-
 #include <QLabel>
 
 #include "interactiveobjectview.h"
+
+namespace ObjectViewItems {
+    class LabelItem;
+}
 
 class InformationObjectView : public InteractiveObjectView {
 public:

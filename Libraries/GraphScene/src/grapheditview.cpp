@@ -2,26 +2,33 @@
 
 #include <Common/Logging.h>
 
+#include "grapheditmode.h"
+#include "graphviewmode.h"
+
 #include "submodes/propertyeditmode.h"
 
 namespace Graph {
 
 GraphEditView::GraphEditView(QWidget* parent) : GraphSceneView(parent) {
-    connect(&m_viewMode, &GraphViewMode::started, this,
+
+    m_viewMode = new GraphViewMode(this);
+    m_editMode = new GraphEditMode(this);
+
+    connect(m_viewMode, &GraphViewMode::started, this,
             &GraphEditView::startedView);
-    m_viewMode.setGraphScene(this);
+    m_viewMode->setGraphScene(this);
 
-    connect(&m_editMode, &GraphEditMode::started, this,
+    connect(m_editMode, &GraphEditMode::started, this,
             &GraphEditView::startedEdit);
-    m_editMode.setGraphScene(this);
+    m_editMode->setGraphScene(this);
 
-    m_viewMode.init();
+    m_viewMode->init();
 
-    m_editMode.init();
-    connect(m_editMode.getPropertyEditMode(),
+    m_editMode->init();
+    connect(m_editMode->getPropertyEditMode(),
             &PropertyEditMode::openPropertyEditor, this,
             &GraphEditView::openPropertyEditor);
-    connect(m_editMode.getPropertyEditMode(),
+    connect(m_editMode->getPropertyEditMode(),
             &PropertyEditMode::closePropertyEditor, this,
             &GraphEditView::closePropertyEditor);
 
@@ -36,21 +43,21 @@ void GraphEditView::setGraphMaintaner(const PMaintainer& pGraphMaintaner) {
 }
 
 void GraphEditView::startViewMode() {
-    setMode(&m_viewMode);
+    setMode(m_viewMode);
     LOG_INFO("Started view mode");
 }
 
 void GraphEditView::startEditMode() {
-    setMode(&m_editMode);
+    setMode(m_editMode);
     LOG_INFO("Started edit mode");
 }
 
 bool GraphEditView::isEditMode() const {
-    return m_editMode.isRunning();
+    return m_editMode->isRunning();
 }
 
 bool GraphEditView::isViewMode() const {
-    return m_viewMode.isRunning();
+    return m_viewMode->isRunning();
 }
 
 }  // namespace Graph

@@ -7,7 +7,7 @@
 
 #include <boost/noncopyable.hpp>
 
-#include "Items/connectionlineitem.h"
+#include <GraphItems/VertexConnectionItem.h>
 #include "graphmodebase.h"
 
 namespace Graph {

@@ -6,6 +6,7 @@
 #include <CustomWidgets/PasswordInsertDialog.h>
 #include <Filework/SaveMaster.h>
 #include <GraphObject/Maintainer.h>
+#include <GraphScene/EditView.h>
 
 #include <QFileDialog>
 #include <QFileInfo>

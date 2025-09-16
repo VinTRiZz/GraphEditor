@@ -4,8 +4,8 @@
 #include <GraphObject/Maintainer.h>
 #include <ObjectItems/ItemBase.h>
 
-#include "Items/connectionlineitem.h"
-#include "Items/vertexobjectitem.h"
+#include "connectionlineitem.h"
+#include "vertexobjectitem.h"
 
 namespace Graph {
 

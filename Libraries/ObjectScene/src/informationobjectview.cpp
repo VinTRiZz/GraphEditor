@@ -2,6 +2,8 @@
 
 #include <QMouseEvent>
 
+#include <ObjectItems/LabelItem.h>
+
 InformationObjectView::InformationObjectView(QWidget* parent)
     : InteractiveObjectView(parent) {
     m_pCursorLabel = new ObjectViewItems::LabelItem();

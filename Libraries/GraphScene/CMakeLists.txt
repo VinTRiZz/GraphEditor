@@ -2,8 +2,6 @@ CONFIGURE_LIBRARY(GraphScene)
 
 LINK_TARGET_LIBRARY(GraphScene Common)
 LINK_TARGET_LIBRARY(GraphScene GraphObject)
+LINK_TARGET_LIBRARY(GraphScene GraphItems)
 LINK_TARGET_LIBRARY(GraphScene CustomWidgets)
-LINK_TARGET_LIBRARY(GraphScene ObjectItems)
 LINK_TARGET_LIBRARY(GraphScene ObjectScene)
-
-ADD_EDITOR_TEST(GraphScene)

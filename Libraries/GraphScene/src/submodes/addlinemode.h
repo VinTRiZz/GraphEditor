@@ -1,8 +1,8 @@
 #ifndef ADDLINEMODE_H
 #define ADDLINEMODE_H
 
-#include "Items/connectionlineitem.h"
-#include "Items/vertexobjectitem.h"
+#include <GraphItems/VertexObjectItem.h>
+#include <GraphItems/VertexConnectionItem.h>
 #include "graphmodebase.h"
 
 namespace Graph {

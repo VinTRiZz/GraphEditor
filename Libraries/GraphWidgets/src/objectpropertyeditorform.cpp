@@ -10,8 +10,9 @@
 #include <QFileDialog>
 #include <QVariant>
 
-#include "Items/connectionlineitem.h"
-#include "Items/vertexobjectitem.h"
+#include <GraphItems/VertexConnectionItem.h>
+#include <GraphItems/VertexObjectItem.h>
+
 #include "ui_objectpropertyeditorform.h"
 
 const auto PROPEDITORFORM_PROPERTY_IMAGEHASH{"imagehash"};

@@ -5,9 +5,9 @@
 #include <GraphObject/Object.h>
 #include <ObjectItems/Constants.h>
 
-#include "Items/connectionlineitem.h"
-#include "Items/vertexobjectitem.h"
-#include "sceneitemconverter.h"
+#include <GraphItems/VertexObjectItem.h>
+#include <GraphItems/VertexConnectionItem.h>
+#include <GraphItems/SceneItemConverter.h>
 
 namespace Graph {
 

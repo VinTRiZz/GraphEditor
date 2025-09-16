@@ -1,11 +1,12 @@
 #ifndef GRAPHEDITVIEW_H
 #define GRAPHEDITVIEW_H
 
-#include "grapheditmode.h"
 #include "graphsceneview.h"
-#include "graphviewmode.h"
 
 namespace Graph {
+
+class GraphViewMode;
+class GraphEditMode;
 
 class GraphEditView final : public GraphSceneView {
     Q_OBJECT
@@ -28,8 +29,8 @@ signals:
     void closePropertyEditor();
 
 private:
-    GraphViewMode m_viewMode;
-    GraphEditMode m_editMode;
+    GraphViewMode* m_viewMode {nullptr};
+    GraphEditMode* m_editMode {nullptr};
 };
 
 }  // namespace Graph

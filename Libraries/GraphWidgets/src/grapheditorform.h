@@ -4,10 +4,15 @@
 #include <CustomWidgets/ButtonMatrix.h>
 #include <GraphObject/ExtendedObject.h>
 #include <GraphObject/Maintainer.h>
-#include <GraphScene/EditView.h>
 
 #include <QStandardItemModel>
 #include <QWidget>
+
+#include <QGraphicsItem>
+
+namespace Graph {
+class GraphSceneView;
+}
 
 namespace Ui {
 class GraphEditorForm;

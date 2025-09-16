@@ -5,7 +5,8 @@
 
 #include <QMessageBox>
 
-#include "grapheditorform.h"
+#include <GraphScene/EditView.h>
+#include <GraphWidgets/GraphEditorForm.h>
 #include "ui_graphtabwidget.h"
 
 GraphTabWidget::GraphTabWidget(QWidget* parent)

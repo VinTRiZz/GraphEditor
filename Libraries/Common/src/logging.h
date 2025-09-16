@@ -1,5 +1,4 @@
-#ifndef LOGGING_HPP
-#define LOGGING_HPP
+#pragma once
 
 #include <condition_variable>
 #include <functional>
@@ -324,5 +323,3 @@ inline void LoggingMaster::LoggingHelper::fileWriteOnly(QVariant val) {
 #define LOG_OK_SYNC(...)                                                       \
     Logging::LoggingMaster::getInstance().log<Logging::LoggingType::Ok, true>( \
         __VA_ARGS__)
-
-#endif  // LOGGING_HPP

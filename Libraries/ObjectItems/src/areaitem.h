@@ -3,6 +3,8 @@
 
 #include "itembase.h"
 
+#include <boost/container/small_vector.hpp>
+
 namespace ObjectViewItems
 {
 
@@ -13,11 +15,17 @@ public:
 
     void setRect(const QRectF& rect);
 
+    void setBorderColor(const QColor& col) override;
+    void setBackgroundColor(const QColor& col) override;
+
     void addToArea(ItemBase* pItem);
     void removeFromArea(ItemBase* pItem);
 
 private:
     std::list<ItemBase*> m_subscribedItems;
+    QGraphicsPathItem* m_area {nullptr};
+
+    void updateArea();
 
 protected:
     void processEvent(ItemBase* pSenderItem, EventType eventType) override;

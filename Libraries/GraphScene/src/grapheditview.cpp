@@ -1,6 +1,6 @@
 #include "grapheditview.h"
 
-#include <Common/Logging.h>
+#include <Components/Logger/Logger.h>
 
 #include "grapheditmode.h"
 #include "graphviewmode.h"

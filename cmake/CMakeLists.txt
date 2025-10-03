@@ -65,6 +65,13 @@ function(LINK_TARGET_LIBRARY TARGET_NAME LIBRARY_NAME)
     )
 
     if(NOT EXISTS ${LTL_LIBRARY_INCLUDE_DIR})
+        set(
+            LTL_LIBRARY_INCLUDE_DIR
+            "${LIBRARIES_BASEDIR}/Components-${LIBRARY_NAME}/include"
+        )
+    endif()
+
+    if(NOT EXISTS ${LTL_LIBRARY_INCLUDE_DIR})
         message(FATAL_ERROR "Error searching for ${LIBRARY_NAME} (not exist)")
     endif()
 
@@ -86,11 +93,6 @@ function(ADD_EDITOR_TEST EDITOR_MODULENAME)
     set(EDITOR_MODULENAME_TEST ${EDITOR_MODULENAME}_TEST)
 
     add_executable(${EDITOR_MODULENAME_TEST})
-
-    set_target_properties(${EDITOR_MODULENAME_TEST} PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/tests
-        RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/tests
-    )
 
     file(GLOB TESTING_SOURCES "tests/*.cpp")
     target_sources(${EDITOR_MODULENAME_TEST} PRIVATE ${TESTING_SOURCES})
@@ -114,12 +116,5 @@ function(ADD_EDITOR_TEST EDITOR_MODULENAME)
 
     # Надо же ему что-то использовать из модуля
     LINK_TARGET_LIBRARY(${EDITOR_MODULENAME_TEST} ${EDITOR_MODULENAME})
-
-    # Add test to added list
-    set(
-        ADDED_EDITOR_TESTS
-        ${ADDED_EDITOR_TESTS}
-        ${EDITOR_MODULENAME_TEST}
-    )
     message(STATUS "Added test: " ${EDITOR_MODULENAME_TEST})
 endfunction()

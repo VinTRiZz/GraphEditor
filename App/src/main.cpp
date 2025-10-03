@@ -1,6 +1,6 @@
-#include <Common/ApplicationSettings.h>
-#include <Common/DirectoryManager.h>
-#include <Common/Logging.h>
+#include <AppInfrastructure/ApplicationSettings.h>
+#include <AppInfrastructure/DirectoryManager.h>
+#include <Components/Logger/Logger.h>
 
 #include <QApplication>
 #include <QCommandLineParser>
@@ -57,9 +57,7 @@ int main(int argc, char* argv[]) {
         LOG_ERROR("Error opening styles:", stylesFile.errorString());
     }
 
-    Logging::LoggingMaster::getInstance().clearExtraLogs();
     LOG_INFO_SYNC("Started GraphEditor");
-
     auto& settingsInstance = ApplicationSettings::getInstance();
 
     auto profileFile = parser.value(profileTypeOption);

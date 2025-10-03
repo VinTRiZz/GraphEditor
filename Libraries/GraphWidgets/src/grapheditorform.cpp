@@ -1,9 +1,9 @@
 #include "grapheditorform.h"
 
-#include <Common/ApplicationSettings.h>
-#include <Common/CommonFunctions.h>
-#include <Common/Logging.h>
-#include <CustomWidgets/PasswordInsertDialog.h>
+#include <AppInfrastructure/ApplicationSettings.h>
+#include <AppInfrastructure/CommonFunctions.h>
+#include <Components/Logger/Logger.h>
+#include <Components/CustomQt/PasswordInsertDialog.h>
 #include <Filework/SaveMaster.h>
 #include <GraphObject/Maintainer.h>
 #include <GraphScene/EditView.h>

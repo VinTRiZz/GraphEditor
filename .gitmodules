@@ -1,0 +1,12 @@
+[submodule "Libraries/Components-Qt-Custom"]
+	path = Libraries/Components-Qt-Custom
+	url = git@github.com:VinTRiZz/Components-Qt-Custom.git
+[submodule "Testing/googletest"]
+	path = Testing/googletest
+	url = https://github.com/google/googletest.git
+[submodule "Libraries/Libraries/Qt-Custom"]
+	path = Libraries/Libraries/Qt-Custom
+	url = git@github.com:VinTRiZz/Components-Qt-Custom.git
+[submodule "Deploy/tools/mxe"]
+	path = Deploy/tools/mxe
+	url = https://github.com/mxe/mxe.git

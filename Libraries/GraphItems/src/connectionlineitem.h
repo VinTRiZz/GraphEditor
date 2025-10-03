@@ -1,8 +1,8 @@
 #ifndef VERTEXCONNECTIONLINE_H
 #define VERTEXCONNECTIONLINE_H
 
-#include <ObjectItems/ItemBase.h>
-#include <ObjectItems/LabelItem.h>
+#include <Components/CustomQt/ObjectScene/ItemBase.h>
+#include <Components/CustomQt/ObjectScene/LabelItem.h>
 
 #include <QBrush>
 #include <QGraphicsItem>

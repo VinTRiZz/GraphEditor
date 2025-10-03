@@ -1,6 +1,6 @@
 #include "grapheditmode.h"
 
-#include <Common/Logging.h>
+#include <Components/Logger/Logger.h>
 
 #include "submodes/addlinemode.h"
 #include "submodes/addobjectmode.h"

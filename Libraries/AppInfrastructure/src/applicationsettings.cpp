@@ -5,6 +5,8 @@
 
 #include "directorymanager.h"
 
+#include <Components/Logger/Logger.h>
+
 ApplicationSettings& ApplicationSettings::getInstance() {
     static ApplicationSettings inst;
     return inst;

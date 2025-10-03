@@ -1,12 +1,12 @@
 #include "grapheditorsettingsform.h"
 
-#include <Common/CommonFunctions.h>
+#include <AppInfrastructure/CommonFunctions.h>
 
 #include "ui_grapheditorsettingsform.h"
 using namespace CommonFunctions;
 
-#include <Common/ApplicationSettings.h>
-#include <Common/Logging.h>
+#include <AppInfrastructure/ApplicationSettings.h>
+#include <Components/Logger/Logger.h>
 #include <math.h>
 
 #include <QGuiApplication>

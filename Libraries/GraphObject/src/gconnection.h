@@ -1,8 +1,8 @@
 #ifndef GCONNECTION_H
 #define GCONNECTION_H
 
-#include <Common/CommonFunctions.h>
-#include <Common/Logging.h>
+#include <AppInfrastructure/CommonFunctions.h>
+#include <Components/Logger/Logger.h>
 #include <math.h>
 
 #include <QColor>

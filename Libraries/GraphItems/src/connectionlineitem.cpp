@@ -1,9 +1,9 @@
 #include "connectionlineitem.h"
 
-#include <Common/ApplicationSettings.h>
-#include <Common/Logging.h>
+#include <AppInfrastructure/ApplicationSettings.h>
+#include <Components/Logger/Logger.h>
 #include <GraphObject/Object.h>
-#include <ObjectItems/Constants.h>
+#include <Components/CustomQt/ObjectScene/Constants.h>
 #include <math.h>
 
 #include <QGraphicsSceneMouseEvent>

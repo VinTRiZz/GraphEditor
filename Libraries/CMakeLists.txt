@@ -1,9 +1,7 @@
 # Subdirectories
-add_subdirectory(Common)
-add_subdirectory(CustomWidgets)
+add_subdirectory(Components-Qt-Custom)
+add_subdirectory(AppInfrastructure)
 add_subdirectory(GraphObject)
-add_subdirectory(ObjectItems)
-add_subdirectory(ObjectScene)
 add_subdirectory(GraphItems)
 add_subdirectory(GraphWidgets)
 add_subdirectory(GraphScene)

@@ -1,6 +1,6 @@
 #include "graphtabwidget.h"
 
-#include <Common/ApplicationSettings.h>
+#include <AppInfrastructure/ApplicationSettings.h>
 #include <Filework/SaveMaster.h>
 
 #include <QMessageBox>

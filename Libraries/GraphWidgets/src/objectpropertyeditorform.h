@@ -1,7 +1,7 @@
 #ifndef OBJECTPROPERTYEDITORFORM_H
 #define OBJECTPROPERTYEDITORFORM_H
 
-#include <ObjectItems/ItemBase.h>
+#include <Components/CustomQt/ObjectScene/ItemBase.h>
 
 #include <QWidget>
 

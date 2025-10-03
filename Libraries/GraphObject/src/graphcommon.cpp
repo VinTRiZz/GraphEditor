@@ -1,5 +1,5 @@
 #include "graphcommon.h"
 
-#include <Common/Logging.h>
+#include <Components/Logger/Logger.h>
 
 namespace GraphCommon {}  // namespace GraphCommon

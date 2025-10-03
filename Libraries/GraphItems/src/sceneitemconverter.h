@@ -2,7 +2,7 @@
 #define SCENEITEMCONVERTER_H
 
 #include <GraphObject/Maintainer.h>
-#include <ObjectItems/ItemBase.h>
+#include <Components/CustomQt/ObjectScene/ItemBase.h>
 
 #include "connectionlineitem.h"
 #include "vertexobjectitem.h"

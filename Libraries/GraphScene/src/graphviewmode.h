@@ -1,9 +1,9 @@
 #ifndef GRAPHVIEWER_H
 #define GRAPHVIEWER_H
 
-#include <CustomWidgets/ButtonMatrix.h>
+#include <Components/CustomQt/ButtonMatrix.h>
 #include <GraphObject/Object.h>
-#include <ObjectItems/Constants.h>
+#include <Components/CustomQt/ObjectScene/Constants.h>
 
 #include "graphmodebase.h"
 

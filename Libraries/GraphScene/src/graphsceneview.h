@@ -1,9 +1,9 @@
 #ifndef GRAPHVIEWBASE_H
 #define GRAPHVIEWBASE_H
 
-#include <CustomWidgets/ButtonMatrix.h>
+#include <Components/CustomQt/ButtonMatrix.h>
 #include <GraphObject/Maintainer.h>
-#include <ObjectScene/ObjectView.h>
+#include <Components/CustomQt/ObjectScene/ObjectView.h>
 
 #include <boost/noncopyable.hpp>
 

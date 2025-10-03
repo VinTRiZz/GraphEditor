@@ -1,7 +1,7 @@
 #ifndef GRAPHMODEBASE_H
 #define GRAPHMODEBASE_H
 
-#include <CustomWidgets/ButtonMatrix.h>
+#include <Components/CustomQt/ButtonMatrix.h>
 
 #include <QGraphicsItem>
 #include <QObject>

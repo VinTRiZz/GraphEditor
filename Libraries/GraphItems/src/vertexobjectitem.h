@@ -1,7 +1,7 @@
 #ifndef VERTEXOBJECT_H
 #define VERTEXOBJECT_H
 
-#include <ObjectItems/PictureObjectItem.h>
+#include <Components/CustomQt/ObjectScene/PictureObjectItem.h>
 
 #include <QGraphicsItem>
 #include <QPen>

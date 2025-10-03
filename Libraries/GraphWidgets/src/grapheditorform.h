@@ -1,7 +1,7 @@
 #ifndef GRAPHEDITORFORM_H
 #define GRAPHEDITORFORM_H
 
-#include <CustomWidgets/ButtonMatrix.h>
+#include <Components/CustomQt/ButtonMatrix.h>
 #include <GraphObject/ExtendedObject.h>
 #include <GraphObject/Maintainer.h>
 

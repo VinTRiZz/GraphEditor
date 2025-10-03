@@ -1,7 +1,7 @@
 #include "gsej_format.h"
 
-#include <Common/Encryption.h>
-#include <Common/Logging.h>
+#include <AppInfrastructure/Encryption.h>
+#include <Components/Logger/Logger.h>
 
 #include <QFileInfo>
 #include <QJsonDocument>

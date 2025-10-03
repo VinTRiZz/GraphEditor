@@ -1,8 +1,8 @@
 #include "mainwindow.h"
 
-#include <Common/ImageManager.h>
-#include <Common/Logging.h>
-#include <CustomWidgets/WaitIndicatorDialog.h>
+#include <AppInfrastructure/ImageManager.h>
+#include <Components/Logger/Logger.h>
+#include <Components/CustomQt/WaitIndicatorDialog.h>
 
 #include <QFile>
 

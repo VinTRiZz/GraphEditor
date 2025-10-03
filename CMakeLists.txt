@@ -43,24 +43,6 @@ else()
    message(WARNING "LTO not supported: ${ipo_error}")
 endif()
 
-
-# Build configuration
-set(
-    CMAKE_RUNTIME_OUTPUT_DIRECTORY
-    ${CMAKE_CURRENT_SOURCE_DIR}/BIN
-)
-
-set(
-    CMAKE_LIBRARY_OUTPUT_DIRECTORY
-    ${CMAKE_CURRENT_SOURCE_DIR}/BIN/lib
-)
-
-set(
-    CMAKE_CACHEFILE_DIR
-    ${CMAKE_CURRENT_SOURCE_DIR}/build
-)
-
-
 # Qt
 find_package(QT NAMES Qt5 REQUIRED COMPONENTS Widgets Core Gui)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core Gui)

@@ -1,6 +1,6 @@
 #include "imagemanager.h"
 
-#include <CustomWidgets/WaitIndicatorDialog.h>
+#include <Components/CustomQt/WaitIndicatorDialog.h>
 
 #include <QFile>
 #include <QImage>
@@ -9,7 +9,7 @@
 
 #include "directorymanager.h"
 #include "encryption.h"
-#include "logging.h"
+#include <Components/Logger/Logger.h>
 
 ImageManager::ImageManager() {
     updateCache();

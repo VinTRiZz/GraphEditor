@@ -1,7 +1,7 @@
 #ifndef GRAPHOPTIONSTOOLBAR_H
 #define GRAPHOPTIONSTOOLBAR_H
 
-#include <CustomWidgets/ButtonToolbar.h>
+#include <Components/CustomQt/ButtonToolBar.h>
 
 /**
  * @brief The GraphOptionsToolbar class Тулбар для работы с различными

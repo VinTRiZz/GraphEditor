@@ -1,7 +1,7 @@
 #include "gsj_format.h"
 
-#include <Common/CommonFunctions.h>
-#include <Common/Logging.h>
+#include <AppInfrastructure/CommonFunctions.h>
+#include <Components/Logger/Logger.h>
 
 #include <QColor>
 #include <QFileInfo>

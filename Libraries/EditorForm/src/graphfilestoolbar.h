@@ -1,7 +1,7 @@
 #ifndef GRAPHFILESTOOLBAR_H
 #define GRAPHFILESTOOLBAR_H
 
-#include <CustomWidgets/ButtonToolbar.h>
+#include <Components/CustomQt/ButtonToolBar.h>
 
 /**
  * @brief The GraphFilesToolbar class   Тулбар с кнопками для работы с файлами

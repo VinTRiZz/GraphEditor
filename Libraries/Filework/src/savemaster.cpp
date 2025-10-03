@@ -1,9 +1,9 @@
 #include "savemaster.h"
 
-#include <Common/ApplicationSettings.h>
-#include <Common/DirectoryManager.h>
-#include <Common/Logging.h>
-#include <CustomWidgets/PasswordInsertDialog.h>
+#include <AppInfrastructure/ApplicationSettings.h>
+#include <AppInfrastructure/DirectoryManager.h>
+#include <Components/Logger/Logger.h>
+#include <Components/CustomQt/PasswordInsertDialog.h>
 
 #include <QFileDialog>
 #include <QFileInfo>

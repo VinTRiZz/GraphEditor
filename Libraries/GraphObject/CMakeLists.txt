@@ -1,9 +1,6 @@
 CONFIGURE_LIBRARY(GraphObject)
 
-LINK_TARGET_LIBRARY(GraphObject Common)
-
-# Precompiled headers (build optimisation)
-file(GLOB_RECURSE PRECOMPILED_HEADERS ${PRECOMPILED_HEADERS} ${CMAKE_CURRENT_SOURCE_DIR}"/src/*.h")
-target_precompile_headers(CustomWidgets PRIVATE ${PRECOMPILED_HEADERS})
+LINK_TARGET_LIBRARY(GraphObject Qt-Custom)
+LINK_TARGET_LIBRARY(GraphObject AppInfrastructure)
 
 ADD_EDITOR_TEST(GraphObject)

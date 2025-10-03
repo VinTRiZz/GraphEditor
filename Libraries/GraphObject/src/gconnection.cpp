@@ -1,6 +1,6 @@
 #include "gconnection.h"
 
-#include <Common/Logging.h>
+#include <Components/Logger/Logger.h>
 
 bool Graph::GConnection::operator==(const GConnection& oCon_) const {
     auto weightEquality =

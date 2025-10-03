@@ -6,7 +6,7 @@
 #include <QPainter>
 #include <QPropertyAnimation>
 
-#include "logging.h"
+#include <Components/Logger/Logger.h>
 
 namespace CommonFunctions {
 

@@ -1,6 +1,6 @@
 #include "graphpropertyeditform.h"
 
-#include <Common/Logging.h>
+#include <Components/Logger/Logger.h>
 #include <GraphObject/Object.h>
 
 #include <QPropertyAnimation>

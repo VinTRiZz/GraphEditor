@@ -1,9 +1,9 @@
 #include "objectpropertyeditorform.h"
 
-#include <Common/CommonFunctions.h>
-#include <Common/DirectoryManager.h>
-#include <Common/ImageManager.h>
-#include <Common/Logging.h>
+#include <AppInfrastructure/CommonFunctions.h>
+#include <AppInfrastructure/DirectoryManager.h>
+#include <AppInfrastructure/ImageManager.h>
+#include <Components/Logger/Logger.h>
 #include <GraphObject/Components.h>
 
 #include <QBuffer>

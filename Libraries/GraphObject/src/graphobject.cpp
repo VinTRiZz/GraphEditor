@@ -1,6 +1,6 @@
 #include "graphobject.h"
 
-#include <Common/Logging.h>
+#include <Components/Logger/Logger.h>
 
 #include <QDateTime>
 #include <QJsonObject>

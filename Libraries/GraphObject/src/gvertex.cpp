@@ -1,7 +1,7 @@
 #include "gvertex.h"
 
-#include <Common/CommonFunctions.h>
-#include <Common/Logging.h>
+#include <AppInfrastructure/CommonFunctions.h>
+#include <Components/Logger/Logger.h>
 
 bool Graph::GVertex::isShortnameValid() const {
     return static_cast<unsigned>(shortName.size()) < GRAPH_MAX_SHORTNAME_SIZE;

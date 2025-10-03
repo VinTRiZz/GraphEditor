@@ -10,3 +10,6 @@
 [submodule "Deploy/tools/mxe"]
 	path = Deploy/tools/mxe
 	url = https://github.com/mxe/mxe.git
+[submodule "Libraries/Components-Logger"]
+	path = Libraries/Components-Logger
+	url = git@github.com:VinTRiZz/Components-Logger.git

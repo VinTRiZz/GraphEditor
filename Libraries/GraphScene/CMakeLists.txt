@@ -1,6 +1,7 @@
 CONFIGURE_LIBRARY(GraphScene)
 
+LINK_TARGET_LIBRARY(GraphScene Logger)
+LINK_TARGET_LIBRARY(GraphScene Qt-Custom)
 LINK_TARGET_LIBRARY(GraphScene AppInfrastructure)
 LINK_TARGET_LIBRARY(GraphScene GraphObject)
 LINK_TARGET_LIBRARY(GraphScene GraphItems)
-LINK_TARGET_LIBRARY(GraphScene Qt-Custom)

@@ -1,4 +1,5 @@
 # Subdirectories
+add_subdirectory(Components-Logger)
 add_subdirectory(Components-Qt-Custom)
 add_subdirectory(AppInfrastructure)
 add_subdirectory(GraphObject)

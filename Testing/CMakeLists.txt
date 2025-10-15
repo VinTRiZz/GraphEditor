@@ -1,6 +1,6 @@
 set(
     TESTING_GTEST_DIR
-    ${CMAKE_CURRENT_SOURCE_DIR}/gtest_v1.17.x
+    ${CMAKE_CURRENT_SOURCE_DIR}/googletest
 )
 
 if(NOT EXISTS ${TESTING_GTEST_DIR})

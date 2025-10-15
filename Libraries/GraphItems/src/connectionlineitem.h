@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Components/CustomQt/ObjectScene/ElegantArrowLine.h>
+#include <Components/CustomQt/ObjectScene/ArrowLine.h>
 
 #include <QBrush>
 #include <QGraphicsItem>
@@ -12,7 +13,7 @@ namespace ObjectViewItems {
 
 class VertexObject;
 
-class VertexConnectionLine : public ElegantArrowLine {
+class VertexConnectionLine : public ItemBase {
 public:
     explicit VertexConnectionLine(QGraphicsItem* parent = nullptr);
     ~VertexConnectionLine();
@@ -25,9 +26,13 @@ public:
 
     void resetPositions();
 
+    LineItem* getLineItem() const;
+
 private:
     VertexObject* m_fromVertex{nullptr};
     VertexObject* m_toVertex{nullptr};
+
+    LineItem* m_connectionLine {nullptr};
 };
 
 }  // namespace ObjectViewItems

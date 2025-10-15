@@ -29,7 +29,7 @@ void AddLineMode::processPress(QGraphicsItem* pTargetItem) {}
 void AddLineMode::processMove(QGraphicsItem* pTargetItem,
                               const QPointF& currentPos) {
     if (nullptr != m_pendingConnectionLine) {
-        m_pendingConnectionLine->setPositionTo(currentPos);
+        m_pendingConnectionLine->getLineItem()->setPositionTo(currentPos);
     }
 }
 
@@ -57,7 +57,7 @@ void AddLineMode::processRelease(QGraphicsItem* pTargetItem) {
             ->subscribeAsConnectionFrom(m_pendingConnectionLine);
 
         m_pendingConnectionLine->show();
-        m_pendingConnectionLine->setPositionTo(pTargetVertexItem->pos());
+        m_pendingConnectionLine->getLineItem()->setPositionTo(pTargetVertexItem->pos());
         return;
     }
 

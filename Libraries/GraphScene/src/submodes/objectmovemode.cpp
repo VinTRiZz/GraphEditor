@@ -40,7 +40,7 @@ void ObjectMoveMode::processPress(QGraphicsItem* pTargetItem) {}
 void ObjectMoveMode::processMove(QGraphicsItem* pTargetItem,
                                  const QPointF& currentPos) {
     if (nullptr != m_movingConnectionLine) {
-        m_movingConnectionLine->setPositionTo(currentPos);
+        m_movingConnectionLine->getLineItem()->setPositionTo(currentPos);
     }
 }
 

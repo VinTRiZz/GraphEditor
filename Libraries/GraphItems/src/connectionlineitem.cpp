@@ -13,21 +13,22 @@ using namespace ObjectViewItems;
 namespace ObjectViewItems {
 
 VertexConnectionLine::VertexConnectionLine(QGraphicsItem* parent)
-    : ElegantArrowLine(parent) {
+    : ItemBase(parent) {
     setSystemName("Соединение вершин");
+
+    m_connectionLine = new ArrowLine(this);
+    auto pLine = static_cast<ArrowLine*>(m_connectionLine);
+    registerSubitem(pLine);
 
     auto& appSettings = ApplicationSettings::getInstance();
 
-    ElegantArrowLine::setGradient1Color(appSettings.getObjectsConfig().m_defaultLineMainColor);
-    ElegantArrowLine::setGradient2Color(appSettings.getObjectsConfig().m_defaultLineMainColor);
+//    pLine->setGradient1Color(appSettings.getObjectsConfig().m_defaultLineMainColor);
+//    pLine->setGradient2Color(appSettings.getObjectsConfig().m_defaultLineMainColor);
+    pLine->setSelectionColor(appSettings.getObjectsConfig().m_defaultLineSelectionColor);
+//    pLine->setWeight(1);
 
-    ElegantArrowLine::setSelectionColor(
-        appSettings.getObjectsConfig().m_defaultLineSelectionColor);
-
-    auto pLabel = getLabel();
-    pLabel->setBorderColor(appSettings.getObjectsConfig().m_defaultLabelTextColor);
-
-    ElegantArrowLine::setWeight(1);
+//    auto pLabel = pLine->getLabel();
+//    pLabel->setBorderColor(appSettings.getObjectsConfig().m_defaultLabelTextColor);
 }
 
 VertexConnectionLine::~VertexConnectionLine() {
@@ -67,6 +68,11 @@ void VertexConnectionLine::resetPositions() {
         return;
     }
     m_toVertex->updateConnectionLines();
+}
+
+LineItem *VertexConnectionLine::getLineItem() const
+{
+    return m_connectionLine;
 }
 
 }  // namespace ObjectViewItems

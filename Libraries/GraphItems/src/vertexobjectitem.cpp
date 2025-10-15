@@ -137,17 +137,17 @@ void VertexObject::updateConnectionLines() {
     for (auto pConFrom : m_connectionsFromThis) {
         auto fromPos =
             QPointF(x() + vertexRadius,
-                    y() + 2 * vertexRadius + pConFrom->getArrowSize() +
+                    y() + 2 * vertexRadius + 20 + // TODO: Arrow size
                         getLabel()->boundingRect().height() * 0.7);
 
-        pConFrom->setPositionFrom(fromPos);
+        pConFrom->getLineItem()->setPositionFrom(fromPos);
         connectionNumber++;
     }
 
     connectionNumber = 0;
     for (auto pConTo : m_connectionsToThis) {
-        auto toPos = QPointF(x() + vertexRadius, y() - pConTo->getArrowSize());
-        pConTo->setPositionTo(toPos);
+        auto toPos = QPointF(x() + vertexRadius, y() - 20); // TODO: Arrow size
+        pConTo->getLineItem()->setPositionTo(toPos);
         connectionNumber++;
     }
 }

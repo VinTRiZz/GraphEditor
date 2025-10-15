@@ -41,7 +41,6 @@ ObjectViewItems::VertexConnectionLine* SceneItemConverter::fromConnection(
 
     pConnection->setToolTip(con.name);
     pConnection->setBorderColor(con.lineColor);
-    pConnection->setWeight(con.connectionWeight);
 
     pConnection->setZValue(
         ObjectViewItems::ObjectSceneConfiguration::getInstance()
@@ -134,7 +133,6 @@ GConnection SceneItemConverter::toConnection(
 
     graphConnection.name = conCasted->toolTip();
     graphConnection.lineColor = conCasted->getBorderColor();
-    graphConnection.connectionWeight = conCasted->getWeight();
 
     return graphConnection;
 }

@@ -2,64 +2,25 @@
 
 #include <Components/Logger/Logger.h>
 
+#include "vertexobjectitem.h"
+#include "connectionlineitem.h"
+
 namespace Graph {
-
-ObjectViewItems::VertexObject* SceneItemConverter::fromVertex(
-    const GVertex& vert) {
-    auto pVertexItem = new ObjectViewItems::VertexObject;
-
-    pVertexItem->setObjectId(vert.id);
-    pVertexItem->setPos(vert.posX, vert.posY);
-
-    pVertexItem->setDisplayName(vert.shortName);
-    pVertexItem->setToolTip(vert.name);
-    pVertexItem->setDescription(vert.description);
-
-    pVertexItem->setBorderColor(vert.borderColor);
-    pVertexItem->setBackgroundColor(vert.backgroundColor);
-
-    auto& sceneConfig =
-        ObjectViewItems::ObjectSceneConfiguration::getInstance();
-    pVertexItem->setZValue(sceneConfig.vertexLayer);
-
-    QRect vertexRect;
-    vertexRect.setWidth(sceneConfig.vertexWidth);
-    vertexRect.setHeight(sceneConfig.vertexWidth);
-    pVertexItem->setRect(vertexRect);
-
-    if (!vert.image.isNull()) {
-        pVertexItem->setImage(
-            vert.image, {});  // TODO: Задавать изображение корректным образом
-    }
-
-    return pVertexItem;
-}
-
-ObjectViewItems::VertexConnectionLine* SceneItemConverter::fromConnection(
-    const GConnection& con) {
-    auto pConnection = new ObjectViewItems::VertexConnectionLine;
-
-    pConnection->setToolTip(con.name);
-    pConnection->setBorderColor(con.lineColor);
-
-    pConnection->setZValue(
-        ObjectViewItems::ObjectSceneConfiguration::getInstance()
-            .connectionLineLayer);
-    return pConnection;
-}
 
 std::list<ObjectViewItems::ItemBase*> SceneItemConverter::fromGraph(
     const GraphObject& graph) {
     std::list<ObjectViewItems::ItemBase*> res;
 
     auto vertices = graph.getAllVertices();
-    std::unordered_map<GraphCommon::graphId_t, ObjectViewItems::VertexObject*>
+    std::unordered_map<GraphCommon::graphId_t, Graph::VertexObject*>
         vertexObjects;
 
     for (auto& vert : vertices) {
-        res.push_back(fromVertex(vert));
+        auto pVert = new VertexObject;
+        pVert->fromVertex(vert);
+        res.push_back(pVert);
         vertexObjects[vert.id] =
-            static_cast<ObjectViewItems::VertexObject*>(res.back());
+            static_cast<Graph::VertexObject*>(res.back());
     }
 
     QHash<GraphCommon::graphId_t, std::vector<GConnection>> connectionHash;
@@ -74,7 +35,8 @@ std::list<ObjectViewItems::ItemBase*> SceneItemConverter::fromGraph(
             throw std::runtime_error("Target vertex did not found!");
         }
 
-        auto pConnection = fromConnection(con);
+        auto pConnection = new VertexConnectionLine;
+        pConnection->fromConnection(con);
         pConFrom->second->subscribeAsConnectionFrom(pConnection);
         pConTo->second->subscribeAsConnectionTo(pConnection);
         res.push_back(pConnection);
@@ -93,70 +55,26 @@ std::list<ObjectViewItems::ItemBase*> SceneItemConverter::fromMaintainer(
     return res;
 }
 
-GVertex SceneItemConverter::toVertex(const ObjectViewItems::ItemBase* item) {
-    auto vertCasted = static_cast<const ObjectViewItems::VertexObject*>(item);
-
-    GVertex graphVertex;
-    graphVertex.id = vertCasted->getObjectId();
-    graphVertex.posX = vertCasted->x();
-    graphVertex.posY = vertCasted->y();
-
-    graphVertex.shortName = vertCasted->getDisplayName();
-    graphVertex.name = vertCasted->toolTip();
-    graphVertex.description = vertCasted->getDescription();
-
-    graphVertex.borderColor = vertCasted->getBorderColor();
-    graphVertex.backgroundColor = vertCasted->getBackgroundColor();
-
-    graphVertex.image = vertCasted->getImage();
-
-    return graphVertex;
-}
-
-GConnection SceneItemConverter::toConnection(
-    const ObjectViewItems::ItemBase* item) {
-    auto conCasted =
-        static_cast<const ObjectViewItems::VertexConnectionLine*>(item);
-
-    // Игнорируем невалидные соединения (например, которые в состоянии
-    // редактирования)
-    if (conCasted->getVertexFrom() == nullptr ||
-        conCasted->getVertexTo() == nullptr) {
-        LOG_WARNING("Skipped invalid connection:", conCasted->toolTip());
-        return {};
-    }
-
-    GConnection graphConnection;
-
-    graphConnection.idFrom = conCasted->getVertexFrom()->getObjectId();
-    graphConnection.idTo = conCasted->getVertexTo()->getObjectId();
-
-    graphConnection.name = conCasted->toolTip();
-    graphConnection.lineColor = conCasted->getBorderColor();
-
-    return graphConnection;
-}
-
 GraphObject SceneItemConverter::toGraph(
     const std::list<ObjectViewItems::ItemBase*>& items) {
     GraphObject res;
 
     LOG_INFO("Loading vertices from scene...");
     for (auto vert : items) {
-        if (vert->getType() != ObjectViewItems::OBJECTTYPE_VERTEX) {
+        if (vert->getType() != OBJECTTYPE_VERTEX) {
             continue;
         }
-        res.addVertex(toVertex(vert));
+        res.addVertex(static_cast<Graph::VertexObject*>(vert)->toVertex());
     }
     LOG_OK("Loaded", res.getVerticesCount(), "vertices from scene");
 
     LOG_INFO("Loading connections from scene...");
     for (auto con : items) {
         if (con->getType() !=
-            ObjectViewItems::OBJECTTYPE_VERTEX_CONNECTION) {
+            OBJECTTYPE_CONNECTION) {
             continue;
         }
-        res.addConnection(toConnection(con));
+        res.addConnection(static_cast<Graph::VertexConnectionLine*>(con)->toConnection());
     }
     LOG_OK("Loaded", res.getConnectionsCount(), "connections from scene");
 

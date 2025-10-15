@@ -63,7 +63,7 @@ public:
      * @param idTo                  Вершина до которой идёт линия
      * @return                      Указатель на объект, добавленный на сцену
      */
-    ObjectViewItems::VertexConnectionLine* createConnectionLine(
+    Graph::VertexConnectionLine* createConnectionLine(
         ObjectViewItems::objectId_t idFrom,
         ObjectViewItems::objectId_t idTo);
 
@@ -71,11 +71,11 @@ public:
      * @brief createVertex  Создать вершину
      * @return              Указатель на объект, добавленный на сцену
      */
-    ObjectViewItems::VertexObject* createVertex();
+    Graph::VertexObject* createVertex();
 
 private:
     void resizeEvent(QResizeEvent* e) override;
-    ObjectViewItems::VertexObject* createVertex(
+    Graph::VertexObject* createVertex(
         ObjectViewItems::objectId_t vId);
 
     ObjectViewItems::objectId_t m_currentItemId{

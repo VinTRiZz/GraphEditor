@@ -19,7 +19,7 @@ public:
     void processRelease(QGraphicsItem* pTargetItem) override;
 
 private:
-    ObjectViewItems::VertexConnectionLine* m_pendingConnectionLine{nullptr};
+    Graph::VertexConnectionLine* m_pendingConnectionLine{nullptr};
 };
 
 }  // namespace Graph

@@ -20,7 +20,7 @@ public:
     void processRelease(QGraphicsItem* pTargetItem) override;
 
 private:
-    ObjectViewItems::VertexObject* m_pendingVertex{nullptr};
+    Graph::VertexObject* m_pendingVertex{nullptr};
     void setPendingVertex(ObjectViewItems::ItemBase* pItem);
 };
 

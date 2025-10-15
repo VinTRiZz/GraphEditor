@@ -53,18 +53,18 @@ void ObjectMoveMode::processRelease(QGraphicsItem* pTargetItem) {
     auto pScene = getParentMode()->getScene();
 
     // Если соединение, перемещаем точку целевую
-    if (pItem->getType() == ObjectViewItems::OBJECTTYPE_VERTEX_CONNECTION &&
+    if (pItem->getType() == OBJECTTYPE_CONNECTION &&
         pItem != m_movingConnectionLine) {
         pItem->setSelected(true);
         m_movingConnectionLine =
-            static_cast<ObjectViewItems::VertexConnectionLine*>(pItem);
+            static_cast<Graph::VertexConnectionLine*>(pItem);
         return;
     }
 
     // Для соединений -- применить изменения
     if (nullptr != m_movingConnectionLine) {
         // Отменяем если не вершина
-        if (pItem->getType() != ObjectViewItems::OBJECTTYPE_VERTEX ||
+        if (pItem->getType() != OBJECTTYPE_VERTEX ||
             pItem == m_movingConnectionLine->getVertexFrom()) {
             m_movingConnectionLine->resetPositions();
             clearMode();
@@ -72,7 +72,7 @@ void ObjectMoveMode::processRelease(QGraphicsItem* pTargetItem) {
         }
 
         // Соединяем
-        static_cast<ObjectViewItems::VertexObject*>(pItem)
+        static_cast<Graph::VertexObject*>(pItem)
             ->subscribeAsConnectionTo(m_movingConnectionLine);
 
         // Забываем, что соединяли только что. Теперь это не наша забота
@@ -81,13 +81,13 @@ void ObjectMoveMode::processRelease(QGraphicsItem* pTargetItem) {
     }
 
     // Если вершина, прикрепляем её к курсору
-    if (pItem->getType() == ObjectViewItems::OBJECTTYPE_VERTEX &&
+    if (pItem->getType() == OBJECTTYPE_VERTEX &&
         pItem != m_movingVertex) {
         if (nullptr != m_movingVertex) {
             pScene->rejectGrabObject();
         }
         pScene->setGrabObject(pItem);
-        m_movingVertex = static_cast<ObjectViewItems::VertexObject*>(pItem);
+        m_movingVertex = static_cast<Graph::VertexObject*>(pItem);
         return;
     }
 

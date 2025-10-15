@@ -19,8 +19,8 @@ public:
     void processRelease(QGraphicsItem* pTargetItem) override;
 
 private:
-    ObjectViewItems::VertexObject* m_movingVertex{nullptr};
-    ObjectViewItems::VertexConnectionLine* m_movingConnectionLine{nullptr};
+    Graph::VertexObject* m_movingVertex{nullptr};
+    Graph::VertexConnectionLine* m_movingConnectionLine{nullptr};
 };
 
 }  // namespace Graph

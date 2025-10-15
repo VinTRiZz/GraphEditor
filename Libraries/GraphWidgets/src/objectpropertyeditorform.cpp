@@ -57,7 +57,7 @@ void ObjectPropertyEditorForm::setTargetItem(
     setColor(ui->bgrColor_label, pTargetItem->getBackgroundColor());
     setColor(ui->selectedColor_label, pTargetItem->getSelectionColor());
 
-    auto pVertex = dynamic_cast<ObjectViewItems::VertexObject*>(m_pTargetItem);
+    auto pVertex = dynamic_cast<Graph::VertexObject*>(m_pTargetItem);
 
     if (nullptr != pVertex) {
         selectImage(pVertex->getImageHash());
@@ -66,7 +66,7 @@ void ObjectPropertyEditorForm::setTargetItem(
 
     auto isConnectionEditing =
         pTargetItem->getType() ==
-        ObjectViewItems::OBJECTTYPE_VERTEX_CONNECTION;
+        Graph::OBJECTTYPE_CONNECTION;
     ui->name_lineEdit->setEnabled(!isConnectionEditing);
     ui->description_plainTextEdit->setEnabled(!isConnectionEditing);
 }
@@ -82,7 +82,7 @@ void ObjectPropertyEditorForm::acceptChanges() {
     m_pTargetItem->setSelectionColor(getColor(ui->selectedColor_label));
 
     if (auto pVertex =
-            dynamic_cast<ObjectViewItems::VertexObject*>(m_pTargetItem);
+            dynamic_cast<Graph::VertexObject*>(m_pTargetItem);
         nullptr != pVertex) {
         if (nullptr != m_selectedIconLabel) {
             auto& imgManager = ImageManager::getInstance();
@@ -96,7 +96,7 @@ void ObjectPropertyEditorForm::acceptChanges() {
     }
 
     if (auto pConnection =
-            dynamic_cast<ObjectViewItems::VertexConnectionLine*>(m_pTargetItem);
+            dynamic_cast<Graph::VertexConnectionLine*>(m_pTargetItem);
         nullptr != pConnection) {
         // TODO: Do something with styles
         //        pConnection

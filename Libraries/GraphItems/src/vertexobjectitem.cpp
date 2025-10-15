@@ -16,12 +16,12 @@
 
 using namespace ObjectViewItems;
 
-namespace ObjectViewItems {
+namespace Graph {
 
 VertexObject::VertexObject(QGraphicsItem* parent) : PictureObjectItem(parent) {
     setSystemName("Вершина");
 
-    setType(ObjectViewItems::OBJECTTYPE_VERTEX);
+    setType(ObjectViewItems::ObjectType(OBJECTTYPE_VERTEX));
 
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setFlag(QGraphicsItem::ItemClipsToShape, true);
@@ -35,6 +35,13 @@ VertexObject::VertexObject(QGraphicsItem* parent) : PictureObjectItem(parent) {
         appSettings.getObjectsConfig().m_defaultSecondColor);
     PictureObjectItem::setBorderColor(
         appSettings.getObjectsConfig().m_defaultMainColor);
+
+    setZValue(Layers::VERTEX_LAYER);
+
+    QRect vertexRect;
+    vertexRect.setWidth(Sizes::VERTEX_RADIUS * 2);
+    vertexRect.setHeight(Sizes::VERTEX_RADIUS * 2);
+    setRect(vertexRect);
 }
 
 VertexObject::~VertexObject() {
@@ -47,6 +54,42 @@ VertexObject::~VertexObject() {
         pLine->setVertexFrom(nullptr);
         pLine->unregister();
     }
+}
+
+void VertexObject::fromVertex(const GVertex &vert)
+{
+    setObjectId(vert.id);
+    setPos(vert.posX, vert.posY);
+
+    setDisplayName(vert.shortName);
+    setToolTip(vert.name);
+    setDescription(vert.description);
+
+    setBorderColor(vert.borderColor);
+    setBackgroundColor(vert.backgroundColor);
+
+    if (!vert.image.isNull()) {
+        setImage(vert.image, {});  // TODO: Задавать изображение корректным образом
+    }
+}
+
+GVertex VertexObject::toVertex() const
+{
+    GVertex graphVertex;
+    graphVertex.id = getObjectId();
+    graphVertex.posX = x();
+    graphVertex.posY = y();
+
+    graphVertex.shortName = getDisplayName();
+    graphVertex.name = toolTip();
+    graphVertex.description = getDescription();
+
+    graphVertex.borderColor = getBorderColor();
+    graphVertex.backgroundColor = getBackgroundColor();
+
+    graphVertex.image = getImage();
+
+    return graphVertex;
 }
 
 void VertexObject::setImageByHash(const QString& imageHash) {

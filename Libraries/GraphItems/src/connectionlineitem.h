@@ -9,14 +9,23 @@
 #include <QGraphicsPolygonItem>
 #include <QPen>
 
-namespace ObjectViewItems {
+#include "graphsceneitem.hpp"
+#include <GraphObject/Object.h>
+
+namespace Graph {
 
 class VertexObject;
 
-class VertexConnectionLine : public ItemBase {
+class VertexConnectionLine : public ObjectViewItems::ItemBase, public GraphSceneItem {
 public:
     explicit VertexConnectionLine(QGraphicsItem* parent = nullptr);
     ~VertexConnectionLine();
+
+    // GraphSceneItem interface
+    const QGraphicsItem* getMainItem() const override { return this; }
+
+    GConnection toConnection() const;
+    void fromConnection(const GConnection& con);
 
     void setVertexFrom(VertexObject* pVertexFrom);
     VertexObject* getVertexFrom() const;
@@ -26,13 +35,13 @@ public:
 
     void resetPositions();
 
-    LineItem* getLineItem() const;
+    ObjectViewItems::LineItem* getLineItem() const;
 
 private:
     VertexObject* m_fromVertex{nullptr};
     VertexObject* m_toVertex{nullptr};
 
-    LineItem* m_connectionLine {nullptr};
+    ObjectViewItems::LineItem* m_connectionLine {nullptr};
 };
 
 }  // namespace ObjectViewItems

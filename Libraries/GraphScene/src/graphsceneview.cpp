@@ -92,17 +92,11 @@ void GraphSceneView::updateGraph() {
         return;
     }
 
-    removeSpecialObjects(ObjectViewItems::OBJECTTYPE_VERTEX);
-    removeSpecialObjects(ObjectViewItems::OBJECTTYPE_VERTEX_CONNECTION);
+    removeSpecialObjects(ObjectViewItems::ObjectType(OBJECTTYPE_VERTEX));
+    removeSpecialObjects(ObjectViewItems::ObjectType(OBJECTTYPE_CONNECTION));
     removeSpecialObjects(ObjectViewItems::OBJECTTYPE_ARROWLINE);
 
-    auto& sceneConfig =
-        ObjectViewItems::ObjectSceneConfiguration::getInstance();
     double labelHeight{0};
-
-    QRect vertexRect;
-    vertexRect.setWidth(sceneConfig.vertexWidth);
-    vertexRect.setHeight(sceneConfig.vertexWidth);
 
     for (auto* pItem :
          SceneItemConverter::fromMaintainer(getGraphMaintaner())) {
@@ -111,52 +105,40 @@ void GraphSceneView::updateGraph() {
     LOG_INFO("Graph data updated");
 }
 
-ObjectViewItems::VertexConnectionLine* GraphSceneView::createConnectionLine(
+Graph::VertexConnectionLine* GraphSceneView::createConnectionLine(
     ObjectViewItems::objectId_t idFrom,
     ObjectViewItems::objectId_t idTo) {
     while (!isIdAvailable(m_currentItemId)) {
         m_currentItemId++;
     }
 
-    auto pConnection = new ObjectViewItems::VertexConnectionLine;
+    auto pConnection = new Graph::VertexConnectionLine;
     pConnection->setObjectId(m_currentItemId);
-    pConnection->setZValue(
-        ObjectViewItems::ObjectSceneConfiguration::getInstance()
-            .connectionLineLayer);
     addObject(pConnection);
 
     return pConnection;
 }
 
-ObjectViewItems::VertexObject* GraphSceneView::createVertex() {
+Graph::VertexObject* GraphSceneView::createVertex() {
     while (!isIdAvailable(m_currentItemId)) {
         m_currentItemId++;
     }
     return createVertex(m_currentItemId);
 }
 
-ObjectViewItems::VertexObject* GraphSceneView::createVertex(
+Graph::VertexObject* GraphSceneView::createVertex(
     ObjectViewItems::objectId_t vId) {
     if (!isIdAvailable(vId)) {
         LOG_ERROR("Got unavailable id:", vId);
         return nullptr;
     }
 
-    auto pVertexItem = new ObjectViewItems::VertexObject;
+    auto pVertexItem = new Graph::VertexObject;
     pVertexItem->setObjectId(vId);
 
     pVertexItem->setDisplayName("My node");
     pVertexItem->setToolTip("My node template");
     pVertexItem->setDescription("My example description");
-
-    auto& sceneConfig =
-        ObjectViewItems::ObjectSceneConfiguration::getInstance();
-    pVertexItem->setZValue(sceneConfig.vertexLayer);
-
-    QRect vertexRect;
-    vertexRect.setWidth(sceneConfig.vertexWidth);
-    vertexRect.setHeight(sceneConfig.vertexWidth);
-    pVertexItem->setRect(vertexRect);
 
     addObject(pVertexItem);
     return pVertexItem;

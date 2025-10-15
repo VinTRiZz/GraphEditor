@@ -10,25 +10,25 @@
 
 using namespace ObjectViewItems;
 
-namespace ObjectViewItems {
+namespace Graph {
 
 VertexConnectionLine::VertexConnectionLine(QGraphicsItem* parent)
     : ItemBase(parent) {
     setSystemName("Соединение вершин");
+    setType(ObjectViewItems::ObjectType(OBJECTTYPE_CONNECTION));
 
-    m_connectionLine = new ArrowLine(this);
-    auto pLine = static_cast<ArrowLine*>(m_connectionLine);
+    m_connectionLine = new ElegantArrowLine(this);
+    auto pLine = static_cast<ElegantArrowLine*>(m_connectionLine);
     registerSubitem(pLine);
 
     auto& appSettings = ApplicationSettings::getInstance();
 
-//    pLine->setGradient1Color(appSettings.getObjectsConfig().m_defaultLineMainColor);
-//    pLine->setGradient2Color(appSettings.getObjectsConfig().m_defaultLineMainColor);
+    pLine->setGradient1Color(appSettings.getObjectsConfig().m_defaultLineMainColor);
+    pLine->setGradient2Color(appSettings.getObjectsConfig().m_defaultLineMainColor);
     pLine->setSelectionColor(appSettings.getObjectsConfig().m_defaultLineSelectionColor);
-//    pLine->setWeight(1);
+    pLine->setWeight(1);
 
-//    auto pLabel = pLine->getLabel();
-//    pLabel->setBorderColor(appSettings.getObjectsConfig().m_defaultLabelTextColor);
+    setZValue(Layers::CONNECTION_LAYER);
 }
 
 VertexConnectionLine::~VertexConnectionLine() {
@@ -39,6 +39,30 @@ VertexConnectionLine::~VertexConnectionLine() {
     if (m_toVertex) {
         m_toVertex->unsubscribeConnectionTo(this);
     }
+}
+
+GConnection VertexConnectionLine::toConnection() const
+{
+    GConnection graphConnection;
+
+    if (nullptr != getVertexFrom()) {
+        graphConnection.idFrom = getVertexFrom()->getObjectId();
+    }
+
+    if (nullptr != getVertexTo()) {
+        graphConnection.idTo = getVertexTo()->getObjectId();
+    }
+
+    graphConnection.name = getDisplayName();
+    graphConnection.lineColor = m_connectionLine->getBorderColor();
+
+    return graphConnection;
+}
+
+void VertexConnectionLine::fromConnection(const GConnection &con)
+{
+    setDisplayName(con.name);
+    m_connectionLine->setBorderColor(con.lineColor);
 }
 
 void VertexConnectionLine::setVertexFrom(VertexObject* pVertexFrom) {

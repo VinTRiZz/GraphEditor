@@ -1,5 +1,4 @@
-#ifndef VERTEXOBJECT_H
-#define VERTEXOBJECT_H
+#pragma once
 
 #include <Components/CustomQt/ObjectScene/PictureObjectItem.h>
 
@@ -7,14 +6,24 @@
 #include <QPen>
 #include <set>
 
-namespace ObjectViewItems {
+#include "graphsceneitem.hpp"
+
+#include <GraphObject/Object.h>
+
+namespace Graph {
 
 class VertexConnectionLine;
 
-class VertexObject : public PictureObjectItem {
+class VertexObject : public ObjectViewItems::PictureObjectItem, public GraphSceneItem {
 public:
     explicit VertexObject(QGraphicsItem* parent = nullptr);
     ~VertexObject();
+
+    // GraphSceneItem interface
+    const QGraphicsItem* getMainItem() const override { return this; }
+
+    void fromVertex(const GVertex& vert);
+    GVertex toVertex() const;
 
     void setImageByHash(const QString& imageHash);
 
@@ -40,6 +49,4 @@ protected:
                         const QVariant& value) override;
 };
 
-}  // namespace ObjectViewItems
-
-#endif  // VERTEXOBJECT_H
+}  // namespace Graph

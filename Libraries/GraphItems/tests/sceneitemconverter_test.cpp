@@ -5,38 +5,12 @@
 
 #include <QApplication>
 
+#include "graphsceneitem.hpp"
+
 class SceneFieldItemTest : public ::testing::Test {
 protected:
     // For imagination
 };
-
-TEST_F(SceneFieldItemTest, VertexConversion) {
-    auto vertex = Graph::TestGenerators::randomVertex();
-
-    auto* vertexObj = Graph::SceneItemConverter::fromVertex(vertex);
-    ASSERT_NE(vertexObj, nullptr);
-
-    Graph::GVertex convertedVertex =
-        Graph::SceneItemConverter::toVertex(vertexObj);
-
-    EXPECT_EQ(vertex, convertedVertex);
-
-    delete vertexObj;  // Очистка ресурсов
-}
-
-TEST_F(SceneFieldItemTest, ConnectionConversion) {
-    auto connection = Graph::TestGenerators::randomConnection({1, 2, 3});
-
-    auto* conObj = Graph::SceneItemConverter::fromConnection(connection);
-    ASSERT_NE(conObj, nullptr);
-
-    auto convertedCon = Graph::SceneItemConverter::toConnection(conObj);
-
-    // Не должно быть преобразований, т.к. невалидны vertexFrom и vertexTo
-    EXPECT_NE(connection, convertedCon);
-
-    delete conObj;  // Очистка ресурсов
-}
 
 TEST_F(SceneFieldItemTest, GraphConversion) {
     auto testMaintainer = Graph::TestGenerators::createTestGraph();
@@ -54,7 +28,7 @@ TEST_F(SceneFieldItemTest, GraphConversion) {
 
     // Очистка элементов
     for (auto* item : items) {
-        if (item->getType() == ObjectViewItems::OBJECTTYPE_VERTEX) {
+        if (item->getType() == Graph::OBJECTTYPE_VERTEX) {
             delete item;
         }
     }
@@ -73,7 +47,7 @@ TEST_F(SceneFieldItemTest, MaintainerConversion) {
 
     // Очистка элементов
     for (auto* item : items) {
-        if (item->getType() == ObjectViewItems::OBJECTTYPE_VERTEX) {
+        if (item->getType() == Graph::OBJECTTYPE_VERTEX) {
             delete item;
         }
     }

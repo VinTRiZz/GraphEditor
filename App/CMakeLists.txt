@@ -4,7 +4,7 @@ file(GLOB SOURCES "src/*.cpp")
 file(GLOB UIFILES "src/*.ui")
 set(
     PROJECT_FILES
-    ${HEADERS} ${SOURCES} ${UIFILES}
+    ${HEADERS} ${SOURCES} ${UIFILES} ${RESOURCES_COMMONFILE}
 )
 
 set(

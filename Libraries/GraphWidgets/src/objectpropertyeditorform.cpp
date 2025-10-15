@@ -66,7 +66,7 @@ void ObjectPropertyEditorForm::setTargetItem(
 
     auto isConnectionEditing =
         pTargetItem->getType() ==
-        ObjectViewConstants::OBJECTTYPE_VERTEX_CONNECTION;
+        ObjectViewItems::OBJECTTYPE_VERTEX_CONNECTION;
     ui->name_lineEdit->setEnabled(!isConnectionEditing);
     ui->description_plainTextEdit->setEnabled(!isConnectionEditing);
 }

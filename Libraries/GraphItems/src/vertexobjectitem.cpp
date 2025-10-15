@@ -14,14 +14,14 @@
 
 #include "connectionlineitem.h"
 
-using namespace ObjectViewConstants;
+using namespace ObjectViewItems;
 
 namespace ObjectViewItems {
 
 VertexObject::VertexObject(QGraphicsItem* parent) : PictureObjectItem(parent) {
     setSystemName("Вершина");
 
-    setType(ObjectViewConstants::OBJECTTYPE_VERTEX);
+    setType(ObjectViewItems::OBJECTTYPE_VERTEX);
 
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setFlag(QGraphicsItem::ItemClipsToShape, true);

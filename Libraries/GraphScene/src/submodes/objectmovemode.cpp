@@ -53,7 +53,7 @@ void ObjectMoveMode::processRelease(QGraphicsItem* pTargetItem) {
     auto pScene = getParentMode()->getScene();
 
     // Если соединение, перемещаем точку целевую
-    if (pItem->getType() == ObjectViewConstants::OBJECTTYPE_VERTEX_CONNECTION &&
+    if (pItem->getType() == ObjectViewItems::OBJECTTYPE_VERTEX_CONNECTION &&
         pItem != m_movingConnectionLine) {
         pItem->setSelected(true);
         m_movingConnectionLine =
@@ -64,7 +64,7 @@ void ObjectMoveMode::processRelease(QGraphicsItem* pTargetItem) {
     // Для соединений -- применить изменения
     if (nullptr != m_movingConnectionLine) {
         // Отменяем если не вершина
-        if (pItem->getType() != ObjectViewConstants::OBJECTTYPE_VERTEX ||
+        if (pItem->getType() != ObjectViewItems::OBJECTTYPE_VERTEX ||
             pItem == m_movingConnectionLine->getVertexFrom()) {
             m_movingConnectionLine->resetPositions();
             clearMode();
@@ -81,7 +81,7 @@ void ObjectMoveMode::processRelease(QGraphicsItem* pTargetItem) {
     }
 
     // Если вершина, прикрепляем её к курсору
-    if (pItem->getType() == ObjectViewConstants::OBJECTTYPE_VERTEX &&
+    if (pItem->getType() == ObjectViewItems::OBJECTTYPE_VERTEX &&
         pItem != m_movingVertex) {
         if (nullptr != m_movingVertex) {
             pScene->rejectGrabObject();

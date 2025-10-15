@@ -43,7 +43,7 @@ void AddLineMode::processRelease(QGraphicsItem* pTargetItem) {
     auto pScene = getParentMode()->getScene();
 
     if (pTargetVertexItem->getType() !=
-        ObjectViewConstants::OBJECTTYPE_VERTEX) {
+        ObjectViewItems::OBJECTTYPE_VERTEX) {
         clearMode();
         return;
     }

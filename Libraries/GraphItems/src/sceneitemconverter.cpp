@@ -19,7 +19,7 @@ ObjectViewItems::VertexObject* SceneItemConverter::fromVertex(
     pVertexItem->setBackgroundColor(vert.backgroundColor);
 
     auto& sceneConfig =
-        ObjectViewConstants::ObjectSceneConfiguration::getInstance();
+        ObjectViewItems::ObjectSceneConfiguration::getInstance();
     pVertexItem->setZValue(sceneConfig.vertexLayer);
 
     QRect vertexRect;
@@ -44,7 +44,7 @@ ObjectViewItems::VertexConnectionLine* SceneItemConverter::fromConnection(
     pConnection->setWeight(con.connectionWeight);
 
     pConnection->setZValue(
-        ObjectViewConstants::ObjectSceneConfiguration::getInstance()
+        ObjectViewItems::ObjectSceneConfiguration::getInstance()
             .connectionLineLayer);
     return pConnection;
 }
@@ -145,7 +145,7 @@ GraphObject SceneItemConverter::toGraph(
 
     LOG_INFO("Loading vertices from scene...");
     for (auto vert : items) {
-        if (vert->getType() != ObjectViewConstants::OBJECTTYPE_VERTEX) {
+        if (vert->getType() != ObjectViewItems::OBJECTTYPE_VERTEX) {
             continue;
         }
         res.addVertex(toVertex(vert));
@@ -155,7 +155,7 @@ GraphObject SceneItemConverter::toGraph(
     LOG_INFO("Loading connections from scene...");
     for (auto con : items) {
         if (con->getType() !=
-            ObjectViewConstants::OBJECTTYPE_VERTEX_CONNECTION) {
+            ObjectViewItems::OBJECTTYPE_VERTEX_CONNECTION) {
             continue;
         }
         res.addConnection(toConnection(con));

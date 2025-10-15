@@ -54,7 +54,7 @@ TEST_F(SceneFieldItemTest, GraphConversion) {
 
     // Очистка элементов
     for (auto* item : items) {
-        if (item->getType() == ObjectViewConstants::OBJECTTYPE_VERTEX) {
+        if (item->getType() == ObjectViewItems::OBJECTTYPE_VERTEX) {
             delete item;
         }
     }
@@ -73,7 +73,7 @@ TEST_F(SceneFieldItemTest, MaintainerConversion) {
 
     // Очистка элементов
     for (auto* item : items) {
-        if (item->getType() == ObjectViewConstants::OBJECTTYPE_VERTEX) {
+        if (item->getType() == ObjectViewItems::OBJECTTYPE_VERTEX) {
             delete item;
         }
     }

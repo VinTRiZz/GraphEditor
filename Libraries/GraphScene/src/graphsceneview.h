@@ -64,8 +64,8 @@ public:
      * @return                      Указатель на объект, добавленный на сцену
      */
     ObjectViewItems::VertexConnectionLine* createConnectionLine(
-        ObjectViewConstants::objectId_t idFrom,
-        ObjectViewConstants::objectId_t idTo);
+        ObjectViewItems::objectId_t idFrom,
+        ObjectViewItems::objectId_t idTo);
 
     /**
      * @brief createVertex  Создать вершину
@@ -76,9 +76,9 @@ public:
 private:
     void resizeEvent(QResizeEvent* e) override;
     ObjectViewItems::VertexObject* createVertex(
-        ObjectViewConstants::objectId_t vId);
+        ObjectViewItems::objectId_t vId);
 
-    ObjectViewConstants::objectId_t m_currentItemId{
+    ObjectViewItems::objectId_t m_currentItemId{
         1};  //! Текущий идентификатор объекта сцены. Используется для создания
              //! объектов
     GraphModeBase* m_pCurrentMode{nullptr};  //! Текущий режим работы

@@ -92,12 +92,12 @@ void GraphSceneView::updateGraph() {
         return;
     }
 
-    removeSpecialObjects(ObjectViewConstants::OBJECTTYPE_VERTEX);
-    removeSpecialObjects(ObjectViewConstants::OBJECTTYPE_VERTEX_CONNECTION);
-    removeSpecialObjects(ObjectViewConstants::OBJECTTYPE_ARROWLINE);
+    removeSpecialObjects(ObjectViewItems::OBJECTTYPE_VERTEX);
+    removeSpecialObjects(ObjectViewItems::OBJECTTYPE_VERTEX_CONNECTION);
+    removeSpecialObjects(ObjectViewItems::OBJECTTYPE_ARROWLINE);
 
     auto& sceneConfig =
-        ObjectViewConstants::ObjectSceneConfiguration::getInstance();
+        ObjectViewItems::ObjectSceneConfiguration::getInstance();
     double labelHeight{0};
 
     QRect vertexRect;
@@ -112,8 +112,8 @@ void GraphSceneView::updateGraph() {
 }
 
 ObjectViewItems::VertexConnectionLine* GraphSceneView::createConnectionLine(
-    ObjectViewConstants::objectId_t idFrom,
-    ObjectViewConstants::objectId_t idTo) {
+    ObjectViewItems::objectId_t idFrom,
+    ObjectViewItems::objectId_t idTo) {
     while (!isIdAvailable(m_currentItemId)) {
         m_currentItemId++;
     }
@@ -121,7 +121,7 @@ ObjectViewItems::VertexConnectionLine* GraphSceneView::createConnectionLine(
     auto pConnection = new ObjectViewItems::VertexConnectionLine;
     pConnection->setObjectId(m_currentItemId);
     pConnection->setZValue(
-        ObjectViewConstants::ObjectSceneConfiguration::getInstance()
+        ObjectViewItems::ObjectSceneConfiguration::getInstance()
             .connectionLineLayer);
     addObject(pConnection);
 
@@ -136,7 +136,7 @@ ObjectViewItems::VertexObject* GraphSceneView::createVertex() {
 }
 
 ObjectViewItems::VertexObject* GraphSceneView::createVertex(
-    ObjectViewConstants::objectId_t vId) {
+    ObjectViewItems::objectId_t vId) {
     if (!isIdAvailable(vId)) {
         LOG_ERROR("Got unavailable id:", vId);
         return nullptr;
@@ -150,7 +150,7 @@ ObjectViewItems::VertexObject* GraphSceneView::createVertex(
     pVertexItem->setDescription("My example description");
 
     auto& sceneConfig =
-        ObjectViewConstants::ObjectSceneConfiguration::getInstance();
+        ObjectViewItems::ObjectSceneConfiguration::getInstance();
     pVertexItem->setZValue(sceneConfig.vertexLayer);
 
     QRect vertexRect;

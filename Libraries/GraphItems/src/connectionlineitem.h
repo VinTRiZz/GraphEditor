@@ -1,8 +1,6 @@
-#ifndef VERTEXCONNECTIONLINE_H
-#define VERTEXCONNECTIONLINE_H
+#pragma once
 
-#include <Components/CustomQt/ObjectScene/ItemBase.h>
-#include <Components/CustomQt/ObjectScene/LabelItem.h>
+#include <Components/CustomQt/ObjectScene/ElegantArrowLine.h>
 
 #include <QBrush>
 #include <QGraphicsItem>
@@ -14,7 +12,7 @@ namespace ObjectViewItems {
 
 class VertexObject;
 
-class VertexConnectionLine : public ItemBase {
+class VertexConnectionLine : public ElegantArrowLine {
 public:
     explicit VertexConnectionLine(QGraphicsItem* parent = nullptr);
     ~VertexConnectionLine();
@@ -25,57 +23,12 @@ public:
     void setVertexTo(VertexObject* pVertexTo);
     VertexObject* getVertexTo() const;
 
-    void setLine(const QLineF& line);
-    void setLine(const QPointF& p1, const QPointF& p2);
-    QLineF getLine() const;
-
-    void setWeight(double w);
-    double getWeight() const;
-
-    void setPositionFrom(const QPointF& posFrom);
-    void setPositionTo(const QPointF& posTo);
     void resetPositions();
-
-    void setBorderColor(const QColor& penColor) override;
-    void setSelectionColor(const QColor& penColor) override;
-
-    void setDisplayName(const QString& iText) override;
-
-    void setArrowSize(qreal size);
-    qreal getArrowSize() const;
-
-    QRectF boundingRect() const override;
-    bool contains(const QPointF& p) const override;
-    QPainterPath shape() const override;
 
 private:
     VertexObject* m_fromVertex{nullptr};
     VertexObject* m_toVertex{nullptr};
-
-    double m_weight{0};
-
-    QLinearGradient m_penGradient;
-    QLineF m_straightLine;
-
-    QRectF m_boundingRect;
-
-    QGraphicsPathItem* m_line{nullptr};
-    QGraphicsPathItem* m_lineSelected{nullptr};
-    QGraphicsPolygonItem* m_pArrowHeadPolygon{nullptr};
-    LabelItem* m_labelItem{nullptr};
-
-    bool m_prevSelectedState{false};
-    qreal m_arrowSize{8};
-
-    void updatePolygon();
-    QPainterPath createLinePath();
-    QPolygonF createPolygon(const QLineF& line);
-    void updatePen();
-
-    QVariant itemChange(GraphicsItemChange change,
-                        const QVariant& value) override;
 };
 
 }  // namespace ObjectViewItems
 
-#endif  // VERTEXCONNECTIONLINE_H

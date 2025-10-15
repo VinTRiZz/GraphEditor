@@ -1,6 +1,6 @@
 #include "connectionlineitem.h"
 
-#include <AppInfrastructure/ApplicationSettings.h>
+#include <AppInfrastructure/GraphEditorSettings.h>
 #include <Components/Logger/Logger.h>
 #include <GraphObject/Object.h>
 #include <Components/CustomQt/ObjectScene/Constants.h>
@@ -21,7 +21,7 @@ VertexConnectionLine::VertexConnectionLine(QGraphicsItem* parent)
     auto pLine = static_cast<ElegantArrowLine*>(m_connectionLine);
     registerSubitem(pLine);
 
-    auto& appSettings = ApplicationSettings::getInstance();
+    auto& appSettings = GraphEditorSettings::getInstance();
 
     pLine->setGradient1Color(appSettings.getObjectsConfig().m_defaultLineMainColor);
     pLine->setGradient2Color(appSettings.getObjectsConfig().m_defaultLineMainColor);

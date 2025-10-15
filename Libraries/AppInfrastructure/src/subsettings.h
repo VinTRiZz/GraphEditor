@@ -1,5 +1,5 @@
-#ifndef APPLICATIONSETTINGSHELPER_H
-#define APPLICATIONSETTINGSHELPER_H
+#ifndef SubSettings_H
+#define SubSettings_H
 
 #include <QColor>
 #include <QGradient>
@@ -7,7 +7,7 @@
 #include <QString>
 #include <QStringList>
 
-namespace ApplicationSettingsHelper {
+namespace SubSettings {
 /**
  * @class GeneralConfiguration
  * @brief Содержит основные настройки приложения, не связанные с графическим
@@ -156,6 +156,6 @@ public:
     QColor m_defaultLineSecondColor{QColor("#5aadac")};
     QColor m_defaultLineSelectionColor{QColor("#ffbc20")};
 };
-}  // namespace ApplicationSettingsHelper
+}  // namespace SubSettings
 
-#endif  // APPLICATIONSETTINGSHELPER_H
+#endif  // SubSettings_H

@@ -1,6 +1,6 @@
 #include "graphsceneview.h"
 
-#include <AppInfrastructure/ApplicationSettings.h>
+#include <AppInfrastructure/GraphEditorSettings.h>
 #include <Components/Logger/Logger.h>
 #include <GraphObject/Object.h>
 #include <Components/CustomQt/ObjectScene/Constants.h>
@@ -26,7 +26,7 @@ GraphSceneView::GraphSceneView(QWidget* parent) : ObjectView(parent) {
     m_buttonMatrixHead->collapse(false);
     m_buttonMatrixHead->hide();
 
-    setSceneBrush(ApplicationSettings::getInstance()
+    setSceneBrush(GraphEditorSettings::getInstance()
                       .getCanvasConfig()
                       .m_canvasColor);
     setCanvasRect(QRectF(0, 0, 2000, 2000));

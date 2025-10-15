@@ -8,4 +8,4 @@ LINK_TARGET_LIBRARY(GraphWidgets GraphObject)
 LINK_TARGET_LIBRARY(GraphWidgets GraphItems)
 LINK_TARGET_LIBRARY(GraphWidgets GraphScene)
 
-LINK_TARGET_LIBRARY(GraphWidgets Filework)
+LINK_TARGET_LIBRARY(GraphWidgets SavesModule)

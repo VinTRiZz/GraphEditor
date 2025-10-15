@@ -13,3 +13,18 @@
 [submodule "Libraries/Components-Logger"]
 	path = Libraries/Components-Logger
 	url = git@github.com:VinTRiZz/Components-Logger.git
+[submodule "Libraries/Components-Common"]
+	path = Libraries/Components-Common
+	url = git@github.com:VinTRiZz/Components-Common.git
+[submodule "Libraries/Components-Maths"]
+	path = Libraries/Components-Maths
+	url = git@github.com:VinTRiZz/Components-Maths.git
+[submodule "Libraries/Components-Encryption"]
+	path = Libraries/Components-Encryption
+	url = git@github.com:VinTRiZz/Components-Encryption.git
+[submodule "Libraries/Components-Filework"]
+	path = Libraries/Components-Filework
+	url = git@github.com:VinTRiZz/Components-Filework.git
+[submodule "Libraries/Components-ExtraClasses"]
+	path = Libraries/Components-ExtraClasses
+	url = git@github.com:VinTRiZz/Components-ExtraClasses.git

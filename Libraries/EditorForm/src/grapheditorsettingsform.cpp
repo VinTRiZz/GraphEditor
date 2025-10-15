@@ -1,11 +1,11 @@
 #include "grapheditorsettingsform.h"
 
-#include <AppInfrastructure/CommonFunctions.h>
+#include <Components/Common/CommonFunctions.h>
 
 #include "ui_grapheditorsettingsform.h"
 using namespace CommonFunctions;
 
-#include <AppInfrastructure/ApplicationSettings.h>
+#include <AppInfrastructure/GraphEditorSettings.h>
 #include <Components/Logger/Logger.h>
 #include <math.h>
 
@@ -56,7 +56,7 @@ GraphEditorSettingsForm::~GraphEditorSettingsForm() {
 void GraphEditorSettingsForm::loadSettings() {
     LOG_INFO_SYNC("Loading settings");
 
-    auto& appSettings = ApplicationSettings::getInstance();
+    auto& appSettings = GraphEditorSettings::getInstance();
 
     auto canvasSizes = appSettings.getCanvasConfig().m_canvasSize;
     ui->spinBox_width->setValue(canvasSizes.width());
@@ -93,7 +93,7 @@ void GraphEditorSettingsForm::loadSettings() {
 void GraphEditorSettingsForm::applySettings() {
     LOG_INFO_SYNC("Applying settings");
 
-    auto& appSettings = ApplicationSettings::getInstance();
+    auto& appSettings = GraphEditorSettings::getInstance();
     appSettings.getCanvasConfig().m_canvasSize =
         QSize(ui->spinBox_width->value(), ui->spinBox_height->value());
     emit updateCanvasSize();

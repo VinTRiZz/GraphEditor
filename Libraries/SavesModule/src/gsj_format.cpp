@@ -1,6 +1,6 @@
 #include "gsj_format.h"
 
-#include <AppInfrastructure/CommonFunctions.h>
+#include <Components/Common/CommonFunctions.h>
 #include <Components/Logger/Logger.h>
 
 #include <QColor>

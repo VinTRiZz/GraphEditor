@@ -1,7 +1,7 @@
 #include "savemaster.h"
 
-#include <AppInfrastructure/ApplicationSettings.h>
-#include <AppInfrastructure/DirectoryManager.h>
+#include <AppInfrastructure/GraphEditorSettings.h>
+#include <Components/Common/DirectoryManager.h>
 #include <Components/Logger/Logger.h>
 #include <Components/CustomQt/PasswordInsertDialog.h>
 
@@ -29,13 +29,13 @@ QStringList SaveMaster::getAvailableFormats() {
 
 QString SaveMaster::getSavePath() {
     return QFileDialog::getSaveFileName(nullptr, "Файл для сохранения графа",
-                                        DirectoryManager::getDocumentsPath(),
+                                        QDir::homePath(),
                                         getAvailableFormats().join(";;"));
 }
 
 QString SaveMaster::getLoadPath() {
     return QFileDialog::getOpenFileName(nullptr, "Файл для загрузки",
-                                        DirectoryManager::getDocumentsPath(),
+                                        QDir::homePath(),
                                         getAvailableFormats().join(";;"));
 }
 
@@ -49,7 +49,7 @@ bool SaveMaster::save(const QString& oFilePath,
     }
 
     auto pFormat = formatFactory.getFormat(fileSuffix);
-    if (!pFormat->isBackwardCompatible() && ApplicationSettings::getInstance()
+    if (!pFormat->isBackwardCompatible() && GraphEditorSettings::getInstance()
                                                 .getGeneralConfig()
                                                 .m_needBackwardCompatibility) {
         auto userResponse = QMessageBox::question(

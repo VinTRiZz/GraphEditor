@@ -1,6 +1,6 @@
 #include "graphtabwidget.h"
 
-#include <AppInfrastructure/ApplicationSettings.h>
+#include <AppInfrastructure/GraphEditorSettings.h>
 #include <Filework/SaveMaster.h>
 
 #include <QMessageBox>
@@ -35,7 +35,7 @@ GraphTabWidget::GraphTabWidget(QWidget* parent)
                     return;
                 }
 
-                if (ApplicationSettings::getInstance()
+                if (GraphEditorSettings::getInstance()
                         .getGeneralConfig()
                         .m_needConfirmSave &&
                     pTargetForm->getIsSavepathValid()) {
@@ -48,7 +48,7 @@ GraphTabWidget::GraphTabWidget(QWidget* parent)
                     }
                 }
                 ui->editorForms_tabWidget->removeTab(tabIndex);
-                ApplicationSettings::getInstance().removeRecentFile(
+                GraphEditorSettings::getInstance().removeRecentFile(
                     pTargetForm->getSavefilePath());
                 pTargetForm->deleteLater();
 
@@ -95,7 +95,7 @@ GraphTabWidget::GraphTabWidget(QWidget* parent)
     connect(ui->filesToolBar, &GraphFilesToolbar::loadGraph, this,
             &GraphTabWidget::loadVisibleGraph);
 
-    auto& settingsInstance = ApplicationSettings::getInstance();
+    auto& settingsInstance = GraphEditorSettings::getInstance();
     for (auto& recentFile : settingsInstance.getRecentOpenFiles()) {
         addTab(recentFile);
     }
@@ -111,14 +111,14 @@ GraphTabWidget::GraphTabWidget(QWidget* parent)
             });
 
     m_saveTimer.connect(&m_saveTimer, &QTimer::timeout, this, [this]() {
-        auto savetimeSec = ApplicationSettings::getInstance()
+        auto savetimeSec = GraphEditorSettings::getInstance()
                                .getGeneralConfig()
                                .m_autoSaveIntervalSec;
         LOG_INFO("Restarting savefile timer. Time left:", savetimeSec / 60,
                  "minutes");
         m_saveTimer.start(savetimeSec * 1000);
     });
-    auto savetimeSec = ApplicationSettings::getInstance()
+    auto savetimeSec = GraphEditorSettings::getInstance()
                            .getGeneralConfig()
                            .m_autoSaveIntervalSec;
     LOG_INFO("Restarting savefile timer. Time left:", savetimeSec / 60,
@@ -149,7 +149,7 @@ void GraphTabWidget::addTab(const QString& filePath) {
         ui->placeholder_label->hide();
     }
 
-    ApplicationSettings::getInstance().addRecentFile(filePath);
+    GraphEditorSettings::getInstance().addRecentFile(filePath);
     setupEditorForm(pEditorForm);
 }
 
@@ -197,7 +197,7 @@ void GraphTabWidget::loadVisibleGraph(const QString& filePath) {
 }
 
 void GraphTabWidget::setupEditorForm(GraphEditorForm* pEditorForm) {
-    auto& appSettings = ApplicationSettings::getInstance();
+    auto& appSettings = GraphEditorSettings::getInstance();
     pEditorForm->getScene()->setGridEnabled(
         appSettings.getCanvasConfig().m_isGridEnabled);
     pEditorForm->getScene()->setGridSize(
@@ -226,7 +226,7 @@ void GraphTabWidget::setupEditorForm(GraphEditorForm* pEditorForm) {
             pEditorForm->getScene(), &Graph::GraphSceneView::setCanvasBrush);
     connect(ui->settingsForm, &GraphEditorSettingsForm::updateCanvasSize,
             pEditorForm->getScene(), [pEditorForm]() {
-                auto& appSettings = ApplicationSettings::getInstance();
+                auto& appSettings = GraphEditorSettings::getInstance();
                 auto canvasSize = appSettings.getCanvasConfig().m_canvasSize;
                 pEditorForm->getScene()->setCanvasRect(
                     QRectF(0, 0, canvasSize.width(), canvasSize.height()));

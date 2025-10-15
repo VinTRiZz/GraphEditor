@@ -5,14 +5,14 @@
 #include <QSettings>
 #include <QTemporaryFile>
 
-#include "applicationsettingshelper.h"
-#include "commonfunctions.h"
+#include "subsettings.h"
+#include <Components/Common/CommonFunctions.h>
 
 #define EXPECT_COLOR_EQ(colorA, colorB)                                        \
     EXPECT_EQ(CommonFunctions::encodeColor(colorA),                            \
               CommonFunctions::encodeColor(colorB))
 
-using namespace ApplicationSettingsHelper;
+using namespace SubSettings;
 
 TEST(GeneralConfigurationTest, ThemeConversion) {
     GeneralConfiguration config;

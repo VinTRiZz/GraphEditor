@@ -1,9 +1,11 @@
-#include "applicationsettingshelper.h"
+#include "subsettings.h"
 
-#include "commonfunctions.h"
+#include <Components/Common/CommonFunctions.h>
+
+using namespace SubSettings;
 using namespace CommonFunctions;
 
-namespace ApplicationSettingsHelper {
+namespace SubSettings {
 
 void GeneralConfiguration::fromSettingsFile(QSettings& iFile) {
     m_autoSaveIntervalSec =
@@ -142,4 +144,4 @@ void ObjectsConfiguration::addToSettingsFile(QSettings& iFile) const {
     setColorValue(m_defaultLabelBackgroundColor, "default_label_bgr_color");
 }
 
-}  // namespace ApplicationSettingsHelper
+}  // namespace SubSettings

@@ -1,5 +1,5 @@
-#include <AppInfrastructure/ApplicationSettings.h>
-#include <AppInfrastructure/DirectoryManager.h>
+#include <AppInfrastructure/GraphEditorSettings.h>
+#include <Components/Common/DirectoryManager.h>
 #include <Components/Logger/Logger.h>
 
 #include <QApplication>
@@ -47,7 +47,9 @@ int main(int argc, char* argv[]) {
     if (dirPath.isNull()) {
         dirPath = "GraphEditor";
     }
-    auto& inst = DirectoryManager::getInstance(dirPath);
+    auto& inst = Common::DirectoryManager::getInstance();
+    inst.setRootPath(dirPath);
+    Logging::LoggingMaster::getInstance(inst.getDirectory(Common::DirectoryManager::DirectoryType::Logs).absolutePath().toStdString());
 
     QFile stylesFile(":/common/styles/mainstyles.qss");
     if (stylesFile.open(QIODevice::ReadOnly)) {
@@ -58,7 +60,7 @@ int main(int argc, char* argv[]) {
     }
 
     LOG_INFO_SYNC("Started GraphEditor");
-    auto& settingsInstance = ApplicationSettings::getInstance();
+    auto& settingsInstance = GraphEditorSettings::getInstance();
 
     auto profileFile = parser.value(profileTypeOption);
     settingsInstance.loadSettings(profileFile);

@@ -1,6 +1,6 @@
 #include "vertexobjectitem.h"
 
-#include <AppInfrastructure/ApplicationSettings.h>
+#include <AppInfrastructure/GraphEditorSettings.h>
 #include <AppInfrastructure/ImageManager.h>
 #include <Components/Logger/Logger.h>
 #include <GraphObject/Object.h>
@@ -27,7 +27,7 @@ VertexObject::VertexObject(QGraphicsItem* parent) : PictureObjectItem(parent) {
     setFlag(QGraphicsItem::ItemClipsToShape, true);
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges, true);
 
-    auto& appSettings = ApplicationSettings::getInstance();
+    auto& appSettings = GraphEditorSettings::getInstance();
 
     PictureObjectItem::setSelectionColor(
         appSettings.getObjectsConfig().m_defaultSelectionColor);
@@ -101,7 +101,7 @@ void VertexObject::setImageByHash(const QString& imageHash) {
 void VertexObject::setBorderColor(const QColor& penColor) {
     PictureObjectItem::setBorderColor(penColor.isValid()
                                           ? penColor
-                                          : ApplicationSettings::getInstance()
+                                          : GraphEditorSettings::getInstance()
                                                 .getObjectsConfig()
                                                 .m_defaultMainColor);
 }
@@ -109,7 +109,7 @@ void VertexObject::setBorderColor(const QColor& penColor) {
 void VertexObject::setBackgroundColor(const QColor& penColor) {
     PictureObjectItem::setBackgroundColor(
         penColor.isValid() ? penColor
-                           : ApplicationSettings::getInstance()
+                           : GraphEditorSettings::getInstance()
                                  .getObjectsConfig()
                                  .m_defaultSecondColor);
 }

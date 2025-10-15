@@ -1,7 +1,7 @@
 #include "objectpropertyeditorform.h"
 
-#include <AppInfrastructure/CommonFunctions.h>
-#include <AppInfrastructure/DirectoryManager.h>
+#include <Components/Common/CommonFunctions.h>
+#include <Components/Common/DirectoryManager.h>
 #include <AppInfrastructure/ImageManager.h>
 #include <Components/Logger/Logger.h>
 #include <GraphObject/Components.h>
@@ -119,7 +119,7 @@ void ObjectPropertyEditorForm::initHistoryGalery() {
     connect(ui->openImage_pushButton, &QPushButton::clicked, this, [this]() {
         auto targetPath =
             QFileDialog::getOpenFileName(nullptr, "Выберите изображение",
-                                         DirectoryManager::getDocumentsPath());
+                                         QDir::homePath());
 
         addHistoryImage(targetPath);
     });
@@ -195,8 +195,8 @@ void ObjectPropertyEditorForm::addHistoryImage(const QString& targetPath) {
     pLabel->setProperty(PROPEDITORFORM_PROPERTY_IMAGEHASH, img.first);
     ui->imageHistoryGalery->addWidget(pLabel, imgName);
 
-    auto imageHistoryDir = DirectoryManager::getTmpDirectoryPath(
-        DirectoryManager::DirectoryTypeTmp::ImportedImages);
+    auto imageHistoryDir = Common::DirectoryManager::getDirectoryStatic(
+        Common::DirectoryManager::DirectoryType::Temporary).absolutePath() + QDir::separator();
     QFile::copy(targetPath, imageHistoryDir + QFileInfo(targetPath).fileName());
 }
 

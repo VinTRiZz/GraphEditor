@@ -1,6 +1,6 @@
 #include "gvertex.h"
 
-#include <AppInfrastructure/CommonFunctions.h>
+#include <Components/Common/CommonFunctions.h>
 #include <Components/Logger/Logger.h>
 
 bool Graph::GVertex::isShortnameValid() const {

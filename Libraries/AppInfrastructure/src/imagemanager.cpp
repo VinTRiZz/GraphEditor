@@ -7,9 +7,9 @@
 #include <QImageReader>
 #include <QLabel>
 
-#include "directorymanager.h"
-#include "encryption.h"
 #include <Components/Logger/Logger.h>
+#include <Components/Common/DirectoryManager.h>
+#include <Components/Encryption/Hash.h>
 
 ImageManager::ImageManager() {
     updateCache();
@@ -84,12 +84,11 @@ QImage ImageManager::getImageByHash(const QString& hash) const {
 QString ImageManager::calculateImageHash(const QString& imagePath) {
     QFile targetFile(imagePath);
     targetFile.open(QIODevice::ReadOnly);
-    return Encryption::sha256(targetFile.readAll());
+    return Encryption::qtSha256(targetFile.readAll());
 }
 
 QStringList ImageManager::getImageHistoryPaths() {
-    auto imagesDir = DirectoryManager::getTmpDirectory(
-        DirectoryManager::DirectoryTypeTmp::ImportedImages);
+    auto imagesDir = Common::DirectoryManager::getDirectoryStatic(Common::DirectoryManager::DirectoryType::Temporary);
     auto imgFiles = imagesDir.entryList();
     imgFiles.removeAll(".");
     imgFiles.removeAll("..");  // Обход бага кьюта

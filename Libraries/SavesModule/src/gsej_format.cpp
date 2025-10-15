@@ -1,6 +1,6 @@
 #include "gsej_format.h"
 
-#include <AppInfrastructure/Encryption.h>
+#include <Components/Encryption/AES-256.h>
 #include <Components/Logger/Logger.h>
 
 #include <QFileInfo>
@@ -31,7 +31,7 @@ bool GSEJ_Format::save(const QString& targetPath) const {
 
     auto payloadJson = m_rootFormat.toDataJson();
     resultJson["payload"] =
-        Encryption::encryptAes256Cbc(
+        Encryption::qtEncryptAes256Cbc(
             QJsonDocument(payloadJson).toJson(QJsonDocument::Compact),
             m_key.toUtf8())
             .toHex()
@@ -65,7 +65,7 @@ bool GSEJ_Format::load(const QString& targetPath) {
     auto payloadHex = payloadSection.toString().toUtf8();
     auto payloadEncrypted = QByteArray::fromHex(payloadHex);
     auto decryptedData =
-        Encryption::decryptAes256Cbc(payloadEncrypted, m_key.toUtf8());
+        Encryption::qtDecryptAes256Cbc(payloadEncrypted, m_key.toUtf8());
     return m_rootFormat.initFromDataJson(
         QJsonDocument::fromJson(decryptedData).object());
 }

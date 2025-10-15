@@ -23,11 +23,6 @@ set(
     "${CMAKE_CURRENT_SOURCE_DIR}/BIN/Package"
 )
 
-set(
-    INSTALL_BINARY_NAME
-    ${PROJECT_NAME}-${PROJECT_VERSION}
-)
-
 # For LTO
 if(POLICY CMP0069)
     cmake_policy(SET CMP0069 NEW)

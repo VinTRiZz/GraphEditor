@@ -1,7 +1,7 @@
 #ifndef GCONNECTION_H
 #define GCONNECTION_H
 
-#include <AppInfrastructure/CommonFunctions.h>
+#include <Components/Common/CommonFunctions.h>
 #include <Components/Logger/Logger.h>
 #include <math.h>
 

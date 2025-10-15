@@ -30,12 +30,15 @@ bool GSEJ_Format::save(const QString& targetPath) const {
     resultJson["system"] = systemJson;
 
     auto payloadJson = m_rootFormat.toDataJson();
-    resultJson["payload"] =
+    auto encPayload =
         Encryption::qtEncryptAes256Cbc(
             QJsonDocument(payloadJson).toJson(QJsonDocument::Compact),
-            m_key.toUtf8())
-            .toHex()
-            .data();
+            m_key.toUtf8());
+
+    if (encPayload.isEmpty()) {
+        LOG_ERROR("Encrypt error:", Encryption::getEncryptionErrorText());
+    }
+    resultJson["payload"] = encPayload.toHex().data();
 
     auto resultData = QJsonDocument(resultJson).toJson();
     return replaceFileData(targetPath, resultData);
@@ -66,6 +69,9 @@ bool GSEJ_Format::load(const QString& targetPath) {
     auto payloadEncrypted = QByteArray::fromHex(payloadHex);
     auto decryptedData =
         Encryption::qtDecryptAes256Cbc(payloadEncrypted, m_key.toUtf8());
+    if (decryptedData.isEmpty()) {
+        LOG_ERROR("Decrypt error:", Encryption::getEncryptionErrorText());
+    }
     return m_rootFormat.initFromDataJson(
         QJsonDocument::fromJson(decryptedData).object());
 }

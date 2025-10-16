@@ -10,15 +10,15 @@ protected:
     void SetUp() override {
         // Подготовка тестовых данных
         v1.id = 1;
-        v1.shortName = "V1";
+        v1.displayName = "V1";
         v1.name = "Vertex 1";
 
         v2.id = 2;
-        v2.shortName = "V2";
+        v2.displayName = "V2";
         v2.name = "Vertex 2";
 
         v3.id = 3;
-        v3.shortName = "V3";
+        v3.displayName = "V3";
         v3.name = "Vertex 3";
 
         conn1.idFrom = 1;

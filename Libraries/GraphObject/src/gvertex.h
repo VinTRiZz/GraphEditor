@@ -25,7 +25,7 @@ struct GVertex {
                      //! первой отрисовки
 
     // Основные поля
-    QString shortName{};    //! Краткое имя врешины (отображаемое)
+    QString displayName{};  //! Краткое имя врешины (отображаемое)
     QString name{};         //! Полное имя вершины
     QString description{};  //! Описание вершины
 
@@ -35,11 +35,11 @@ struct GVertex {
     QImage image;                       //! Изображение с альфа-каналом
 
     /**
-     * @brief isShortnameValid  Проверка корректности длины краткого
+     * @brief isDisplayNameValid Проверка корректности длины краткого
      * наименования вершины
      * @return                  false если длина больше разрешённой
      */
-    bool isShortnameValid() const;
+    bool isDisplayNameValid() const;
 
     /**
      * @brief isValid   Проверка на корректность данных структуры
@@ -57,8 +57,8 @@ struct GVertex {
     template<typename OperatorT>
     bool applyOperator(const GVertex& vert, OperatorT&& vertOperator) const {
         return vertOperator(
-            std::tie(id, shortName, name, description),
-            std::tie(vert.id, vert.shortName, vert.name, vert.description));
+            std::tie(id, displayName, name, description),
+            std::tie(vert.id, vert.displayName, vert.name, vert.description));
     }
 
     /**

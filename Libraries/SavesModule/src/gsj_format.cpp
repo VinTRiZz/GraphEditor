@@ -48,7 +48,7 @@ bool GSJ_Format::initFromDataJson(const QJsonObject& iJson) {
         vertex.id = vObj["id"].toString().toULongLong();
         vertex.posX = vObj["posX"].toDouble();
         vertex.posY = vObj["posY"].toDouble();
-        vertex.shortName = vObj["shortName"].toString();
+        vertex.displayName = vObj["shortName"].toString();
         vertex.name = vObj["name"].toString();
         vertex.description = vObj["description"].toString();
         vertex.borderColor = CommonFunctions::decodeColor(
@@ -76,9 +76,8 @@ bool GSJ_Format::initFromDataJson(const QJsonObject& iJson) {
             conn.idFrom = conObj["idFrom"].toString().toULongLong();
             conn.idTo = conObj["idTo"].toString().toULongLong();
             conn.name = conObj["name"].toString();
-            conn.lineColor = CommonFunctions::decodeColor(
+            conn.color = CommonFunctions::decodeColor(
                 conObj["color"].toString().toUtf8());
-            conn.connectionWeight = conObj["weight"].toDouble();
 
             if (!pMaintainer->getObject().addConnection(conn)) {
                 LOG_WARNING("Failed to add connection:", conn.idFrom,
@@ -126,7 +125,7 @@ QJsonObject GSJ_Format::toDataJson() const {
         vObj["id"] = QString::number(vertex.id);
         vObj["posX"] = vertex.posX;
         vObj["posY"] = vertex.posY;
-        vObj["shortName"] = vertex.shortName;
+        vObj["shortName"] = vertex.displayName;
         vObj["name"] = vertex.name;
         vObj["description"] = vertex.description;
         vObj["borderColor"] =
@@ -151,8 +150,7 @@ QJsonObject GSJ_Format::toDataJson() const {
         conObj["idFrom"] = QString::number(conn.idFrom);
         conObj["idTo"] = QString::number(conn.idTo);
         conObj["name"] = conn.name;
-        conObj["color"] = CommonFunctions::encodeColor(conn.lineColor).data();
-        conObj["weight"] = conn.connectionWeight;
+        conObj["color"] = CommonFunctions::encodeColor(conn.color).data();
 
         const QString fromKey = QString::number(conn.idFrom);
         const QString toKey = QString::number(conn.idTo);

@@ -3,18 +3,15 @@
 #include <Components/Logger/Logger.h>
 
 bool Graph::GConnection::operator==(const GConnection& oCon_) const {
-    auto weightEquality =
-        (fabs(oCon_.connectionWeight - connectionWeight) < 1e-6);
-    auto lineColorsEqual = CommonFunctions::encodeColor(lineColor) ==
-                           CommonFunctions::encodeColor(oCon_.lineColor);
+    auto lineColorsEqual = CommonFunctions::encodeColor(color) ==
+                           CommonFunctions::encodeColor(oCon_.color);
     auto mainCompareRes = applyOperator(oCon_, std::equal_to<>{});
 
-    auto res = mainCompareRes && weightEquality && lineColorsEqual;
+    auto res = mainCompareRes && lineColorsEqual;
     if (!res) {
         LOG_INFO("GConnection::equal is false. Comparisons:");
         LOG_INFO("Main compare:", mainCompareRes);
         LOG_INFO("Colors:", lineColorsEqual);
-        LOG_INFO("Weight", weightEquality);
     }
 
     return res;

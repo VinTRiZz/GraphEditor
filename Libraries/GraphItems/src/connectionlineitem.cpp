@@ -12,7 +12,7 @@ using namespace ObjectViewItems;
 namespace Graph {
 
 VertexConnectionLine::VertexConnectionLine(QGraphicsItem* parent)
-    : ItemBase(parent) {
+    : GraphSceneItem(parent) {
     setSystemName("Соединение вершин");
     setType(ObjectViewItems::ObjectType(OBJECTTYPE_CONNECTION));
 
@@ -53,7 +53,7 @@ GConnection VertexConnectionLine::toConnection() const
     }
 
     graphConnection.name = getDisplayName();
-    graphConnection.lineColor = m_connectionLine->getBorderColor();
+    graphConnection.color = m_connectionLine->getBorderColor();
 
     return graphConnection;
 }
@@ -61,7 +61,7 @@ GConnection VertexConnectionLine::toConnection() const
 void VertexConnectionLine::fromConnection(const GConnection &con)
 {
     setDisplayName(con.name);
-    m_connectionLine->setBorderColor(con.lineColor);
+    m_connectionLine->setBorderColor(con.color);
 }
 
 void VertexConnectionLine::setVertexFrom(VertexItemBase* pVertexFrom) {

@@ -29,7 +29,7 @@ bool GraphObject::operator!=(const GraphObject& gObj_) const {
 }
 
 bool GraphObject::addVertex(const GVertex& iVert) {
-    if (!iVert.isShortnameValid()) {
+    if (!iVert.isDisplayNameValid()) {
         throw std::invalid_argument(
             "GraphObject::addVertex: invalid size of short name");
     }

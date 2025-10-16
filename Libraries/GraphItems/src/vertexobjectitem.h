@@ -18,13 +18,8 @@ public:
     explicit VertexObjectItem(QGraphicsItem* parent = nullptr);
     ~VertexObjectItem();
 
-    // GraphSceneItem interface
-    const QGraphicsItem* getMainItem() const override { return this; }
-
     void fromVertex(const GVertex& vert) override;
     GVertex toVertex() const override;
-
-    void setImageByHash(const QString& imageHash);
 
     void setBorderColor(const QColor& penColor) override;
     void setBackgroundColor(const QColor& penColor) override;

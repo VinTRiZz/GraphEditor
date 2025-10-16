@@ -16,13 +16,10 @@ namespace Graph {
 
 class VertexItemBase;
 
-class VertexConnectionLine : public ObjectViewItems::ItemBase, public GraphSceneItem {
+class VertexConnectionLine : public GraphSceneItem {
 public:
     explicit VertexConnectionLine(QGraphicsItem* parent = nullptr);
     ~VertexConnectionLine();
-
-    // GraphSceneItem interface
-    const QGraphicsItem* getMainItem() const override { return this; }
 
     GConnection toConnection() const;
     void fromConnection(const GConnection& con);

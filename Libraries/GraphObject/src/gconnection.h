@@ -19,9 +19,8 @@ namespace Graph {
 struct GConnection {
     GraphCommon::graphId_t idFrom{0};  //! ID из которого исходит ребро
     GraphCommon::graphId_t idTo{0};    //! ID в которое входит ребро
-    double connectionWeight{0};        //! Вес ребра
     QString name{};                    //! Название ребра
-    QColor lineColor{Qt::black};       //! Цвет ребра
+    QColor color{Qt::black};           //! Цвет ребра
 
     /**
      * @brief isValid   Проверка на корректность данных структуры

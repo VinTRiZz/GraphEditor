@@ -7,9 +7,9 @@
 
 namespace Graph {
 
-std::list<ObjectViewItems::ItemBase*> SceneItemConverter::fromGraph(
+std::list<GraphSceneItem*> SceneItemConverter::fromGraph(
     const GraphObject& graph) {
-    std::list<ObjectViewItems::ItemBase*> res;
+    std::list<GraphSceneItem*> res;
 
     auto vertices = graph.getAllVertices();
     std::unordered_map<GraphCommon::graphId_t, Graph::VertexObjectItem*>
@@ -45,10 +45,10 @@ std::list<ObjectViewItems::ItemBase*> SceneItemConverter::fromGraph(
     return res;
 }
 
-std::list<ObjectViewItems::ItemBase*> SceneItemConverter::fromMaintainer(
+std::list<GraphSceneItem*> SceneItemConverter::fromMaintainer(
     const PMaintainer& pMaintainer) {
     const auto& rGraph = pMaintainer->getObject();
-    std::list<ObjectViewItems::ItemBase*> res = fromGraph(rGraph);
+    std::list<GraphSceneItem*> res = fromGraph(rGraph);
 
     // Пространство для воображения
 
@@ -64,7 +64,33 @@ GraphObject SceneItemConverter::toGraph(
         if (vert->getType() != OBJECTTYPE_VERTEX) {
             continue;
         }
-        res.addVertex(static_cast<Graph::VertexObjectItem*>(vert)->toVertex());
+        res.addVertex(static_cast<Graph::VertexItemBase*>(vert)->toVertex());
+    }
+    LOG_OK("Loaded", res.getVerticesCount(), "vertices from scene");
+
+    LOG_INFO("Loading connections from scene...");
+    for (auto con : items) {
+        if (con->getType() !=
+            OBJECTTYPE_CONNECTION) {
+            continue;
+        }
+        res.addConnection(static_cast<Graph::VertexConnectionLine*>(con)->toConnection());
+    }
+    LOG_OK("Loaded", res.getConnectionsCount(), "connections from scene");
+
+    return res;
+}
+
+GraphObject SceneItemConverter::toGraph(const std::list<GraphSceneItem *> &items)
+{
+    GraphObject res;
+
+    LOG_INFO("Loading vertices from scene...");
+    for (auto vert : items) {
+        if (vert->getType() != OBJECTTYPE_VERTEX) {
+            continue;
+        }
+        res.addVertex(static_cast<Graph::VertexItemBase*>(vert)->toVertex());
     }
     LOG_OK("Loaded", res.getVerticesCount(), "vertices from scene");
 
@@ -84,6 +110,13 @@ GraphObject SceneItemConverter::toGraph(
 void SceneItemConverter::toMaintainer(
     PMaintainer& pMaintainer,
     const std::list<ObjectViewItems::ItemBase*>& items) {
+    pMaintainer->getObject() = toGraph(items);
+
+    // Пространство для воображения
+}
+
+void SceneItemConverter::toMaintainer(PMaintainer &pMaintainer, const std::list<GraphSceneItem *> &items)
+{
     pMaintainer->getObject() = toGraph(items);
 
     // Пространство для воображения

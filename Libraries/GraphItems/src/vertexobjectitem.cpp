@@ -63,7 +63,7 @@ void VertexObjectItem::fromVertex(const GVertex &vert)
     setObjectId(vert.id);
     setPos(vert.posX, vert.posY);
 
-    setDisplayName(vert.shortName);
+    setDisplayName(vert.displayName);
     setToolTip(vert.name);
     setDescription(vert.description);
 
@@ -83,7 +83,7 @@ GVertex VertexObjectItem::toVertex() const
     graphVertex.posX = x();
     graphVertex.posY = y();
 
-    graphVertex.shortName = getDisplayName();
+    graphVertex.displayName = getDisplayName();
     graphVertex.name = toolTip();
     graphVertex.description = getDescription();
 
@@ -93,14 +93,6 @@ GVertex VertexObjectItem::toVertex() const
     graphVertex.image = m_vertexImage->getImage();
 
     return graphVertex;
-}
-
-void VertexObjectItem::setImageByHash(const QString& imageHash) {
-    auto& imgManager = ImageManager::getInstance();
-    auto img = imgManager.getImageByHash(imageHash);
-    m_vertexImage->setImage(img);
-
-    // TODO: Задавать хеш изображения
 }
 
 void VertexObjectItem::setBorderColor(const QColor& penColor) {

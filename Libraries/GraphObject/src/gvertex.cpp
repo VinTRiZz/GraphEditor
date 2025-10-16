@@ -3,12 +3,12 @@
 #include <Components/Common/CommonFunctions.h>
 #include <Components/Logger/Logger.h>
 
-bool Graph::GVertex::isShortnameValid() const {
-    return static_cast<unsigned>(shortName.size()) < GRAPH_MAX_SHORTNAME_SIZE;
+bool Graph::GVertex::isDisplayNameValid() const {
+    return static_cast<unsigned>(displayName.size()) < GRAPH_MAX_SHORTNAME_SIZE;
 }
 
 bool Graph::GVertex::isValid() const {
-    return isShortnameValid() && (id != 0);
+    return isDisplayNameValid() && (id != 0);
 }
 
 bool Graph::GVertex::operator==(const GVertex& oVert_) const {

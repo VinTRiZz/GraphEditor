@@ -16,7 +16,8 @@ bool VertexItemBase::isLineSubscribed(VertexConnectionLine* pLine) {
     return false;
 }
 
-VertexItemBase::VertexItemBase(QGraphicsItem *parent)
+VertexItemBase::VertexItemBase(QGraphicsItem *parent) :
+    GraphSceneItem(parent)
 {
     m_nameItem = new LabelItem(this);
     registerSubitem(m_nameItem);

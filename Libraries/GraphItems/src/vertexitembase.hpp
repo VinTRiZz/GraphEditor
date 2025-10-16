@@ -11,12 +11,12 @@
 
 namespace Graph {
 
-class VertexItemBase : public ObjectViewItems::ItemBase, public GraphSceneItem
+class VertexItemBase : public GraphSceneItem
 {
 public:
     explicit VertexItemBase(QGraphicsItem* parent = nullptr);
 
-    void setDisplayName(const QString& iText);
+    void setDisplayName(const QString& iText) override;
 
     virtual void fromVertex(const GVertex& vert) = 0;
     virtual GVertex toVertex() const = 0;

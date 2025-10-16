@@ -134,7 +134,7 @@ PMaintainer createTestGraph() {
 
     Graph::GVertex vert;
     vert.id = 50;
-    vert.shortName = "Нода 1";
+    vert.displayName = "Нода 1";
     vert.name = "Соединён с 2 и 3";
     vert.backgroundColor = Qt::green;
     vert.borderColor = Qt::black;
@@ -144,7 +144,7 @@ PMaintainer createTestGraph() {
     testVertices.push_back(vert);
 
     vert.id = 51;
-    vert.shortName = "Нода 2";
+    vert.displayName = "Нода 2";
     vert.name = "Соединён с 3";
     vert.backgroundColor = Qt::red;
     vert.image = redPersonImage;
@@ -153,7 +153,7 @@ PMaintainer createTestGraph() {
     testVertices.push_back(vert);
 
     vert.id = 52;
-    vert.shortName = "Нода 3";
+    vert.displayName = "Нода 3";
     vert.name = "Соединён с 2 и 4";
     vert.backgroundColor = Qt::green;
     vert.image = {};
@@ -162,7 +162,7 @@ PMaintainer createTestGraph() {
     testVertices.push_back(vert);
 
     vert.id = 53;
-    vert.shortName = "Нода 4";
+    vert.displayName = "Нода 4";
     vert.name = "Соединён с 1 и 2";
     vert.backgroundColor = Qt::red;
     vert.image = {};
@@ -171,7 +171,7 @@ PMaintainer createTestGraph() {
     testVertices.push_back(vert);
 
     vert.id = 54;
-    vert.shortName = "Тест нода";
+    vert.displayName = "Тест нода";
     vert.name = "Соединён с 1";
     vert.backgroundColor = Qt::black;
     vert.borderColor = Qt::black;
@@ -192,49 +192,49 @@ PMaintainer createTestGraph() {
     tmpCon.name = "1-2";
     tmpCon.idFrom = 50;
     tmpCon.idTo = 51;
-    tmpCon.lineColor = Qt::green;
+    tmpCon.color = Qt::green;
     testConnections.push_back(tmpCon);
 
     tmpCon.name = "1-3";
     tmpCon.idFrom = 50;
     tmpCon.idTo = 52;
-    tmpCon.lineColor = Qt::green;
+    tmpCon.color = Qt::green;
     testConnections.push_back(tmpCon);
 
     tmpCon.name = "2-3";
     tmpCon.idFrom = 51;
     tmpCon.idTo = 52;
-    tmpCon.lineColor = Qt::red;
+    tmpCon.color = Qt::red;
     testConnections.push_back(tmpCon);
 
     tmpCon.name = "3-2";
     tmpCon.idFrom = 52;
     tmpCon.idTo = 51;
-    tmpCon.lineColor = Qt::black;
+    tmpCon.color = Qt::black;
     testConnections.push_back(tmpCon);
 
     tmpCon.name = "3-4";
     tmpCon.idFrom = 52;
     tmpCon.idTo = 53;
-    tmpCon.lineColor = Qt::black;
+    tmpCon.color = Qt::black;
     testConnections.push_back(tmpCon);
 
     tmpCon.name = "4-1";
     tmpCon.idFrom = 53;
     tmpCon.idTo = 50;
-    tmpCon.lineColor = Qt::magenta;
+    tmpCon.color = Qt::magenta;
     testConnections.push_back(tmpCon);
 
     tmpCon.name = "4-2";
     tmpCon.idFrom = 53;
     tmpCon.idTo = 51;
-    tmpCon.lineColor = Qt::magenta;
+    tmpCon.color = Qt::magenta;
     testConnections.push_back(tmpCon);
 
     tmpCon.name = "5-1";
     tmpCon.idFrom = 54;
     tmpCon.idTo = 50;
-    tmpCon.lineColor = Qt::cyan;
+    tmpCon.color = Qt::cyan;
     testConnections.push_back(tmpCon);
 
     for (auto& con : testConnections) {
@@ -253,7 +253,7 @@ Graph::GVertex randomVertex(GraphCommon::graphId_t minId,
     vertex.id = idDist(rng);
     vertex.posX = posDist(rng);
     vertex.posY = posDist(rng);
-    vertex.shortName = randomString(1, Graph::GRAPH_MAX_SHORTNAME_SIZE);
+    vertex.displayName = randomString(1, Graph::GRAPH_MAX_SHORTNAME_SIZE);
     vertex.name = randomString(5, 50);
     vertex.description = randomString(0, 200);
     vertex.borderColor = randomColor(true);
@@ -273,7 +273,6 @@ Graph::GConnection randomConnection(
         throw std::invalid_argument("Need at least 2 vertices for connections");
     }
 
-    std::uniform_real_distribution<double> weightDist(0.0, 100.0);
     std::uniform_int_distribution<size_t> indexDist(0, existingIds.size() - 1);
 
     Graph::GConnection conn;
@@ -287,9 +286,8 @@ Graph::GConnection randomConnection(
 
     conn.idFrom = existingIds[fromIdx];
     conn.idTo = existingIds[toIdx];
-    conn.connectionWeight = weightDist(rng);
     conn.name = randomString(2, 30);
-    conn.lineColor = randomColor(true);
+    conn.color = randomColor(true);
 
     return conn;
 }

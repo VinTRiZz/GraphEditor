@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Components/CustomQt/ObjectScene/Constants.h>
+#include <Components/CustomQt/ObjectScene/ItemBase.h>
 
 #include <QJsonObject>
 
@@ -23,10 +24,10 @@ const int VERTEX_RADIUS {50};
 /**
  * @brief The GraphSceneItem class Интерфейс элемента графа
  */
-class GraphSceneItem
+class GraphSceneItem :  public ObjectViewItems::ItemBase
 {
 public:
-    virtual const QGraphicsItem* getMainItem() const = 0; // Нюанс множественного наследования
+    explicit GraphSceneItem(QGraphicsItem* parent = nullptr);
 };
 
 

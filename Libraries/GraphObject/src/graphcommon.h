@@ -14,7 +14,7 @@ using graphId_t = long long;
  * @brief The GraphProperty enum Обычные для всех свойства графа
  */
 enum GraphProperty {
-    GRAPHPROPERTY_NAME,         //! Название графа
+    GRAPHPROPERTY_NAME = 0,     //! Название графа
     GRAPHPROPERTY_DESCRIPTION,  //! Описание графа
     GRAPHPROPERTY_CREATETIME,   //! Время создания
     GRAPHPROPERTY_EDITTIME,     //! Время последнего изменения

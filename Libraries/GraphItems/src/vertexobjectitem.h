@@ -1,52 +1,38 @@
 #pragma once
 
-#include <Components/CustomQt/ObjectScene/PictureObjectItem.h>
-
 #include <QGraphicsItem>
 #include <QPen>
 #include <set>
 
-#include "graphsceneitem.hpp"
+#include "vertexitembase.hpp"
 
 #include <GraphObject/Object.h>
+#include <Components/CustomQt/ObjectScene/PictureObjectItem.h>
 
 namespace Graph {
 
 class VertexConnectionLine;
 
-class VertexObject : public ObjectViewItems::PictureObjectItem, public GraphSceneItem {
+class VertexObjectItem : public VertexItemBase {
 public:
-    explicit VertexObject(QGraphicsItem* parent = nullptr);
-    ~VertexObject();
+    explicit VertexObjectItem(QGraphicsItem* parent = nullptr);
+    ~VertexObjectItem();
 
     // GraphSceneItem interface
     const QGraphicsItem* getMainItem() const override { return this; }
 
-    void fromVertex(const GVertex& vert);
-    GVertex toVertex() const;
+    void fromVertex(const GVertex& vert) override;
+    GVertex toVertex() const override;
 
     void setImageByHash(const QString& imageHash);
 
     void setBorderColor(const QColor& penColor) override;
     void setBackgroundColor(const QColor& penColor) override;
 
-    bool isLineSubscribed(VertexConnectionLine* pLine);
-
-    void subscribeAsConnectionFrom(VertexConnectionLine* pLine);
-    void unsubscribeConnectionFrom(VertexConnectionLine* pLine);
-
-    void subscribeAsConnectionTo(VertexConnectionLine* pLine);
-    void unsubscribeConnectionTo(VertexConnectionLine* pLine);
-
-    void updateConnectionLines();
+    QPainterPath shape() const override;
 
 private:
-    std::set<VertexConnectionLine*> m_connectionsFromThis;
-    std::set<VertexConnectionLine*> m_connectionsToThis;
-
-protected:
-    QVariant itemChange(GraphicsItemChange change,
-                        const QVariant& value) override;
+    ObjectViewItems::PictureObjectItem* m_vertexImage {nullptr};
 };
 
 }  // namespace Graph

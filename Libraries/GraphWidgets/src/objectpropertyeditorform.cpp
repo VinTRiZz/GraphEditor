@@ -16,6 +16,7 @@
 #include "ui_objectpropertyeditorform.h"
 
 const auto PROPEDITORFORM_PROPERTY_IMAGEHASH{"imagehash"};
+const auto PROPEDITORFORM_ITEM_PROPERTY_IMAGEHASH {ObjectViewItems::ObjectField::OBJECTFIELD_USERTYPE + 1000};
 
 using namespace CommonFunctions;
 
@@ -57,10 +58,10 @@ void ObjectPropertyEditorForm::setTargetItem(
     setColor(ui->bgrColor_label, pTargetItem->getBackgroundColor());
     setColor(ui->selectedColor_label, pTargetItem->getSelectionColor());
 
-    auto pVertex = dynamic_cast<Graph::VertexObject*>(m_pTargetItem);
+    auto pVertex = dynamic_cast<Graph::VertexObjectItem*>(m_pTargetItem);
 
     if (nullptr != pVertex) {
-        selectImage(pVertex->getImageHash());
+        selectImage(pVertex->data(PROPEDITORFORM_ITEM_PROPERTY_IMAGEHASH).toString());
     }
     ui->property_tabWidget->setTabEnabled(1, nullptr != pVertex);
 
@@ -82,7 +83,7 @@ void ObjectPropertyEditorForm::acceptChanges() {
     m_pTargetItem->setSelectionColor(getColor(ui->selectedColor_label));
 
     if (auto pVertex =
-            dynamic_cast<Graph::VertexObject*>(m_pTargetItem);
+            dynamic_cast<Graph::VertexObjectItem*>(m_pTargetItem);
         nullptr != pVertex) {
         if (nullptr != m_selectedIconLabel) {
             auto& imgManager = ImageManager::getInstance();

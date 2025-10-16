@@ -53,7 +53,7 @@ void AddLineMode::processRelease(QGraphicsItem* pTargetItem) {
         m_pendingConnectionLine =
             pScene->createConnectionLine(pTargetVertexItem->getObjectId(), 0);
 
-        static_cast<Graph::VertexObject*>(pTargetVertexItem)
+        static_cast<Graph::VertexObjectItem*>(pTargetVertexItem)
             ->subscribeAsConnectionFrom(m_pendingConnectionLine);
 
         m_pendingConnectionLine->show();
@@ -62,7 +62,7 @@ void AddLineMode::processRelease(QGraphicsItem* pTargetItem) {
     }
 
     auto pCastedVertex =
-        static_cast<Graph::VertexObject*>(pTargetVertexItem);
+        static_cast<Graph::VertexObjectItem*>(pTargetVertexItem);
 
     // Нельзя соединять с самой собой
     if (pCastedVertex == m_pendingConnectionLine->getVertexFrom() ||

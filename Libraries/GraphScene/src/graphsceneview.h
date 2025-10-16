@@ -7,6 +7,7 @@
 
 #include <boost/noncopyable.hpp>
 
+#include <GraphItems/VertexObjectItem.h>
 #include <GraphItems/VertexConnectionItem.h>
 #include "graphmodebase.h"
 
@@ -71,11 +72,11 @@ public:
      * @brief createVertex  Создать вершину
      * @return              Указатель на объект, добавленный на сцену
      */
-    Graph::VertexObject* createVertex();
+    Graph::VertexObjectItem* createVertex();
 
 private:
     void resizeEvent(QResizeEvent* e) override;
-    Graph::VertexObject* createVertex(
+    Graph::VertexObjectItem* createVertex(
         ObjectViewItems::objectId_t vId);
 
     ObjectViewItems::objectId_t m_currentItemId{

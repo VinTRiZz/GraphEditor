@@ -12,15 +12,15 @@ std::list<ObjectViewItems::ItemBase*> SceneItemConverter::fromGraph(
     std::list<ObjectViewItems::ItemBase*> res;
 
     auto vertices = graph.getAllVertices();
-    std::unordered_map<GraphCommon::graphId_t, Graph::VertexObject*>
+    std::unordered_map<GraphCommon::graphId_t, Graph::VertexObjectItem*>
         vertexObjects;
 
     for (auto& vert : vertices) {
-        auto pVert = new VertexObject;
+        auto pVert = new VertexObjectItem;
         pVert->fromVertex(vert);
         res.push_back(pVert);
         vertexObjects[vert.id] =
-            static_cast<Graph::VertexObject*>(res.back());
+            static_cast<Graph::VertexObjectItem*>(res.back());
     }
 
     QHash<GraphCommon::graphId_t, std::vector<GConnection>> connectionHash;
@@ -64,7 +64,7 @@ GraphObject SceneItemConverter::toGraph(
         if (vert->getType() != OBJECTTYPE_VERTEX) {
             continue;
         }
-        res.addVertex(static_cast<Graph::VertexObject*>(vert)->toVertex());
+        res.addVertex(static_cast<Graph::VertexObjectItem*>(vert)->toVertex());
     }
     LOG_OK("Loaded", res.getVerticesCount(), "vertices from scene");
 

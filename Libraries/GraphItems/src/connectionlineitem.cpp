@@ -5,8 +5,7 @@
 #include <GraphObject/Object.h>
 #include <Components/CustomQt/ObjectScene/Constants.h>
 
-
-#include "vertexobjectitem.h"
+#include "vertexitembase.hpp"
 
 using namespace ObjectViewItems;
 
@@ -65,25 +64,25 @@ void VertexConnectionLine::fromConnection(const GConnection &con)
     m_connectionLine->setBorderColor(con.lineColor);
 }
 
-void VertexConnectionLine::setVertexFrom(VertexObject* pVertexFrom) {
+void VertexConnectionLine::setVertexFrom(VertexItemBase* pVertexFrom) {
     if (m_toVertex == pVertexFrom) {
         return;
     }
     m_fromVertex = pVertexFrom;
 }
 
-VertexObject* VertexConnectionLine::getVertexFrom() const {
+VertexItemBase* VertexConnectionLine::getVertexFrom() const {
     return m_fromVertex;
 }
 
-void VertexConnectionLine::setVertexTo(VertexObject* pVertexTo) {
+void VertexConnectionLine::setVertexTo(VertexItemBase* pVertexTo) {
     if (m_fromVertex == pVertexTo) {
         return;
     }
     m_toVertex = pVertexTo;
 }
 
-VertexObject* VertexConnectionLine::getVertexTo() const {
+VertexItemBase* VertexConnectionLine::getVertexTo() const {
     return m_toVertex;
 }
 

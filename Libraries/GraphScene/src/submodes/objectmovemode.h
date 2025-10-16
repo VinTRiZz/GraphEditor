@@ -19,7 +19,7 @@ public:
     void processRelease(QGraphicsItem* pTargetItem) override;
 
 private:
-    Graph::VertexObject* m_movingVertex{nullptr};
+    Graph::VertexObjectItem* m_movingVertex{nullptr};
     Graph::VertexConnectionLine* m_movingConnectionLine{nullptr};
 };
 

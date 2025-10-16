@@ -18,7 +18,7 @@ using namespace ObjectViewItems;
 
 namespace Graph {
 
-VertexObject::VertexObject(QGraphicsItem* parent) : PictureObjectItem(parent) {
+VertexObjectItem::VertexObjectItem(QGraphicsItem* parent) : VertexItemBase(parent) {
     setSystemName("Вершина");
 
     setType(ObjectViewItems::ObjectType(OBJECTTYPE_VERTEX));
@@ -29,11 +29,13 @@ VertexObject::VertexObject(QGraphicsItem* parent) : PictureObjectItem(parent) {
 
     auto& appSettings = GraphEditorSettings::getInstance();
 
-    PictureObjectItem::setSelectionColor(
+    m_vertexImage = new ObjectViewItems::PictureObjectItem(this);
+    registerSubitem(m_vertexImage);
+    m_vertexImage->setSelectionColor(
         appSettings.getObjectsConfig().m_defaultSelectionColor);
-    PictureObjectItem::setBackgroundColor(
+    m_vertexImage->setBackgroundColor(
         appSettings.getObjectsConfig().m_defaultSecondColor);
-    PictureObjectItem::setBorderColor(
+    m_vertexImage->setBorderColor(
         appSettings.getObjectsConfig().m_defaultMainColor);
 
     setZValue(Layers::VERTEX_LAYER);
@@ -41,10 +43,10 @@ VertexObject::VertexObject(QGraphicsItem* parent) : PictureObjectItem(parent) {
     QRect vertexRect;
     vertexRect.setWidth(Sizes::VERTEX_RADIUS * 2);
     vertexRect.setHeight(Sizes::VERTEX_RADIUS * 2);
-    setRect(vertexRect);
+    m_vertexImage->setRect(vertexRect);
 }
 
-VertexObject::~VertexObject() {
+VertexObjectItem::~VertexObjectItem() {
     for (auto pLine : m_connectionsToThis) {
         pLine->setVertexTo(nullptr);
         pLine->unregister();
@@ -56,7 +58,7 @@ VertexObject::~VertexObject() {
     }
 }
 
-void VertexObject::fromVertex(const GVertex &vert)
+void VertexObjectItem::fromVertex(const GVertex &vert)
 {
     setObjectId(vert.id);
     setPos(vert.posX, vert.posY);
@@ -69,11 +71,12 @@ void VertexObject::fromVertex(const GVertex &vert)
     setBackgroundColor(vert.backgroundColor);
 
     if (!vert.image.isNull()) {
-        setImage(vert.image, {});  // TODO: Задавать изображение корректным образом
+        m_vertexImage->setImage(vert.image);
+        // TODO: Задавать хеш изображения на основе данных в файле
     }
 }
 
-GVertex VertexObject::toVertex() const
+GVertex VertexObjectItem::toVertex() const
 {
     GVertex graphVertex;
     graphVertex.id = getObjectId();
@@ -87,112 +90,39 @@ GVertex VertexObject::toVertex() const
     graphVertex.borderColor = getBorderColor();
     graphVertex.backgroundColor = getBackgroundColor();
 
-    graphVertex.image = getImage();
+    graphVertex.image = m_vertexImage->getImage();
 
     return graphVertex;
 }
 
-void VertexObject::setImageByHash(const QString& imageHash) {
+void VertexObjectItem::setImageByHash(const QString& imageHash) {
     auto& imgManager = ImageManager::getInstance();
     auto img = imgManager.getImageByHash(imageHash);
-    PictureObjectItem::setImage(img, imageHash);
+    m_vertexImage->setImage(img);
+
+    // TODO: Задавать хеш изображения
 }
 
-void VertexObject::setBorderColor(const QColor& penColor) {
-    PictureObjectItem::setBorderColor(penColor.isValid()
+void VertexObjectItem::setBorderColor(const QColor& penColor) {
+    m_vertexImage->setBorderColor(penColor.isValid()
                                           ? penColor
                                           : GraphEditorSettings::getInstance()
                                                 .getObjectsConfig()
                                                 .m_defaultMainColor);
 }
 
-void VertexObject::setBackgroundColor(const QColor& penColor) {
-    PictureObjectItem::setBackgroundColor(
+void VertexObjectItem::setBackgroundColor(const QColor& penColor) {
+    m_vertexImage->setBackgroundColor(
         penColor.isValid() ? penColor
                            : GraphEditorSettings::getInstance()
                                  .getObjectsConfig()
                                  .m_defaultSecondColor);
 }
 
-bool VertexObject::isLineSubscribed(VertexConnectionLine* pLine) {
-    // Нет смысла проверять исходящие, т.к. нельзя регистрировать вершину саму
-    // на себя
-    for (auto pLineTo : m_connectionsToThis) {
-        if (pLineTo->getVertexFrom()->getObjectId() ==
-            pLine->getVertexFrom()->getObjectId()) {
-            return true;
-        }
-    }
-    return false;
-}
-
-void VertexObject::subscribeAsConnectionFrom(VertexConnectionLine* pLine) {
-    if (this == pLine->getVertexTo()) {
-        return;
-    }
-
-    if (nullptr != pLine->getVertexFrom()) {
-        pLine->getVertexFrom()->unsubscribeConnectionFrom(pLine);
-    }
-
-    pLine->setVertexFrom(this);
-    m_connectionsFromThis.emplace(pLine);
-    updateConnectionLines();
-}
-
-void VertexObject::unsubscribeConnectionFrom(VertexConnectionLine* pLine) {
-    pLine->setVertexFrom(nullptr);
-    m_connectionsFromThis.erase(pLine);
-}
-
-void VertexObject::subscribeAsConnectionTo(VertexConnectionLine* pLine) {
-    if (this == pLine->getVertexFrom()) {
-        return;
-    }
-
-    if (nullptr != pLine->getVertexTo()) {
-        pLine->getVertexTo()->unsubscribeConnectionTo(pLine);
-    }
-
-    pLine->setVertexTo(this);
-    m_connectionsToThis.emplace(pLine);
-    updateConnectionLines();
-}
-
-void VertexObject::unsubscribeConnectionTo(VertexConnectionLine* pLine) {
-    pLine->setVertexTo(nullptr);
-    m_connectionsToThis.erase(pLine);
-}
-
-QVariant VertexObject::itemChange(GraphicsItemChange change,
-                                  const QVariant& value) {
-    if (change == ItemPositionChange) {
-        updateConnectionLines();
-    }
-
-    return PictureObjectItem::itemChange(change, value);
-}
-
-void VertexObject::updateConnectionLines() {
-    unsigned connectionNumber{0};
-    auto vertexRadius = static_cast<double>(boundingRect().width()) / 2.0;
-
-    for (auto pConFrom : m_connectionsFromThis) {
-        auto fromPos =
-            QPointF(x() + vertexRadius,
-                    y() + 2 * vertexRadius + 20 + // TODO: Arrow size
-                        getLabel()->boundingRect().height() * 0.7);
-
-        pConFrom->getLineItem()->setPositionFrom(fromPos);
-        connectionNumber++;
-    }
-
-    connectionNumber = 0;
-    for (auto pConTo : m_connectionsToThis) {
-        auto toPos = QPointF(x() + vertexRadius, y() - 20); // TODO: Arrow size
-        pConTo->getLineItem()->setPositionTo(toPos);
-        connectionNumber++;
-    }
+QPainterPath VertexObjectItem::shape() const {
+    QPainterPath res = m_vertexImage->shape();
+    res.addPath(VertexItemBase::shape());
+    return res;
 }
 
 }  // namespace ObjectViewItems

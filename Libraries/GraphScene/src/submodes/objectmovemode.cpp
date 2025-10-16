@@ -72,7 +72,7 @@ void ObjectMoveMode::processRelease(QGraphicsItem* pTargetItem) {
         }
 
         // Соединяем
-        static_cast<Graph::VertexObject*>(pItem)
+        static_cast<Graph::VertexObjectItem*>(pItem)
             ->subscribeAsConnectionTo(m_movingConnectionLine);
 
         // Забываем, что соединяли только что. Теперь это не наша забота
@@ -87,7 +87,7 @@ void ObjectMoveMode::processRelease(QGraphicsItem* pTargetItem) {
             pScene->rejectGrabObject();
         }
         pScene->setGrabObject(pItem);
-        m_movingVertex = static_cast<Graph::VertexObject*>(pItem);
+        m_movingVertex = static_cast<Graph::VertexObjectItem*>(pItem);
         return;
     }
 

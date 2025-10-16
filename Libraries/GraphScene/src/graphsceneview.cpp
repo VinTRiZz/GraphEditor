@@ -119,21 +119,21 @@ Graph::VertexConnectionLine* GraphSceneView::createConnectionLine(
     return pConnection;
 }
 
-Graph::VertexObject* GraphSceneView::createVertex() {
+Graph::VertexObjectItem* GraphSceneView::createVertex() {
     while (!isIdAvailable(m_currentItemId)) {
         m_currentItemId++;
     }
     return createVertex(m_currentItemId);
 }
 
-Graph::VertexObject* GraphSceneView::createVertex(
+Graph::VertexObjectItem* GraphSceneView::createVertex(
     ObjectViewItems::objectId_t vId) {
     if (!isIdAvailable(vId)) {
         LOG_ERROR("Got unavailable id:", vId);
         return nullptr;
     }
 
-    auto pVertexItem = new Graph::VertexObject;
+    auto pVertexItem = new Graph::VertexObjectItem;
     pVertexItem->setObjectId(vId);
 
     pVertexItem->setDisplayName("My node");

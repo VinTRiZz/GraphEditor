@@ -14,7 +14,7 @@
 
 namespace Graph {
 
-class VertexObject;
+class VertexItemBase;
 
 class VertexConnectionLine : public ObjectViewItems::ItemBase, public GraphSceneItem {
 public:
@@ -27,19 +27,19 @@ public:
     GConnection toConnection() const;
     void fromConnection(const GConnection& con);
 
-    void setVertexFrom(VertexObject* pVertexFrom);
-    VertexObject* getVertexFrom() const;
+    void setVertexFrom(VertexItemBase* pVertexFrom);
+    VertexItemBase* getVertexFrom() const;
 
-    void setVertexTo(VertexObject* pVertexTo);
-    VertexObject* getVertexTo() const;
+    void setVertexTo(VertexItemBase* pVertexTo);
+    VertexItemBase* getVertexTo() const;
 
     void resetPositions();
 
     ObjectViewItems::LineItem* getLineItem() const;
 
 private:
-    VertexObject* m_fromVertex{nullptr};
-    VertexObject* m_toVertex{nullptr};
+    VertexItemBase* m_fromVertex{nullptr};
+    VertexItemBase* m_toVertex{nullptr};
 
     ObjectViewItems::LineItem* m_connectionLine {nullptr};
 };

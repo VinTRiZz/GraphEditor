@@ -3,7 +3,7 @@
 
 #include <Components/CustomQt/ButtonMatrix.h>
 #include <GraphObject/Object.h>
-#include <Components/CustomQt/ObjectScene/Constants.h>
+#include <Components/CustomQt/ObjectView/ObjectItems.h>
 
 #include "graphmodebase.h"
 
@@ -22,7 +22,7 @@ private:
         QStringView shortName;
         QStringView description;
     };
-    std::map<ObjectViewItems::objectId_t, SearchProxy> objectsSearchCache;
+    std::map<ObjectItems::objectId_t, SearchProxy> objectsSearchCache;
 
     SearchProxy toSearchCache(const Graph::GVertex& vert) const;
     SearchProxy toSearchCache(const Graph::GConnection& con) const;

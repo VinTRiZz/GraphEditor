@@ -19,11 +19,11 @@ RemoveObjectMode::RemoveObjectMode(GraphModeBase* pParentMode)
 void RemoveObjectMode::clearMode() {}
 
 void RemoveObjectMode::processPress(QGraphicsItem* pTargetItem) {
-    auto pItem = dynamic_cast<ObjectViewItems::ItemBase*>(pTargetItem);
+    auto pItem = dynamic_cast<ObjectItems::BasicItem*>(pTargetItem);
     if (nullptr == pItem) {
         return;
     }
-    getParentMode()->getScene()->removeObject(pItem->getObjectId());
+    getParentMode()->getScene()->removeObject(pItem->getItemId());
 }
 
 void RemoveObjectMode::processMove(QGraphicsItem* pTargetItem,

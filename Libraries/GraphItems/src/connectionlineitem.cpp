@@ -1,31 +1,28 @@
-#include "connectionlineitem.h"
+#include "connectionlineitem.hpp"
 
 #include <AppInfrastructure/GraphEditorSettings.h>
 #include <Components/Logger/Logger.h>
 #include <GraphObject/Object.h>
-#include <Components/CustomQt/ObjectScene/Constants.h>
 
-#include "vertexitembase.hpp"
+#include "vertexitem.hpp"
+#include "constants.hpp"
 
-using namespace ObjectViewItems;
+using namespace ObjectItems;
 
 namespace Graph {
 
 VertexConnectionLine::VertexConnectionLine(QGraphicsItem* parent)
-    : GraphSceneItem(parent) {
+    : BasicItem(parent) {
     setSystemName("Соединение вершин");
-    setType(ObjectViewItems::ObjectType(OBJECTTYPE_CONNECTION));
+    setObjectType(OBJECTTYPE_CONNECTION);
 
-    m_connectionLine = new ElegantArrowLine(this);
-    auto pLine = static_cast<ElegantArrowLine*>(m_connectionLine);
-    registerSubitem(pLine);
+    createSubitem(m_connectionLine);
 
     auto& appSettings = GraphEditorSettings::getInstance();
 
-    pLine->setGradient1Color(appSettings.getObjectsConfig().m_defaultLineMainColor);
-    pLine->setGradient2Color(appSettings.getObjectsConfig().m_defaultLineMainColor);
-    pLine->setSelectionColor(appSettings.getObjectsConfig().m_defaultLineSelectionColor);
-    pLine->setWeight(1);
+    m_connectionLine->setLineColor(appSettings.getObjectsConfig().m_defaultLineMainColor);
+    m_connectionLine->setSelectionColor(appSettings.getObjectsConfig().m_defaultLineSelectionColor);
+    m_connectionLine->setWidth(1);
 
     setZValue(Layers::CONNECTION_LAYER);
 }
@@ -45,15 +42,15 @@ GConnection VertexConnectionLine::toConnection() const
     GConnection graphConnection;
 
     if (nullptr != getVertexFrom()) {
-        graphConnection.idFrom = getVertexFrom()->getObjectId();
+        graphConnection.idFrom = getVertexFrom()->getItemId();
     }
 
     if (nullptr != getVertexTo()) {
-        graphConnection.idTo = getVertexTo()->getObjectId();
+        graphConnection.idTo = getVertexTo()->getItemId();
     }
 
     graphConnection.name = getDisplayName();
-    graphConnection.color = m_connectionLine->getBorderColor();
+    graphConnection.color = m_connectionLine->getLineColor();
 
     return graphConnection;
 }
@@ -61,41 +58,34 @@ GConnection VertexConnectionLine::toConnection() const
 void VertexConnectionLine::fromConnection(const GConnection &con)
 {
     setDisplayName(con.name);
-    m_connectionLine->setBorderColor(con.color);
+    m_connectionLine->setLineColor(con.color);
 }
 
-void VertexConnectionLine::setVertexFrom(VertexItemBase* pVertexFrom) {
+void VertexConnectionLine::setVertexFrom(VertexItem* pVertexFrom) {
     if (m_toVertex == pVertexFrom) {
         return;
     }
     m_fromVertex = pVertexFrom;
 }
 
-VertexItemBase* VertexConnectionLine::getVertexFrom() const {
+VertexItem* VertexConnectionLine::getVertexFrom() const {
     return m_fromVertex;
 }
 
-void VertexConnectionLine::setVertexTo(VertexItemBase* pVertexTo) {
+void VertexConnectionLine::setVertexTo(VertexItem* pVertexTo) {
     if (m_fromVertex == pVertexTo) {
         return;
     }
     m_toVertex = pVertexTo;
 }
 
-VertexItemBase* VertexConnectionLine::getVertexTo() const {
+VertexItem* VertexConnectionLine::getVertexTo() const {
     return m_toVertex;
 }
 
-void VertexConnectionLine::resetPositions() {
-    if (nullptr == m_toVertex) {
-        return;
-    }
-    m_toVertex->updateConnectionLines();
-}
-
-LineItem *VertexConnectionLine::getLineItem() const
+AbstractConnectionLine *VertexConnectionLine::getLineItem() const
 {
     return m_connectionLine;
 }
 
-}  // namespace ObjectViewItems
+}  // namespace ObjectItems

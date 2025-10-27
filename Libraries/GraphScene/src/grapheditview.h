@@ -1,36 +1,21 @@
 #ifndef GRAPHEDITVIEW_H
 #define GRAPHEDITVIEW_H
 
-#include "graphsceneview.h"
+#include <Components/CustomQt/ObjectView/InformationLayer.h>
+
+#include <GraphObject/Maintainer.h>
 
 namespace Graph {
 
-class GraphViewMode;
-class GraphEditMode;
-
-class GraphEditView final : public GraphSceneView {
+class GraphEditView final : public OVLayers::OVInformationLayer {
     Q_OBJECT
 public:
     GraphEditView(QWidget* parent = nullptr);
 
-    void setGraphMaintaner(const Graph::PMaintainer& pGraphMaintaner) override;
-
-    void startViewMode();
-    void startEditMode();
-
-    bool isEditMode() const;
-    bool isViewMode() const;
-
-signals:
-    void startedView();
-    void startedEdit();
-
-    void openPropertyEditor(QGraphicsItem* pTargetItem);
-    void closePropertyEditor();
+    void setGraphMaintaner(const Graph::PMaintainer& pGraphMaintaner);
 
 private:
-    GraphViewMode* m_viewMode {nullptr};
-    GraphEditMode* m_editMode {nullptr};
+    PMaintainer m_pMaintainer {};
 };
 
 }  // namespace Graph

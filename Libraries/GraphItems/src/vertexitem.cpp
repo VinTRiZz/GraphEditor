@@ -1,38 +1,44 @@
-#include "vertexitembase.hpp"
+#include "vertexitem.hpp"
 
-using namespace ObjectViewItems;
+#include "constants.hpp"
+
+using namespace ObjectItems;
 
 namespace Graph {
 
-bool VertexItemBase::isLineSubscribed(VertexConnectionLine* pLine) {
+bool VertexItem::isLineSubscribed(VertexConnectionLine* pLine) {
     // Нет смысла проверять исходящие, т.к. нельзя регистрировать вершину саму
     // на себя
     for (auto pLineTo : m_connectionsToThis) {
-        if (pLineTo->getVertexFrom()->getObjectId() ==
-            pLine->getVertexFrom()->getObjectId()) {
+        if (pLineTo->getVertexFrom()->getItemId() ==
+            pLine->getVertexFrom()->getItemId()) {
             return true;
         }
     }
     return false;
 }
 
-VertexItemBase::VertexItemBase(QGraphicsItem *parent) :
-    GraphSceneItem(parent)
+VertexItem::VertexItem(QGraphicsItem *parent) :
+    ObjectItems::BasicItem(parent)
 {
-    m_nameItem = new LabelItem(this);
-    registerSubitem(m_nameItem);
-    m_nameItem->setBorderColor(Qt::black);
-    m_nameItem->setZValue(0);
+    setObjectType(OBJECTTYPE_VERTEX);
+    setSystemName("Vertex");
+    createSubitem(m_nameItem);
+    m_nameItem->setLineColor(Qt::black);
+    m_nameItem->setZValue(100);
+
+    setZValue(Layers::VERTEX_LAYER);
+
+    connect(this, &BasicItem::displayNameChanged,
+            m_nameItem, [this](){
+        m_nameItem->setDisplayName(getDisplayName());
+    });
+
+    connect(this, &BasicItem::itemMoved,
+            this, &VertexItem::updateConnectionLines);
 }
 
-void VertexItemBase::setDisplayName(const QString &iText) {
-    m_nameItem->setDisplayName(iText);
-    ItemBase::setDisplayName(iText);
-
-    // TODO: Поставить лейблу куда надо
-}
-
-void VertexItemBase::subscribeAsConnectionFrom(VertexConnectionLine* pLine) {
+void VertexItem::subscribeAsConnectionFrom(VertexConnectionLine* pLine) {
     if (this == pLine->getVertexTo()) {
         return;
     }
@@ -46,12 +52,12 @@ void VertexItemBase::subscribeAsConnectionFrom(VertexConnectionLine* pLine) {
     updateConnectionLines();
 }
 
-void VertexItemBase::unsubscribeConnectionFrom(VertexConnectionLine* pLine) {
+void VertexItem::unsubscribeConnectionFrom(VertexConnectionLine* pLine) {
     pLine->setVertexFrom(nullptr);
     m_connectionsFromThis.erase(pLine);
 }
 
-void VertexItemBase::subscribeAsConnectionTo(VertexConnectionLine* pLine) {
+void VertexItem::subscribeAsConnectionTo(VertexConnectionLine* pLine) {
     if (this == pLine->getVertexFrom()) {
         return;
     }
@@ -65,12 +71,12 @@ void VertexItemBase::subscribeAsConnectionTo(VertexConnectionLine* pLine) {
     updateConnectionLines();
 }
 
-void VertexItemBase::unsubscribeConnectionTo(VertexConnectionLine* pLine) {
+void VertexItem::unsubscribeConnectionTo(VertexConnectionLine* pLine) {
     pLine->setVertexTo(nullptr);
     m_connectionsToThis.erase(pLine);
 }
 
-void VertexItemBase::updateConnectionLines() {
+void VertexItem::updateConnectionLines() {
     unsigned connectionNumber{0};
     auto vertexRadius = static_cast<double>(boundingRect().width()) / 2.0;
 
@@ -92,17 +98,9 @@ void VertexItemBase::updateConnectionLines() {
     }
 }
 
-QPainterPath VertexItemBase::shape() const {
-    return m_nameItem->shape();
+TextLabel *VertexItem::getLabel() const
+{
+    return m_nameItem;
 }
-
-QVariant VertexItemBase::itemChange(GraphicsItemChange change, const QVariant &value) {
-    if (change == ItemPositionChange) {
-        updateConnectionLines();
-    }
-
-    return ItemBase::itemChange(change, value);
-}
-
 
 }

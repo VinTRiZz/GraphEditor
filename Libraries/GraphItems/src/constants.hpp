@@ -2,6 +2,12 @@
 
 #include <boost/noncopyable.hpp>
 
+#include <Components/CustomQt/ObjectView/ObjectItems.h>
+
+#include <QJsonObject>
+
+#include <QGraphicsItem>
+
 namespace Graph {
 
 /**
@@ -22,5 +28,17 @@ struct ObjectSceneConfiguration : public boost::noncopyable {
         return inst;
     }
 };
+
+const int OBJECTTYPE_VERTEX {ObjectItems::OBJECTDATAROLE_USERTYPE + 10};
+const int OBJECTTYPE_CONNECTION {OBJECTTYPE_VERTEX + 1};
+
+namespace Layers {
+const int VERTEX_LAYER {100};
+const int CONNECTION_LAYER {50};
+}
+
+namespace Sizes {
+const int VERTEX_RADIUS {50};
+}
 
 }

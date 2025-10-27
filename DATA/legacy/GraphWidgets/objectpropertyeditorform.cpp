@@ -46,18 +46,18 @@ ObjectPropertyEditorForm::~ObjectPropertyEditorForm() {
 }
 
 void ObjectPropertyEditorForm::setTargetItem(
-    ObjectViewItems::ItemBase* pTargetItem) {
+    ObjectItems::BasicItem* pTargetItem) {
     m_pTargetItem = pTargetItem;
     ui->name_lineEdit->setText(m_pTargetItem->toolTip());
     ui->shortName_lineEdit->setText(m_pTargetItem->getDisplayName());
     ui->description_plainTextEdit->setPlainText(
         m_pTargetItem->getDescription());
 
-    setColor(ui->mainColor_label, pTargetItem->getBorderColor());
+    setColor(ui->mainColor_label, pTargetItem->getLineColor());
     setColor(ui->bgrColor_label, pTargetItem->getBackgroundColor());
     setColor(ui->selectedColor_label, pTargetItem->getSelectionColor());
 
-    auto pVertex = dynamic_cast<Graph::VertexItemBase*>(m_pTargetItem);
+    auto pVertex = dynamic_cast<Graph::VertexItem*>(m_pTargetItem);
     ui->property_tabWidget->setTabEnabled(1, nullptr != pVertex);
 
     auto isConnectionEditing =
@@ -73,7 +73,7 @@ void ObjectPropertyEditorForm::acceptChanges() {
     m_pTargetItem->setToolTip(ui->name_lineEdit->text());
     m_pTargetItem->setDescription(ui->description_plainTextEdit->toPlainText());
 
-    m_pTargetItem->setBorderColor(getColor(ui->mainColor_label));
+    m_pTargetItem->setLineColor(getColor(ui->mainColor_label));
     m_pTargetItem->setBackgroundColor(getColor(ui->bgrColor_label));
     m_pTargetItem->setSelectionColor(getColor(ui->selectedColor_label));
 

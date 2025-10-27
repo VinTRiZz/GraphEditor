@@ -19,7 +19,7 @@ AddLineMode::AddLineMode(GraphModeBase* pParentMode)
 void AddLineMode::clearMode() {
     if (nullptr != m_pendingConnectionLine) {
         getParentMode()->getScene()->removeObject(
-            m_pendingConnectionLine->getObjectId());
+            m_pendingConnectionLine->getItemId());
     }
     m_pendingConnectionLine = nullptr;
 }
@@ -35,7 +35,7 @@ void AddLineMode::processMove(QGraphicsItem* pTargetItem,
 
 void AddLineMode::processRelease(QGraphicsItem* pTargetItem) {
     auto pTargetVertexItem =
-        dynamic_cast<ObjectViewItems::ItemBase*>(pTargetItem);
+        dynamic_cast<ObjectItems::BasicItem*>(pTargetItem);
     if (pTargetVertexItem == nullptr) {
         return;
     }
@@ -51,7 +51,7 @@ void AddLineMode::processRelease(QGraphicsItem* pTargetItem) {
     // Выбираем начальную точку соединения
     if (nullptr == m_pendingConnectionLine) {
         m_pendingConnectionLine =
-            pScene->createConnectionLine(pTargetVertexItem->getObjectId(), 0);
+            pScene->createConnectionLine(pTargetVertexItem->getItemId(), 0);
 
         static_cast<Graph::VertexObjectItem*>(pTargetVertexItem)
             ->subscribeAsConnectionFrom(m_pendingConnectionLine);

@@ -13,8 +13,8 @@ bool Graph::GVertex::isValid() const {
 
 bool Graph::GVertex::operator==(const GVertex& oVert_) const {
     auto borderColorCompare =
-        (CommonFunctions::encodeColor(borderColor) ==
-         CommonFunctions::encodeColor(oVert_.borderColor));
+        (CommonFunctions::encodeColor(lineColor) ==
+         CommonFunctions::encodeColor(oVert_.lineColor));
     auto bgrColorCompare =
         (CommonFunctions::encodeColor(backgroundColor) ==
          CommonFunctions::encodeColor(oVert_.backgroundColor));

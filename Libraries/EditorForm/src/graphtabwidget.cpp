@@ -3,6 +3,8 @@
 #include <AppInfrastructure/GraphEditorSettings.h>
 #include <Filework/SaveMaster.h>
 
+#include <Components/CustomQt/ObjectView/InternalScene.h>
+
 #include <QMessageBox>
 
 #include <GraphScene/EditView.h>
@@ -104,7 +106,7 @@ GraphTabWidget::GraphTabWidget(QWidget* parent)
             [this]() {
                 if (ui->stackedWidget->currentIndex() == 0) {
                     ui->stackedWidget->setCurrentIndex(1);
-                    ui->settingsForm->loadSettings();
+//                    ui->settingsForm->loadSettings();
                 } else {
                     ui->stackedWidget->setCurrentIndex(0);
                 }
@@ -198,13 +200,13 @@ void GraphTabWidget::loadVisibleGraph(const QString& filePath) {
 
 void GraphTabWidget::setupEditorForm(GraphEditorForm* pEditorForm) {
     auto& appSettings = GraphEditorSettings::getInstance();
-    pEditorForm->getScene()->setGridEnabled(
+    pEditorForm->getView()->getScene()->setGridEnabled(
         appSettings.getCanvasConfig().m_isGridEnabled);
-    pEditorForm->getScene()->setGridSize(
+    pEditorForm->getView()->getScene()->setGridSize(
         appSettings.getCanvasConfig().m_gridSize);
 
     auto canvasSize = appSettings.getCanvasConfig().m_canvasSize;
-    pEditorForm->getScene()->setCanvasRect(
+    pEditorForm->getView()->setCanvasRect(
         QRectF(0, 0, canvasSize.width(), canvasSize.height()));
 
     connect(pEditorForm->getGraph().get(),
@@ -219,25 +221,25 @@ void GraphTabWidget::setupEditorForm(GraphEditorForm* pEditorForm) {
                 }
             });
 
-    connect(ui->settingsForm, &GraphEditorSettingsForm::updateSceneBrush,
-            pEditorForm->getScene(), &Graph::GraphSceneView::setSceneBrush);
+//    connect(ui->settingsForm, &GraphEditorSettingsForm::updateSceneBrush,
+//            pEditorForm->getView(), &Graph::GraphSceneView::setSceneBrush);
 
-    connect(ui->settingsForm, &GraphEditorSettingsForm::updateCanvasBrush,
-            pEditorForm->getScene(), &Graph::GraphSceneView::setCanvasBrush);
-    connect(ui->settingsForm, &GraphEditorSettingsForm::updateCanvasSize,
-            pEditorForm->getScene(), [pEditorForm]() {
-                auto& appSettings = GraphEditorSettings::getInstance();
-                auto canvasSize = appSettings.getCanvasConfig().m_canvasSize;
-                pEditorForm->getScene()->setCanvasRect(
-                    QRectF(0, 0, canvasSize.width(), canvasSize.height()));
-            });
+//    connect(ui->settingsForm, &GraphEditorSettingsForm::updateCanvasBrush,
+//            pEditorForm->getView(), &Graph::GraphSceneView::setCanvasBrush);
+//    connect(ui->settingsForm, &GraphEditorSettingsForm::updateCanvasSize,
+//            pEditorForm->getView(), [pEditorForm]() {
+//                auto& appSettings = GraphEditorSettings::getInstance();
+//                auto canvasSize = appSettings.getCanvasConfig().m_canvasSize;
+//                pEditorForm->getView()->setCanvasRect(
+//                    QRectF(0, 0, canvasSize.width(), canvasSize.height()));
+//            });
 
-    connect(ui->settingsForm, &GraphEditorSettingsForm::updateGridColor,
-            pEditorForm->getScene(), &Graph::GraphSceneView::setGridColor);
-    connect(ui->settingsForm, &GraphEditorSettingsForm::updateGridSize,
-            pEditorForm->getScene(), &Graph::GraphSceneView::setGridSize);
-    connect(ui->settingsForm, &GraphEditorSettingsForm::updateGridLineWidth,
-            pEditorForm->getScene(), &Graph::GraphSceneView::setGridLineWidth);
+//    connect(ui->settingsForm, &GraphEditorSettingsForm::updateGridColor,
+//            pEditorForm->getView(), &Graph::GraphSceneView::setGridColor);
+//    connect(ui->settingsForm, &GraphEditorSettingsForm::updateGridSize,
+//            pEditorForm->getView(), &Graph::GraphSceneView::setGridSize);
+//    connect(ui->settingsForm, &GraphEditorSettingsForm::updateGridLineWidth,
+//            pEditorForm->getView(), &Graph::GraphSceneView::setGridLineWidth);
 
     connect(&m_saveTimer, &QTimer::timeout, pEditorForm,
             [pEditorForm]() { pEditorForm->saveGraph(); });

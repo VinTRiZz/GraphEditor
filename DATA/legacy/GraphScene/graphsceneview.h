@@ -1,9 +1,8 @@
-#ifndef GRAPHVIEWBASE_H
-#define GRAPHVIEWBASE_H
+#pragma once
 
 #include <Components/CustomQt/ButtonMatrix.h>
 #include <GraphObject/Maintainer.h>
-#include <Components/CustomQt/ObjectScene/ObjectView.h>
+#include <Components/CustomQt/ObjectView/InformationLayer.h>
 
 #include <boost/noncopyable.hpp>
 
@@ -16,7 +15,7 @@ namespace Graph {
 /**
  * @brief The GraphSceneBase class Основа класса сцены для отображения графа
  */
-class GraphSceneView : public ObjectView {
+class GraphSceneView : public OVLayers::OVInformationLayer {
 public:
     GraphSceneView(QWidget* parent = nullptr);
     ~GraphSceneView();
@@ -65,8 +64,8 @@ public:
      * @return                      Указатель на объект, добавленный на сцену
      */
     Graph::VertexConnectionLine* createConnectionLine(
-        ObjectViewItems::objectId_t idFrom,
-        ObjectViewItems::objectId_t idTo);
+        ObjectItems::objectId_t idFrom,
+        ObjectItems::objectId_t idTo);
 
     /**
      * @brief createVertex  Создать вершину
@@ -77,9 +76,9 @@ public:
 private:
     void resizeEvent(QResizeEvent* e) override;
     Graph::VertexObjectItem* createVertex(
-        ObjectViewItems::objectId_t vId);
+        ObjectItems::objectId_t vId);
 
-    ObjectViewItems::objectId_t m_currentItemId{
+    ObjectItems::objectId_t m_currentItemId{
         1};  //! Текущий идентификатор объекта сцены. Используется для создания
              //! объектов
     GraphModeBase* m_pCurrentMode{nullptr};  //! Текущий режим работы
@@ -89,5 +88,3 @@ private:
 };
 
 }  // namespace Graph
-
-#endif  // GRAPHVIEWBASE_H

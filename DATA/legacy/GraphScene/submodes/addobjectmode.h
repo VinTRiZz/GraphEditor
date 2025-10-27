@@ -21,7 +21,7 @@ public:
 
 private:
     Graph::VertexObjectItem* m_pendingVertex{nullptr};
-    void setPendingVertex(ObjectViewItems::ItemBase* pItem);
+    void setPendingVertex(ObjectItems::BasicItem* pItem);
 };
 
 }  // namespace Graph

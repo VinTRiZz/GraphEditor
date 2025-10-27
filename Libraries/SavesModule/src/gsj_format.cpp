@@ -51,7 +51,7 @@ bool GSJ_Format::initFromDataJson(const QJsonObject& iJson) {
         vertex.displayName = vObj["shortName"].toString();
         vertex.name = vObj["name"].toString();
         vertex.description = vObj["description"].toString();
-        vertex.borderColor = CommonFunctions::decodeColor(
+        vertex.lineColor = CommonFunctions::decodeColor(
             vObj["borderColor"].toString().toUtf8());
         vertex.backgroundColor = CommonFunctions::decodeColor(
             vObj["backgroundColor"].toString().toUtf8());
@@ -129,7 +129,7 @@ QJsonObject GSJ_Format::toDataJson() const {
         vObj["name"] = vertex.name;
         vObj["description"] = vertex.description;
         vObj["borderColor"] =
-            CommonFunctions::encodeColor(vertex.borderColor).data();
+            CommonFunctions::encodeColor(vertex.lineColor).data();
         vObj["backgroundColor"] =
             CommonFunctions::encodeColor(vertex.backgroundColor).data();
         vObj["image"] =

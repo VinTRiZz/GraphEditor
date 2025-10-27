@@ -1,22 +1,18 @@
 #pragma once
 
 #include <GraphObject/Object.h>
-#include <Components/CustomQt/ObjectScene/ItemBase.h>
-#include <Components/CustomQt/ObjectScene/LabelItem.h>
+#include <Components/CustomQt/ObjectView/ObjectItems.h>
 
-#include "connectionlineitem.h"
-#include "graphsceneitem.hpp"
+#include "connectionlineitem.hpp"
 
 #include <set>
 
 namespace Graph {
 
-class VertexItemBase : public GraphSceneItem
+class VertexItem : public ObjectItems::BasicItem
 {
 public:
-    explicit VertexItemBase(QGraphicsItem* parent = nullptr);
-
-    void setDisplayName(const QString& iText) override;
+    explicit VertexItem(QGraphicsItem* parent = nullptr);
 
     virtual void fromVertex(const GVertex& vert) = 0;
     virtual GVertex toVertex() const = 0;
@@ -28,21 +24,18 @@ public:
     void unsubscribeConnectionTo(VertexConnectionLine* pLine);
 
     bool isLineSubscribed(VertexConnectionLine* pLine);
-    void updateConnectionLines();
-
-    QPainterPath shape() const override;
 
 private:
-    ObjectViewItems::LabelItem* m_nameItem{nullptr};
+    ObjectItems::TextLabel* m_nameItem{nullptr};
+
+private slots:
+    void updateConnectionLines();
 
 protected:
     std::set<VertexConnectionLine*> m_connectionsFromThis;
     std::set<VertexConnectionLine*> m_connectionsToThis;
 
-
-    QVariant itemChange(GraphicsItemChange change,
-                                      const QVariant& value) override;
-
+    ObjectItems::TextLabel* getLabel() const;
 };
 
 }

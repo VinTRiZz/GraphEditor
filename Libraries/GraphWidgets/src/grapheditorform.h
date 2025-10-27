@@ -11,7 +11,7 @@
 #include <QGraphicsItem>
 
 namespace Graph {
-class GraphSceneView;
+class GraphEditView;
 }
 
 namespace Ui {
@@ -77,12 +77,12 @@ public slots:
     bool loadGraph(const QString& targetPath = {});
 
     /**
-     * @brief getScene  Получить сцену, на которой отрисовывается граф. Вместо
+     * @brief getView  Получить вьюшку, на которой отрисовывается граф. Вместо
      * проброса коннектов
      * @return          Указатель на сцену. Всегда валидный (если его никто не
      * удалил)
      */
-    Graph::GraphSceneView* getScene() const;
+    Graph::GraphEditView* getView() const;
 
 private:
     Ui::GraphEditorForm* ui;
@@ -96,10 +96,6 @@ public slots:
     // Слоты открытия и закрытия формы свойств
     void showGraphProperties();
     void hideGraphProperties();
-
-    // Слоты открытия и закрытия формы свойств для объекта на сцене
-    void showObjectProperties(QGraphicsItem* pTargetItem);
-    void hideObjectProperties();
 };
 
 #endif  // GRAPHEDITORFORM_H

@@ -30,7 +30,7 @@ struct GVertex {
     QString description{};  //! Описание вершины
 
     // Отрисовка
-    QColor borderColor{Qt::black};      //! Цвет границы
+    QColor lineColor{Qt::black};      //! Цвет границы
     QColor backgroundColor{Qt::white};  //! Цвет фона
     QImage image;                       //! Изображение с альфа-каналом
 

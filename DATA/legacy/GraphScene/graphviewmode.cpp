@@ -24,7 +24,7 @@ void GraphViewMode::registerGraph() {
     connect(
         getScene()->getGraphMaintaner()->getExtendedObject(),
         &GraphExtendedObject::vertexAdded, this,
-        [this](ObjectViewItems::objectId_t addedId) {
+        [this](ObjectItems::objectId_t addedId) {
             auto addedVertex =
                 getScene()->getGraphMaintaner()->getExtendedObject()->getVertex(
                     addedId);

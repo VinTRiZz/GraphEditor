@@ -1,7 +1,7 @@
 #ifndef OBJECTPROPERTYEDITORFORM_H
 #define OBJECTPROPERTYEDITORFORM_H
 
-#include <Components/CustomQt/ObjectScene/ItemBase.h>
+#include <Components/CustomQt/ObjectView/ObjectItems.h>
 
 #include <QWidget>
 
@@ -17,7 +17,7 @@ public:
     explicit ObjectPropertyEditorForm(QWidget* parent = nullptr);
     ~ObjectPropertyEditorForm();
 
-    void setTargetItem(ObjectViewItems::ItemBase* pTargetItem);
+    void setTargetItem(ObjectItems::BasicItem* pTargetItem);
 
 public slots:
     void acceptChanges();
@@ -30,7 +30,7 @@ signals:
 private:
     Ui::ObjectPropertyEditorForm* ui;
 
-    ObjectViewItems::ItemBase* m_pTargetItem{nullptr};
+    ObjectItems::BasicItem* m_pTargetItem{nullptr};
 
     QWidget* m_selectedIconLabel{nullptr};
     void initHistoryGalery();

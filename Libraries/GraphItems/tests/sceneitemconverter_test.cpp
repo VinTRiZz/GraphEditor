@@ -1,11 +1,11 @@
-#include "sceneitemconverter.h"
+#include "sceneitemconverter.hpp"
 
 #include <GraphObject/TestGenerators.h>
 #include <gtest/gtest.h>
 
 #include <QApplication>
 
-#include "graphsceneitem.hpp"
+#include "constants.hpp"
 
 class SceneFieldItemTest : public ::testing::Test {
 protected:
@@ -28,9 +28,7 @@ TEST_F(SceneFieldItemTest, GraphConversion) {
 
     // Очистка элементов
     for (auto* item : items) {
-        if (item->getType() == Graph::OBJECTTYPE_VERTEX) {
-            delete item;
-        }
+        delete item;
     }
 }
 
@@ -47,9 +45,7 @@ TEST_F(SceneFieldItemTest, MaintainerConversion) {
 
     // Очистка элементов
     for (auto* item : items) {
-        if (item->getType() == Graph::OBJECTTYPE_VERTEX) {
-            delete item;
-        }
+        delete item;
     }
 }
 

@@ -25,7 +25,7 @@ GraphEditorForm::GraphEditorForm(QWidget* parent)
     // Чтобы отключить границу через стили
     ui->graphScene_groupBox->setProperty("hasBorder", false);
 
-    ui->graphScene->startEditMode();
+//    ui->graphScene->startEditMode();
 
     m_graphMaintainer = Graph::GraphMaintainer::createInstance();
     m_graphMaintainer->setCreateTime(QDateTime::currentDateTime());
@@ -34,10 +34,10 @@ GraphEditorForm::GraphEditorForm(QWidget* parent)
     ui->propertyEditForm->setCurrentGraph(m_graphMaintainer);
 
     // Коннекты для редактора свойств объектов
-    connect(ui->graphScene, &Graph::GraphEditView::openPropertyEditor, this,
-            &GraphEditorForm::showObjectProperties);
-    connect(ui->graphScene, &Graph::GraphEditView::closePropertyEditor, this,
-            &GraphEditorForm::hideObjectProperties);
+//    connect(ui->graphScene, &Graph::GraphEditView::openPropertyEditor, this,
+//            &GraphEditorForm::showObjectProperties);
+//    connect(ui->graphScene, &Graph::GraphEditView::closePropertyEditor, this,
+//            &GraphEditorForm::hideObjectProperties);
 }
 
 GraphEditorForm::~GraphEditorForm() {
@@ -74,7 +74,7 @@ bool GraphEditorForm::saveGraph(const QString& targetPath) {
     }
 
     m_graphMaintainer->setEditTime(QDateTime::currentDateTime());
-    ui->graphScene->writeChangesToGraph();
+//    ui->graphScene->writeChangesToGraph();
 
     SaveMaster saveMaster;
     return saveMaster.save(m_lastSavePath, m_graphMaintainer);
@@ -96,11 +96,11 @@ bool GraphEditorForm::loadGraph(const QString& targetPath) {
         return false;
     }
 
-    ui->graphScene->updateGraph();
+//    ui->graphScene->updateGraph();
     return true;
 }
 
-Graph::GraphSceneView* GraphEditorForm::getScene() const {
+Graph::GraphEditView* GraphEditorForm::getView() const {
     return ui->graphScene;
 }
 
@@ -119,31 +119,4 @@ void GraphEditorForm::hideGraphProperties() {
     ui->props_stackedWidget->setCurrentIndex(0);
     CommonFunctions::hideAnimatedHorizontal(ui->props_stackedWidget,
                                             m_propBarShowWidth);
-}
-
-void GraphEditorForm::showObjectProperties(QGraphicsItem* pTargetItem) {
-    if (!dynamic_cast<ObjectViewItems::ItemBase*>(pTargetItem)) {
-        throw std::invalid_argument("Invalid item to edit properties of");
-    }
-    ui->props_stackedWidget->setCurrentIndex(1);
-
-    // Иначе будет дёргаться
-    if (ui->props_stackedWidget->isHidden()) {
-        CommonFunctions::showAnimatedHorizontal(ui->props_stackedWidget,
-                                                m_propBarShowWidth);
-    }
-    ui->objectPropertyEditForm->setTargetItem(
-        static_cast<ObjectViewItems::ItemBase*>(pTargetItem));
-}
-
-void GraphEditorForm::hideObjectProperties() {
-    ui->props_stackedWidget->setCurrentIndex(1);
-    if (ui->props_stackedWidget->isHidden()) {
-        return;
-    }
-
-    // Чтобы не "моргало"
-    showGraphProperties();
-    //    CommonFunctions::hideAnimatedHorizontal(ui->props_stackedWidget,
-    //                                            m_propBarShowWidth);
 }

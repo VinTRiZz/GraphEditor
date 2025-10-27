@@ -24,7 +24,7 @@ void AddObjectMode::clearMode() {
     if (nullptr != pScene->getGrabObject()) {
         pScene->rejectGrabObject();
     }
-    pScene->removeObject(m_pendingVertex->getObjectId());
+    pScene->removeObject(m_pendingVertex->getItemId());
     m_pendingVertex = nullptr;
 }
 

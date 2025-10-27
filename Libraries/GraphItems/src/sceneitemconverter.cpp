@@ -1,15 +1,17 @@
-#include "sceneitemconverter.h"
+#include "sceneitemconverter.hpp"
 
 #include <Components/Logger/Logger.h>
 
-#include "vertexobjectitem.h"
-#include "connectionlineitem.h"
+#include "vertexobjectitem.hpp"
+#include "connectionlineitem.hpp"
+
+#include "constants.hpp"
 
 namespace Graph {
 
-std::list<GraphSceneItem*> SceneItemConverter::fromGraph(
+std::list<QGraphicsItem*> SceneItemConverter::fromGraph(
     const GraphObject& graph) {
-    std::list<GraphSceneItem*> res;
+    std::list<QGraphicsItem*> res;
 
     auto vertices = graph.getAllVertices();
     std::unordered_map<GraphCommon::graphId_t, Graph::VertexObjectItem*>
@@ -45,10 +47,10 @@ std::list<GraphSceneItem*> SceneItemConverter::fromGraph(
     return res;
 }
 
-std::list<GraphSceneItem*> SceneItemConverter::fromMaintainer(
+std::list<QGraphicsItem*> SceneItemConverter::fromMaintainer(
     const PMaintainer& pMaintainer) {
     const auto& rGraph = pMaintainer->getObject();
-    std::list<GraphSceneItem*> res = fromGraph(rGraph);
+    std::list<QGraphicsItem*> res = fromGraph(rGraph);
 
     // Пространство для воображения
 
@@ -56,21 +58,21 @@ std::list<GraphSceneItem*> SceneItemConverter::fromMaintainer(
 }
 
 GraphObject SceneItemConverter::toGraph(
-    const std::list<ObjectViewItems::ItemBase*>& items) {
+    const std::list<ObjectItems::BasicItem*>& items) {
     GraphObject res;
 
     LOG_INFO("Loading vertices from scene...");
     for (auto vert : items) {
-        if (vert->getType() != OBJECTTYPE_VERTEX) {
+        if (vert->getObjectType() != OBJECTTYPE_VERTEX) {
             continue;
         }
-        res.addVertex(static_cast<Graph::VertexItemBase*>(vert)->toVertex());
+        res.addVertex(static_cast<Graph::VertexItem*>(vert)->toVertex());
     }
     LOG_OK("Loaded", res.getVerticesCount(), "vertices from scene");
 
     LOG_INFO("Loading connections from scene...");
     for (auto con : items) {
-        if (con->getType() !=
+        if (con->getObjectType() !=
             OBJECTTYPE_CONNECTION) {
             continue;
         }
@@ -81,41 +83,27 @@ GraphObject SceneItemConverter::toGraph(
     return res;
 }
 
-GraphObject SceneItemConverter::toGraph(const std::list<GraphSceneItem *> &items)
+GraphObject SceneItemConverter::toGraph(const std::list<QGraphicsItem *> &items)
 {
-    GraphObject res;
-
-    LOG_INFO("Loading vertices from scene...");
-    for (auto vert : items) {
-        if (vert->getType() != OBJECTTYPE_VERTEX) {
-            continue;
+    std::list<ObjectItems::BasicItem*> itemsCasted;
+    for (auto* pItem : items) {
+        auto pCastedItem = dynamic_cast<ObjectItems::BasicItem*>(pItem);
+        if (pCastedItem) {
+            itemsCasted.push_back(pCastedItem);
         }
-        res.addVertex(static_cast<Graph::VertexItemBase*>(vert)->toVertex());
     }
-    LOG_OK("Loaded", res.getVerticesCount(), "vertices from scene");
-
-    LOG_INFO("Loading connections from scene...");
-    for (auto con : items) {
-        if (con->getType() !=
-            OBJECTTYPE_CONNECTION) {
-            continue;
-        }
-        res.addConnection(static_cast<Graph::VertexConnectionLine*>(con)->toConnection());
-    }
-    LOG_OK("Loaded", res.getConnectionsCount(), "connections from scene");
-
-    return res;
+    return toGraph(itemsCasted);
 }
 
 void SceneItemConverter::toMaintainer(
     PMaintainer& pMaintainer,
-    const std::list<ObjectViewItems::ItemBase*>& items) {
+    const std::list<ObjectItems::BasicItem*>& items) {
     pMaintainer->getObject() = toGraph(items);
 
     // Пространство для воображения
 }
 
-void SceneItemConverter::toMaintainer(PMaintainer &pMaintainer, const std::list<GraphSceneItem *> &items)
+void SceneItemConverter::toMaintainer(PMaintainer &pMaintainer, const std::list<QGraphicsItem *> &items)
 {
     pMaintainer->getObject() = toGraph(items);
 

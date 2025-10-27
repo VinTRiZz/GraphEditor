@@ -26,7 +26,7 @@ void PropertyEditMode::processMove(QGraphicsItem* pTargetItem,
                                    const QPointF& currentPos) {}
 
 void PropertyEditMode::processRelease(QGraphicsItem* pTargetItem) {
-    auto pItem = dynamic_cast<ObjectViewItems::ItemBase*>(pTargetItem);
+    auto pItem = dynamic_cast<ObjectItems::BasicItem*>(pTargetItem);
     if (pItem == nullptr) {
         return;
     }

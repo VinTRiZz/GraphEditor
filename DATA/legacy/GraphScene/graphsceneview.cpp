@@ -92,9 +92,9 @@ void GraphSceneView::updateGraph() {
         return;
     }
 
-    removeSpecialObjects(ObjectViewItems::ObjectType(OBJECTTYPE_VERTEX));
-    removeSpecialObjects(ObjectViewItems::ObjectType(OBJECTTYPE_CONNECTION));
-    removeSpecialObjects(ObjectViewItems::OBJECTTYPE_ARROWLINE);
+    removeSpecialObjects(ObjectItems::ObjectType(OBJECTTYPE_VERTEX));
+    removeSpecialObjects(ObjectItems::ObjectType(OBJECTTYPE_CONNECTION));
+    removeSpecialObjects(ObjectItems::OBJECTTYPE_ARROWLINE);
 
     double labelHeight{0};
 
@@ -106,8 +106,8 @@ void GraphSceneView::updateGraph() {
 }
 
 Graph::VertexConnectionLine* GraphSceneView::createConnectionLine(
-    ObjectViewItems::objectId_t idFrom,
-    ObjectViewItems::objectId_t idTo) {
+    ObjectItems::objectId_t idFrom,
+    ObjectItems::objectId_t idTo) {
     while (!isIdAvailable(m_currentItemId)) {
         m_currentItemId++;
     }
@@ -127,7 +127,7 @@ Graph::VertexObjectItem* GraphSceneView::createVertex() {
 }
 
 Graph::VertexObjectItem* GraphSceneView::createVertex(
-    ObjectViewItems::objectId_t vId) {
+    ObjectItems::objectId_t vId) {
     if (!isIdAvailable(vId)) {
         LOG_ERROR("Got unavailable id:", vId);
         return nullptr;

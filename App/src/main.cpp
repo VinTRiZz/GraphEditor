@@ -1,4 +1,4 @@
-#include <AppInfrastructure/GraphEditorSettings.h>
+#include <Components/Common/ApplicationSettings.h>
 #include <Components/Common/DirectoryManager.h>
 #include <Components/Logger/Logger.h>
 
@@ -60,7 +60,7 @@ int main(int argc, char* argv[]) {
     }
 
     LOG_INFO_SYNC("Started GraphEditor");
-    auto& settingsInstance = GraphEditorSettings::getInstance();
+    auto& settingsInstance = Common::ApplicationSettings::getInstance();
 
     auto profileFile = parser.value(profileTypeOption);
     settingsInstance.loadSettings(profileFile);

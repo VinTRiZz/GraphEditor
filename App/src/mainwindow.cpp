@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 
-#include <AppInfrastructure/ImageManager.h>
 #include <Components/Logger/Logger.h>
 #include <Components/CustomQt/WaitIndicatorDialog.h>
 
@@ -23,8 +22,6 @@ MainWindow::MainWindow(QWidget* parent)
         QString("Редактор графов (версия %0)").arg(GRAPH_EDITOR_VERSION));
     QIcon windowIcon(":/common/images/icons/app/grapheditor.svg");
     setWindowIcon(windowIcon);
-
-    ImageManager::getInstance();  // Выгружает кэш автоматически
 
     waitDialog.setProgressBarEnabled(false);
     waitDialog.setDescriptionHidden(true);

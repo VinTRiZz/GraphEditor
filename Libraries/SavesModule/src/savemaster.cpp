@@ -1,6 +1,6 @@
 #include "savemaster.h"
 
-#include <AppInfrastructure/GraphEditorSettings.h>
+#include <Components/Common/ApplicationSettings.h>
 #include <Components/Common/DirectoryManager.h>
 #include <Components/Logger/Logger.h>
 #include <Components/CustomQt/PasswordInsertDialog.h>
@@ -49,9 +49,7 @@ bool SaveMaster::save(const QString& oFilePath,
     }
 
     auto pFormat = formatFactory.getFormat(fileSuffix);
-    if (!pFormat->isBackwardCompatible() && GraphEditorSettings::getInstance()
-                                                .getGeneralConfig()
-                                                .m_needBackwardCompatibility) {
+    if (!pFormat->isBackwardCompatible()) {
         auto userResponse = QMessageBox::question(
             nullptr, "Обратная совместимость",
             "Формат не является обратно совместимым.\nПри сохранении в этом "

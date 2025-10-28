@@ -1,6 +1,6 @@
 #include "connectionlineitem.hpp"
 
-#include <AppInfrastructure/GraphEditorSettings.h>
+#include <Components/Common/ApplicationSettings.h>
 #include <Components/Logger/Logger.h>
 #include <GraphObject/Object.h>
 
@@ -18,10 +18,10 @@ VertexConnectionLine::VertexConnectionLine(QGraphicsItem* parent)
 
     createSubitem(m_connectionLine);
 
-    auto& appSettings = GraphEditorSettings::getInstance();
+    auto& appSettings = Common::ApplicationSettings::getInstance();
 
-    m_connectionLine->setLineColor(appSettings.getObjectsConfig().m_defaultLineMainColor);
-    m_connectionLine->setSelectionColor(appSettings.getObjectsConfig().m_defaultLineSelectionColor);
+    m_connectionLine->setLineColor(Colors::DEFAULT_COLOR_CONNECTION_LINE);
+    m_connectionLine->setSelectionColor(Colors::DEFAULT_COLOR_CONNECTION_SEL);
     m_connectionLine->setWidth(1);
 
     setZValue(Layers::CONNECTION_LAYER);

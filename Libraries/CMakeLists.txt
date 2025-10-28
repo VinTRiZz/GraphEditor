@@ -8,7 +8,6 @@ add_subdirectory(Components-Encryption)
 add_subdirectory(Components-Qt-Custom)
 
 # Modules
-add_subdirectory(AppInfrastructure)
 add_subdirectory(GraphObject)
 add_subdirectory(GraphItems)
 add_subdirectory(GraphWidgets)

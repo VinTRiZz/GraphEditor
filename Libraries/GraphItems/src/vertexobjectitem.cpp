@@ -1,7 +1,6 @@
 #include "vertexobjectitem.hpp"
 
-#include <AppInfrastructure/GraphEditorSettings.h>
-#include <AppInfrastructure/ImageManager.h>
+#include <Components/Common/ApplicationSettings.h>
 #include <Components/Logger/Logger.h>
 #include <GraphObject/Object.h>
 #include <Components/CustomQt/ObjectView/ObjectItems.h>

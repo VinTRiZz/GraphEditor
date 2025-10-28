@@ -39,13 +39,14 @@ void PluginMaster::init(const std::string &pluginRoot)
         std::transform(fileExt.begin(), fileExt.end(), fileExt.begin(), [](const auto& c){ return std::tolower(c); });
 
         // Грузим плагин
-        if (fileExt == "vpl") {
+        if (fileExt == VertexPlugin::getPluginExtension()) {
             LOG_INFO("Is vertex plugin");
             m_vertexPlugins.push_back(VertexPlugin(filePath.generic_string()));
         } else {
             LOG_WARNING("Unknown plugin extension:", fileExt);
         }
     }
+    LOG_INFO("Loaded", m_vertexPlugins.size()); // TODO: Абстрактные плагины?
 }
 
 }

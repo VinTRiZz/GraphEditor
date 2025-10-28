@@ -9,6 +9,8 @@ namespace Graph {
 struct VertexPlugin::Impl {
     boost::dll::shared_library pluginLib;
 
+    std::string pluginName;
+
     Impl() = default;
     ~Impl() {
         if (pluginLib.is_loaded()) {
@@ -39,13 +41,14 @@ VertexPlugin::VertexPlugin(const std::string pluginPath) :
         }
 
         auto pluginName = std::filesystem::path(pluginPath).filename().string();
-        m_pluginName = pluginName;
+        pluginName.erase(pluginName.find(getPluginExtension()) - 1);
+        d->pluginName = pluginName;
 
         d->pluginLib = boost::dll::shared_library(
                     pluginPath,
                     boost::dll::load_mode::append_decorations
                     );
-        LOG_OK("Loaded vertex plugin:", m_pluginName);
+        LOG_OK("Loaded vertex plugin:", d->pluginName);
 
     } catch (const std::exception& e) {
         LOG_ERROR("Failed to load vertex plugin:", e.what());

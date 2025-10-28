@@ -2,9 +2,6 @@
 
 #include <GraphItems/VertexObjectItem.h>
 
-#include <memory>
-#include <string>
-
 namespace Graph {
 
 class VertexPlugin
@@ -12,10 +9,10 @@ class VertexPlugin
     struct Impl;
     std::shared_ptr<Impl> d;
 
-    std::string m_pluginName;
-
 public:
     explicit VertexPlugin(const std::string pluginPath);
+
+    static std::string getPluginExtension() { return "vpl"; }
 
     bool isLoaded() const;
 

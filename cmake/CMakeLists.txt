@@ -31,11 +31,13 @@ function(CONFIGURE_LIBRARY LIBRARY_NAME)
 
     set(
         TARGET_LINKED_LIBS
-        Qt${QT_VERSION_MAJOR}::Core
-        Qt${QT_VERSION_MAJOR}::Widgets
-        Qt${QT_VERSION_MAJOR}::Gui
+        Qt5::Core
+        Qt5::Widgets
+        Qt5::Gui
 
-        -lcrypto
+        crypto
+        boost_system
+        boost_filesystem
     )
 
     # Target linking

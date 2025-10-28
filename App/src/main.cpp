@@ -2,6 +2,8 @@
 #include <Components/Common/DirectoryManager.h>
 #include <Components/Logger/Logger.h>
 
+#include <PluginMaster/PluginMaster.h>
+
 #include <QApplication>
 #include <QCommandLineParser>
 
@@ -49,6 +51,9 @@ int main(int argc, char* argv[]) {
     }
     auto& inst = Common::DirectoryManager::getInstance();
     inst.setRootPath(dirPath);
+
+    auto& pluginMaster = Graph::PluginMaster::getInstance();
+    pluginMaster.init(inst.getDirectory(Common::DirectoryManager::DirectoryType::Plugins).absolutePath().toStdString());
     Logging::LoggingMaster::getInstance(inst.getDirectory(Common::DirectoryManager::DirectoryType::Logs).absolutePath().toStdString());
 
     QFile stylesFile(":/common/styles/mainstyles.qss");

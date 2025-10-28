@@ -14,6 +14,7 @@ add_subdirectory(GraphWidgets)
 add_subdirectory(GraphScene)
 add_subdirectory(EditorForm)
 add_subdirectory(SavesModule)
+add_subdirectory(PluginMaster)
 
 
 # Custom target to build easier

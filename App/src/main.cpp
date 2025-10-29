@@ -1,8 +1,8 @@
+#include <Components/Logger/Logger.h>
 #include <Components/Common/ApplicationSettings.h>
 #include <Components/Common/DirectoryManager.h>
-#include <Components/Logger/Logger.h>
-
-#include <Components/Common/Utils.h>
+#include <Components/Common/FileImportManager.h>
+#include <Components/Encryption/Hash.h>
 
 #include <PluginMaster/PluginMaster.h>
 
@@ -121,6 +121,12 @@ void processArguments(QApplication& a) {
 
     auto logsFileDirPath = directoryManager.getDirectory(Common::DirectoryManager::DirectoryType::Logs).absolutePath();
     Logging::LoggingMaster::getInstance(logsFileDirPath.toStdString());
+
+    auto cacheDirPath = directoryManager.getDirectory(Common::DirectoryManager::DirectoryType::Temporary).absolutePath();
+    auto& fiManager = Common::FileImportManager::getInstance();
+    fiManager.setHashCalculator(&Encryption::sha256);
+    fiManager.setRootDirectory(cacheDirPath.toStdString());
+    fiManager.updateCache();
 
     auto& pluginMaster = Graph::PluginMaster::getInstance();
     auto pluginDirPath = directoryManager.getDirectory(Common::DirectoryManager::DirectoryType::Plugins).absolutePath();

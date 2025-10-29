@@ -1,8 +1,6 @@
 #include <Components/Logger/Logger.h>
 #include <Components/Common/ApplicationSettings.h>
 #include <Components/Common/DirectoryManager.h>
-#include <Components/Common/FileImportManager.h>
-#include <Components/Encryption/Hash.h>
 
 #include <PluginMaster/PluginMaster.h>
 
@@ -49,13 +47,13 @@ int main(int argc, char* argv[]) {
 void initSettings() {
     auto& settingsInstance = Common::ApplicationSettings::getInstance();
 
-    const std::vector<QString> SYS_SETTINGS {
+    const std::vector<QString> CANVAS_SETTINGS {
         "canvas_size",
     };
 
-    for (auto& sett : SYS_SETTINGS) {
-        if (!settingsInstance.hasSetting("SYSTEM", sett)) {
-            settingsInstance.addSetting("SYSTEM", sett);
+    for (auto& sett : CANVAS_SETTINGS) {
+        if (!settingsInstance.hasSetting("CANVAS", sett)) {
+            settingsInstance.addSetting("CANVAS", sett);
         }
     }
 }
@@ -122,16 +120,6 @@ void processArguments(QApplication& a) {
     auto logsFileDirPath = directoryManager.getDirectory(Common::DirectoryManager::DirectoryType::Logs).absolutePath();
     Logging::LoggingMaster::getInstance(logsFileDirPath.toStdString());
 
-    auto cacheDirPath = directoryManager.getDirectory(Common::DirectoryManager::DirectoryType::Temporary).absolutePath();
-    auto& fiManager = Common::FileImportManager::getInstance();
-    fiManager.setHashCalculator(&Encryption::sha256);
-    fiManager.setRootDirectory(cacheDirPath.toStdString());
-    fiManager.updateCache();
-
-    auto& pluginMaster = Graph::PluginMaster::getInstance();
-    auto pluginDirPath = directoryManager.getDirectory(Common::DirectoryManager::DirectoryType::Plugins).absolutePath();
-    pluginMaster.init(pluginDirPath.toStdString());
-
     auto profileFilePath = parser.value(profileTypeOption);
     if (profileFilePath.isNull()) {
         profileFilePath = directoryManager.getDirectory(Common::DirectoryManager::DirectoryType::Config).absolutePath() + QDir::separator() + "default.ini";
@@ -141,6 +129,10 @@ void processArguments(QApplication& a) {
     auto& settingsInstance = Common::ApplicationSettings::getInstance();
     settingsInstance.loadSettings(profileFilePath);
     initSettings();
+
+    auto& pluginMaster = Graph::PluginMaster::getInstance();
+    auto pluginDirPath = directoryManager.getDirectory(Common::DirectoryManager::DirectoryType::Plugins).absolutePath();
+    pluginMaster.init(pluginDirPath.toStdString());
 }
 
 

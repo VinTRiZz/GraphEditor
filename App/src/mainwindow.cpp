@@ -18,10 +18,6 @@ MainWindow::MainWindow(QWidget* parent)
     waitDialog.requestShow();
 
     ui->setupUi(this);
-    setWindowTitle(
-        QString("Редактор графов (версия %0)").arg(GRAPH_EDITOR_VERSION));
-    QIcon windowIcon(":/common/images/icons/app/grapheditor.svg");
-    setWindowIcon(windowIcon);
 
     waitDialog.setProgressBarEnabled(false);
     waitDialog.setDescriptionHidden(true);

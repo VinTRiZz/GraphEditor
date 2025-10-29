@@ -11,11 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Редактор графов</string>
-  </property>
-  <property name="windowIcon">
-   <iconset theme="pda">
-    <normaloff>.</normaloff>.</iconset>
+   <string/>
   </property>
   <property name="styleSheet">
    <string notr="true"/>

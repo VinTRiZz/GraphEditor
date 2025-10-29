@@ -5,7 +5,7 @@
 namespace Graph {
 
 GraphEditView::GraphEditView(QWidget* parent) : OVInformationLayer(parent) {
-
+    getCanvas()->setRect(QRectF(0, 0, 10000, 10000));
 }
 
 void GraphEditView::setGraphMaintaner(const PMaintainer& pGraphMaintaner) {

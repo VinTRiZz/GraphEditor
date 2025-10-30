@@ -2,7 +2,7 @@
 
 #include <Components/Logger/Logger.h>
 
-#include "vertexobjectitem.hpp"
+#include "simplevertexitem.hpp"
 #include "connectionlineitem.hpp"
 
 #include "constants.hpp"
@@ -14,15 +14,25 @@ std::list<QGraphicsItem*> SceneItemConverter::fromGraph(
     std::list<QGraphicsItem*> res;
 
     auto vertices = graph.getAllVertices();
-    std::unordered_map<GraphCommon::graphId_t, Graph::VertexObjectItem*>
+    std::unordered_map<GraphCommon::graphId_t, Graph::VertexItem*>
         vertexObjects;
 
     for (auto& vert : vertices) {
-        auto pVert = new VertexObjectItem;
+        Graph::VertexItem* pVert {nullptr};
+        switch (vert.vertexType)
+        {
+        case VertexType::SimpleVertex:
+            pVert = new SimpleVertexItem;
+            break;
+        }
+        if (pVert == nullptr) {
+            LOG_WARNING("Failed to process vertex with id:", vert.id, "(", vert.displayName, ")");
+            continue;
+        }
         pVert->fromVertex(vert);
         res.push_back(pVert);
         vertexObjects[vert.id] =
-            static_cast<Graph::VertexObjectItem*>(res.back());
+            static_cast<Graph::VertexItem*>(res.back());
     }
 
     QHash<GraphCommon::graphId_t, std::vector<GConnection>> connectionHash;

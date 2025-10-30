@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GraphItems/VertexObjectItem.h>
+#include <GraphItems/SimpleVertexItem.h>
 
 namespace Graph {
 

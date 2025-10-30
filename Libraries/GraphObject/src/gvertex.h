@@ -24,6 +24,9 @@ struct GVertex {
     double posY{0};  //! При наличии, положение на графе. Записывается после
                      //! первой отрисовки
 
+    // TODO: Прописать тесты!
+    int vertexType {0}; //! Информация о типе вершины
+
     // Основные поля
     QString displayName{};  //! Краткое имя врешины (отображаемое)
     QString name{};         //! Полное имя вершины
@@ -32,7 +35,7 @@ struct GVertex {
     // Отрисовка
     QColor lineColor{Qt::black};      //! Цвет границы
     QColor backgroundColor{Qt::white};  //! Цвет фона
-    QImage image;                       //! Изображение с альфа-каналом
+    QJsonObject vertexExtraData;        //! Данные, которые регулируют отображение
 
     /**
      * @brief isDisplayNameValid Проверка корректности длины краткого

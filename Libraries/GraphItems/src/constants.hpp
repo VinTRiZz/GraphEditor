@@ -53,4 +53,8 @@ const QColor DEFAULT_COLOR_CONNECTION_BGR {QColor("#5aadac")};
 const QColor DEFAULT_COLOR_CONNECTION_SEL {QColor("#ffbc20")};
 }
 
+enum VertexType : int {
+    SimpleVertex = 0,
+};
+
 }

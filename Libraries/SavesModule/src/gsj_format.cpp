@@ -55,9 +55,7 @@ bool GSJ_Format::initFromDataJson(const QJsonObject& iJson) {
             vObj["borderColor"].toString().toUtf8());
         vertex.backgroundColor = CommonFunctions::decodeColor(
             vObj["backgroundColor"].toString().toUtf8());
-        vertex.image =
-            getDecodedPixmap(vObj["image"].toString().toUtf8().data())
-                .toImage();
+        vertex.vertexExtraData = vObj["vertexExtraData"].toObject();
 
         if (!pMaintainer->getObject().addVertex(vertex)) {
             LOG_WARNING("Failed to add vertex:", vertex.id);
@@ -132,8 +130,7 @@ QJsonObject GSJ_Format::toDataJson() const {
             CommonFunctions::encodeColor(vertex.lineColor).data();
         vObj["backgroundColor"] =
             CommonFunctions::encodeColor(vertex.backgroundColor).data();
-        vObj["image"] =
-            getEncodedPixmap(QPixmap::fromImage(vertex.image)).data();
+        vObj["image"] = vertex.vertexExtraData;
 
         verticesObj[QString::number(vertex.id)] = vObj;
     }

@@ -138,7 +138,6 @@ PMaintainer createTestGraph() {
     vert.name = "Соединён с 2 и 3";
     vert.backgroundColor = Qt::green;
     vert.lineColor = Qt::black;
-    vert.image = greenPersonImage;
     vert.posX = 200;
     vert.posY = 200;
     testVertices.push_back(vert);
@@ -147,7 +146,6 @@ PMaintainer createTestGraph() {
     vert.displayName = "Нода 2";
     vert.name = "Соединён с 3";
     vert.backgroundColor = Qt::red;
-    vert.image = redPersonImage;
     vert.posX = 500;
     vert.posY = 200;
     testVertices.push_back(vert);
@@ -156,7 +154,6 @@ PMaintainer createTestGraph() {
     vert.displayName = "Нода 3";
     vert.name = "Соединён с 2 и 4";
     vert.backgroundColor = Qt::green;
-    vert.image = {};
     vert.posX = 300;
     vert.posY = 500;
     testVertices.push_back(vert);
@@ -165,7 +162,6 @@ PMaintainer createTestGraph() {
     vert.displayName = "Нода 4";
     vert.name = "Соединён с 1 и 2";
     vert.backgroundColor = Qt::red;
-    vert.image = {};
     vert.posX = 100;
     vert.posY = 400;
     testVertices.push_back(vert);
@@ -175,7 +171,6 @@ PMaintainer createTestGraph() {
     vert.name = "Соединён с 1";
     vert.backgroundColor = Qt::black;
     vert.lineColor = Qt::black;
-    vert.image = {};
     vert.posX = 900;
     vert.posY = 400;
     testVertices.push_back(vert);
@@ -258,7 +253,6 @@ Graph::GVertex randomVertex(GraphCommon::graphId_t minId,
     vertex.description = randomString(0, 200);
     vertex.lineColor = randomColor(true);
     vertex.backgroundColor = randomColor(true);
-    vertex.image = randomImage();
 
     return vertex;
 }

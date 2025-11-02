@@ -29,11 +29,11 @@ VertexItem::VertexItem(QGraphicsItem *parent) :
     setObjectType(OBJECTTYPE_VERTEX);
     setSystemName("Vertex");
     createSubitem(m_nameItem);
-    m_nameItem->setLineColor(Qt::black);
+    m_nameItem->setLinePen({Qt::black, 1, Qt::SolidLine, Qt::RoundCap});
     m_nameItem->setZValue(100);
 
-    setLineColor(Colors::DEFAULT_COLOR_VERTEX_LINE);
-    setBackgroundColor(Colors::DEFAULT_COLOR_VERTEX_BGR);
+    setLinePen(Colors::DEFAULT_COLOR_VERTEX_LINE);
+    setBackgroundBrush(Colors::DEFAULT_COLOR_VERTEX_BGR);
 
     setZValue(Layers::VERTEX_LAYER);
 
@@ -67,8 +67,8 @@ void VertexItem::fromVertex(const GVertex &vert)
     setToolTip(vert.name);
     setDescription(vert.description);
 
-    setLineColor(vert.lineColor);
-    setBackgroundColor(vert.backgroundColor);
+    setLinePen(vert.lineColor);
+    setBackgroundBrush(vert.backgroundColor);
 
     if (!vert.vertexExtraData.contains(EXTRADATA_VALUE_TITLEPOS)) {
         LOG_WARNING("VertexItem: Failed to find required extra data");
@@ -88,8 +88,8 @@ GVertex VertexItem::toVertex() const
     graphVertex.name = toolTip();
     graphVertex.description = getDescription();
 
-    graphVertex.lineColor = getLineColor();
-    graphVertex.backgroundColor = getBackgroundColor();
+    graphVertex.lineColor = getLinePen().color();
+    graphVertex.backgroundColor = getBackgroundBrush().color();
 
     graphVertex.vertexExtraData[EXTRADATA_VALUE_TITLEPOS] = m_shapeTitlePos;
 
@@ -184,7 +184,7 @@ void VertexItem::updateConnectionLines() {
     for (auto pConFrom : m_connectionsFromThis) {
         auto fromPos =
             QPointF(x() + vertexRadius,
-                    y() + 2 * vertexRadius + pConFrom->getLineItem()->getArrowSize().height() +
+                    y() + 2 * vertexRadius + pConFrom->getLineItem()->getArrowHeight().height() +
                         m_nameItem->boundingRect().height() * 0.7);
 
         pConFrom->getLineItem()->setPositionFrom(fromPos);
@@ -193,7 +193,7 @@ void VertexItem::updateConnectionLines() {
 
     connectionNumber = 0;
     for (auto pConTo : m_connectionsToThis) {
-        auto toPos = QPointF(x() + vertexRadius, y() - pConTo->getLineItem()->getArrowSize().height());
+        auto toPos = QPointF(x() + vertexRadius, y() - pConTo->getLineItem()->getArrowHeight().height());
         pConTo->getLineItem()->setPositionTo(toPos);
         connectionNumber++;
     }

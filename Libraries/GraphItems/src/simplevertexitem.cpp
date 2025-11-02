@@ -39,8 +39,8 @@ SimpleVertexItem::SimpleVertexItem(QGraphicsItem* parent) :
 
     connect(this, &ObjectItems::BasicItem::graphicalDataChanged,
             this, [this](){
-        m_vertexShapeItem->setPen(getLineColor());
-        m_vertexShapeItem->setBrush(getBackgroundColor());
+        m_vertexShapeItem->setPen(getLinePen());
+        m_vertexShapeItem->setBrush(getBackgroundBrush());
     });
 }
 
@@ -87,8 +87,8 @@ void SimpleVertexItem::initShapeItem()
 {
     registerSubitem(m_vertexShapeItem);
 
-    m_vertexShapeItem->setPen(getLineColor());
-    m_vertexShapeItem->setBrush(getBackgroundColor());
+    m_vertexShapeItem->setPen(getLinePen());
+    m_vertexShapeItem->setBrush(getBackgroundBrush());
 
     m_vertexShapeItem->setZValue(1);
     m_vertexShapeItem->show();

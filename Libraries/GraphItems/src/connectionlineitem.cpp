@@ -20,9 +20,8 @@ VertexConnectionLine::VertexConnectionLine(QGraphicsItem* parent)
 
     auto& appSettings = Common::ApplicationSettings::getInstance();
 
-    m_connectionLine->setLineColor(Colors::DEFAULT_COLOR_CONNECTION_LINE);
-    m_connectionLine->setSelectionColor(Colors::DEFAULT_COLOR_CONNECTION_SEL);
-    m_connectionLine->setWidth(1);
+    m_connectionLine->setLinePen(Colors::DEFAULT_COLOR_CONNECTION_LINE);
+    m_connectionLine->setSelectionPen(Colors::DEFAULT_COLOR_CONNECTION_SEL);
 
     setZValue(Layers::CONNECTION_LAYER);
 }
@@ -50,7 +49,7 @@ GConnection VertexConnectionLine::toConnection() const
     }
 
     graphConnection.name = getDisplayName();
-    graphConnection.color = m_connectionLine->getLineColor();
+    graphConnection.color = m_connectionLine->getLinePen().color();
 
     return graphConnection;
 }
@@ -58,7 +57,7 @@ GConnection VertexConnectionLine::toConnection() const
 void VertexConnectionLine::fromConnection(const GConnection &con)
 {
     setDisplayName(con.name);
-    m_connectionLine->setLineColor(con.color);
+    m_connectionLine->setLinePen(con.color);
 }
 
 void VertexConnectionLine::setVertexFrom(VertexItem* pVertexFrom) {

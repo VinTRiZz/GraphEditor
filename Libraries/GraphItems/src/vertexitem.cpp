@@ -31,6 +31,7 @@ VertexItem::VertexItem(QGraphicsItem *parent) :
     createSubitem(m_nameItem);
     m_nameItem->setLinePen({Qt::black, 1, Qt::SolidLine, Qt::RoundCap});
     m_nameItem->setZValue(100);
+    m_nameItem->setObjectType(OBJECTTYPE_VERTEX);
 
     setLinePen(Colors::DEFAULT_COLOR_VERTEX_LINE);
     setBackgroundBrush(Colors::DEFAULT_COLOR_VERTEX_BGR);

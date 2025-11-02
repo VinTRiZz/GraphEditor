@@ -57,4 +57,8 @@ enum VertexType : int {
     SimpleVertex = 0,
 };
 
+
+const QString SUPPORTED_IMAGE_FORMATS {"*.png *.jpg *.jpeg *.bmp *.gif *.svg"};
+const Qt::TransformationMode DEFAULT_TRANSFORMATION_MODE {Qt::SmoothTransformation};
+
 }

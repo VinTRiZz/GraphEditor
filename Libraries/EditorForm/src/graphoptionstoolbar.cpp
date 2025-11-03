@@ -9,7 +9,6 @@ GraphOptionsToolbar::GraphOptionsToolbar(QWidget* parent)
     : ButtonToolbar::HeadWidget(parent) {
     setButtonSize(QSize(35, 35));
     setFixedWidth(37);
-    setVertical();
 
     ButtonToolbar::ButtonConfig buttonInfo;
     buttonInfo.buttonPos = 0;

@@ -19,8 +19,6 @@
 GraphEditorForm::GraphEditorForm(QWidget* parent)
     : QWidget(parent), ui(new Ui::GraphEditorForm) {
     ui->setupUi(this);
-    ui->props_stackedWidget->setCurrentIndex(
-        0);  // Чтобы редактировать UI без проблем
 
     // Чтобы отключить границу через стили
     ui->graphScene_groupBox->setProperty("hasBorder", false);
@@ -31,7 +29,7 @@ GraphEditorForm::GraphEditorForm(QWidget* parent)
     m_graphMaintainer->setCreateTime(QDateTime::currentDateTime());
 
     ui->graphScene->setGraphMaintaner(m_graphMaintainer);
-    ui->propertyEditForm->setCurrentGraph(m_graphMaintainer);
+//    ui->propertyEditForm->setCurrentGraph(m_graphMaintainer);
 
     // Коннекты для редактора свойств объектов
 //    connect(ui->graphScene, &Graph::GraphEditView::openPropertyEditor, this,
@@ -102,21 +100,4 @@ bool GraphEditorForm::loadGraph(const QString& targetPath) {
 
 Graph::GraphEditView* GraphEditorForm::getView() const {
     return ui->graphScene;
-}
-
-void GraphEditorForm::showGraphProperties() {
-    ui->props_stackedWidget->setCurrentIndex(0);
-
-    // Иначе будет дёргаться
-    if (!ui->props_stackedWidget->isHidden()) {
-        return;
-    }
-    CommonFunctions::showAnimatedHorizontal(ui->props_stackedWidget,
-                                            m_propBarShowWidth);
-}
-
-void GraphEditorForm::hideGraphProperties() {
-    ui->props_stackedWidget->setCurrentIndex(0);
-    CommonFunctions::hideAnimatedHorizontal(ui->props_stackedWidget,
-                                            m_propBarShowWidth);
 }

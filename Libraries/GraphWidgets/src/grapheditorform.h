@@ -91,11 +91,6 @@ private:
     unsigned m_propBarShowWidth{
         400};  //! Значение ширины, которой будет окно свойств после появления.
                //! Нужно для анимаций
-
-public slots:
-    // Слоты открытия и закрытия формы свойств
-    void showGraphProperties();
-    void hideGraphProperties();
 };
 
 #endif  // GRAPHEDITORFORM_H

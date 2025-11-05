@@ -48,7 +48,11 @@
         <attribute name="title">
          <string>Добавление</string>
         </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_6"/>
+        <layout class="QVBoxLayout" name="verticalLayout_6">
+         <item>
+          <widget class="GraphItemsManager" name="widget" native="true"/>
+         </item>
+        </layout>
        </widget>
        <widget class="QWidget" name="objectProps_tab">
         <attribute name="title">
@@ -56,7 +60,7 @@
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
-          <widget class="QWidget" name="objectPropertiesForm" native="true"/>
+          <widget class="GraphItemPropertyEditor" name="objectPropertiesForm" native="true"/>
          </item>
         </layout>
        </widget>
@@ -129,6 +133,18 @@
    <class>SettingsManagementToolbar</class>
    <extends>QWidget</extends>
    <header location="global">GraphWidgets/SettingsManagementToolbar.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GraphItemsManager</class>
+   <extends>QWidget</extends>
+   <header location="global">GraphWidgets/GraphItemsManager.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GraphItemPropertyEditor</class>
+   <extends>QWidget</extends>
+   <header location="global">GraphWidgets/GraphItemPropertyEditor.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

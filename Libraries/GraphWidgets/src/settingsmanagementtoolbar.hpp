@@ -2,12 +2,16 @@
 
 #include <QWidget>
 
+#include <GraphObject/Maintainer.h>
+
 namespace Ui {
 class SettingsManagementToolbar;
 }
 
-class SettingsManagementToolbar : public QWidget
-{
+class SettingsEditDialog;
+
+class SettingsManagementToolbar :
+        public QWidget {
     Q_OBJECT
 
 public:
@@ -16,5 +20,7 @@ public:
 
 private:
     Ui::SettingsManagementToolbar *ui;
+
+    SettingsEditDialog* m_settingsEditDialog {nullptr};
 };
 

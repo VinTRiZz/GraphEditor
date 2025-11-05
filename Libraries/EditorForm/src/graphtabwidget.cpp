@@ -26,7 +26,7 @@ GraphTabWidget::GraphTabWidget(QWidget* parent)
                 auto pTargetForm = static_cast<GraphEditView*>(
                     ui->editorForms_tabWidget->widget(tabIndex));
 
-                assert(nullptr == pTargetForm);
+                assert(nullptr != pTargetForm);
 
                 auto pGraph = pTargetForm->getGraph();
                 auto lastSaveDate = pGraph->getEditTime();

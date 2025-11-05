@@ -245,3 +245,76 @@ QTabBar::tab:selected {
     border-color: #1f4f4d;
     border-bottom-color: #1a1a1a;
 }
+
+
+
+/* ========================= */
+/* ========================= */
+/* ======= Tool boxes ====== */
+/* ========================= */
+/* ========================= */
+QToolBox::pane {
+    border: 1px solid #1f4f4d;
+    border-radius: 0 0 4px 4px;
+    background-color: #1a1a1a;
+    padding: 5px;
+    margin-top: -1px;
+}
+
+QToolBox {
+    background-color: #1f1f1f;
+    border-bottom: 1px solid #1f4f4d;
+    spacing: 2px;
+}
+
+QToolBox::close-button {
+    image: url(:/common/images/icons/common/close_tab.svg);
+    background: transparent;
+    subcontrol-position: right;
+    margin: 3px;
+}
+
+QToolBox::close-button:hover {
+    background-color: #30605e;
+    border-radius: 3px;
+}
+
+QToolBox::tab {
+    background-color: #2d2d2d;
+    color: #d0d0d0;
+    margin-top: 4px;
+    padding-bottom: 4px;
+    padding-top: 4px;
+    border: 1px solid #1f4f4d;
+    border-bottom: none;
+    min-width: 80px;
+
+    border-top-right-radius: 15px;
+    border-top-left-radius: 15px;
+}
+
+QToolBox::tab:disabled {
+    background-color: #2d2d2d;
+    color: #6a6a6a;
+    border-color: #3a3a3a;
+}
+
+QToolBox::tab:hover {
+    background-color: #2d2d2d;
+    border-color: #30605e;
+    color: #bbb;
+}
+
+QToolBox::tab:selected:hover {
+    background-color: #1c1c1c;
+    border-color: #30605e;
+}
+
+QToolBox::tab:selected {
+    background-color: #0f1f1d;
+    color: #e0e0e0;
+    border: 1px solid;
+    border-bottom: none;
+    border-color: #1f4f4d;
+    border-bottom-color: #1a1a1a;
+}

@@ -17,7 +17,7 @@
    <item>
     <widget class="QToolBox" name="main_toolBox">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="page">
       <property name="geometry">
@@ -48,6 +48,9 @@
          </property>
          <property name="text">
           <string>Выберите объект</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </item>
@@ -83,11 +86,22 @@
          <property name="text">
           <string>Выберите объект</string>
          </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
         </widget>
        </item>
       </layout>
      </widget>
      <widget class="QWidget" name="page_3">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>321</width>
+        <height>352</height>
+       </rect>
+      </property>
       <attribute name="label">
        <string>Плагины</string>
       </attribute>

@@ -14,10 +14,10 @@ namespace Graph {
 
 enum SimpleVertexShapeType : int {
     SVST_Rect = 0,
-    SVST_Square,
     SVST_Ellipse,
-    SVST_Circle,
     SVST_Parallelogram,
+    SVST_Square,
+    SVST_Circle,
 };
 
 class VertexConnectionLine;

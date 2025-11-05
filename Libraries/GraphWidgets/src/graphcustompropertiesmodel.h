@@ -9,16 +9,12 @@
  * @brief The GraphCustomPropertiesModel class  Модель для представления
  * кастомных свойств графа
  */
-class GraphCustomPropertiesModel : public QAbstractTableModel {
+class GraphCustomPropertiesModel :
+        public QAbstractTableModel,
+        public Graph::MaintainerUserDecorator {
     Q_OBJECT
 public:
     explicit GraphCustomPropertiesModel(QObject* parent = nullptr);
-
-    /**
-     * @brief setGraph      Задать мейнтейнер графа
-     * @param pMaintainer   Указатель на мейнтейнер
-     */
-    void setGraph(Graph::PMaintainer pMaintainer);
 
     /**
      * @brief addProperty   Добавить свойство
@@ -52,7 +48,7 @@ public:
     Qt::ItemFlags flags(const QModelIndex& index) const override;
 
 private:
-    Graph::PMaintainer m_pMaintainer;
+    void processGraphChange() override;
 };
 
 #endif  // GRAPHCUSTOMPROPERTIESMODEL_H

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FileManagementToolbar</class>
+ <widget class="QWidget" name="FileManagementToolbar">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>315</width>
+    <height>57</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <widget class="QToolButton" name="save_toolButton">
+     <property name="text">
+      <string>S</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../../../DATA/common.qrc">
+       <normaloff>:/common/images/icons/common/graph_save.svg</normaloff>:/common/images/icons/common/graph_save.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QToolButton" name="saveAs_toolButton">
+     <property name="text">
+      <string>SA</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../../../DATA/common.qrc">
+       <normaloff>:/common/images/icons/common/graph_save_as.svg</normaloff>:/common/images/icons/common/graph_save_as.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QToolButton" name="load_toolButton">
+     <property name="text">
+      <string>L</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../../../DATA/common.qrc">
+       <normaloff>:/common/images/icons/common/graph_cancel_changes.svg</normaloff>:/common/images/icons/common/graph_cancel_changes.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QToolButton" name="loadAs_toolButton">
+     <property name="text">
+      <string>LA</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../../../DATA/common.qrc">
+       <normaloff>:/common/images/icons/common/graph_open.svg</normaloff>:/common/images/icons/common/graph_open.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QToolButton" name="create_toolButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>N</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../../../DATA/common.qrc">
+       <normaloff>:/common/images/icons/common/graph_new.svg</normaloff>:/common/images/icons/common/graph_new.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../../../DATA/common.qrc"/>
+ </resources>
+ <connections/>
+</ui>

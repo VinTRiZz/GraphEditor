@@ -22,11 +22,11 @@ GraphPropertyEditForm::~GraphPropertyEditForm() {
     delete ui;
 }
 
-void GraphPropertyEditForm::setCurrentGraph(
-    const PMaintainer& pGraphMaintaner) {
-    m_currentGraph = pGraphMaintaner;
-    m_pCommonPropertiesModel->setGraph(m_currentGraph);
-    m_pCustomPropertiesModel->setGraph(m_currentGraph);
+void GraphPropertyEditForm::processGraphChange()
+{
+    auto pMaintainer = getGraph();
+    m_pCommonPropertiesModel->setGraph(pMaintainer);
+    m_pCustomPropertiesModel->setGraph(pMaintainer);
 }
 
 void GraphPropertyEditForm::setupSignals() {

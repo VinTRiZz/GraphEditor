@@ -5,19 +5,12 @@
 
 #include <GraphObject/Maintainer.h>
 
-namespace Graph {
-
-class GraphEditView final : public OVLayers::OVInformationLayer {
+class GraphEditView final :
+        public OVLayers::OVInformationLayer,
+        public Graph::MaintainerUserDecorator {
     Q_OBJECT
 public:
     GraphEditView(QWidget* parent = nullptr);
-
-    void setGraphMaintaner(const Graph::PMaintainer& pGraphMaintaner);
-
-private:
-    PMaintainer m_pMaintainer {};
 };
-
-}  // namespace Graph
 
 #endif  // GRAPHEDITVIEW_H

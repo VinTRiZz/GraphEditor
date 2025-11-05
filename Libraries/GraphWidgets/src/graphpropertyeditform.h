@@ -1,5 +1,4 @@
-#ifndef GRAPHPROPERTYEDITFORM_H
-#define GRAPHPROPERTYEDITFORM_H
+#pragma once
 
 #include <GraphObject/Maintainer.h>
 
@@ -19,23 +18,19 @@ namespace Graph {
  * @brief The GraphPropertyEditForm class   Форма редактирования метаинформации
  * о графе
  */
-class GraphPropertyEditForm : public QWidget {
+class GraphPropertyEditForm :
+        public QWidget,
+        public MaintainerUserDecorator {
     Q_OBJECT
 
 public:
     explicit GraphPropertyEditForm(QWidget* parent = nullptr);
     ~GraphPropertyEditForm();
 
-    /**
-     * @brief setCurrentGraph   Задать мейнтейнера данных графа
-     * @param pGraphMaintaner   Указатель на инстанцию мейнтейнера
-     */
-    void setCurrentGraph(const Graph::PMaintainer& pGraphMaintaner);
-
 private:
     Ui::GraphPropertyEditForm* ui;
 
-    Graph::PMaintainer m_currentGraph;  //! Текущий майнтейнер графа
+    void processGraphChange() override;
 
     enum GraphCommonPropertyRows : int {
         NAMEROW = 0,
@@ -68,5 +63,3 @@ private:
 };
 
 }  // namespace Graph
-
-#endif  // GRAPHPROPERTYEDITFORM_H

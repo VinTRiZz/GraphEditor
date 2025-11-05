@@ -1,10 +1,11 @@
-#ifndef GRAPHMAINTANER_H
-#define GRAPHMAINTANER_H
+#pragma once
 
 #include <QObject>
 
 #include "graphextendedobject.h"
 #include "graphobject.h"
+
+#include  "maintaineruserdecorator.hpp"
 
 namespace Graph {
 
@@ -98,6 +99,18 @@ public:
     QDateTime getEditTime() const;
 
     /**
+     * @brief setSavefile   Указание пути до файла, в котором последнее сохранение файла
+     * @param sFilePath     Путь до файла
+     */
+    void setSavefile(const QString& sFilePath);
+
+    /**
+     * @brief getSavefile   Получить путь до файла, в котором последнее сохранение графа
+     * @return              Путь или NULL QString. Требует ручного обнуления после инвалидации файла
+     */
+    QString getSavefile() const;
+
+    /**
      * @brief setCustomValue    Задание значения пользовательским данным
      * @param key               Ключ (уникальный или уже имеющийся)
      * @param value             Значение (любое, желательно без указателей)
@@ -154,9 +167,10 @@ private:
     QDateTime m_createTime;
     QDateTime m_editTime;
 
+    // Путь до файла, в котором граф содержится (если задан)
+    QString m_savepath;
+
     std::map<QString, QVariant> m_customDataValues;  //! Пользовательские данные
 };
 
 }  // namespace Graph
-
-#endif  // GRAPHMAINTANER_H

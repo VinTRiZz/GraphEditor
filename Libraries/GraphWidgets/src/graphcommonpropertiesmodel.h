@@ -1,5 +1,4 @@
-#ifndef GRAPHCOMMONPROPERTIESMODEL_H
-#define GRAPHCOMMONPROPERTIESMODEL_H
+#pragma once
 
 #include <GraphObject/Maintainer.h>
 
@@ -9,7 +8,9 @@
  * @brief The GraphCommonPropertiesModel class  Модель для представления
  * основных свойств графа
  */
-class GraphCommonPropertiesModel : public QAbstractTableModel {
+class GraphCommonPropertiesModel :
+        public QAbstractTableModel,
+        public Graph::MaintainerUserDecorator {
     Q_OBJECT
 public:
     explicit GraphCommonPropertiesModel(QObject* parent = nullptr);
@@ -24,12 +25,6 @@ public:
         CPR_EDITED_BY
     };
 
-    /**
-     * @brief setGraph      Задать мейнтейнер графа
-     * @param pMaintainer   Мейнтейнер
-     */
-    void setGraph(Graph::PMaintainer pMaintainer);
-
     // ИНТЕРФЕЙС QItemModel ДЛЯ GUI
     QVariant headerData(int section, Qt::Orientation orientation,
                         int role = Qt::DisplayRole) const override;
@@ -42,7 +37,5 @@ public:
     Qt::ItemFlags flags(const QModelIndex& index) const override;
 
 private:
-    Graph::PMaintainer m_pMaintainer;
+    void processGraphChange() override;
 };
-
-#endif  // GRAPHCOMMONPROPERTIESMODEL_H

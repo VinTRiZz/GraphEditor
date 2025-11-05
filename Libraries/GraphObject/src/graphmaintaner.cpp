@@ -128,6 +128,16 @@ QDateTime GraphMaintainer::getEditTime() const {
     return m_editTime;
 }
 
+void GraphMaintainer::setSavefile(const QString &sFilePath)
+{
+    m_savepath = sFilePath;
+}
+
+QString GraphMaintainer::getSavefile() const
+{
+    return m_savepath;
+}
+
 void GraphMaintainer::setCustomValue(const QString& key,
                                      const QVariant& value) {
     m_customDataValues[key] = value;

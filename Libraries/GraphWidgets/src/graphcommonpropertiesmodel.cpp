@@ -3,22 +3,6 @@
 GraphCommonPropertiesModel::GraphCommonPropertiesModel(QObject* parent)
     : QAbstractTableModel(parent) {}
 
-void GraphCommonPropertiesModel::setGraph(Graph::PMaintainer pMaintainer) {
-    if (m_pMaintainer) {
-        disconnect(m_pMaintainer.get(), nullptr, this, nullptr);
-    }
-    m_pMaintainer = pMaintainer;
-    if (m_pMaintainer) {
-        connect(m_pMaintainer.get(),
-                &Graph::GraphMaintainer::changedCommonProperty, this, [this]() {
-                    beginResetModel();
-                    endResetModel();
-                });
-    }
-    beginResetModel();
-    endResetModel();
-}
-
 QVariant GraphCommonPropertiesModel::headerData(int section,
                                                 Qt::Orientation orientation,
                                                 int role) const {
@@ -69,16 +53,21 @@ QVariant GraphCommonPropertiesModel::data(const QModelIndex& index,
                 return "Изменён";
         }
     } else if (index.column() == 1) {
+        auto pMaintainer = getGraph();
+        if (!pMaintainer) {
+            return {};
+        }
+
         switch (index.row()) {
             case CPR_NAME:
-                return m_pMaintainer->getName();
+                return pMaintainer->getName();
             case CPR_DESCRIPTION:
-                return m_pMaintainer->getDescription();
+                return pMaintainer->getDescription();
             case CPR_CREATED_BY:
-                return m_pMaintainer->getCreateTime().toString(
+                return pMaintainer->getCreateTime().toString(
                     GraphCommon::DATE_DISPLAY_CONVERSION_FORMAT);
             case CPR_EDITED_BY:
-                return m_pMaintainer->getEditTime().toString(
+                return pMaintainer->getEditTime().toString(
                     GraphCommon::DATE_DISPLAY_CONVERSION_FORMAT);
         }
     }
@@ -92,13 +81,14 @@ bool GraphCommonPropertiesModel::setData(const QModelIndex& index,
     }
 
     if (index.column() == 1) {
+        auto pMaintainer = getGraph();
         switch (index.row()) {
             case CPR_NAME:
-                m_pMaintainer->setToolTip(value.toString());
+                pMaintainer->setToolTip(value.toString());
                 return true;
 
             case CPR_DESCRIPTION:
-                m_pMaintainer->setDescription(value.toString());
+                pMaintainer->setDescription(value.toString());
                 return true;
         }
     }
@@ -113,4 +103,22 @@ Qt::ItemFlags GraphCommonPropertiesModel::flags(
         return (retFlags & ~Qt::ItemIsEditable);
     }
     return (retFlags | Qt::ItemIsEditable);
+}
+
+void GraphCommonPropertiesModel::processGraphChange()
+{
+    auto pMaintainer = getGraph();
+    if (pMaintainer) {
+        disconnect(pMaintainer.get(), nullptr, this, nullptr);
+    }
+    pMaintainer = pMaintainer;
+    if (pMaintainer) {
+        connect(pMaintainer.get(),
+                &Graph::GraphMaintainer::changedCommonProperty, this, [this]() {
+                    beginResetModel();
+                    endResetModel();
+                });
+    }
+    beginResetModel();
+    endResetModel();
 }

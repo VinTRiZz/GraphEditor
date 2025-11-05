@@ -4,8 +4,6 @@
 #include <QTimer>
 #include <QWidget>
 
-class GraphEditorForm;
-
 namespace Ui {
 class GraphTabWidget;
 }
@@ -20,35 +18,12 @@ public:
     explicit GraphTabWidget(QWidget* parent = nullptr);
     ~GraphTabWidget();
 
-public slots:
-    /**
-     * @brief addTab    Добавить граф по пути до файла с ним
-     * @param filePath
-     */
+private slots:
     void addTab(const QString& filePath);
-
-    /**
-     * @brief createGraph   Создать граф (добавить вкладку с новым)
-     */
     void createGraph();
-
-    /**
-     * @brief saveVisibleGraph  Сохранить граф на активной вкладке
-     * @param filePath
-     */
-    void saveVisibleGraph(const QString& filePath);
-
-    /**
-     * @brief loadVisibleGraph  Загрузить граф на активной вкладке
-     * @param filePath
-     */
-    void loadVisibleGraph(const QString& filePath);
 
 private:
     Ui::GraphTabWidget* ui;
-    QTimer m_saveTimer;
-
-    void setupEditorForm(GraphEditorForm* pEditorForm);
 };
 
 #endif  // GRAPHTABWIDGET_H

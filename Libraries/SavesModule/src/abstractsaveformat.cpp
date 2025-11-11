@@ -3,14 +3,14 @@
 #include <QBuffer>
 #include <QFile>
 
+#include <Components/Filework/Common.h>
+
 namespace Filework {
 
-AbstractSaveFormat::AbstractSaveFormat(const QString& formatVersion,
-                                       const QString& formatExtension,
+AbstractSaveFormat::AbstractSaveFormat(const QString& formatExtension,
                                        const QString& formatDescription,
                                        bool backwardCompatible)
-    : m_formatVersion(formatVersion)
-    , m_formatExtension(formatExtension)
+    : m_formatExtension(formatExtension)
     , m_formatDescription(formatDescription)
     , m_isBackwardCompatible(backwardCompatible) {}
 
@@ -28,47 +28,61 @@ QString AbstractSaveFormat::getDescription() const {
     return m_formatDescription;
 }
 
-QString AbstractSaveFormat::getVersion() const {
-    return m_formatVersion;
-}
-
-void AbstractSaveFormat::setGraphMaintainer(
-    Graph::PMaintainer pGraphMaintaner) {
-    m_pGraphMaintaner = pGraphMaintaner;
-}
-
-Graph::PMaintainer AbstractSaveFormat::getGraphMaintainer() const {
-    return m_pGraphMaintaner;
-}
-
-bool AbstractSaveFormat::replaceFileData(const QString& filePath,
-                                         const QByteArray& iData) const {
-    QFile targetFile(filePath);
-    targetFile.open(QIODevice::Truncate | QIODevice::WriteOnly);
-    if (!targetFile.isOpen()) {
-        LOG_ERROR("Error opening file to rewrite:", filePath,
-                  "Reason:", targetFile.errorString());
+bool AbstractSaveFormat::save(const QString &targetPath) const
+{
+    QFileInfo targetFile(targetPath);
+    auto tDir = targetFile.dir();
+    if (!tDir.exists() || !tDir.isReadable()) {
+        LOG_ERROR("[SAVE FORMAT] Can not read directory of file:", targetPath);
         return false;
     }
-    targetFile.write(iData);
-    return true;
-}
 
-bool AbstractSaveFormat::readFromFile(const QString& filePath,
-                                      QByteArray& oData) const {
-    QFile targetFile(filePath);
-    targetFile.open(QIODevice::ReadOnly);
-    if (!targetFile.isOpen()) {
-        LOG_ERROR("Error opening file to read:", filePath,
-                  "Reason:", targetFile.errorString());
+    QString fileDataQt;
+    auto maxVers = std::max_element(m_saveSubsystems.begin(), m_saveSubsystems.end(), [this](auto& lhs, auto& rhs){
+        return isVersionHigher(lhs.first, rhs.first);
+    });
+    if (!maxVers->second->createSavedata(getGraph(), fileDataQt)) {
+        LOG_ERROR("[SAVE FORMAT] Can not create save data");
         return false;
     }
-    oData = targetFile.readAll();
-    return true;
+    return Filework::Common::replaceFileData(targetPath.toStdString(), fileDataQt.toStdString());
 }
 
-QByteArray AbstractSaveFormat::getEncoded(const QByteArray& iStr) const {
-    return iStr.toHex();
+bool AbstractSaveFormat::load(const QString &targetPath)
+{
+    std::string fileData;
+    if (!Filework::Common::readFileData(targetPath.toStdString(), fileData)) {
+        LOG_ERROR("[SAVE FORMAT] Can not read saves file:", targetPath);
+        return false;
+    }
+    auto fileDataQt = QString::fromStdString(fileData);
+    for (auto& [vers, pSubsys] : m_saveSubsystems) {
+        if (pSubsys->canProcess(fileDataQt)) {
+            LOG_INFO("[SAVE FORMAT] Processing file data");
+            return pSubsys->parseSavedata(getGraph(), fileDataQt);
+        }
+    }
+    LOG_ERROR("[SAVE FORMAT] No available version to process file:", targetPath);
+    return false;
+}
+
+QString AbstractSaveFormat::getLastErrorText() const
+{
+    if (m_lastUsedSubsystem) {
+        return m_lastUsedSubsystem->getErrorText();
+    }
+    LOG_WARNING("[SAVE FORMAT] No subsystem used, but asked for error text");
+    return {};
+}
+
+void AbstractSaveFormat::addSubsystem(const std::shared_ptr<AbstractSaveSubsystem> &subsys)
+{
+    m_saveSubsystems.emplace(subsys->getVersion(), subsys);
+}
+
+std::shared_ptr<AbstractSaveSubsystem> AbstractSaveFormat::getSubsystem(const QString &version) const
+{
+    return m_saveSubsystems.at(version);
 }
 
 QByteArray AbstractSaveFormat::getEncodedPixmap(const QPixmap& iPxmap) const {
@@ -78,10 +92,6 @@ QByteArray AbstractSaveFormat::getEncodedPixmap(const QPixmap& iPxmap) const {
         return bytes.toHex();
     }
     return {};
-}
-
-QByteArray AbstractSaveFormat::getDecoded(const QByteArray& iBytes) const {
-    return QByteArray::fromHex(iBytes);
 }
 
 QPixmap AbstractSaveFormat::getDecodedPixmap(const QByteArray& iBytes) const {

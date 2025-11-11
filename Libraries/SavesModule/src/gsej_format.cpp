@@ -1,7 +1,6 @@
 #include "gsej_format.h"
 
-#include <Components/Encryption/AES-256.h>
-#include <Components/Logger/Logger.h>
+#include "GSEJ_Subsystem/gsej_100_savesubsystem.hpp"
 
 #include <QFileInfo>
 #include <QJsonDocument>
@@ -9,100 +8,13 @@
 namespace Filework {
 
 GSEJ_Format::GSEJ_Format()
-    : AbstractSaveFormat("1.0.0", "gsej", "Зашифрованный граф", true) {}
-
-GSEJ_Format::~GSEJ_Format() {}
-
-void GSEJ_Format::setGraphMaintainer(Graph::PMaintainer pMaintainer) {
-    m_rootFormat.setGraphMaintainer(pMaintainer);
-    AbstractSaveFormat::setGraphMaintainer(pMaintainer);
+    : AbstractEncryptedFormat("gsej", "Зашифрованный граф", true) {
+    addSubsystem(std::make_shared<GSEJ_100_SaveSubsystem>());
 }
 
-bool GSEJ_Format::save(const QString& targetPath) const {
-    auto targetDir = QFileInfo(targetPath).dir();
-    if (!targetDir.exists() || !targetDir.isReadable()) {
-        LOG_ERROR("Directory not exist or not readable");
-        return false;
-    }
-
-    auto systemJson = createSystemJson();
-    QJsonObject resultJson;
-    resultJson["system"] = systemJson;
-
-    auto payloadJson = m_rootFormat.toDataJson();
-    auto encPayload =
-        Encryption::qtEncryptAes256Cbc(
-            QJsonDocument(payloadJson).toJson(QJsonDocument::Compact),
-            m_key.toUtf8());
-
-    if (encPayload.isEmpty()) {
-        LOG_ERROR("Encrypt error:", Encryption::getEncryptionErrorText());
-    }
-    resultJson["payload"] = encPayload.toHex().data();
-
-    auto resultData = QJsonDocument(resultJson).toJson();
-    return replaceFileData(targetPath, resultData);
-}
-
-bool GSEJ_Format::load(const QString& targetPath) {
-    if (!isFileValid(targetPath)) {
-        LOG_WARNING("Invalid file to load");
-        return false;
-    }
-    // незачем проверять, что считалось, как и структуру JSON (она проверяется в
-    // isFileValid)
-    QByteArray dataBytes;
-    readFromFile(targetPath, dataBytes);
-    auto inputJson = QJsonDocument::fromJson(dataBytes);
-
-    // TODO: Проверка версий?
-    auto systemSection = inputJson["system"];
-    if (!systemSection["is_encrypted"]
-             .toBool()) {  // Не работаем с "чистыми" данными
-        LOG_WARNING("Data not encrypted (invalid format)");
-        return false;
-    }
-
-    // Дешифровка
-    auto payloadSection = inputJson["payload"];
-    auto payloadHex = payloadSection.toString().toUtf8();
-    auto payloadEncrypted = QByteArray::fromHex(payloadHex);
-    auto decryptedData =
-        Encryption::qtDecryptAes256Cbc(payloadEncrypted, m_key.toUtf8());
-    if (decryptedData.isEmpty()) {
-        LOG_ERROR("Decrypt error:", Encryption::getEncryptionErrorText());
-    }
-    return m_rootFormat.initFromDataJson(
-        QJsonDocument::fromJson(decryptedData).object());
-}
-
-bool GSEJ_Format::isFileValid(const QString& targetPath) const {
-    QByteArray oDataBytes;
-    if (!readFromFile(targetPath, oDataBytes)) {
-        return false;
-    }
-
-    auto testJson = QJsonDocument::fromJson(oDataBytes);
-    if (testJson.isNull()) {
-        LOG_INFO("GSJE format: Invalid file (NULL data json)", targetPath);
-        return false;
-    }
-
-    auto jsonObj = testJson.object();
-    if (!jsonObj.contains("system") || !jsonObj.contains("payload")) {
-        LOG_INFO("GSJE format: Invalid file (do not contain some sections)",
-                 targetPath);
-        return false;
-    }
-    return jsonObj["system"].isObject();
-}
-
-QJsonObject GSEJ_Format::createSystemJson() const {
-    QJsonObject systemObj;
-    systemObj["app_version"] = QString(GRAPH_EDITOR_VERSION);
-    systemObj["format_version"] = getVersion();
-    systemObj["is_encrypted"] = true;
-    return systemObj;
+bool GSEJ_Format::isVersionHigher(const QString &leftV, const QString &rightV) const
+{
+    return (leftV > rightV);
 }
 
 }  // namespace Filework

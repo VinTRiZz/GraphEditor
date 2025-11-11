@@ -1,37 +1,31 @@
-#ifndef ABSTRACTENCRYPTEDFORMAT_H
-#define ABSTRACTENCRYPTEDFORMAT_H
+#pragma once
 
 #include "abstractsaveformat.h"
 
 namespace Filework {
 
 /**
- * @brief The AbstractEncryptedFormatMixin class Миксин для добавления функций
+ * @brief The AbstractEncryptedFormat class База для шифрующего формата
  * шифрования в класс
  */
-template<typename T>
-class EncryptedFormatMixin {
+class AbstractEncryptedFormat : public AbstractSaveFormat {
 public:
+    using AbstractSaveFormat::AbstractSaveFormat;
+
     /**
      * @brief setEncryptionKey  Задать ключ шифрования
      * @param keyString         Строка-ключ шифрования
      */
-    void setEncryptionKey(const QString& keyString) {
-        m_encryptedKey = keyString;
-    }
+    void setEncryptionKey(const QString& keyString);
 
     /**
      * @brief getEncryptionKey  Получить ключ шифрования
      * @return                  Строка-ключ шифрования
      */
-    QString getEncryptionKey() const { return m_encryptedKey; }
+    QString getEncryptionKey() const;
 
 protected:
     QString m_encryptedKey;
 };
 
-using EncryptedSaveFormat = EncryptedFormatMixin<AbstractSaveFormat>;
-
 }  // namespace Filework
-
-#endif  // ABSTRACTENCRYPTEDFORMAT_H

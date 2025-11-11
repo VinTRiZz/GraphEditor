@@ -10,7 +10,7 @@
 #include <QMessageBox>
 
 #include "abstractsaveformat.h"
-#include "encryptedsaveformat.h"
+#include "abstractencryptedformat.h"
 #include "formatfactory.h"
 
 QString SaveMaster::formatToDefaultPath(const QString& iPath) {
@@ -64,7 +64,7 @@ bool SaveMaster::save(const QString& oFilePath,
     }
 
     auto pEncryptedFormat =
-        std::dynamic_pointer_cast<Filework::EncryptedSaveFormat>(pFormat);
+        std::dynamic_pointer_cast<Filework::AbstractEncryptedFormat>(pFormat);
     if (pEncryptedFormat) {
         PasswordInsertDialog passDialog;
         auto res = passDialog.exec();
@@ -83,7 +83,7 @@ bool SaveMaster::save(const QString& oFilePath,
         return false;
     }
 
-    pFormat->setGraphMaintainer(iGraphMaintaner);
+    pFormat->setGraph(iGraphMaintaner);
 
     auto res = false;
     if (QFileInfo(oFilePath).completeSuffix().isEmpty()) {
@@ -117,7 +117,7 @@ bool SaveMaster::load(const QString& iFilePath,
     }
 
     auto pEncryptedFormat =
-        std::dynamic_pointer_cast<Filework::EncryptedSaveFormat>(pFormat);
+        std::dynamic_pointer_cast<Filework::AbstractEncryptedFormat>(pFormat);
     if (pEncryptedFormat) {
         PasswordInsertDialog passDialog;
         auto res = passDialog.exec();
@@ -129,7 +129,7 @@ bool SaveMaster::load(const QString& iFilePath,
         pEncryptedFormat->setEncryptionKey(passDialog.getPassword());
     }
 
-    pFormat->setGraphMaintainer(oGraphMaintaner);
+    pFormat->setGraph(oGraphMaintaner);
     auto res = pFormat->load(iFilePath);
 
     if (res) {

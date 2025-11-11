@@ -5,22 +5,21 @@
 
 #include <QString>
 
+#include "abstractsavesubsystem.hpp"
+
 namespace Filework {
 
-class AbstractSaveFormat {
+class AbstractSaveFormat : public Graph::MaintainerUserDecorator {
 public:
     /**
      * @brief AbstractSaveFormat    Конструктор класса формата
-     * @param formatVersion         Версия формата (любой удобный набор
-     * символов)
      * @param formatExtension       Расширение формата в виде "ext"
      * @param formatDescription     Описание формата (желательно с указанием
      * расширения)
      * @param backwardCompatible    Является ли формат обратно совместимым с
      * общепринятыми форматами (имеет ли уникальные объекты)
      */
-    AbstractSaveFormat(const QString& formatVersion,
-                       const QString& formatExtension,
+    AbstractSaveFormat(const QString& formatExtension,
                        const QString& formatDescription,
                        bool backwardCompatible = false);
     virtual ~AbstractSaveFormat();
@@ -45,65 +44,35 @@ public:
     QString getDescription() const;
 
     /**
-     * @brief getVersion    Получить версию формата
-     * @return              Набор символов, не обязательно цифровой
+     * @brief save          Сохранить граф в файл
+     * @param targetPath    Путь до файла
+     * @return              false если произошла ошибка
      */
-    QString getVersion() const;
+    virtual bool save(const QString& targetPath) const;
+    virtual bool load(const QString& targetPath);
 
     /**
-     * @brief setGraphMaintainer Задать мейнтейнер графа
-     * @param pGraphMaintaner    Майнтейнер графа
+     * @brief getLastErrorText  Получить текст ошибки
+     * @return              Текст последней ошибки
      */
-    virtual void setGraphMaintainer(Graph::PMaintainer pGraphMaintaner);
-
-    /**
-     * @brief getGraphMaintainer Получить мейнтейнер графа
-     * @return                   Мейнтейнер графа. Если не был задан, будет не
-     * валидным
-     */
-    Graph::PMaintainer getGraphMaintainer() const;
-
-    virtual bool save(const QString& targetPath) const = 0;
-    virtual bool load(const QString& targetPath) = 0;
-
-    virtual bool isFileValid(const QString& targetPath) const = 0;
+    QString getLastErrorText() const;
 
 private:
-    Graph::PMaintainer m_pGraphMaintaner;
-    QString m_formatVersion;
     QString m_formatExtension;
     QString m_formatDescription;
     bool m_isBackwardCompatible{false};
 
+    std::shared_ptr<AbstractSaveSubsystem> m_lastUsedSubsystem;
+    std::map<QString, std::shared_ptr<AbstractSaveSubsystem> > m_saveSubsystems;
+
 protected:
-    /**
-     * @brief replaceFileData   Заменить данные в файле
-     * @param filePath          Путь до файла
-     * @param iData             Данные, которыми нужно заменить данные в файле
-     * @return                  true при успешной замене
-     */
-    bool replaceFileData(const QString& filePath,
-                         const QByteArray& iData) const;
+    void addSubsystem(const std::shared_ptr<AbstractSaveSubsystem>& subsys);
+    std::shared_ptr<AbstractSaveSubsystem> getSubsystem(const QString& version) const;
+
+    virtual bool isVersionHigher(const QString& leftV, const QString& rightV) const = 0;
 
     /**
-     * @brief readFromFile  Считать данные из файла
-     * @param filePath      Путь до файла
-     * @param oData         Массив, в который нужно записать данные файла
-     * @return              true если файл существует и был прочитан
-     */
-    bool readFromFile(const QString& filePath, QByteArray& oData) const;
-
-    /**
-     * @brief getEncoded Транслировать символы, которые могут иметь управляющие
-     * символы, в base64
-     * @param iStr Входной массив байт
-     * @return Конвертированный массив байт
-     */
-    QByteArray getEncoded(const QByteArray& iStr) const;
-    QByteArray getDecoded(const QByteArray& iBytes) const;
-
-    /**
-     * @brief getEncodedPixmap  Конвертировать pixmap в base64 PNG кодированный
+     * @brief getEncodedPixmap  Конвертировать pixmap в HEX PNG кодированный
      * набор байт
      * @param iPxmap            Входное изображение
      * @return                  Массив байт

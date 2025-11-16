@@ -137,11 +137,22 @@ void processArguments(QApplication& a) {
 
 
 void initStylesheet(QApplication& a) {
-    QFile stylesFile(":/common/styles/mainstyles.qss");
-    if (stylesFile.open(QIODevice::ReadOnly)) {
-        a.setStyleSheet(stylesFile.readAll());
-        LOG_OK("Styles set");
-    } else {
-        LOG_ERROR("Error opening styles:", stylesFile.errorString());
+
+    auto styleFiles = {
+        ":/styles/common.qss",
+        ":/styles/tabwidget.qss",
+        ":/styles/toolbox.qss",
+    };
+
+    QString appStyles;
+    for (auto& stylePath : styleFiles) {
+        QFile stylesFile(stylePath);
+        if (!stylesFile.open(QIODevice::ReadOnly)) {
+            LOG_ERROR("Error opening styles file:", stylesFile.errorString());
+            continue;
+        }
+        appStyles += "\n" + stylesFile.readAll();
     }
+
+    a.setStyleSheet(appStyles);
 }

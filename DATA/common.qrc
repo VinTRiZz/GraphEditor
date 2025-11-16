@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/common">
-        <file>styles/mainstyles.qss</file>
         <file>images/icons/common/edit_properties.svg</file>
         <file>images/icons/common/graph_cancel_changes.svg</file>
         <file>images/icons/common/graph_new.svg</file>
@@ -27,5 +26,10 @@
         <file>images/icons/common/settings.svg</file>
         <file>images/icons/common/close_tab.svg</file>
     </qresource>
-    <qresource prefix="/"/>
+    <qresource prefix="/">
+        <file>styles/common.qss</file>
+        <file>styles/docstyles.css</file>
+        <file>styles/tabwidget.qss</file>
+        <file>styles/toolbox.qss</file>
+    </qresource>
 </RCC>

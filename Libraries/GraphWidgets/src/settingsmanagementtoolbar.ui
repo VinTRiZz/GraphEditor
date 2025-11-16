@@ -34,7 +34,7 @@
      </property>
      <property name="icon">
       <iconset resource="../../../DATA/common.qrc">
-       <normaloff>:/common/images/icons/common/settings.svg</normaloff>:/common/images/icons/common/settings.svg</iconset>
+       <normaloff>:/images/icons/common/settings.svg</normaloff>:/images/icons/common/settings.svg</iconset>
      </property>
      <property name="iconSize">
       <size>

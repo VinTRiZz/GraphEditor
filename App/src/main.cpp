@@ -2,7 +2,7 @@
 #include <Components/Common/ApplicationSettings.h>
 #include <Components/Common/DirectoryManager.h>
 
-#include <PluginMaster/PluginMaster.h>
+#include <PluginModule/PluginMaster.h>
 
 #include <QApplication>
 #include <QCommandLineParser>
@@ -85,7 +85,7 @@ void initApplication(QApplication& a) {
     a.setApplicationName("GraphEditor");
     a.setApplicationVersion(GRAPH_EDITOR_VERSION);
     a.setApplicationDisplayName(QString("Редактор графов (версия %0)").arg(GRAPH_EDITOR_VERSION));
-    a.setWindowIcon(QIcon(":/common/images/icons/app/grapheditor.svg"));
+    a.setWindowIcon(QIcon(":/images/icons/app/grapheditor.svg"));
 }
 
 void processArguments(QApplication& a) {

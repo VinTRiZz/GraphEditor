@@ -27,7 +27,7 @@
      </property>
      <property name="icon">
       <iconset resource="../../../DATA/common.qrc">
-       <normaloff>:/common/images/icons/common/graph_save.svg</normaloff>:/common/images/icons/common/graph_save.svg</iconset>
+       <normaloff>:/images/icons/common/graph_save.svg</normaloff>:/images/icons/common/graph_save.svg</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -44,7 +44,7 @@
      </property>
      <property name="icon">
       <iconset resource="../../../DATA/common.qrc">
-       <normaloff>:/common/images/icons/common/graph_save_as.svg</normaloff>:/common/images/icons/common/graph_save_as.svg</iconset>
+       <normaloff>:/images/icons/common/graph_save_as.svg</normaloff>:/images/icons/common/graph_save_as.svg</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -61,7 +61,7 @@
      </property>
      <property name="icon">
       <iconset resource="../../../DATA/common.qrc">
-       <normaloff>:/common/images/icons/common/graph_cancel_changes.svg</normaloff>:/common/images/icons/common/graph_cancel_changes.svg</iconset>
+       <normaloff>:/images/icons/common/graph_cancel_changes.svg</normaloff>:/images/icons/common/graph_cancel_changes.svg</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -78,7 +78,7 @@
      </property>
      <property name="icon">
       <iconset resource="../../../DATA/common.qrc">
-       <normaloff>:/common/images/icons/common/graph_open.svg</normaloff>:/common/images/icons/common/graph_open.svg</iconset>
+       <normaloff>:/images/icons/common/graph_open.svg</normaloff>:/images/icons/common/graph_open.svg</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -101,7 +101,7 @@
      </property>
      <property name="icon">
       <iconset resource="../../../DATA/common.qrc">
-       <normaloff>:/common/images/icons/common/graph_new.svg</normaloff>:/common/images/icons/common/graph_new.svg</iconset>
+       <normaloff>:/images/icons/common/graph_new.svg</normaloff>:/images/icons/common/graph_new.svg</iconset>
      </property>
      <property name="iconSize">
       <size>

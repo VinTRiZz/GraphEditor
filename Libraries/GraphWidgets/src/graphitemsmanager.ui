@@ -17,7 +17,7 @@
    <item>
     <widget class="QToolBox" name="main_toolBox">
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="page">
       <property name="geometry">
@@ -110,7 +110,7 @@
         <widget class="QComboBox" name="pluginSelector_comboBox"/>
        </item>
        <item>
-        <widget class="QListView" name="pluginList_listView"/>
+        <widget class="QListView" name="pluginItemList_listView"/>
        </item>
       </layout>
      </widget>

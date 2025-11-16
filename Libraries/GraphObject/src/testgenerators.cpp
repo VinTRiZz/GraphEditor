@@ -123,11 +123,11 @@ PMaintainer createTestGraph() {
     testGeneratedGraph->setCustomValue("Test value", "test data");
     testGeneratedGraph->setCustomValue("Test value 2", "test data 2");
 
-    auto redPersonIcon = QIcon(":/common/images/vertexicons/person/red.svg");
+    auto redPersonIcon = QIcon(":/images/vertexicons/person/red.svg");
     auto redPersonImage = redPersonIcon.pixmap(500).toImage();
 
     auto greenPersonIcon =
-        QIcon(":/common/images/vertexicons/person/green.svg");
+        QIcon(":/images/vertexicons/person/green.svg");
     auto greenPersonImage = greenPersonIcon.pixmap(500).toImage();
 
     std::list<Graph::GVertex> testVertices;

@@ -18,7 +18,7 @@ QToolBox {
 }
 
 QToolBox::close-button {
-    image: url(:/common/images/icons/common/close_tab.svg);
+    image: url(:/images/icons/common/close_tab.svg);
     background: transparent;
     subcontrol-position: right;
     margin: 3px;

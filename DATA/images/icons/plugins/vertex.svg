@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="500"
+   height="500"
+   viewBox="0 0 132.29167 132.29167"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="mode_edit_add_vertex.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:zoom="1.0419012"
+     inkscape:cx="272.57863"
+     inkscape:cy="286.0156"
+     inkscape:window-width="1920"
+     inkscape:window-height="1007"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2">
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect12358"
+       is_visible="true"
+       lpeversion="1" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect12354"
+       is_visible="true"
+       lpeversion="1" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect1037"
+       is_visible="true"
+       lpeversion="1" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect1033"
+       is_visible="true"
+       lpeversion="1" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect1029"
+       is_visible="true"
+       lpeversion="1" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect971"
+       is_visible="true"
+       lpeversion="1" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect967"
+       is_visible="true"
+       lpeversion="1" />
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient20871">
+      <stop
+         style="stop-color:#2a8d7c;stop-opacity:1;"
+         offset="0"
+         id="stop20867" />
+      <stop
+         style="stop-color:#2a8d7c;stop-opacity:0;"
+         offset="1"
+         id="stop20869" />
+    </linearGradient>
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect17551"
+       is_visible="true"
+       lpeversion="1" />
+    <linearGradient
+       id="linearGradient12835"
+       inkscape:swatch="solid">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop12833" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3055"
+       inkscape:swatch="solid">
+      <stop
+         style="stop-color:#333333;stop-opacity:1;"
+         offset="0"
+         id="stop3053" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient20871"
+       id="linearGradient20873"
+       x1="38.989177"
+       y1="125.86868"
+       x2="58.87061"
+       y2="125.86868"
+       gradientUnits="userSpaceOnUse" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect12354-7"
+       is_visible="true"
+       lpeversion="1" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <ellipse
+       style="fill:none;fill-opacity:0;stroke:#2a8d7c;stroke-width:10.2741;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+       id="path944"
+       cx="66.465904"
+       cy="47.100166"
+       rx="59.272648"
+       ry="35.96302" />
+    <text
+       xml:space="preserve"
+       style="font-size:19.1537px;fill:none;stroke:#2a8d7c;stroke-width:15.7121;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+       x="36.512619"
+       y="125.09996"
+       id="text1271"
+       transform="scale(1.0704542,0.93418289)"><tspan
+         sodipodi:role="line"
+         id="tspan1269"
+         style="fill:#2a8d7c;fill-opacity:1;stroke:none;stroke-width:15.7121;stroke-dasharray:none;stroke-opacity:1"
+         x="36.512619"
+         y="125.09996">Node</tspan></text>
+    <rect
+       style="fill:none;fill-opacity:1;stroke:#2a8d7c;stroke-width:4.25282;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2307"
+       width="66.862457"
+       height="23.592764"
+       x="32.178917"
+       y="98.646507" />
+  </g>
+</svg>

@@ -25,7 +25,7 @@ bool PluginLibraryManager::load(const std::string &pluginFilePath)
         }
 
         auto pluginName = std::filesystem::path(pluginFilePath).filename().string();
-        pluginName.erase(pluginName.find_last_of(".") - 1);
+        pluginName.erase(pluginName.find_last_of("."));
         m_pluginName = pluginName;
 
         m_pluginLib = boost::dll::shared_library(

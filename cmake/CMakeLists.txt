@@ -50,6 +50,8 @@ function(CONFIGURE_LIBRARY LIBRARY_NAME)
     message(STATUS "Configured library " ${LIBRARY_NAME})
 endfunction()
 
+
+
 function(CONFIGURE_PLUGIN PLUGIN_NAME)
     # Files
     file(GLOB_RECURSE HEADERS "src/*.hpp" "src/*.h")
@@ -60,6 +62,18 @@ function(CONFIGURE_PLUGIN PLUGIN_NAME)
     # Library target
     add_library(${PLUGIN_NAME} SHARED)
     target_sources(${PLUGIN_NAME} PRIVATE ${HEADERS} ${SOURCES} ${UIFILES})
+
+    set_target_properties(${PLUGIN_NAME} PROPERTIES
+        OUTPUT_NAME "${PLUGIN_NAME}"
+        SOVERSION 1
+    )
+
+    # Export files (windows things)
+    if(WIN32)
+        set_target_properties(${PLUGIN_NAME} PROPERTIES
+            WINDOWS_EXPORT_ALL_SYMBOLS ON
+        )
+    endif()
 
     install(TARGETS ${PLUGIN_NAME}
         LIBRARY     DESTINATION ${INSTALL_DESTINATION_PREFIX}/plugins

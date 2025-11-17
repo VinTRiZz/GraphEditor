@@ -1,8 +1,13 @@
-CONFIGURE_LIBRARY(PluginModule)
+set(PLUGIN_MODULE_LIBS
+    boost_system
+    boost_filesystem
+)
 
-LINK_TARGET_LIBRARY(PluginModule Logger)
-LINK_TARGET_LIBRARY(PluginModule Common)
-LINK_TARGET_LIBRARY(PluginModule Qt-Custom)
+CONFIGURE_LIBRARY(PluginModule ${PLUGIN_MODULE_LIBS})
+
+COMPONENTS_LINK_COMPONENT(PluginModule Logger)
+COMPONENTS_LINK_COMPONENT(PluginModule Common)
+COMPONENTS_LINK_COMPONENT(PluginModule Qt-Custom)
 
 LINK_TARGET_LIBRARY(PluginModule GraphItems)
 

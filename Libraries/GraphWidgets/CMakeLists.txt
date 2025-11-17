@@ -1,7 +1,7 @@
 CONFIGURE_LIBRARY(GraphWidgets)
 
-LINK_TARGET_LIBRARY(GraphWidgets Logger)
-LINK_TARGET_LIBRARY(GraphWidgets Qt-Custom)
+COMPONENTS_LINK_COMPONENT(GraphWidgets Logger)
+COMPONENTS_LINK_COMPONENT(GraphWidgets Qt-Custom)
 
 LINK_TARGET_LIBRARY(GraphWidgets GraphObject)
 

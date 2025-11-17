@@ -1,7 +1,8 @@
 CONFIGURE_LIBRARY(GraphItems)
 
-LINK_TARGET_LIBRARY(GraphItems Logger)
-LINK_TARGET_LIBRARY(GraphItems Qt-Custom)
+COMPONENTS_LINK_COMPONENT(GraphItems Logger)
+COMPONENTS_LINK_COMPONENT(GraphItems Qt-Custom)
+
 LINK_TARGET_LIBRARY(GraphItems GraphObject)
 
 ADD_EDITOR_TEST(GraphItems)

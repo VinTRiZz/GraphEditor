@@ -20,8 +20,12 @@ add_compile_definitions(
 # Install prefix
 set(
     INSTALL_DESTINATION_PREFIX
-    "${CMAKE_CURRENT_SOURCE_DIR}/BIN/Package"
+    "${CMAKE_CURRENT_SOURCE_DIR}/BIN"
 )
+
+# Defines for components libs
+set(COMPONENTS_COMPONENT_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Libraries/Components )
+set(COMPONENTS_INSTALL_PATH ${INSTALL_DESTINATION_PREFIX} )
 
 # For LTO
 if(POLICY CMP0069)
@@ -53,6 +57,10 @@ include(cmake/CMakeLists.txt)
 # Subdirs
 message(STATUS "Searching for libraries...")
 add_subdirectory(Libraries)
+
+# Subdirs
+message(STATUS "Searching for plugins...")
+add_subdirectory(Plugins)
 
 message(STATUS "Searching for apps...")
 add_subdirectory(App)

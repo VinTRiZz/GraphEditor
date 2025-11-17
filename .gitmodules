@@ -28,3 +28,30 @@
 [submodule "Libraries/Components-ExtraClasses"]
 	path = Libraries/Components-ExtraClasses
 	url = git@github.com:VinTRiZz/Components-ExtraClasses.git
+[submodule "Libraries/Components-Core"]
+	path = Libraries/Components-Core
+	url = git@github.com:VinTRiZz/Components-Core.git
+[submodule "Libraries/Components/Components-Core"]
+	path = Libraries/Components/Components-Core
+	url = git@github.com:VinTRiZz/Components-Core.git
+[submodule "Libraries/Components/Components-Common"]
+	path = Libraries/Components/Components-Common
+	url = git@github.com:VinTRiZz/Components-Common.git
+[submodule "Libraries/Components/Components-Logger"]
+	path = Libraries/Components/Components-Logger
+	url = git@github.com:VinTRiZz/Components-Logger.git
+[submodule "Libraries/Components/Components-Filework"]
+	path = Libraries/Components/Components-Filework
+	url = git@github.com:VinTRiZz/Components-Filework.git
+[submodule "Libraries/Components/Components-Encryption"]
+	path = Libraries/Components/Components-Encryption
+	url = git@github.com:VinTRiZz/Components-Encryption.git
+[submodule "Libraries/Components/Components-ExtraClasses"]
+	path = Libraries/Components/Components-ExtraClasses
+	url = git@github.com:VinTRiZz/Components-ExtraClasses.git
+[submodule "Libraries/Components/Components-Maths"]
+	path = Libraries/Components/Components-Maths
+	url = git@github.com:VinTRiZz/Components-Maths.git
+[submodule "Libraries/Components/Components-Qt-Custom"]
+	path = Libraries/Components/Components-Qt-Custom
+	url = git@github.com:VinTRiZz/Components-Qt-Custom.git

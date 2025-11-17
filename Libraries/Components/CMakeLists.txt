@@ -1,0 +1,9 @@
+# Components
+add_subdirectory(Components-Core)
+add_subdirectory(Components-Logger)
+add_subdirectory(Components-ExtraClasses)
+add_subdirectory(Components-Maths)
+add_subdirectory(Components-Common)
+add_subdirectory(Components-Filework)
+add_subdirectory(Components-Encryption)
+add_subdirectory(Components-Qt-Custom)

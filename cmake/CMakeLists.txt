@@ -1,10 +1,3 @@
-# Constants
-
-set(
-    RESOURCES_COMMONFILE
-    "${CMAKE_CURRENT_SOURCE_DIR}/DATA/common.qrc"
-)
-
 function(CONFIGURE_SUFFIX TARGET_NAME TARGET_DBG_SUFF TARGET_REL_SUFF)
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
         target_compile_definitions(${TARGET_NAME} PRIVATE DEBUG_MODE)
@@ -29,15 +22,19 @@ function(CONFIGURE_LIBRARY LIBRARY_NAME)
     add_library(${LIBRARY_NAME} SHARED)
     target_sources(${LIBRARY_NAME} PRIVATE ${HEADERS} ${SOURCES} ${UIFILES})
 
+    install(TARGETS ${LIBRARY_NAME}
+        RUNTIME     DESTINATION ${INSTALL_DESTINATION_PREFIX}
+        LIBRARY     DESTINATION ${INSTALL_DESTINATION_PREFIX}/lib
+        ARCHIVE     DESTINATION ${INSTALL_DESTINATION_PREFIX}/lib/static
+        INCLUDES    DESTINATION ${INSTALL_DESTINATION_PREFIX}/include
+    )
+
     set(
         TARGET_LINKED_LIBS
         Qt5::Core
         Qt5::Widgets
         Qt5::Gui
-
-        crypto
-        boost_system
-        boost_filesystem
+        ${ARGN}
     )
 
     # Target linking
@@ -53,6 +50,41 @@ function(CONFIGURE_LIBRARY LIBRARY_NAME)
     message(STATUS "Configured library " ${LIBRARY_NAME})
 endfunction()
 
+function(CONFIGURE_PLUGIN PLUGIN_NAME)
+    # Files
+    file(GLOB_RECURSE HEADERS "src/*.hpp" "src/*.h")
+    file(GLOB_RECURSE SOURCES "src/*.cpp")
+    file(GLOB_RECURSE UIFILES "src/*.ui")
+    source_group("Ui Files" FILES ${UIFILES})
+
+    # Library target
+    add_library(${PLUGIN_NAME} SHARED)
+    target_sources(${PLUGIN_NAME} PRIVATE ${HEADERS} ${SOURCES} ${UIFILES})
+
+    install(TARGETS ${PLUGIN_NAME}
+        LIBRARY     DESTINATION ${INSTALL_DESTINATION_PREFIX}/plugins
+    )
+
+    set(
+        TARGET_LINKED_LIBS
+        Qt5::Core
+        Qt5::Widgets
+        Qt5::Gui
+        ${ARGN}
+    )
+
+    # Target linking
+    target_link_libraries(${PLUGIN_NAME} PRIVATE ${TARGET_LINKED_LIBS} )
+
+    CONFIGURE_SUFFIX(${PLUGIN_NAME} ".so.DEBUG" ".so")
+
+    if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src")
+        message(FATAL_ERROR "Error configuring library! Not found sources dir: " "${CMAKE_CURRENT_SOURCE_DIR}/src")
+    endif()
+
+    target_include_directories(${PLUGIN_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
+    message(STATUS "Configured plugin " ${PLUGIN_NAME})
+endfunction()
 
 
 # For linking

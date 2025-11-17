@@ -1,0 +1,4 @@
+CONFIGURE_PLUGIN(DefaultPlugin)
+
+LINK_TARGET_LIBRARY(DefaultPlugin GraphObject)
+LINK_TARGET_LIBRARY(DefaultPlugin GraphItems)

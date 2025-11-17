@@ -1,8 +1,10 @@
 CONFIGURE_LIBRARY(SavesModule)
 
-LINK_TARGET_LIBRARY(SavesModule Logger)
-LINK_TARGET_LIBRARY(SavesModule Encryption)
-LINK_TARGET_LIBRARY(SavesModule Qt-Custom)
+COMPONENTS_LINK_COMPONENT(SavesModule Logger)
+COMPONENTS_LINK_COMPONENT(SavesModule Filework)
+COMPONENTS_LINK_COMPONENT(SavesModule Encryption)
+COMPONENTS_LINK_COMPONENT(SavesModule Qt-Custom)
+
 LINK_TARGET_LIBRARY(SavesModule GraphObject)
 
 ADD_EDITOR_TEST(SavesModule)

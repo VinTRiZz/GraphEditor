@@ -1,5 +1,4 @@
-#ifndef GCONNECTION_H
-#define GCONNECTION_H
+#pragma once
 
 #include <Components/Common/CommonFunctions.h>
 #include <Components/Logger/Logger.h>
@@ -58,4 +57,3 @@ struct GConnection {
 };
 
 }  // namespace Graph
-#endif  // GCONNECTION_H

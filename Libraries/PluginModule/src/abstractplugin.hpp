@@ -15,11 +15,10 @@ public:
     AbstractPlugin();
     virtual ~AbstractPlugin();
 
-    bool initPlugin(const std::string& pluginFile);
+    bool initFromFile(const std::string& pluginFile);
     std::string getPluginName() const;
 
     std::list<std::string> getItemList() const;
-    std::string getItemType(const std::string& itemName) const;
 
 protected:
     std::shared_ptr<PluginLibraryManager> getLibraryManager() const;

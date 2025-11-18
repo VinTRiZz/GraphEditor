@@ -5,6 +5,11 @@
 
 #include <Components/Logger/Logger.h>
 
+#include <PluginCoreInterface/Core.h>
+#include <PluginCoreInterface/ObjectCreating.h>
+#include <PluginCoreInterface/WidgetCreating.h>
+#include <PluginCoreInterface/TypeProcessing.h>
+
 namespace Graph {
 
 AbstractPlugin::AbstractPlugin()
@@ -14,13 +19,41 @@ AbstractPlugin::AbstractPlugin()
 
 AbstractPlugin::~AbstractPlugin()
 {
+    if (m_libraryManager->isLoaded()) {
+        auto f_getErrorText = getLibraryManager()->getFunction<decltype(getErrorText)>("getErrorText");
 
+        auto f_deinitPlugin = getLibraryManager()->getFunction<decltype(deinitPlugin)>("deinitPlugin");
+        auto deinitRes = f_deinitPlugin();
+        if (deinitRes != 0) {
+            LOG_ERROR("Plugin deinit error:", f_getErrorText());
+        }
+    }
 }
 
-bool AbstractPlugin::initPlugin(const std::string &pluginFile)
+bool AbstractPlugin::initFromFile(const std::string &pluginFile)
 {
     m_libraryManager = std::make_shared<PluginLibraryManager>();
-    return m_libraryManager->load(pluginFile);
+    auto isLoaded = m_libraryManager->load(pluginFile);
+    if (!isLoaded) {
+        return false;
+    }
+    auto f_getErrorText = getLibraryManager()->getFunction<decltype(getErrorText)>("getErrorText");
+
+    auto f_initPlugin = getLibraryManager()->getFunction<decltype(initPlugin)>("initPlugin");
+    auto initRes = f_initPlugin();
+    if (initRes != 0) {
+        LOG_ERROR("Plugin init error:", f_getErrorText());
+        return false;
+    }
+
+    auto f_restoreState = getLibraryManager()->getFunction<decltype(restoreState)>("restoreState");
+    auto restoreRes = f_restoreState();
+    if (restoreRes != 0) {
+        LOG_ERROR("Plugin state restore error:", f_getErrorText());
+        return false;
+    }
+
+    return true;
 }
 
 std::string AbstractPlugin::getPluginName() const
@@ -33,21 +66,18 @@ std::string AbstractPlugin::getPluginName() const
 
 std::list<std::string> AbstractPlugin::getItemList() const
 {
-    auto getLibraryItemNames = getLibraryManager()->getFunction<const char*()>("getLibraryItemNames");
-    auto libItems = getLibraryItemNames();
+    auto f_getTypeCount = getLibraryManager()->getFunction<decltype(getTypeCount)>("getTypeCount");
 
-    std::list<std::string> items;
-    boost::char_separator<char> chrSep(";");
-    for (auto& tk : boost::tokenizer(std::string(libItems), chrSep)) {
-        items.push_back(tk);
+    auto f_getName = getLibraryManager()->getFunction<decltype(getItemName)>("getItemName");
+    auto f_getTypeString = getLibraryManager()->getFunction<decltype(getTypeString)>("getTypeString");
+
+    std::list<std::string> res;
+    for (long long i = 0; i < f_getTypeCount(); ++i) {
+        auto itemName = std::shared_ptr<std::string>(f_getName(i));
+        auto typeString = std::shared_ptr<std::string>(f_getTypeString(i));
+        res.push_back(std::string("[ ") + *typeString + "] " + *itemName);
     }
-    return items;
-}
-
-std::string AbstractPlugin::getItemType(const std::string &itemName) const
-{
-    auto getItemType = getLibraryManager()->getFunction<const char*(const std::string&)>("getItemType");
-    return getItemType(itemName);
+    return res;
 }
 
 std::shared_ptr<PluginLibraryManager> AbstractPlugin::getLibraryManager() const

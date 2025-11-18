@@ -82,7 +82,6 @@ void GraphItemsManager::loadPluginItems(const QString &pluginName)
 
     m_pluginItemsModel->clear();
     for (auto& pluginItemName : plugin->getItemList()) {
-        auto itemType = plugin->getItemType(pluginItemName);
-        m_pluginItemsModel->appendRow(new QStandardItem("[" + QString::fromStdString(itemType) + "] " + pluginItemName.c_str()));
+        m_pluginItemsModel->appendRow(new QStandardItem(QString::fromStdString(pluginItemName)));
     }
 }

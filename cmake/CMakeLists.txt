@@ -1,3 +1,5 @@
+
+# Suffix configuration function
 function(CONFIGURE_SUFFIX TARGET_NAME TARGET_DBG_SUFF TARGET_REL_SUFF)
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
         target_compile_definitions(${TARGET_NAME} PRIVATE DEBUG_MODE)
@@ -10,7 +12,7 @@ function(CONFIGURE_SUFFIX TARGET_NAME TARGET_DBG_SUFF TARGET_REL_SUFF)
     endif()
 endfunction()
 
-
+# Common library configuration function
 function(CONFIGURE_LIBRARY LIBRARY_NAME)
     # Files
     file(GLOB_RECURSE HEADERS "src/*.hpp" "src/*.h")
@@ -51,21 +53,21 @@ function(CONFIGURE_LIBRARY LIBRARY_NAME)
 endfunction()
 
 
-
-function(CONFIGURE_PLUGIN PLUGIN_NAME)
+# Plugin configuration function
+function(CONFIGURE_PLUGIN PLUGIN_NAME PLUGIN_EXTENSION)
     # Files
     file(GLOB_RECURSE HEADERS "src/*.hpp" "src/*.h")
     file(GLOB_RECURSE SOURCES "src/*.cpp")
     file(GLOB_RECURSE UIFILES "src/*.ui")
     source_group("Ui Files" FILES ${UIFILES})
 
-    # Library target
+    # Plugin target
     add_library(${PLUGIN_NAME} SHARED)
     target_sources(${PLUGIN_NAME} PRIVATE ${HEADERS} ${SOURCES} ${UIFILES})
-
     set_target_properties(${PLUGIN_NAME} PROPERTIES
         OUTPUT_NAME "${PLUGIN_NAME}"
-        SOVERSION 1
+        PREFIX ""
+        SUFFIX ".${PLUGIN_EXTENSION}"
     )
 
     # Export files (windows things)
@@ -88,12 +90,13 @@ function(CONFIGURE_PLUGIN PLUGIN_NAME)
     )
 
     # Target linking
-    target_link_libraries(${PLUGIN_NAME} PRIVATE ${TARGET_LINKED_LIBS} )
-
-    CONFIGURE_SUFFIX(${PLUGIN_NAME} ".so.DEBUG" ".so")
+    target_link_libraries(${PLUGIN_NAME} PRIVATE
+        ${TARGET_LINKED_LIBS}
+        PluginCoreInterface
+    )
 
     if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src")
-        message(FATAL_ERROR "Error configuring library! Not found sources dir: " "${CMAKE_CURRENT_SOURCE_DIR}/src")
+        message(FATAL_ERROR "Error configuring plugin! Not found sources dir: " "${CMAKE_CURRENT_SOURCE_DIR}/src")
     endif()
 
     target_include_directories(${PLUGIN_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")

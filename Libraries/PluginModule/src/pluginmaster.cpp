@@ -40,7 +40,7 @@ void PluginMaster::init(const std::string &pluginRoot)
         // Vertices
         if (fileExt == "vpl") {
             m_plugins.push_back(std::make_shared<VertexPlugin>());
-            if (!m_plugins.back()->initPlugin(filePath.generic_string())) {
+            if (!m_plugins.back()->initFromFile(filePath.generic_string())) {
                 m_plugins.pop_back();
                 continue;
             }
@@ -52,7 +52,7 @@ void PluginMaster::init(const std::string &pluginRoot)
         if (fileExt == "cpl") {
             LOG_INFO("Loading connection plugin:", filePath.generic_string());
             m_plugins.push_back(std::make_shared<ConnectionPlugin>());
-            if (!m_plugins.back()->initPlugin(filePath.generic_string())) {
+            if (!m_plugins.back()->initFromFile(filePath.generic_string())) {
                 m_plugins.pop_back();
                 continue;
             }

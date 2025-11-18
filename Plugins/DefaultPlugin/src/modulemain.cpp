@@ -3,25 +3,61 @@
 #include <GraphItems/VertexItem.h>
 #include <GraphItems/SimpleVertexItem.h>
 
-const char *private_getLibraryItemNames()
-{
-    return "Aboba test";
+#include <Components/Logger/Logger.h>
+
+
+std::string *getErrorText() {
+    return new std::string("All's good!");
 }
 
-const char *private_getItemType(const std::string &itemName)
+int initPlugin() {
+    LOG_DEBUG("Inited plugin");
+    return 0;
+}
+
+int restoreState() {
+    LOG_DEBUG("Restored state");
+    return 0;
+}
+
+int deinitPlugin() {
+    LOG_DEBUG("Deinited plugin");
+    return 0;
+}
+
+
+
+long long getTypeCount()
 {
-    if (itemName == "Aboba test") {
-        return "vertex";
+    return 2;
+}
+
+std::string *getItemName(long long itemId)
+{
+    if (itemId == 0) {
+        return new std::string("Aboba object");
+    }
+
+    if (itemId == 1) {
+        return new std::string("Second object");
     }
     return {};
 }
 
-Graph::VertexItem *private_createVertex(const std::string &name)
-{
-    return new Graph::SimpleVertexItem();
+std::string* getTypeString(long long itemId) {
+    if (itemId == 0) {
+        return new std::string("vertex");
+    }
+
+    if (itemId == 1) {
+        return new std::string("connection");
+    }
+    return {};
 }
 
-Graph::VertexConnectionLine *private_createConnection(const std::string &name)
+
+
+Graph::VertexItem *createVertex(const std::string &name)
 {
-    return nullptr;
+    return new Graph::SimpleVertexItem();
 }

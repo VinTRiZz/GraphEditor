@@ -4,6 +4,7 @@ set(PLUGIN_MODULE_LIBS
 )
 
 CONFIGURE_LIBRARY(PluginModule ${PLUGIN_MODULE_LIBS})
+target_include_directories(PluginModule PRIVATE ../PluginCoreInterface/include)
 
 COMPONENTS_LINK_COMPONENT(PluginModule Logger)
 COMPONENTS_LINK_COMPONENT(PluginModule Common)

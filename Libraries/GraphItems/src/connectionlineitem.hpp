@@ -10,11 +10,15 @@
 
 #include <GraphObject/Object.h>
 
+#include "pluginobjectitnterface.hpp"
+
 namespace Graph {
 
 class VertexItem;
 
-class VertexConnectionLine : public ObjectItems::BasicItem {
+class VertexConnectionLine :
+        public ObjectItems::BasicItem,
+        public PluginObjectItnterface {
 public:
     explicit VertexConnectionLine(QGraphicsItem* parent = nullptr);
     ~VertexConnectionLine();

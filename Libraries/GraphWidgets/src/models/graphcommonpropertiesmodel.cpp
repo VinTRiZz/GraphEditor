@@ -1,5 +1,8 @@
 #include "graphcommonpropertiesmodel.h"
 
+
+namespace Graph {
+
 GraphCommonPropertiesModel::GraphCommonPropertiesModel(QObject* parent)
     : QAbstractTableModel(parent) {}
 
@@ -121,4 +124,6 @@ void GraphCommonPropertiesModel::processGraphChange()
     }
     beginResetModel();
     endResetModel();
+}
+
 }

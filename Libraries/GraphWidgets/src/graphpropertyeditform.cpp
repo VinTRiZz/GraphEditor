@@ -1,5 +1,8 @@
 #include "graphpropertyeditform.h"
 
+#include "models/graphcommonpropertiesmodel.h"
+#include "models/graphcustompropertiesmodel.h"
+
 #include <Components/Logger/Logger.h>
 #include <GraphObject/Object.h>
 

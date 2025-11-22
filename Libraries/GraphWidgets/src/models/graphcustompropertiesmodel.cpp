@@ -1,5 +1,8 @@
 #include "graphcustompropertiesmodel.h"
 
+
+namespace Graph {
+
 GraphCustomPropertiesModel::GraphCustomPropertiesModel(QObject* parent)
     : QAbstractTableModel(parent) {}
 
@@ -145,4 +148,6 @@ void GraphCustomPropertiesModel::processGraphChange()
     }
     beginResetModel();
     endResetModel();
+}
+
 }

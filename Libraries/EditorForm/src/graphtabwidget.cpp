@@ -49,12 +49,15 @@ GraphTabWidget::GraphTabWidget(QWidget* parent)
                     ui->editorForms_tabWidget->hide();
                     ui->placeholder_label->show();
                     ui->fileToolbar->setGraph({});
-                    ui->graphPropertiesForm->setGraph({});
                 }
             });
 
     connect(ui->editorForms_tabWidget, &QTabWidget::currentChanged, this,
             [this](int tabIndex) {
+                if (tabIndex == -1) { // Пустой виджет
+                    return;
+                }
+
                 auto tabTargetWidget =
                     ui->editorForms_tabWidget->widget(tabIndex);
 
@@ -64,7 +67,6 @@ GraphTabWidget::GraphTabWidget(QWidget* parent)
                 auto pForm = static_cast<GraphEditView*>(tabTargetWidget);
                 auto pMaintainer = pForm->getGraph();
                 ui->fileToolbar->setGraph(pMaintainer);
-                ui->graphPropertiesForm->setGraph(pMaintainer);
             });
 }
 

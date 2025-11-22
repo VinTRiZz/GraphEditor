@@ -57,7 +57,7 @@ std::string* getTypeString(long long itemId) {
 
 
 
-Graph::VertexItem *createVertex(const std::string &name)
+Graph::PluginObjectItnterface *createObject(const std::string &name)
 {
     return new Graph::SimpleVertexItem();
 }

@@ -1,9 +1,10 @@
-#ifndef GRAPHCUSTOMPROPERTIESMODEL_H
-#define GRAPHCUSTOMPROPERTIESMODEL_H
+#pragma once
 
 #include <GraphObject/Maintainer.h>
 
 #include <QAbstractTableModel>
+
+namespace Graph {
 
 /**
  * @brief The GraphCustomPropertiesModel class  Модель для представления
@@ -51,4 +52,4 @@ private:
     void processGraphChange() override;
 };
 
-#endif  // GRAPHCUSTOMPROPERTIESMODEL_H
+}

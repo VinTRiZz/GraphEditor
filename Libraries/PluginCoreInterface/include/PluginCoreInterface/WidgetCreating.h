@@ -20,27 +20,28 @@ namespace Graph {
 class PluginItemPropertyWidget;
 
 // Для работы с режимом, определённым в плагине
-class PluginModeWidget;
+class PluginInteractionWidget;
 
 // Для работы с конфигурацией плагина
 class PluginConfigurationWidget;
-}
 
-namespace ObjectItems {
-class BasicItem;
+class PluginObjectItnterface;
 }
 
 /**
  * @brief Функция плагина, позволяющая создать виджет для настройки работы плагина
+ * @note    Виджет не удаляется приложением, его можно переиспользовать
  */
-extern "C" PLUGIN_API_EXPORT Graph::PluginConfigurationWidget* createConfigurationEditor();
+extern "C" PLUGIN_API_EXPORT Graph::PluginConfigurationWidget* getConfigurationEditor();
 
 /**
- * @brief Функция плагина для создания редактора свойств конкретного объекта сцены
+ * @brief Функция плагина для получения виджета редактора свойств конкретного объекта сцены
+ * @note    Виджет не удаляется приложением, его можно переиспользовать
  */
-extern "C" PLUGIN_API_EXPORT Graph::PluginItemPropertyWidget* createPropertyEditor(ObjectItems::BasicItem* pTarget);
+extern "C" PLUGIN_API_EXPORT Graph::PluginItemPropertyWidget* getPropertyEditor(Graph::PluginObjectItnterface* pTarget);
 
 /**
- * @brief Функция плагина для создания виджета-конфигуратора режима
+ * @brief Функция плагина для создания виджета-интерактора с плагином (например, для запуска алгоритма в алгоритм. плагине)
+ * @note    Виджет не удаляется приложением, его можно переиспользовать
  */
-extern "C" PLUGIN_API_EXPORT Graph::PluginModeWidget* createMode(int modeType);
+extern "C" PLUGIN_API_EXPORT Graph::PluginInteractionWidget* getInteractor();

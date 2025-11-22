@@ -1,4 +1,4 @@
-#include "abstractplugin.hpp"
+#include "grapheditorplugin.hpp"
 
 #include "pluginlibrarymanager.hpp"
 #include <boost/tokenizer.hpp>
@@ -12,12 +12,12 @@
 
 namespace Graph {
 
-AbstractPlugin::AbstractPlugin()
+GraphEditorPlugin::GraphEditorPlugin()
 {
 
 }
 
-AbstractPlugin::~AbstractPlugin()
+GraphEditorPlugin::~GraphEditorPlugin()
 {
     if (m_libraryManager->isLoaded()) {
         auto f_getErrorText = getLibraryManager()->getFunction<decltype(getErrorText)>("getErrorText");
@@ -30,7 +30,7 @@ AbstractPlugin::~AbstractPlugin()
     }
 }
 
-bool AbstractPlugin::initFromFile(const std::string &pluginFile)
+bool GraphEditorPlugin::initFromFile(const std::string &pluginFile)
 {
     m_libraryManager = std::make_shared<PluginLibraryManager>();
     auto isLoaded = m_libraryManager->load(pluginFile);
@@ -56,7 +56,7 @@ bool AbstractPlugin::initFromFile(const std::string &pluginFile)
     return true;
 }
 
-std::string AbstractPlugin::getPluginName() const
+std::string GraphEditorPlugin::getPluginName() const
 {
     if (m_libraryManager) {
         return m_libraryManager->getLibraryName();
@@ -64,7 +64,7 @@ std::string AbstractPlugin::getPluginName() const
     return {};
 }
 
-std::list<std::string> AbstractPlugin::getItemList() const
+std::list<std::string> GraphEditorPlugin::getObjectNameList() const
 {
     auto f_getTypeCount = getLibraryManager()->getFunction<decltype(getTypeCount)>("getTypeCount");
 
@@ -80,7 +80,31 @@ std::list<std::string> AbstractPlugin::getItemList() const
     return res;
 }
 
-std::shared_ptr<PluginLibraryManager> AbstractPlugin::getLibraryManager() const
+PluginObjectItnterface *GraphEditorPlugin::createObject(const std::string &name)
+{
+    auto f_createObject = getLibraryManager()->getFunction<decltype(::createObject)>("createObject");
+    return f_createObject(name);
+}
+
+PluginConfigurationWidget *GraphEditorPlugin::getConfigurationEditor()
+{
+    auto f_createConfigEditor = getLibraryManager()->getFunction<decltype(::getConfigurationEditor)>("getConfigurationEditor");
+    return f_createConfigEditor();
+}
+
+PluginItemPropertyWidget *GraphEditorPlugin::getPropertyEditor(PluginObjectItnterface *pTarget)
+{
+    auto f_createPropEditor = getLibraryManager()->getFunction<decltype(::getPropertyEditor)>("getPropertyEditor");
+    return f_createPropEditor(pTarget);
+}
+
+PluginInteractionWidget *GraphEditorPlugin::getInteractor()
+{
+    auto f_getInteractor = getLibraryManager()->getFunction<decltype(::getInteractor)>("getInteractor");
+    return f_getInteractor();
+}
+
+std::shared_ptr<PluginLibraryManager> GraphEditorPlugin::getLibraryManager() const
 {
     return m_libraryManager;
 }

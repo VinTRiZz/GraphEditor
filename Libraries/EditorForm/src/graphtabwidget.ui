@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>971</width>
-    <height>598</height>
+    <width>1265</width>
+    <height>617</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -42,21 +42,21 @@
      <item>
       <widget class="QTabWidget" name="manip_tabWidget">
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="add_tab">
         <attribute name="title">
-         <string>Добавление</string>
+         <string>Объекты</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_6">
          <item>
-          <widget class="GraphItemsManager" name="widget" native="true"/>
+          <widget class="GraphItemsManager" name="graphItemsManager" native="true"/>
          </item>
         </layout>
        </widget>
        <widget class="QWidget" name="objectProps_tab">
         <attribute name="title">
-         <string>Объект</string>
+         <string>Свойства</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
@@ -64,13 +64,13 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="props_tab">
+       <widget class="QWidget" name="tab">
         <attribute name="title">
-         <string>Граф</string>
+         <string>Плагин</string>
         </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_8">
+        <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
-          <widget class="Graph::GraphPropertyEditForm" name="graphPropertiesForm" native="true"/>
+          <widget class="PluginInteractorWidget" name="pluginInteractor" native="true"/>
          </item>
         </layout>
        </widget>
@@ -118,12 +118,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>Graph::GraphPropertyEditForm</class>
-   <extends>QWidget</extends>
-   <header location="global">GraphWidgets/GraphPropertyEditForm.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>FileManagementToolbar</class>
    <extends>QWidget</extends>
    <header>GraphWidgets/FileManagementToolbar.h</header>
@@ -145,6 +139,12 @@
    <class>GraphItemPropertyEditor</class>
    <extends>QWidget</extends>
    <header location="global">GraphWidgets/GraphItemPropertyEditor.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>PluginInteractorWidget</class>
+   <extends>QWidget</extends>
+   <header>GraphWidgets/PluginInteractorWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

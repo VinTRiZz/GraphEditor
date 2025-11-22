@@ -4,6 +4,9 @@
 
 #include <QAbstractTableModel>
 
+
+namespace Graph {
+
 /**
  * @brief The GraphCommonPropertiesModel class  Модель для представления
  * основных свойств графа
@@ -39,3 +42,5 @@ public:
 private:
     void processGraphChange() override;
 };
+
+}

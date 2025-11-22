@@ -16,16 +16,10 @@
 #include <string>
 
 namespace Graph {
-class VertexItem;
-class VertexConnectionLine;
+class PluginObjectItnterface;
 }
 
 /**
- * @brief Функция плагина, позволяющая создавать вершины (ключевая для плагина вершин)
+ * @brief Функция плагина, позволяющая создавать объект по его имени
  */
-extern "C" PLUGIN_API_EXPORT Graph::VertexItem* createVertex(const std::string& name);
-
-/**
- * @brief Функция плагина, позволяющая создавать соединения (ключевая для плагина соединений)
- */
-extern "C" PLUGIN_API_EXPORT Graph::VertexConnectionLine* createConnection(const std::string& name);
+extern "C" PLUGIN_API_EXPORT Graph::PluginObjectItnterface* createObject(const std::string& name);

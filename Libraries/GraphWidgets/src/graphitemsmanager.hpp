@@ -3,7 +3,7 @@
 #include <QWidget>
 #include <QStandardItemModel>
 
-#include <GraphItems/VertexItem.h>
+#include <GraphItems/PluginObjectInterface.h>
 
 namespace Ui {
 class GraphItemsManager;
@@ -23,9 +23,11 @@ public:
         Connection,
     };
 
+public slots:
+    void updatePluginList();
+
 signals:
-    void addVertex(Graph::VertexItem* pVertex);
-    void addConnection(Graph::VertexConnectionLine* pLine);
+    void addObject(Graph::PluginObjectItnterface* pVertex);
 
 private slots:
     void loadPluginItems(const QString& pluginName);
@@ -37,9 +39,6 @@ private:
 
     void initSignals();
 
-    void initVertexItems();
-    void initConnectionItems();
-
-    void addPlugin(PluginType ptype, const QString& pluginName);
+    void addPlugin(const QString& pluginName);
 };
 

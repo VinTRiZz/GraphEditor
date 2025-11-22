@@ -2,6 +2,8 @@
 
 #include <QWidget>
 
+#include <GraphItems/PluginObjectInterface.h>
+
 namespace Ui {
 class GraphItemPropertyEditor;
 }
@@ -14,7 +16,11 @@ public:
     explicit GraphItemPropertyEditor(QWidget *parent = nullptr);
     ~GraphItemPropertyEditor();
 
+    void setTargetItem(Graph::PluginObjectItnterface* pTarget);
+
 private:
     Ui::GraphItemPropertyEditor *ui;
+
+    Graph::PluginObjectItnterface* m_targetItem {nullptr};
 };
 

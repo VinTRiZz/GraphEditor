@@ -4,3 +4,5 @@
 #include <PluginCoreInterface/ObjectCreating.h>
 #include <PluginCoreInterface/WidgetCreating.h>
 #include <PluginCoreInterface/TypeProcessing.h>
+
+

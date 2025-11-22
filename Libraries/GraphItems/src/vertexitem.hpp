@@ -3,6 +3,8 @@
 #include <GraphObject/Object.h>
 #include <Components/CustomQt/ObjectView/ObjectItems.h>
 
+#include "pluginobjectitnterface.hpp"
+
 #include "connectionlineitem.hpp"
 
 #include <set>
@@ -31,7 +33,9 @@ enum VertexTitlePosition : int {
     VTP_RightBottom,
 };
 
-class VertexItem : public ObjectItems::BasicItem
+class VertexItem :
+        public ObjectItems::BasicItem,
+        public PluginObjectItnterface
 {
     Q_OBJECT
 public:

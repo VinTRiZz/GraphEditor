@@ -5,14 +5,14 @@
 #include <QStandardItemModel>
 #include <QWidget>
 
-#include "graphcommonpropertiesmodel.h"
-#include "graphcustompropertiesmodel.h"
-
 namespace Ui {
 class GraphPropertyEditForm;
 }
 
 namespace Graph {
+
+class GraphCommonPropertiesModel;
+class GraphCustomPropertiesModel;
 
 /**
  * @brief The GraphPropertyEditForm class   Форма редактирования метаинформации

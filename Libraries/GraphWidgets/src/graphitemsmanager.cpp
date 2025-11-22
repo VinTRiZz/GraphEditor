@@ -9,8 +9,6 @@ GraphItemsManager::GraphItemsManager(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->main_toolBox->setCurrentIndex(0);
-
     m_pluginItemsModel = new QStandardItemModel(this);
     ui->pluginItemList_listView->setModel(m_pluginItemsModel);
 
@@ -18,14 +16,20 @@ GraphItemsManager::GraphItemsManager(QWidget *parent) :
     m_pluginItemsModel->setHeaderData(0, Qt::Horizontal, "Элемент плагина", Qt::DisplayRole);
 
     initSignals();
-
-    initVertexItems();
-    initConnectionItems();
+    updatePluginList();
 }
 
 GraphItemsManager::~GraphItemsManager()
 {
     delete ui;
+}
+
+void GraphItemsManager::updatePluginList()
+{
+    m_pluginItemsModel->clear();
+    for (auto& pPlugin : Graph::PluginMaster::getInstance().getAllPlugins()) {
+        addPlugin(pPlugin->getPluginName().c_str());
+    }
 }
 
 void GraphItemsManager::initSignals()
@@ -34,45 +38,28 @@ void GraphItemsManager::initSignals()
           &GraphItemsManager::loadPluginItems);
 }
 
-void GraphItemsManager::initVertexItems()
+void GraphItemsManager::addPlugin(const QString &pluginName)
 {
-    auto& pluginMaster = Graph::PluginMaster::getInstance();
-    for (auto& vertPlugin : pluginMaster.getVertexPlugins()) {
-        ui->vertexSection_comboBox->addItem(vertPlugin->getPluginName().c_str());
-        addPlugin(PluginType::Vertex, vertPlugin->getPluginName().c_str());
-    }
-}
+//    QIcon typeIcon;
+//    switch (ptype) {
+//    case PluginType::Unknown:
+//        typeIcon = QIcon(":/images/icons/plugins/unknown.svg");
+//        break;
 
-void GraphItemsManager::initConnectionItems()
-{
-    auto& pluginMaster = Graph::PluginMaster::getInstance();
-    for (auto& connectionPlugin : pluginMaster.getConnecionPlugins()) {
-        ui->vertexSection_comboBox->addItem(connectionPlugin->getPluginName().c_str());
-        addPlugin(PluginType::Connection, connectionPlugin->getPluginName().c_str());
-    }
-}
+//    case PluginType::Vertex:
+//        typeIcon = QIcon(":/images/icons/plugins/vertex.svg");
+//        break;
 
-void GraphItemsManager::addPlugin(PluginType ptype, const QString &pluginName)
-{
-    QIcon typeIcon;
-    switch (ptype) {
-    case PluginType::Unknown:
-        typeIcon = QIcon(":/images/icons/plugins/unknown.svg");
-        break;
+//    case PluginType::Connection:
+//        typeIcon = QIcon(":/images/icons/plugins/connection.svg");
+//        break;
 
-    case PluginType::Vertex:
-        typeIcon = QIcon(":/images/icons/plugins/vertex.svg");
-        break;
+//    default:
+//        throw std::invalid_argument("Invalid plugin type");
+//    }
 
-    case PluginType::Connection:
-        typeIcon = QIcon(":/images/icons/plugins/connection.svg");
-        break;
-
-    default:
-        throw std::invalid_argument("Invalid plugin type");
-    }
-
-    ui->pluginSelector_comboBox->addItem(typeIcon, pluginName);
+//    ui->pluginSelector_comboBox->addItem(typeIcon, pluginName);
+    ui->pluginSelector_comboBox->addItem(pluginName);
 }
 
 void GraphItemsManager::loadPluginItems(const QString &pluginName)
@@ -81,7 +68,7 @@ void GraphItemsManager::loadPluginItems(const QString &pluginName)
     auto plugin = pluginMaster.getPlugin(pluginName.toStdString());
 
     m_pluginItemsModel->clear();
-    for (auto& pluginItemName : plugin->getItemList()) {
+    for (auto& pluginItemName : plugin->getObjectNameList()) {
         m_pluginItemsModel->appendRow(new QStandardItem(QString::fromStdString(pluginItemName)));
     }
 }

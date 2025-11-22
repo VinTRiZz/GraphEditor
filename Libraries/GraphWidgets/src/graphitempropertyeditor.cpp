@@ -1,6 +1,9 @@
 #include "graphitempropertyeditor.hpp"
 #include "ui_graphitempropertyeditor.h"
 
+#include <PluginModule/PluginMaster.h>
+#include <PluginModule/PluginWidgets.h>
+
 GraphItemPropertyEditor::GraphItemPropertyEditor(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::GraphItemPropertyEditor)
@@ -11,4 +14,12 @@ GraphItemPropertyEditor::GraphItemPropertyEditor(QWidget *parent) :
 GraphItemPropertyEditor::~GraphItemPropertyEditor()
 {
     delete ui;
+}
+
+void GraphItemPropertyEditor::setTargetItem(Graph::PluginObjectItnterface *pTarget)
+{
+    auto& pMaster = Graph::PluginMaster::getInstance();
+    auto plugin = pMaster.getPlugin(pTarget->getPluginName().toStdString());
+    auto objectEditor = plugin->getPropertyEditor(pTarget);
+    ui->editorPage->layout()->addWidget(objectEditor);
 }

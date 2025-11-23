@@ -1,6 +1,7 @@
 #include "vertexitem.hpp"
 
 #include "constants.hpp"
+#include "vertexconnectionitem.hpp"
 
 using namespace ObjectItems;
 
@@ -11,7 +12,7 @@ const QString EXTRADATA_VALUE_TITLEPOS {"titlePosition"};
 }
 
 
-bool VertexItem::isLineSubscribed(VertexConnectionLine* pLine) {
+bool VertexItem::isLineSubscribed(VertexConnectionItem* pLine) {
     // Нет смысла проверять исходящие, т.к. нельзя регистрировать вершину саму
     // на себя
     for (auto pLineTo : m_connectionsToThis) {
@@ -140,7 +141,7 @@ VertexSizeType VertexItem::getVertexSizeType() const
     return m_vertexSizeType;
 }
 
-void VertexItem::subscribeAsConnectionFrom(VertexConnectionLine* pLine) {
+void VertexItem::subscribeAsConnectionFrom(VertexConnectionItem* pLine) {
     if (this == pLine->getVertexTo()) {
         return;
     }
@@ -154,12 +155,12 @@ void VertexItem::subscribeAsConnectionFrom(VertexConnectionLine* pLine) {
     updateConnectionLines();
 }
 
-void VertexItem::unsubscribeConnectionFrom(VertexConnectionLine* pLine) {
+void VertexItem::unsubscribeConnectionFrom(VertexConnectionItem* pLine) {
     pLine->setVertexFrom(nullptr);
     m_connectionsFromThis.erase(pLine);
 }
 
-void VertexItem::subscribeAsConnectionTo(VertexConnectionLine* pLine) {
+void VertexItem::subscribeAsConnectionTo(VertexConnectionItem* pLine) {
     if (this == pLine->getVertexFrom()) {
         return;
     }
@@ -173,7 +174,7 @@ void VertexItem::subscribeAsConnectionTo(VertexConnectionLine* pLine) {
     updateConnectionLines();
 }
 
-void VertexItem::unsubscribeConnectionTo(VertexConnectionLine* pLine) {
+void VertexItem::unsubscribeConnectionTo(VertexConnectionItem* pLine) {
     pLine->setVertexTo(nullptr);
     m_connectionsToThis.erase(pLine);
 }

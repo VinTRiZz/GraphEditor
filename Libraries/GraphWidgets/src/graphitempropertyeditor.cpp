@@ -3,6 +3,7 @@
 
 #include <PluginModule/PluginMaster.h>
 #include <PluginModule/PluginWidgets.h>
+#include <PluginCoreInterface/Core.h>
 
 GraphItemPropertyEditor::GraphItemPropertyEditor(QWidget *parent) :
     QWidget(parent),
@@ -19,8 +20,8 @@ GraphItemPropertyEditor::~GraphItemPropertyEditor()
 void GraphItemPropertyEditor::setTargetItem(Graph::PluginObjectItnterface *pTarget)
 {
     auto& pMaster = Graph::PluginMaster::getInstance();
-    auto plugin = pMaster.getPlugin(pTarget->getPluginName().toStdString());
-    auto objectEditor = plugin->getPropertyEditor(pTarget);
+    auto plugin = pMaster.getPlugin(pTarget->getPluginName());
+    auto objectEditor = plugin->getPluginCore()->getPropertyEditor(pTarget);
 
     // Удаление на стороне плагина
     [[maybe_unused]] auto prevEditor = ui->editorPage->layout()->takeAt(0);

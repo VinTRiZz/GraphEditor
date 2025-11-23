@@ -31,7 +31,7 @@ void PluginMaster::init(const std::string &pluginRoot)
         addPlugin(filePath.generic_string());
     }
     emit pluginListChanged();
-    LOG_INFO("Loaded", m_plugins.size());
+    LOG_INFO("Total loaded plugins:", m_plugins.size());
 }
 
 bool PluginMaster::addPlugin(const std::string &pluginFile)
@@ -52,15 +52,14 @@ bool PluginMaster::addPlugin(const std::string &pluginFile)
     fileExt.erase(0, 1); // Убираем точку
     std::transform(fileExt.begin(), fileExt.end(), fileExt.begin(), [](const auto& c){ return std::tolower(c); });
 
-    // Vertices
-    if (fileExt == "vpl") {
+    if (fileExt == "gepl") {
         m_plugins.push_back(std::make_shared<GraphEditorPlugin>());
-        if (!m_plugins.back()->initFromFile(filePath.generic_string())) {
+        if (!m_plugins.back()->initFromFile(filePath.generic_string().c_str())) {
             m_plugins.pop_back();
             return false;
         }
-        LOG_OK("Loaded vertex plugin:", m_plugins.back()->getPluginName());
-        emit pluginInited(m_plugins.back()->getPluginName().c_str());
+        LOG_OK("Loaded plugin:", m_plugins.back()->getPluginName());
+        emit pluginInited(m_plugins.back()->getPluginName());
         return true;
     }
 
@@ -68,16 +67,16 @@ bool PluginMaster::addPlugin(const std::string &pluginFile)
     return false;
 }
 
-std::list<std::string> PluginMaster::getPluginNames() const
+std::list<QString> PluginMaster::getPluginNames() const
 {
-    std::list<std::string> res;
+    std::list<QString> res;
     for (auto& plugin : m_plugins) {
         res.push_back(plugin->getPluginName());
     }
     return res;
 }
 
-std::shared_ptr<GraphEditorPlugin> PluginMaster::getPlugin(const std::string &pluginName) const
+std::shared_ptr<GraphEditorPlugin> PluginMaster::getPlugin(const QString &pluginName) const
 {
     for (auto& plugin : m_plugins) {
         if (pluginName == plugin->getPluginName()) {

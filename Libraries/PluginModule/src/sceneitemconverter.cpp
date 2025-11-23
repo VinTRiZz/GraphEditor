@@ -2,10 +2,9 @@
 
 #include <Components/Logger/Logger.h>
 
-#include "simplevertexitem.hpp"
-#include "connectionlineitem.hpp"
-
-#include "constants.hpp"
+#include <GraphItems/GraphItemsConstants.h>
+#include <GraphItems/VertexItem.h>
+#include <GraphItems/VertexConnectionItem.h>
 
 namespace Graph {
 
@@ -19,12 +18,9 @@ std::list<QGraphicsItem*> SceneItemConverter::fromGraph(
 
     for (auto& vert : vertices) {
         Graph::VertexItem* pVert {nullptr};
-        switch (vert.vertexType)
-        {
-        case VertexType::SimpleVertex:
-            pVert = new SimpleVertexItem;
-            break;
-        }
+
+        // TODO: Загрузка из плагина!
+
         if (pVert == nullptr) {
             LOG_WARNING("Failed to process vertex with id:", vert.id, "(", vert.displayName, ")");
             continue;
@@ -47,7 +43,7 @@ std::list<QGraphicsItem*> SceneItemConverter::fromGraph(
             throw std::runtime_error("Target vertex did not found!");
         }
 
-        auto pConnection = new VertexConnectionLine;
+        auto pConnection = new VertexConnectionItem;
         pConnection->fromConnection(con);
         pConFrom->second->subscribeAsConnectionFrom(pConnection);
         pConTo->second->subscribeAsConnectionTo(pConnection);
@@ -86,7 +82,7 @@ GraphObject SceneItemConverter::toGraph(
             OBJECTTYPE_CONNECTION) {
             continue;
         }
-        res.addConnection(static_cast<Graph::VertexConnectionLine*>(con)->toConnection());
+        res.addConnection(static_cast<Graph::VertexConnectionItem*>(con)->toConnection());
     }
     LOG_OK("Loaded", res.getConnectionsCount(), "connections from scene");
 

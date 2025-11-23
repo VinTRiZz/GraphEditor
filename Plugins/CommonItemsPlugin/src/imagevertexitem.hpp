@@ -1,6 +1,6 @@
 #pragma once
 
-#include "vertexitem.hpp"
+#include <GraphItems/VertexItem.h>
 #include <QGraphicsPixmapItem>
 
 namespace Graph {

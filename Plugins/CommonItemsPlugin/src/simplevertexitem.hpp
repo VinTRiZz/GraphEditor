@@ -4,11 +4,7 @@
 #include <QPen>
 #include <set>
 
-#include "vertexitem.hpp"
-
-#include <GraphObject/Object.h>
-
-#include <Components/CustomQt/ObjectView/ObjectItems.h>
+#include <GraphItems/VertexItem.h>
 
 namespace Graph {
 
@@ -20,7 +16,7 @@ enum SimpleVertexShapeType : int {
     SVST_Circle,
 };
 
-class VertexConnectionLine;
+class VertexConnectionItem;
 
 class SimpleVertexItem : public VertexItem {
 public:

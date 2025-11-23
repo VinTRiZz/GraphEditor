@@ -5,11 +5,11 @@
 
 #include "pluginobjectitnterface.hpp"
 
-#include "connectionlineitem.hpp"
-
 #include <set>
 
 namespace Graph {
+
+class VertexConnectionItem;
 
 /**
  * @brief The VertexSizeType enum Условная градация размера вершины
@@ -51,13 +51,13 @@ public:
     void setTitlePosition(VertexTitlePosition vtp);
     VertexTitlePosition getTitlePosition() const;
 
-    void subscribeAsConnectionFrom(VertexConnectionLine* pLine);
-    void unsubscribeConnectionFrom(VertexConnectionLine* pLine);
+    void subscribeAsConnectionFrom(VertexConnectionItem* pLine);
+    void unsubscribeConnectionFrom(VertexConnectionItem* pLine);
 
-    void subscribeAsConnectionTo(VertexConnectionLine* pLine);
-    void unsubscribeConnectionTo(VertexConnectionLine* pLine);
+    void subscribeAsConnectionTo(VertexConnectionItem* pLine);
+    void unsubscribeConnectionTo(VertexConnectionItem* pLine);
 
-    bool isLineSubscribed(VertexConnectionLine* pLine);
+    bool isLineSubscribed(VertexConnectionItem* pLine);
 
 signals:
     void sizeChanged(VertexSizeType prevSizeT, VertexSizeType currentSizeT);
@@ -74,8 +74,8 @@ private slots:
 protected:
     void updateLabelPosition();
 
-    std::set<VertexConnectionLine*> m_connectionsFromThis;
-    std::set<VertexConnectionLine*> m_connectionsToThis;
+    std::set<VertexConnectionItem*> m_connectionsFromThis;
+    std::set<VertexConnectionItem*> m_connectionsToThis;
 
     ObjectItems::TextLabel* getLabel() const;
 

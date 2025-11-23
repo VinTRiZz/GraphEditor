@@ -2,6 +2,7 @@
 #include "ui_graphitemsmanager.h"
 
 #include <PluginModule/PluginMaster.h>
+#include <PluginCoreInterface/Core.h>
 
 #include <QSortFilterProxyModel>
 
@@ -36,7 +37,7 @@ void GraphItemsManager::updatePluginList()
 {
     m_pluginItemsModel->clear();
     for (auto& pPlugin : Graph::PluginMaster::getInstance().getAllPlugins()) {
-        addPlugin(pPlugin->getPluginName().c_str());
+        addPlugin(pPlugin->getPluginName());
     }
 }
 
@@ -48,7 +49,8 @@ void GraphItemsManager::initSignals()
   connect(ui->pluginItemList_listView, &QListView::doubleClicked,
           this, [this](auto& clickIdx){
       auto& pluginMaster = Graph::PluginMaster::getInstance();
-      auto targetItem = pluginMaster.getPlugin(ui->pluginSelector_comboBox->currentText().toStdString())->createObject(clickIdx.data(Qt::DisplayRole).toString().toStdString());
+      auto pPluginCore = pluginMaster.getPlugin(ui->pluginSelector_comboBox->currentText())->getPluginCore();
+      auto targetItem = pPluginCore->createObject(clickIdx.data(Qt::DisplayRole).toString());
       if (targetItem != nullptr) {
           emit addObject(targetItem);
       }
@@ -68,20 +70,30 @@ void GraphItemsManager::addPlugin(const QString &pluginName)
 void GraphItemsManager::loadPluginItems(const QString &pluginName)
 {
     auto& pluginMaster = Graph::PluginMaster::getInstance();
-    auto plugin = pluginMaster.getPlugin(pluginName.toStdString());
+    auto pluginCore = pluginMaster.getPlugin(pluginName)->getPluginCore();
 
     m_pluginItemsModel->clear();
     QIcon typeIcon;
-    for (auto& pluginItemName : plugin->getObjectNameList()) {
-        auto pRow = new QStandardItem(QString::fromStdString(pluginItemName));
+    for (auto& pluginItemName : pluginCore->getObjectNameList()) {
+        auto pRow = new QStandardItem(pluginItemName);
 
-        auto itemType = plugin->getObjectType(pluginItemName);
-        if (itemType == "vertex") {
+        auto itemType = pluginCore->getObjectType(pluginItemName);
+        switch (itemType)
+        {
+        case Graph::AbstractPluginCore::PluginObjectType::Vertex:
             typeIcon = QIcon(":/images/icons/plugins/vertex.svg");
-        } else if (itemType == "connection") {
+            break;
+
+        case Graph::AbstractPluginCore::PluginObjectType::Connection:
             typeIcon = QIcon(":/images/icons/plugins/connection.svg");
-        } else {
+            break;
+
+        case Graph::AbstractPluginCore::PluginObjectType::Unknown:
             typeIcon = QIcon(":/images/icons/plugins/unknown.svg");
+            break;
+
+        default:
+            throw std::invalid_argument("GraphItemsManager: Unknown type of plugin item (failed to load icon)");
         }
         pRow->setIcon(typeIcon);
         m_pluginItemsModel->appendRow(pRow);

@@ -11,8 +11,8 @@
 #include <QLabel>
 #include <QTextOption>
 
-#include "connectionlineitem.hpp"
-#include "constants.hpp"
+#include <GraphItems/VertexItem.h>
+#include <GraphItems/VertexConnectionItem.h>
 
 #include "vertexshapeprovider.hpp"
 

@@ -2,9 +2,6 @@
 
 #include <Components/Logger/Logger.h>
 
-#include <GraphItems/SimpleVertexItem.h>
-#include <GraphItems/ImageVertexItem.h>
-
 #include <Components/CustomQt/ObjectView/ObjectItems.h>
 
 using namespace Graph;

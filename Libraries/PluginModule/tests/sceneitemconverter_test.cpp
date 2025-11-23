@@ -5,7 +5,7 @@
 
 #include <QApplication>
 
-#include "constants.hpp"
+#include <GraphItems/GraphItemsConstants.h>
 
 class SceneFieldItemTest : public ::testing::Test {
 protected:

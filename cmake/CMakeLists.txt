@@ -54,7 +54,14 @@ endfunction()
 
 
 # Plugin configuration function
-function(CONFIGURE_PLUGIN PLUGIN_NAME PLUGIN_EXTENSION)
+function(CONFIGURE_PLUGIN PLUGIN_NAME)
+
+    # TODO: Проверить что это сработает по-разному для разных плагинов
+    # Plugin name for defining plugin
+    add_compile_definitions(
+        GRAPHEDITOR_PLUGIN_NAME="${PLUGIN_NAME}"
+    )
+
     # Files
     file(GLOB_RECURSE HEADERS "src/*.hpp" "src/*.h")
     file(GLOB_RECURSE SOURCES "src/*.cpp")
@@ -67,7 +74,7 @@ function(CONFIGURE_PLUGIN PLUGIN_NAME PLUGIN_EXTENSION)
     set_target_properties(${PLUGIN_NAME} PROPERTIES
         OUTPUT_NAME "${PLUGIN_NAME}"
         PREFIX ""
-        SUFFIX ".${PLUGIN_EXTENSION}"
+        SUFFIX ".gepl"
     )
 
     # Export files (windows things)

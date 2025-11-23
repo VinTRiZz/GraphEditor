@@ -16,12 +16,12 @@ namespace Graph {
 
 class VertexItem;
 
-class VertexConnectionLine :
+class VertexConnectionItem :
         public ObjectItems::BasicItem,
         public PluginObjectItnterface {
 public:
-    explicit VertexConnectionLine(QGraphicsItem* parent = nullptr);
-    ~VertexConnectionLine();
+    explicit VertexConnectionItem(QGraphicsItem* parent = nullptr);
+    ~VertexConnectionItem();
 
     GConnection toConnection() const;
     void fromConnection(const GConnection& con);

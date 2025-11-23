@@ -34,12 +34,4 @@ const QColor DEFAULT_COLOR_CONNECTION_BGR {QColor("#5aadac")};
 const QColor DEFAULT_COLOR_CONNECTION_SEL {QColor("#ffbc20")};
 }
 
-enum VertexType : int {
-    SimpleVertex = 0,
-};
-
-
-const QString SUPPORTED_IMAGE_FORMATS {"*.png *.jpg *.jpeg *.bmp *.gif *.svg"};
-const Qt::TransformationMode DEFAULT_TRANSFORMATION_MODE {Qt::SmoothTransformation};
-
 }

@@ -24,8 +24,8 @@ struct GVertex {
     double posY{0};  //! При наличии, положение на графе. Записывается после
                      //! первой отрисовки
 
-    // TODO: Прописать тесты!
-    int vertexType {0}; //! Информация о типе вершины
+    QString vertexPluginName;       //! Информация о плагине, из которого вершина
+    QString vertexPluginObjectName; //! Информация о типе вершины
 
     // Основные поля
     QString displayName{};  //! Краткое имя врешины (отображаемое)

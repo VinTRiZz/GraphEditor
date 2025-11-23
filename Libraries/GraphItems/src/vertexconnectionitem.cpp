@@ -1,4 +1,4 @@
-#include "connectionlineitem.hpp"
+#include "vertexconnectionitem.hpp"
 
 #include <Components/Common/ApplicationSettings.h>
 #include <Components/Logger/Logger.h>
@@ -11,7 +11,7 @@ using namespace ObjectItems;
 
 namespace Graph {
 
-VertexConnectionLine::VertexConnectionLine(QGraphicsItem* parent)
+VertexConnectionItem::VertexConnectionItem(QGraphicsItem* parent)
     : BasicItem(parent) {
     setSystemName("Соединение вершин");
     setObjectType(OBJECTTYPE_CONNECTION);
@@ -26,7 +26,7 @@ VertexConnectionLine::VertexConnectionLine(QGraphicsItem* parent)
     setZValue(Layers::CONNECTION_LAYER);
 }
 
-VertexConnectionLine::~VertexConnectionLine() {
+VertexConnectionItem::~VertexConnectionItem() {
     if (m_fromVertex) {
         m_fromVertex->unsubscribeConnectionFrom(this);
     }
@@ -36,7 +36,7 @@ VertexConnectionLine::~VertexConnectionLine() {
     }
 }
 
-GConnection VertexConnectionLine::toConnection() const
+GConnection VertexConnectionItem::toConnection() const
 {
     GConnection graphConnection;
 
@@ -54,35 +54,35 @@ GConnection VertexConnectionLine::toConnection() const
     return graphConnection;
 }
 
-void VertexConnectionLine::fromConnection(const GConnection &con)
+void VertexConnectionItem::fromConnection(const GConnection &con)
 {
     setDisplayName(con.name);
     m_connectionLine->setLinePen(con.color);
 }
 
-void VertexConnectionLine::setVertexFrom(VertexItem* pVertexFrom) {
+void VertexConnectionItem::setVertexFrom(VertexItem* pVertexFrom) {
     if (m_toVertex == pVertexFrom) {
         return;
     }
     m_fromVertex = pVertexFrom;
 }
 
-VertexItem* VertexConnectionLine::getVertexFrom() const {
+VertexItem* VertexConnectionItem::getVertexFrom() const {
     return m_fromVertex;
 }
 
-void VertexConnectionLine::setVertexTo(VertexItem* pVertexTo) {
+void VertexConnectionItem::setVertexTo(VertexItem* pVertexTo) {
     if (m_fromVertex == pVertexTo) {
         return;
     }
     m_toVertex = pVertexTo;
 }
 
-VertexItem* VertexConnectionLine::getVertexTo() const {
+VertexItem* VertexConnectionItem::getVertexTo() const {
     return m_toVertex;
 }
 
-AbstractConnectionLine *VertexConnectionLine::getLineItem() const
+AbstractConnectionLine *VertexConnectionItem::getLineItem() const
 {
     return m_connectionLine;
 }

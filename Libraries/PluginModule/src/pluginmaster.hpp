@@ -23,8 +23,8 @@ public:
     void init(const std::string& pluginRoot);
     bool addPlugin(const std::string& pluginFile);
 
-    std::list<std::string> getPluginNames() const;
-    std::shared_ptr<GraphEditorPlugin> getPlugin(const std::string& pluginName) const;
+    std::list<QString> getPluginNames() const;
+    std::shared_ptr<GraphEditorPlugin> getPlugin(const QString& pluginName) const;
     std::list<std::shared_ptr<GraphEditorPlugin> > getAllPlugins() const;
 
 signals:

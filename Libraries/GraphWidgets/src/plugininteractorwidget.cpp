@@ -12,3 +12,8 @@ PluginInteractorWidget::~PluginInteractorWidget()
 {
     delete ui;
 }
+
+void PluginInteractorWidget::setCurrentPlugin(const QString &pluginName)
+{
+    // TODO: Create interactor
+}

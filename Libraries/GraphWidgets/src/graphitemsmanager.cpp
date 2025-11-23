@@ -25,7 +25,6 @@ GraphItemsManager::GraphItemsManager(QWidget *parent) :
     m_pluginItemsModel->setHeaderData(0, Qt::Horizontal, "Элемент плагина", Qt::DisplayRole);
 
     initSignals();
-    updatePluginList();
 }
 
 GraphItemsManager::~GraphItemsManager()
@@ -33,23 +32,18 @@ GraphItemsManager::~GraphItemsManager()
     delete ui;
 }
 
-void GraphItemsManager::updatePluginList()
+void GraphItemsManager::setCurrentPlugin(const QString &pluginName)
 {
-    m_pluginItemsModel->clear();
-    for (auto& pPlugin : Graph::PluginMaster::getInstance().getAllPlugins()) {
-        addPlugin(pPlugin->getPluginName());
-    }
+    m_currentPluginName = pluginName;
+    loadPluginItems(pluginName);
 }
 
 void GraphItemsManager::initSignals()
 {
-  connect(ui->pluginSelector_comboBox, &QComboBox::currentTextChanged, this,
-          &GraphItemsManager::loadPluginItems);
-
   connect(ui->pluginItemList_listView, &QListView::doubleClicked,
           this, [this](auto& clickIdx){
       auto& pluginMaster = Graph::PluginMaster::getInstance();
-      auto pPluginCore = pluginMaster.getPlugin(ui->pluginSelector_comboBox->currentText())->getPluginCore();
+      auto pPluginCore = pluginMaster.getPlugin(m_currentPluginName)->getPluginCore();
       auto targetItem = pPluginCore->createObject(clickIdx.data(Qt::DisplayRole).toString());
       if (targetItem != nullptr) {
           emit addObject(targetItem);
@@ -60,11 +54,6 @@ void GraphItemsManager::initSignals()
           this, [this](auto& txt){
       static_cast<QSortFilterProxyModel*>(ui->pluginItemList_listView->model())->setFilterWildcard("*" + txt + "*");
   });
-}
-
-void GraphItemsManager::addPlugin(const QString &pluginName)
-{
-    ui->pluginSelector_comboBox->addItem(pluginName);
 }
 
 void GraphItemsManager::loadPluginItems(const QString &pluginName)

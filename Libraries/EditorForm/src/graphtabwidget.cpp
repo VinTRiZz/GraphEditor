@@ -1,10 +1,11 @@
 #include "graphtabwidget.h"
+#include "ui_graphtabwidget.h"
 
 #include <Components/Common/ApplicationSettings.h>
+#include <PluginModule/PluginMaster.h>
 #include <QMessageBox>
 
-#include <GraphScene/EditView.h>
-#include "ui_graphtabwidget.h"
+#include <GraphWidgets/EditView.h>
 
 GraphTabWidget::GraphTabWidget(QWidget* parent)
     : QWidget(parent), ui(new Ui::GraphTabWidget) {
@@ -68,6 +69,13 @@ GraphTabWidget::GraphTabWidget(QWidget* parent)
                 auto pMaintainer = pForm->getGraph();
                 ui->fileToolbar->setGraph(pMaintainer);
             });
+
+    connect(ui->pluginSelector_comboBox, &QComboBox::currentTextChanged,
+            this, [this](auto& curPluginName){
+        ui->pluginInteractor->setCurrentPlugin(curPluginName);
+        ui->graphItemsManager->setCurrentPlugin(curPluginName);
+    });
+    updatePluginList();
 }
 
 GraphTabWidget::~GraphTabWidget() {
@@ -131,5 +139,12 @@ void GraphTabWidget::createGraph() {
                         break;
                     }
                 }
-            });
+    });
+}
+
+void GraphTabWidget::updatePluginList()
+{
+    for (auto& pPlugin : Graph::PluginMaster::getInstance().getAllPlugins()) {
+        ui->pluginSelector_comboBox->addItem(pPlugin->getPluginName());
+    }
 }

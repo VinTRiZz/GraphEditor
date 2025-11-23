@@ -1,11 +1,11 @@
-#include "settingsmanagementtoolbar.hpp"
-#include "ui_settingsmanagementtoolbar.h"
+#include "secondarytoolbar.hpp"
+#include "ui_secondarytoolbar.h"
 
 #include "settingseditdialog.hpp"
 
-SettingsManagementToolbar::SettingsManagementToolbar(QWidget *parent) :
+SecondaryToolbar::SecondaryToolbar(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::SettingsManagementToolbar)
+    ui(new Ui::SecondaryToolbar)
 {
     ui->setupUi(this);
 
@@ -18,7 +18,7 @@ SettingsManagementToolbar::SettingsManagementToolbar(QWidget *parent) :
     });
 }
 
-SettingsManagementToolbar::~SettingsManagementToolbar()
+SecondaryToolbar::~SecondaryToolbar()
 {
     delete ui;
 }

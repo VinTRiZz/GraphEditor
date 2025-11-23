@@ -16,6 +16,7 @@ public:
     explicit GraphItemPropertyEditor(QWidget *parent = nullptr);
     ~GraphItemPropertyEditor();
 
+public slots:
     void setTargetItem(Graph::PluginObjectInterface* pTarget);
 
 private:

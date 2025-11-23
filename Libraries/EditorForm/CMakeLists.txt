@@ -6,4 +6,3 @@ COMPONENTS_LINK_COMPONENT(EditorForm Qt-Custom)
 LINK_TARGET_LIBRARY(EditorForm GraphObject)
 
 LINK_TARGET_LIBRARY(EditorForm GraphWidgets)
-LINK_TARGET_LIBRARY(EditorForm GraphScene)

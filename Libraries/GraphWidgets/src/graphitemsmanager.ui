@@ -15,9 +15,6 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QComboBox" name="pluginSelector_comboBox"/>
-   </item>
-   <item>
     <widget class="QListView" name="pluginItemList_listView">
      <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>

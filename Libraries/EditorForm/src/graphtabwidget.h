@@ -22,6 +22,8 @@ private slots:
     void addTab(const QString& filePath);
     void createGraph();
 
+    void updatePluginList();
+
 private:
     Ui::GraphTabWidget* ui;
 };

@@ -18,21 +18,19 @@ public:
     ~GraphItemsManager();
 
 public slots:
-    void updatePluginList();
+    void setCurrentPlugin(const QString& pluginName);
 
 signals:
     void addObject(Graph::PluginObjectInterface* pVertex);
 
-private slots:
-    void loadPluginItems(const QString& pluginName);
 
 private:
     Ui::GraphItemsManager *ui;
 
+    QString m_currentPluginName;
     QStandardItemModel* m_pluginItemsModel {nullptr};
 
     void initSignals();
-
-    void addPlugin(const QString& pluginName);
+    void loadPluginItems(const QString& pluginName);
 };
 

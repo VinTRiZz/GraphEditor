@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SettingsManagementToolbar</class>
- <widget class="QWidget" name="SettingsManagementToolbar">
+ <class>SecondaryToolbar</class>
+ <widget class="QWidget" name="SecondaryToolbar">
   <property name="geometry">
    <rect>
     <x>0</x>

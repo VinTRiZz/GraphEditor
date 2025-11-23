@@ -5,21 +5,21 @@
 #include <GraphObject/Maintainer.h>
 
 namespace Ui {
-class SettingsManagementToolbar;
+class SecondaryToolbar;
 }
 
 class SettingsEditDialog;
 
-class SettingsManagementToolbar :
+class SecondaryToolbar :
         public QWidget {
     Q_OBJECT
 
 public:
-    explicit SettingsManagementToolbar(QWidget *parent = nullptr);
-    ~SettingsManagementToolbar();
+    explicit SecondaryToolbar(QWidget *parent = nullptr);
+    ~SecondaryToolbar();
 
 private:
-    Ui::SettingsManagementToolbar *ui;
+    Ui::SecondaryToolbar *ui;
 
     SettingsEditDialog* m_settingsEditDialog {nullptr};
 };

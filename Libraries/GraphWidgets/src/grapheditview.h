@@ -1,5 +1,4 @@
-#ifndef GRAPHEDITVIEW_H
-#define GRAPHEDITVIEW_H
+#pragma once
 
 #include <Components/CustomQt/ObjectView/InformationLayer.h>
 
@@ -12,5 +11,3 @@ class GraphEditView final :
 public:
     GraphEditView(QWidget* parent = nullptr);
 };
-
-#endif  // GRAPHEDITVIEW_H

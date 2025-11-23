@@ -1,2 +1,2 @@
 # Plugins
-add_subdirectory(DefaultPlugin)
+add_subdirectory(CommonItemsPlugin)

@@ -67,17 +67,30 @@ std::string GraphEditorPlugin::getPluginName() const
 std::list<std::string> GraphEditorPlugin::getObjectNameList() const
 {
     auto f_getTypeCount = getLibraryManager()->getFunction<decltype(getTypeCount)>("getTypeCount");
-
     auto f_getName = getLibraryManager()->getFunction<decltype(getItemName)>("getItemName");
-    auto f_getTypeString = getLibraryManager()->getFunction<decltype(getTypeString)>("getTypeString");
 
     std::list<std::string> res;
     for (long long i = 0; i < f_getTypeCount(); ++i) {
         auto itemName = std::shared_ptr<std::string>(f_getName(i));
-        auto typeString = std::shared_ptr<std::string>(f_getTypeString(i));
-        res.push_back(std::string("[ ") + *typeString + "] " + *itemName);
+        res.push_back(*itemName);
     }
     return res;
+}
+
+std::string GraphEditorPlugin::getObjectType(const std::string &itemName) const
+{
+    // TODO: Кэшировать
+    auto f_getTypeCount = getLibraryManager()->getFunction<decltype(getTypeCount)>("getTypeCount");
+    auto f_getName = getLibraryManager()->getFunction<decltype(getItemName)>("getItemName");
+    auto f_getTypeString = getLibraryManager()->getFunction<decltype(getTypeString)>("getTypeString");
+
+    for (long long i = 0; i < f_getTypeCount(); ++i) {
+        auto pItemName = std::shared_ptr<std::string>(f_getName(i));
+        if (*pItemName == itemName) {
+            return *std::shared_ptr<std::string>(f_getTypeString(i));
+        }
+    }
+    return {};
 }
 
 PluginObjectItnterface *GraphEditorPlugin::createObject(const std::string &name)

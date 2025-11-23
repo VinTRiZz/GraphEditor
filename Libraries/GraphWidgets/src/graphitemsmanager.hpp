@@ -17,12 +17,6 @@ public:
     explicit GraphItemsManager(QWidget *parent = nullptr);
     ~GraphItemsManager();
 
-    enum class PluginType : int {
-        Unknown = -1,
-        Vertex = 0,
-        Connection,
-    };
-
 public slots:
     void updatePluginList();
 

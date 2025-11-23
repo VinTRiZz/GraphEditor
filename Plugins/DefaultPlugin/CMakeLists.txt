@@ -1,4 +1,0 @@
-CONFIGURE_PLUGIN(DefaultPlugin vpl)
-
-LINK_TARGET_LIBRARY(DefaultPlugin GraphObject)
-LINK_TARGET_LIBRARY(DefaultPlugin GraphItems)

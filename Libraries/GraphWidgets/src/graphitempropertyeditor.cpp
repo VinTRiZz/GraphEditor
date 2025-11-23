@@ -21,5 +21,8 @@ void GraphItemPropertyEditor::setTargetItem(Graph::PluginObjectItnterface *pTarg
     auto& pMaster = Graph::PluginMaster::getInstance();
     auto plugin = pMaster.getPlugin(pTarget->getPluginName().toStdString());
     auto objectEditor = plugin->getPropertyEditor(pTarget);
+
+    // Удаление на стороне плагина
+    [[maybe_unused]] auto prevEditor = ui->editorPage->layout()->takeAt(0);
     ui->editorPage->layout()->addWidget(objectEditor);
 }

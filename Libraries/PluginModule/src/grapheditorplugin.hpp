@@ -32,6 +32,7 @@ public:
     std::string getPluginName() const;
 
     std::list<std::string> getObjectNameList() const;
+    std::string getObjectType(const std::string& itemName) const;
 
     Graph::PluginObjectItnterface* createObject(const std::string& name);
 

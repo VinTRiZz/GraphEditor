@@ -1,0 +1,4 @@
+CONFIGURE_PLUGIN(CommonItemsPlugin vpl)
+
+LINK_TARGET_LIBRARY(CommonItemsPlugin GraphObject)
+LINK_TARGET_LIBRARY(CommonItemsPlugin GraphItems)

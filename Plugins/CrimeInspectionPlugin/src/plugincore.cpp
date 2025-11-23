@@ -13,13 +13,11 @@ CrimeInspectionPluginCore::CrimeInspectionPluginCore() :
     Graph::AbstractPluginCore()
 {
     registerObject(PluginObjectType::Vertex, CrimeInspectionObjectName::PERSONVERTEX);
-
-    LOG_DEBUG("Created instance of plugin core");
 }
 
 CrimeInspectionPluginCore::~CrimeInspectionPluginCore()
 {
-    LOG_DEBUG("Deleted instance of plugin core");
+
 }
 
 Graph::PluginConfigurationWidget *CrimeInspectionPluginCore::getConfigurationEditor()
@@ -27,7 +25,7 @@ Graph::PluginConfigurationWidget *CrimeInspectionPluginCore::getConfigurationEdi
     return nullptr;
 }
 
-Graph::PluginItemPropertyWidget *CrimeInspectionPluginCore::getPropertyEditor(Graph::PluginObjectItnterface *pTarget)
+Graph::PluginItemPropertyWidget *CrimeInspectionPluginCore::getPropertyEditor(Graph::PluginObjectInterface *pTarget)
 {
     return nullptr;
 }
@@ -37,7 +35,7 @@ Graph::PluginInteractionWidget *CrimeInspectionPluginCore::getInteractor()
     return nullptr;
 }
 
-Graph::PluginObjectItnterface *CrimeInspectionPluginCore::createObject(const QString& name)
+Graph::PluginObjectInterface *CrimeInspectionPluginCore::createObject(const QString& name)
 {
     if (name == CrimeInspectionObjectName::PERSONVERTEX) {
         return nullptr; // TODO: Create one

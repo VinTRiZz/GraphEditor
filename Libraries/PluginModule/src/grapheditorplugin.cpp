@@ -5,7 +5,7 @@
 
 #include <Components/Logger/Logger.h>
 
-#include <PluginCoreInterface/Core.h>
+#include <PluginCoreInterface/Export.h>
 
 namespace Graph {
 

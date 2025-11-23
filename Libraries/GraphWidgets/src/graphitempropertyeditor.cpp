@@ -2,7 +2,7 @@
 #include "ui_graphitempropertyeditor.h"
 
 #include <PluginModule/PluginMaster.h>
-#include <PluginModule/PluginWidgets.h>
+#include <PluginCoreInterface/PluginWidgets.h>
 #include <PluginCoreInterface/Core.h>
 
 GraphItemPropertyEditor::GraphItemPropertyEditor(QWidget *parent) :
@@ -17,7 +17,7 @@ GraphItemPropertyEditor::~GraphItemPropertyEditor()
     delete ui;
 }
 
-void GraphItemPropertyEditor::setTargetItem(Graph::PluginObjectItnterface *pTarget)
+void GraphItemPropertyEditor::setTargetItem(Graph::PluginObjectInterface *pTarget)
 {
     auto& pMaster = Graph::PluginMaster::getInstance();
     auto plugin = pMaster.getPlugin(pTarget->getPluginName());

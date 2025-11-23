@@ -2,22 +2,22 @@
 
 namespace Graph {
 
-void PluginObjectItnterface::setPluginName(const QString &pluginName)
+void PluginObjectInterface::setPluginName(const QString &pluginName)
 {
     m_pluginName = pluginName;
 }
 
-QString PluginObjectItnterface::getPluginName() const
+QString PluginObjectInterface::getPluginName() const
 {
     return m_pluginName;
 }
 
-void PluginObjectItnterface::setPluginObjectName(const QString &pluginObjectName)
+void PluginObjectInterface::setPluginObjectName(const QString &pluginObjectName)
 {
     m_pluginObjectName = pluginObjectName;
 }
 
-QString PluginObjectItnterface::getPluginObjectName() const
+QString PluginObjectInterface::getPluginObjectName() const
 {
     return m_pluginName;
 }

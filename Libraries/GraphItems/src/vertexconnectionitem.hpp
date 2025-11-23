@@ -18,7 +18,7 @@ class VertexItem;
 
 class VertexConnectionItem :
         public ObjectItems::BasicItem,
-        public PluginObjectItnterface {
+        public PluginObjectInterface {
 public:
     explicit VertexConnectionItem(QGraphicsItem* parent = nullptr);
     ~VertexConnectionItem();

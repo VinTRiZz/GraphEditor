@@ -4,7 +4,7 @@
 
 namespace Graph {
 
-class PluginObjectItnterface
+class PluginObjectInterface
 {
 public:
     void setPluginName(const QString& pluginName);

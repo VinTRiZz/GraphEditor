@@ -16,11 +16,11 @@ public:
     explicit GraphItemPropertyEditor(QWidget *parent = nullptr);
     ~GraphItemPropertyEditor();
 
-    void setTargetItem(Graph::PluginObjectItnterface* pTarget);
+    void setTargetItem(Graph::PluginObjectInterface* pTarget);
 
 private:
     Ui::GraphItemPropertyEditor *ui;
 
-    Graph::PluginObjectItnterface* m_targetItem {nullptr};
+    Graph::PluginObjectInterface* m_targetItem {nullptr};
 };
 

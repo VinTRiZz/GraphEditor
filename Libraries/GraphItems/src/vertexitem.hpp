@@ -35,7 +35,7 @@ enum VertexTitlePosition : int {
 
 class VertexItem :
         public ObjectItems::BasicItem,
-        public PluginObjectItnterface
+        public PluginObjectInterface
 {
     Q_OBJECT
 public:

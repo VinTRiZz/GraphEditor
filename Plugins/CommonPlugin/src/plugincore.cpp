@@ -16,13 +16,11 @@ CommonPluginCore::CommonPluginCore() :
 {
     registerObject(PluginObjectType::Vertex, CommonPluginObjectName::SIMPLEVERTEX);
     registerObject(PluginObjectType::Vertex, CommonPluginObjectName::IMAGEVERTEX);
-
-    LOG_DEBUG("Created instance of plugin core");
 }
 
 CommonPluginCore::~CommonPluginCore()
 {
-    LOG_DEBUG("Deleted instance of plugin core");
+
 }
 
 Graph::PluginConfigurationWidget *CommonPluginCore::getConfigurationEditor()
@@ -30,7 +28,7 @@ Graph::PluginConfigurationWidget *CommonPluginCore::getConfigurationEditor()
     return nullptr;
 }
 
-Graph::PluginItemPropertyWidget *CommonPluginCore::getPropertyEditor(Graph::PluginObjectItnterface *pTarget)
+Graph::PluginItemPropertyWidget *CommonPluginCore::getPropertyEditor(Graph::PluginObjectInterface *pTarget)
 {
     return nullptr;
 }
@@ -40,7 +38,7 @@ Graph::PluginInteractionWidget *CommonPluginCore::getInteractor()
     return nullptr;
 }
 
-Graph::PluginObjectItnterface *CommonPluginCore::createObject(const QString& name)
+Graph::PluginObjectInterface *CommonPluginCore::createObject(const QString& name)
 {
     if (name == CommonPluginObjectName::SIMPLEVERTEX) {
         return new Graph::SimpleVertexItem();

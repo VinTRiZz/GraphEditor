@@ -56,12 +56,6 @@ endfunction()
 # Plugin configuration function
 function(CONFIGURE_PLUGIN PLUGIN_NAME)
 
-    # TODO: Проверить что это сработает по-разному для разных плагинов
-    # Plugin name for defining plugin
-    add_compile_definitions(
-        GRAPHEDITOR_PLUGIN_NAME="${PLUGIN_NAME}"
-    )
-
     # Files
     file(GLOB_RECURSE HEADERS "src/*.hpp" "src/*.h")
     file(GLOB_RECURSE SOURCES "src/*.cpp")
@@ -97,10 +91,8 @@ function(CONFIGURE_PLUGIN PLUGIN_NAME)
     )
 
     # Target linking
-    target_link_libraries(${PLUGIN_NAME} PRIVATE
-        ${TARGET_LINKED_LIBS}
-        PluginCoreInterface
-    )
+    target_link_libraries(${PLUGIN_NAME} PRIVATE ${TARGET_LINKED_LIBS} )
+    LINK_TARGET_LIBRARY(${PLUGIN_NAME} PluginCoreInterface)
 
     if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src")
         message(FATAL_ERROR "Error configuring plugin! Not found sources dir: " "${CMAKE_CURRENT_SOURCE_DIR}/src")

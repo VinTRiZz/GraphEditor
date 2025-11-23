@@ -1,6 +1,6 @@
 #pragma once
 
-#include <PluginCoreInterface/Core.h>
+#include <PluginCoreInterface/Export.h>
 
 class CommonPluginCore : public Graph::AbstractPluginCore
 {
@@ -10,10 +10,10 @@ public:
 
     // AbstractPluginCore interface
     Graph::PluginConfigurationWidget *getConfigurationEditor() override;
-    Graph::PluginItemPropertyWidget *getPropertyEditor(Graph::PluginObjectItnterface *pTarget) override;
+    Graph::PluginItemPropertyWidget *getPropertyEditor(Graph::PluginObjectInterface *pTarget) override;
     Graph::PluginInteractionWidget *getInteractor() override;
 
-    Graph::PluginObjectItnterface *createObject(const QString &name) override;
+    Graph::PluginObjectInterface *createObject(const QString &name) override;
 };
 
 

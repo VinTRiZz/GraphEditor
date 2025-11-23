@@ -21,7 +21,7 @@ public slots:
     void updatePluginList();
 
 signals:
-    void addObject(Graph::PluginObjectItnterface* pVertex);
+    void addObject(Graph::PluginObjectInterface* pVertex);
 
 private slots:
     void loadPluginItems(const QString& pluginName);

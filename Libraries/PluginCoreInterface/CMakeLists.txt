@@ -1,28 +1,10 @@
-set(
-    LIBRARY_NAME
-    PluginCoreInterface
-)
+CONFIGURE_LIBRARY(PluginCoreInterface)
 
-# Files
-file(GLOB_RECURSE HEADERS "src/*.hpp" "src/*.h")
-file(GLOB_RECURSE SOURCES "src/*.cpp")
-file(GLOB_RECURSE UIFILES "src/*.ui")
-source_group("Ui Files" FILES ${UIFILES})
+COMPONENTS_LINK_COMPONENT(PluginCoreInterface Logger)
+COMPONENTS_LINK_COMPONENT(PluginCoreInterface Common)
+COMPONENTS_LINK_COMPONENT(PluginCoreInterface Qt-Custom)
 
-# Library target
-add_library(${LIBRARY_NAME} INTERFACE)
-target_sources(${LIBRARY_NAME} PRIVATE ${HEADERS} ${SOURCES} ${UIFILES})
-target_include_directories(${LIBRARY_NAME}
-    INTERFACE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
-)
+LINK_TARGET_LIBRARY(PluginCoreInterface GraphObject)
+LINK_TARGET_LIBRARY(PluginCoreInterface GraphItems)
 
-set(
-    TARGET_LINKED_LIBS
-    Qt5::Core
-    Qt5::Widgets
-    Qt5::Gui
-)
-
-message(STATUS "Configured plugin core interface")
+ADD_EDITOR_TEST(PluginCoreInterface)

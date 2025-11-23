@@ -1,0 +1,4 @@
+CONFIGURE_PLUGIN(WebPlugin)
+
+LINK_TARGET_LIBRARY(WebPlugin GraphObject)
+LINK_TARGET_LIBRARY(WebPlugin GraphItems)

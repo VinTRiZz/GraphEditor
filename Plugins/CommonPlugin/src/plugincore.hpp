@@ -2,11 +2,11 @@
 
 #include <PluginCoreInterface/Core.h>
 
-class CommonItemsPluginCore : public Graph::AbstractPluginCore
+class CommonPluginCore : public Graph::AbstractPluginCore
 {
 public:
-    CommonItemsPluginCore();
-    ~CommonItemsPluginCore();
+    CommonPluginCore();
+    ~CommonPluginCore();
 
     // AbstractPluginCore interface
     Graph::PluginConfigurationWidget *getConfigurationEditor() override;
@@ -19,5 +19,5 @@ public:
 
 // Определение интерфейсной функции
 Graph::AbstractPluginCore *createPluginCore() {
-    return new CommonItemsPluginCore;
+    return new CommonPluginCore;
 }

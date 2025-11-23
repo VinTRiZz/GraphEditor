@@ -7,6 +7,9 @@ namespace Graph {
 class PluginObjectInterface
 {
 public:
+    PluginObjectInterface() = default;
+    virtual ~PluginObjectInterface() = default;
+
     void setPluginName(const QString& pluginName);
     QString getPluginName() const;
 

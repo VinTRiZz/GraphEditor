@@ -5,6 +5,8 @@
 #include "simplevertexitem.hpp"
 #include "imagevertexitem.hpp"
 
+#include <QPainter>
+
 namespace CommonPluginObjectName {
 const QString SIMPLEVERTEX {"Simple vertex"};
 const QString IMAGEVERTEX {"Image with name"};
@@ -45,7 +47,17 @@ Graph::PluginObjectInterface *CommonPluginCore::createObject(const QString& name
     }
 
     if (name == CommonPluginObjectName::IMAGEVERTEX) {
-        return new Graph::ImageVertexItem();
+        auto pImageVertex = new Graph::ImageVertexItem();
+
+        auto emptyImageRect = QRect(0, 0, 500, 500);
+        QImage emptyImg(emptyImageRect.width(), emptyImageRect.height(), QImage::Format_RGB32);
+        emptyImg.fill(Qt::lightGray);
+
+        QPainter imgPainter(&emptyImg);
+        imgPainter.fillRect(emptyImageRect, QBrush(Qt::black, Qt::DiagCrossPattern));
+
+        pImageVertex->setImage(emptyImg);
+        return pImageVertex;
     }
 
     return nullptr;

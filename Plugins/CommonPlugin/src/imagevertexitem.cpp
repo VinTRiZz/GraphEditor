@@ -1,5 +1,9 @@
 #include "imagevertexitem.hpp"
 
+#include <Components/Common/CommonFunctions.h>
+
+#include <QFileDialog>
+
 namespace Graph {
 
 ImageVertexItem::ImageVertexItem(QGraphicsItem* parent)
@@ -35,6 +39,33 @@ void ImageVertexItem::setAspectRatioMode(Qt::AspectRatioMode mode)
 Qt::AspectRatioMode ImageVertexItem::getAspectRatioMode() const
 {
     return m_aspectRatioMode;
+}
+
+std::list<QAction *> ImageVertexItem::createContextActions()
+{
+    auto res = VertexItem::createContextActions();
+
+    auto pSetImageAction = new QAction("Выбрать изображение");
+    connect(pSetImageAction, &QAction::triggered,
+            this, [this](){
+        QStringList mimeTypes;
+        foreach (const QByteArray &format, QImageReader::supportedMimeTypes()) {
+            mimeTypes.append(format);
+        }
+
+        auto targetFile = QFileDialog::getOpenFileName(nullptr,
+                                           "Выбор изображения",
+                                           "",
+                                           QString("Поддерживаемые изображения (%1)").arg(mimeTypes.join(" ")));
+        if (targetFile.isEmpty()) { // canceled
+            return;
+        }
+
+        setImage(CommonFunctions::readImage(targetFile));
+    });
+    res.push_back(pSetImageAction);
+
+    return res;
 }
 
 void ImageVertexItem::processSizeTypeChange(const QRectF& newSize)

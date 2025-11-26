@@ -36,24 +36,15 @@ void GraphItemsManager::setCurrentPlugin(const QString &pluginName)
 {
     m_currentPluginName = pluginName;
     loadPluginItems(pluginName);
+    ui->pluginItemList_listView->setPluginName(pluginName);
 }
 
 void GraphItemsManager::initSignals()
 {
-  connect(ui->pluginItemList_listView, &QListView::doubleClicked,
-          this, [this](auto& clickIdx){
-      auto& pluginMaster = Graph::PluginMaster::getInstance();
-      auto pPluginCore = pluginMaster.getPlugin(m_currentPluginName)->getPluginCore();
-      auto targetItem = pPluginCore->createObject(clickIdx.data(Qt::DisplayRole).toString());
-      if (targetItem != nullptr) {
-          emit addObject(targetItem);
-      }
-  });
-
-  connect(ui->itemSearch_lineEdit, &QLineEdit::textChanged,
-          this, [this](auto& txt){
-      static_cast<QSortFilterProxyModel*>(ui->pluginItemList_listView->model())->setFilterWildcard("*" + txt + "*");
-  });
+    connect(ui->itemSearch_lineEdit, &QLineEdit::textChanged,
+            this, [this](auto& txt){
+        static_cast<QSortFilterProxyModel*>(ui->pluginItemList_listView->model())->setFilterWildcard("*" + txt + "*");
+    });
 }
 
 void GraphItemsManager::loadPluginItems(const QString &pluginName)

@@ -18,6 +18,8 @@ public:
     void setAspectRatioMode(Qt::AspectRatioMode mode);
     Qt::AspectRatioMode getAspectRatioMode() const;
 
+    virtual std::list<QAction*> createContextActions() override;
+
 protected:
     void processSizeTypeChange(const QRectF& newSize) override;
 

@@ -2,8 +2,6 @@
 
 #include "simplevertexitem.hpp"
 
-#include <QPixmap>
-
 namespace Graph {
 
 class VertexShapeProvider

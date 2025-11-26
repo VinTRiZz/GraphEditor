@@ -10,4 +10,9 @@ class GraphEditView final :
     Q_OBJECT
 public:
     GraphEditView(QWidget* parent = nullptr);
+
+protected:
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dragMoveEvent(QDragMoveEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
 };

@@ -41,9 +41,9 @@ Qt::AspectRatioMode ImageVertexItem::getAspectRatioMode() const
     return m_aspectRatioMode;
 }
 
-std::list<QAction *> ImageVertexItem::createContextActions()
+QMenu* ImageVertexItem::createContextMenu()
 {
-    auto res = VertexItem::createContextActions();
+    auto res = VertexItem::createContextMenu();
 
     auto pSetImageAction = new QAction("Выбрать изображение");
     connect(pSetImageAction, &QAction::triggered,
@@ -63,7 +63,7 @@ std::list<QAction *> ImageVertexItem::createContextActions()
 
         setImage(CommonFunctions::readImage(targetFile));
     });
-    res.push_back(pSetImageAction);
+    res->addAction(pSetImageAction);
 
     return res;
 }

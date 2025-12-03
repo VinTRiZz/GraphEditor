@@ -60,6 +60,15 @@ VertexItem::~VertexItem()
     }
 }
 
+QMenu* VertexItem::createContextMenu()
+{
+    auto res = BasicItem::createContextMenu();
+
+    auto pCreateConnectionAction = new QAction("Добавить соединение");
+
+    return res;
+}
+
 void VertexItem::fromVertex(const GVertex &vert)
 {
     setItemId(vert.id);

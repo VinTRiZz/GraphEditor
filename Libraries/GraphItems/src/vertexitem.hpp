@@ -42,6 +42,8 @@ public:
     explicit VertexItem(QGraphicsItem* parent = nullptr);
     ~VertexItem();
 
+    virtual QMenu*createContextMenu() override;
+
     virtual void fromVertex(const GVertex& vert);
     virtual GVertex toVertex() const;
 

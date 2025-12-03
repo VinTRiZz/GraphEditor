@@ -90,9 +90,7 @@ void GraphObject::removeVertex(GraphCommon::graphId_t vertexId) {
 }
 
 void GraphObject::clearVertices() {
-    for (auto& vert : m_vertices) {
-        removeConnections(vert.id);
-    }
+    clearConnections();
     m_vertices.clear();
 }
 

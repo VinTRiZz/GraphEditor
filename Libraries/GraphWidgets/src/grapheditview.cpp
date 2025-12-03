@@ -120,4 +120,5 @@ void GraphEditView::mouseMoveEvent(QMouseEvent *e)
     for (auto* pCon : m_pendingConnections) {
         pCon->getLineItem()->setPositionTo(mapToScene(e->pos()));
     }
+    OVLayers::ObjectView::mouseMoveEvent(e);
 }

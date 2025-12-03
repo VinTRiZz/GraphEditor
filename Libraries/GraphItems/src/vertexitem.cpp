@@ -24,6 +24,11 @@ bool VertexItem::isLineSubscribed(VertexConnectionItem* pLine) {
     return false;
 }
 
+VertexConnectionItem *VertexItem::getPendingConnection() const
+{
+    return m_pendingConnection;
+}
+
 VertexItem::VertexItem(QGraphicsItem *parent) :
     ObjectItems::BasicItem(parent)
 {
@@ -58,15 +63,6 @@ VertexItem::~VertexItem()
     for (auto pLine : m_connectionsFromThis) {
         pLine->setVertexFrom(nullptr);
     }
-}
-
-QMenu* VertexItem::createContextMenu()
-{
-    auto res = BasicItem::createContextMenu();
-
-    auto pCreateConnectionAction = new QAction("Добавить соединение");
-
-    return res;
 }
 
 void VertexItem::fromVertex(const GVertex &vert)
@@ -253,6 +249,11 @@ void VertexItem::updateLabelPosition()
     }
 
     getLabel()->setPos(targetPos);
+}
+
+void VertexItem::setPendingConnection(VertexConnectionItem *pConnection)
+{
+    m_pendingConnection = pConnection;
 }
 
 TextLabel *VertexItem::getLabel() const

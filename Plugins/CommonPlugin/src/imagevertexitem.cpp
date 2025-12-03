@@ -65,6 +65,10 @@ QMenu* ImageVertexItem::createContextMenu()
     });
     res->addAction(pSetImageAction);
 
+    auto pCreateConnectionAction = new QMenu("Добавить соединение");
+    // TODO: Добавление соединений -- плагин должен будет задать варианты соединений
+    res->addMenu(pCreateConnectionAction);
+
     return res;
 }
 

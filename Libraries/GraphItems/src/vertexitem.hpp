@@ -42,8 +42,6 @@ public:
     explicit VertexItem(QGraphicsItem* parent = nullptr);
     ~VertexItem();
 
-    virtual QMenu*createContextMenu() override;
-
     virtual void fromVertex(const GVertex& vert);
     virtual GVertex toVertex() const;
 
@@ -61,8 +59,11 @@ public:
 
     bool isLineSubscribed(VertexConnectionItem* pLine);
 
+    VertexConnectionItem* getPendingConnection() const;
+
 signals:
     void sizeChanged(VertexSizeType prevSizeT, VertexSizeType currentSizeT);
+    void startAddingConnection();
 
 private:
     ObjectItems::TextLabel* m_nameItem{nullptr};
@@ -70,14 +71,18 @@ private:
     VertexSizeType m_vertexSizeType {VertexSizeType::VST_Medium};
     VertexTitlePosition m_shapeTitlePos {VertexTitlePosition::VTP_Center};
 
+    std::set<VertexConnectionItem*> m_connectionsFromThis;
+    std::set<VertexConnectionItem*> m_connectionsToThis;
+
+    VertexConnectionItem* m_pendingConnection {nullptr};
+
 private slots:
     void updateConnectionLines();
 
 protected:
     void updateLabelPosition();
 
-    std::set<VertexConnectionItem*> m_connectionsFromThis;
-    std::set<VertexConnectionItem*> m_connectionsToThis;
+    void setPendingConnection(VertexConnectionItem* pConnection);
 
     ObjectItems::TextLabel* getLabel() const;
 

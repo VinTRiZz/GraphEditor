@@ -46,7 +46,7 @@
        </property>
        <widget class="QWidget" name="add_tab">
         <attribute name="title">
-         <string>Объекты</string>
+         <string>Добавить объект</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>
@@ -54,19 +54,9 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="objectProps_tab">
-        <attribute name="title">
-         <string>Свойства</string>
-        </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_2">
-         <item>
-          <widget class="GraphItemPropertyEditor" name="objectPropertiesForm" native="true"/>
-         </item>
-        </layout>
-       </widget>
        <widget class="QWidget" name="tab">
         <attribute name="title">
-         <string>Плагин</string>
+         <string>Интерфейс плагина</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
@@ -140,12 +130,6 @@
    <class>GraphItemsManager</class>
    <extends>QWidget</extends>
    <header location="global">GraphWidgets/GraphItemsManager.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>GraphItemPropertyEditor</class>
-   <extends>QWidget</extends>
-   <header location="global">GraphWidgets/GraphItemPropertyEditor.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

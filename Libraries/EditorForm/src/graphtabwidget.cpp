@@ -39,6 +39,7 @@ GraphTabWidget::GraphTabWidget(QWidget* parent)
                                                               QMessageBox::StandardButton::Yes,
                                                               QMessageBox::StandardButton::No);
                     if (userResponse == QMessageBox::StandardButton::Yes) {
+
                         ui->fileToolbar->saveGraph();
                     }
                 }
@@ -76,27 +77,6 @@ GraphTabWidget::GraphTabWidget(QWidget* parent)
         ui->graphItemsManager->setCurrentPlugin(curPluginName);
     });
     updatePluginList();
-
-    connect(ui->graphItemsManager, &GraphItemsManager::addObject,
-            this, [this](auto* pObject){
-        if (ui->editorForms_tabWidget->count() < 1) { // Пустой виджет, отмена
-            delete pObject;
-            return;
-        }
-
-        auto tabTargetWidget = ui->editorForms_tabWidget->currentWidget();
-        assert(nullptr != tabTargetWidget);
-
-        auto pCastedObject = dynamic_cast<ObjectItems::BasicItem*>(pObject);
-        if (!pCastedObject) {
-            LOG_WARNING("Not a ObjectItems inheritor got as a new item, nothing added");
-            return;
-        }
-        auto pForm = static_cast<GraphEditView*>(tabTargetWidget);
-        pForm->addItem(pCastedObject);
-        connect(pCastedObject, &ObjectItems::BasicItem::itemClicked,
-                this, [this, pObject](){ ui->objectPropertiesForm->setTargetItem(pObject); });
-    });
 }
 
 GraphTabWidget::~GraphTabWidget() {

@@ -20,9 +20,6 @@ public:
 public slots:
     void setCurrentPlugin(const QString& pluginName);
 
-signals:
-    void addObject(Graph::PluginObjectInterface* pObject);
-
 private:
     Ui::GraphItemsManager *ui;
 

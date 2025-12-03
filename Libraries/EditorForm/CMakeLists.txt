@@ -1,8 +1,0 @@
-CONFIGURE_LIBRARY(EditorForm)
-
-COMPONENTS_LINK_COMPONENT(EditorForm Logger)
-COMPONENTS_LINK_COMPONENT(EditorForm Qt-Custom)
-
-LINK_TARGET_LIBRARY(EditorForm GraphObject)
-
-LINK_TARGET_LIBRARY(EditorForm GraphWidgets)

@@ -48,6 +48,7 @@ function(CONFIGURE_LIBRARY LIBRARY_NAME)
         message(FATAL_ERROR "Error configuring library! Not found sources dir: " "${CMAKE_CURRENT_SOURCE_DIR}/src")
     endif()
 
+    target_include_directories(${LIBRARY_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
     target_include_directories(${LIBRARY_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
     message(STATUS "Configured library " ${LIBRARY_NAME})
 endfunction()
@@ -146,6 +147,7 @@ function(ADD_EDITOR_TEST EDITOR_MODULENAME)
 
     file(GLOB TESTING_SOURCES "tests/*.cpp")
     target_sources(${EDITOR_MODULENAME_TEST} PRIVATE ${TESTING_SOURCES})
+    target_include_directories(${EDITOR_MODULENAME_TEST} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
     get_target_property(EDITOR_MODULE_LIBS ${EDITOR_MODULENAME} LINK_LIBRARIES)
     target_link_libraries(

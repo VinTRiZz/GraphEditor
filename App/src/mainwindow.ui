@@ -39,7 +39,7 @@
   <customwidget>
    <class>GraphTabWidget</class>
    <extends>QWidget</extends>
-   <header location="global">EditorForm/TabWidget.h</header>
+   <header location="global">GraphWidgets/TabWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

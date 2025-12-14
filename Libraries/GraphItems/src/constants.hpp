@@ -10,8 +10,10 @@
 
 namespace Graph {
 
-const int OBJECTTYPE_VERTEX {ObjectItems::OBJECTDATAROLE_USERTYPE + 10};
-const int OBJECTTYPE_CONNECTION {OBJECTTYPE_VERTEX + 1};
+enum GraphObjectTypes : int {
+    OBJECTTYPE_VERTEX = ObjectItems::ObjectType::OIT_UserItemType,
+    OBJECTTYPE_CONNECTION
+};
 
 namespace Layers {
 const int VERTEX_LAYER {100};

@@ -1,5 +1,4 @@
-#ifndef GSEJE_FORMAT_H
-#define GSEJE_FORMAT_H
+#pragma once
 
 #include "abstractencryptedformat.h"
 
@@ -17,5 +16,3 @@ protected:
 };
 
 }  // namespace Filework
-
-#endif  // GSEJE_FORMAT_H

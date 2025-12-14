@@ -1,5 +1,4 @@
-#ifndef FORMATFACTORY_H
-#define FORMATFACTORY_H
+#pragma once
 
 #include <QString>
 #include <boost/noncopyable.hpp>
@@ -60,5 +59,3 @@ private:
 };
 
 }  // namespace Filework
-
-#endif  // FORMATFACTORY_H

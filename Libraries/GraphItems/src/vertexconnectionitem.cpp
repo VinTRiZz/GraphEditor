@@ -2,7 +2,7 @@
 
 #include <Components/Common/ApplicationSettings.h>
 #include <Components/Logger/Logger.h>
-#include <GraphObject/Object.h>
+#include <GraphObject/GraphObject.h>
 
 #include "vertexitem.hpp"
 #include "constants.hpp"
@@ -34,30 +34,6 @@ VertexConnectionItem::~VertexConnectionItem() {
     if (m_toVertex) {
         m_toVertex->unsubscribeConnectionTo(this);
     }
-}
-
-GConnection VertexConnectionItem::toConnection() const
-{
-    GConnection graphConnection;
-
-    if (nullptr != getVertexFrom()) {
-        graphConnection.idFrom = getVertexFrom()->getItemId();
-    }
-
-    if (nullptr != getVertexTo()) {
-        graphConnection.idTo = getVertexTo()->getItemId();
-    }
-
-    graphConnection.name = getDisplayName();
-    graphConnection.color = m_connectionLine->getLinePen().color();
-
-    return graphConnection;
-}
-
-void VertexConnectionItem::fromConnection(const GConnection &con)
-{
-    setDisplayName(con.name);
-    m_connectionLine->setLinePen(con.color);
 }
 
 void VertexConnectionItem::setVertexFrom(VertexItem* pVertexFrom) {

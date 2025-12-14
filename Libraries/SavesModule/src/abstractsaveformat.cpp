@@ -2,8 +2,10 @@
 
 #include <QBuffer>
 #include <QFile>
+#include <QPixmap>
 
 #include <Components/Filework/Common.h>
+#include <Components/Logger/Logger.h>
 
 namespace Filework {
 

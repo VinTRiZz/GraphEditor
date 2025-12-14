@@ -2,7 +2,7 @@
 
 #include <QWidget>
 
-#include <GraphObject/Maintainer.h>
+#include <GraphObject/GraphObject.h>
 
 namespace Ui {
 class FileManagementToolbar;
@@ -10,7 +10,7 @@ class FileManagementToolbar;
 
 class FileManagementToolbar :
         public QWidget,
-        public Graph::MaintainerUserDecorator
+        public Graph::GraphObjectUser
 {
     Q_OBJECT
 

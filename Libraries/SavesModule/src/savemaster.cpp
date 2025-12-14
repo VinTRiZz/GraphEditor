@@ -40,7 +40,7 @@ QString SaveMaster::getLoadPath() {
 }
 
 bool SaveMaster::save(const QString& oFilePath,
-                      Graph::PMaintainer iGraphMaintaner) {
+                      Graph::GraphObjectManagerPtr iGraphMaintaner) {
     LOG_INFO("Saving graph data as:", oFilePath);
     auto fileSuffix = QFileInfo(oFilePath).completeSuffix();
     auto& formatFactory = Filework::FormatFactory::getInstance();
@@ -105,7 +105,7 @@ bool SaveMaster::save(const QString& oFilePath,
 }
 
 bool SaveMaster::load(const QString& iFilePath,
-                      Graph::PMaintainer oGraphMaintaner) {
+                      Graph::GraphObjectManagerPtr oGraphMaintaner) {
     LOG_INFO("Loading graph data from:", iFilePath);
     auto fileSuffix = QFileInfo(iFilePath).completeSuffix();
     auto& formatFactory = Filework::FormatFactory::getInstance();

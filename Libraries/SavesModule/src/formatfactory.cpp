@@ -3,6 +3,8 @@
 #include "gsej_format.h"
 #include "gsj_format.h"
 
+#include <Components/Logger/Logger.h>
+
 namespace Filework {
 
 FormatFactory::FormatFactory() {

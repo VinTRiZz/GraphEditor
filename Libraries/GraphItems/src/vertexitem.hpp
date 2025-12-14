@@ -1,10 +1,9 @@
 #pragma once
 
-#include <GraphObject/Object.h>
+#include <GraphObject/GraphObject.h>
+#include <GraphObject/PluginObjectInterface.h>
+
 #include <Components/CustomQt/ObjectView/ObjectItems.h>
-
-#include "pluginobjectitnterface.hpp"
-
 #include <set>
 
 namespace Graph {
@@ -42,8 +41,8 @@ public:
     explicit VertexItem(QGraphicsItem* parent = nullptr);
     ~VertexItem();
 
-    virtual void fromVertex(const GVertex& vert);
-    virtual GVertex toVertex() const;
+    virtual void fromGObject(const GObject& vert);
+    virtual GObject toGObject() const;
 
     void setVertexSizeType(VertexSizeType vst);
     VertexSizeType getVertexSizeType() const;
@@ -63,7 +62,6 @@ public:
 
 signals:
     void sizeChanged(VertexSizeType prevSizeT, VertexSizeType currentSizeT);
-    void startAddingConnection();
 
 private:
     ObjectItems::TextLabel* m_nameItem{nullptr};

@@ -1,22 +1,21 @@
 #pragma once
 
-#include <GraphObject/Maintainer.h>
-
+#include <GraphObject/GraphObject.h>
 #include <QAbstractTableModel>
-
 
 namespace Graph {
 
 /**
- * @brief The GraphCommonPropertiesModel class  Модель для представления
+ * @brief The GraphPropertiesModel class  Модель для представления
  * основных свойств графа
  */
-class GraphCommonPropertiesModel :
+class GraphPropertiesModel :
         public QAbstractTableModel,
-        public Graph::MaintainerUserDecorator {
+        public Graph::GraphObjectUser {
     Q_OBJECT
 public:
-    explicit GraphCommonPropertiesModel(QObject* parent = nullptr);
+    using QAbstractTableModel::QAbstractTableModel;
+
 
     /**
      * @brief The CommonPropertyRows enum   Строки в модели

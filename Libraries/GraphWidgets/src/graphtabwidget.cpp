@@ -29,13 +29,13 @@ GraphTabWidget::GraphTabWidget(QWidget* parent)
 
                 assert(nullptr != pTargetForm);
 
-                auto pGraph = pTargetForm->getGraph();
-                auto lastSaveDate = pGraph->getEditTime();
+                auto pGraph = pTargetForm->getGraph()->getObject();
+                auto lastSaveDate = pGraph->getMetaInfo()->getEditTime();
                 auto deltaDate = (QDateTime::currentDateTime().toMSecsSinceEpoch() - lastSaveDate.toMSecsSinceEpoch());
                 if (deltaDate > 300'000) { // More than 5 min between saves
                     auto userResponse = QMessageBox::question(this,
                                                               "Требуется действие",
-                                                              QString("Сохранить граф\n\"%0\"\nперед закрытием?").arg(pGraph->getName()),
+                                                              QString("Сохранить граф\n\"%0\"\nперед закрытием?").arg(pGraph->getMetaInfo()->getName()),
                                                               QMessageBox::StandardButton::Yes,
                                                               QMessageBox::StandardButton::No);
                     if (userResponse == QMessageBox::StandardButton::Yes) {
@@ -67,8 +67,8 @@ GraphTabWidget::GraphTabWidget(QWidget* parent)
                        (nullptr != tabTargetWidget));
 
                 auto pForm = static_cast<GraphEditView*>(tabTargetWidget);
-                auto pMaintainer = pForm->getGraph();
-                ui->fileToolbar->setGraph(pMaintainer);
+                auto GraphObjectManager = pForm->getGraph();
+                ui->fileToolbar->setGraph(GraphObjectManager);
             });
 
     connect(ui->pluginSelector_comboBox, &QComboBox::currentTextChanged,
@@ -90,7 +90,7 @@ void GraphTabWidget::addTab(const QString& filePath) {
     pEditorForm->setGraph(pGraph);
 
     ui->editorForms_tabWidget->addTab(pEditorForm,
-                                      pGraph->getName());
+                                      pGraph->getObject()->getMetaInfo()->getName());
     ui->editorForms_tabWidget->setCurrentIndex(
         ui->editorForms_tabWidget->count() - 1);
 
@@ -99,13 +99,14 @@ void GraphTabWidget::addTab(const QString& filePath) {
         ui->placeholder_label->hide();
     }
 
-    connect(pGraph.get(),
-            &Graph::GraphMaintainer::changedCommonProperty, this,
-            [this, pEditorForm]() {
+    auto metaInfo = pGraph->getObject()->getMetaInfo();
+    connect(metaInfo,
+            &Graph::GraphMetaInformation::dataChanged, this,
+            [this, pEditorForm, metaInfo]() {
                 for (int i = 0; i < ui->editorForms_tabWidget->count(); ++i) {
                     if (ui->editorForms_tabWidget->widget(i) == pEditorForm) {
                         ui->editorForms_tabWidget->setTabText(
-                            i, pEditorForm->getGraph()->getName());
+                            i, metaInfo->getName());
                         break;
                     }
                 }
@@ -114,14 +115,16 @@ void GraphTabWidget::addTab(const QString& filePath) {
 
 void GraphTabWidget::createGraph() {
     auto pEditorForm = new GraphEditView(this);
-    auto pGraph = Graph::GraphMaintainer::createInstance();
+    auto pGraph = Graph::GraphObjectManager::createGraphInstance();
     pEditorForm->setGraph(pGraph);
 
-    pGraph->setToolTip("Новый граф");
-    pGraph->setCreateTime(QDateTime::currentDateTime());
+    auto metaInfo = pGraph->getObject()->getMetaInfo();
+
+    metaInfo->setName("Новый граф");
+    metaInfo->setCreateTime(QDateTime::currentDateTime());
 
     ui->editorForms_tabWidget->addTab(pEditorForm,
-                                      pGraph->getName());
+                                      metaInfo->getName());
     ui->editorForms_tabWidget->setCurrentIndex(
         ui->editorForms_tabWidget->count() - 1);
 
@@ -130,17 +133,17 @@ void GraphTabWidget::createGraph() {
         ui->placeholder_label->hide();
     }
 
-    connect(pGraph.get(),
-            &Graph::GraphMaintainer::changedCommonProperty, this,
-            [this, pEditorForm]() {
+    connect(metaInfo,
+            &Graph::GraphMetaInformation::dataChanged, this,
+            [this, pEditorForm, metaInfo]() {
                 for (int i = 0; i < ui->editorForms_tabWidget->count(); ++i) {
                     if (ui->editorForms_tabWidget->widget(i) == pEditorForm) {
                         ui->editorForms_tabWidget->setTabText(
-                            i, pEditorForm->getGraph()->getName());
+                            i, metaInfo->getName());
                         break;
                     }
                 }
-    });
+            });
 }
 
 void GraphTabWidget::updatePluginList()

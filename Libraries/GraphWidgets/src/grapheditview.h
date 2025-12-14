@@ -2,7 +2,7 @@
 
 #include <Components/CustomQt/ObjectView/ObjectView.h>
 
-#include <GraphObject/Maintainer.h>
+#include <GraphObject/GraphObject.h>
 
 namespace Graph {
 class VertexConnectionItem;
@@ -10,7 +10,7 @@ class VertexConnectionItem;
 
 class GraphEditView final :
         public OVLayers::ObjectView,
-        public Graph::MaintainerUserDecorator {
+        public Graph::GraphObjectUser {
     Q_OBJECT
 public:
     GraphEditView(QWidget* parent = nullptr);

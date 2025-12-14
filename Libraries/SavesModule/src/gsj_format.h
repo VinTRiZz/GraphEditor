@@ -1,5 +1,4 @@
-#ifndef GSEJ_FORMAT_H
-#define GSEJ_FORMAT_H
+#pragma once
 
 #include <QJsonObject>
 
@@ -20,5 +19,3 @@ protected:
 };
 
 }  // namespace Filework
-
-#endif  // GSEJ_FORMAT_H

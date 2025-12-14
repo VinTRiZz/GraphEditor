@@ -2,7 +2,7 @@
 
 #include <QWidget>
 
-#include <GraphObject/Maintainer.h>
+#include <GraphObject/GraphObject.h>
 
 namespace Ui {
 class SecondaryToolbar;

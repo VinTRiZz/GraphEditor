@@ -1,7 +1,4 @@
-#ifndef ABSTRACTSAVEFORMAT_H
-#define ABSTRACTSAVEFORMAT_H
-
-#include <GraphObject/Maintainer.h>
+#pragma once
 
 #include <QString>
 
@@ -9,7 +6,7 @@
 
 namespace Filework {
 
-class AbstractSaveFormat : public Graph::MaintainerUserDecorator {
+class AbstractSaveFormat : public Graph::GraphObjectUser {
 public:
     /**
      * @brief AbstractSaveFormat    Конструктор класса формата
@@ -82,5 +79,3 @@ protected:
 };
 
 }  // namespace Filework
-
-#endif  // ABSTRACTSAVEFORMAT_H

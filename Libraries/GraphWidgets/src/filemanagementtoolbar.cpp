@@ -2,8 +2,11 @@
 #include "ui_filemanagementtoolbar.h"
 
 #include <QMessageBox>
+#include <QFileInfo>
 
 #include <Filework/SaveMaster.h>
+
+#include <Components/Logger/Logger.h>
 
 FileManagementToolbar::FileManagementToolbar(QWidget *parent) :
     QWidget(parent),
@@ -60,21 +63,21 @@ bool FileManagementToolbar::saveGraph(const QString &savePath)
 {
     if (!isGraphSet()) { return false; }
     if (savePath.isNull()) {
-        getGraph()->setSavefile(savePath);
+        getGraph()->getObject()->getMetaInfo()->setSavepath(savePath);
     } else if (!QFileInfo(savePath).dir().exists()) {
         LOG_ERROR("Can not save file with path:", savePath);
         return false;
     }
-    getGraph()->setEditTime(QDateTime::currentDateTime());
+    getGraph()->getObject()->getMetaInfo()->setEditTime(QDateTime::currentDateTime());
 
     SaveMaster saveMaster;
-    return saveMaster.save(getGraph()->getSavefile(), getGraph());
+    return saveMaster.save(getGraph()->getObject()->getMetaInfo()->getSavepath(), getGraph());
 }
 
 bool FileManagementToolbar::loadGraph(const QString &savePath)
 {
     if (!isGraphSet()) { // Подразумевается, что результат будет забираться из этого объекта
-        setGraph(Graph::GraphMaintainer::createInstance());
+        setGraph(Graph::GraphObjectManager::createGraphInstance());
     }
     if (!savePath.isNull()) {
         auto targetFileInfo = QFileInfo(savePath);
@@ -82,22 +85,20 @@ bool FileManagementToolbar::loadGraph(const QString &savePath)
             LOG_ERROR("Can not loading file with path:", savePath);
             return false;
         }
-        getGraph()->setSavefile(savePath);
+        getGraph()->getObject()->getMetaInfo()->setSavepath(savePath);
     }
 
     SaveMaster saveMaster;
-    return saveMaster.load(getGraph()->getSavefile(), getGraph());
+    return saveMaster.load(getGraph()->getObject()->getMetaInfo()->getSavepath(), getGraph());
 }
 
 void FileManagementToolbar::processGraphChange()
 {
-    auto pMaintainer = getGraph();
+    ui->saveAs_toolButton->setEnabled(isGraphSet());
 
-    auto isMaintainerValid = (pMaintainer != nullptr);
-    ui->saveAs_toolButton->setEnabled(isMaintainerValid);
-
-    if (isMaintainerValid) {
-        auto isPathValid = !pMaintainer->getSavefile().isNull();
+    if (isGraphSet()) {
+        auto savePath = getGraph()->getObject()->getMetaInfo()->getSavepath();
+        auto isPathValid = !savePath.isNull() && QFileInfo(savePath).exists();
         ui->save_toolButton->setEnabled(isPathValid);
         ui->load_toolButton->setEnabled(isPathValid);
     } else {

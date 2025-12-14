@@ -11,8 +11,8 @@ public:
 
     // AbstractSaveSubsystem interface
     bool canProcess(const QString &fileData) const override;
-    bool createSavedata(const Graph::PMaintainer &pGraph, QString &savedata) const override;
-    bool parseSavedata(const Graph::PMaintainer &pGraph, const QString &savedata) const override;
+    bool createSavedata(const Graph::GraphObjectManagerPtr &pGraph, QString &savedata) const override;
+    bool parseSavedata(const Graph::GraphObjectManagerPtr &pGraph, const QString &savedata) const override;
 
 protected:
     /**

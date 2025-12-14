@@ -8,9 +8,8 @@
 #include <QGraphicsPolygonItem>
 #include <QPen>
 
-#include <GraphObject/Object.h>
-
-#include "pluginobjectitnterface.hpp"
+#include <GraphObject/GraphObject.h>
+#include <GraphObject/PluginObjectInterface.h>
 
 namespace Graph {
 
@@ -22,9 +21,6 @@ class VertexConnectionItem :
 public:
     explicit VertexConnectionItem(QGraphicsItem* parent = nullptr);
     ~VertexConnectionItem();
-
-    GConnection toConnection() const;
-    void fromConnection(const GConnection& con);
 
     void setVertexFrom(VertexItem* pVertexFrom);
     VertexItem* getVertexFrom() const;

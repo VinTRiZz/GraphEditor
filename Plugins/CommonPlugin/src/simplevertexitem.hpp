@@ -23,8 +23,8 @@ public:
     explicit SimpleVertexItem(QGraphicsItem* parent = nullptr);
     ~SimpleVertexItem();
 
-    void fromVertex(const GVertex& vert) override;
-    GVertex toVertex() const override;
+    void fromGObject(const GObject& vert) override;
+    GObject toGObject() const override;
 
     void setShapeType(SimpleVertexShapeType vst);
     SimpleVertexShapeType getShapeType() const;

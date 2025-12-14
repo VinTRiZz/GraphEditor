@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GraphObject/Maintainer.h>
+#include <GraphObject/GraphObject.h>
 
 #include <QStandardItemModel>
 #include <QWidget>
@@ -11,8 +11,7 @@ class GraphPropertyEditForm;
 
 namespace Graph {
 
-class GraphCommonPropertiesModel;
-class GraphCustomPropertiesModel;
+class GraphPropertiesModel;
 
 /**
  * @brief The GraphPropertyEditForm class   Форма редактирования метаинформации
@@ -20,7 +19,7 @@ class GraphCustomPropertiesModel;
  */
 class GraphPropertyEditForm :
         public QWidget,
-        public MaintainerUserDecorator {
+        public GraphObjectUser {
     Q_OBJECT
 
 public:
@@ -32,7 +31,7 @@ private:
 
     void processGraphChange() override;
 
-    enum GraphCommonPropertyRows : int {
+    enum GraphPropertyRows : int {
         NAMEROW = 0,
         DESCRIPTIONROW,
         CREATEDROW,
@@ -41,10 +40,8 @@ private:
 
     bool m_isSettingGraph{false};  //! Для задания графов без удаления их
                                    //! свойств (особенности логики)
-    GraphCommonPropertiesModel* m_pCommonPropertiesModel{
+    GraphPropertiesModel* m_pCommonPropertiesModel{
         nullptr};  //! Модель с общими данными по графу
-    GraphCustomPropertiesModel* m_pCustomPropertiesModel{
-        nullptr};  //! Модель с пользовательскими данными по графу
 
     /**
      * @brief setupSignals Настройка сигналов виджета

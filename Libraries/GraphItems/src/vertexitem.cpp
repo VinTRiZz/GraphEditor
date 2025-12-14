@@ -3,14 +3,11 @@
 #include "constants.hpp"
 #include "vertexconnectionitem.hpp"
 
+#include <Components/Logger/Logger.h>
+
 using namespace ObjectItems;
 
 namespace Graph {
-
-namespace {
-const QString EXTRADATA_VALUE_TITLEPOS {"titlePosition"};
-}
-
 
 bool VertexItem::isLineSubscribed(VertexConnectionItem* pLine) {
     // Нет смысла проверять исходящие, т.к. нельзя регистрировать вершину саму
@@ -65,40 +62,69 @@ VertexItem::~VertexItem()
     }
 }
 
-void VertexItem::fromVertex(const GVertex &vert)
+void VertexItem::fromGObject(const GObject &vert)
 {
-    setItemId(vert.id);
-    setPos(vert.posX, vert.posY);
+    setItemId(vert.getId().value());
 
-    setDisplayName(vert.displayName);
-    setToolTip(vert.name);
-    setDescription(vert.description);
-
-    setLinePen(vert.lineColor);
-    setBackgroundBrush(vert.backgroundColor);
-
-    if (!vert.vertexExtraData.contains(EXTRADATA_VALUE_TITLEPOS)) {
-        LOG_WARNING("VertexItem: Failed to find required extra data");
-        return;
+    auto itemPos = vert.getPos();
+    if (parentItem()) {
+        itemPos = parentItem()->mapFromScene(itemPos);
     }
-    setTitlePosition(VertexTitlePosition(vert.vertexExtraData[EXTRADATA_VALUE_TITLEPOS].toInt()));
+    setPos(itemPos);
+
+    setDisplayName(vert.getName());
+
+    auto commonVertexItemData = vert.getCommonData();
+    auto getCommonData = [&commonVertexItemData](const auto& fieldName) -> QJsonValue {
+        if (commonVertexItemData.contains(fieldName)) {
+            return commonVertexItemData[fieldName];
+        }
+        return QJsonValue();
+    };
+
+    setPluginName(getCommonData(GObjectValueName::COMMON_PLUGIN_NAME).toString());
+    setPluginObjectName(getCommonData(GObjectValueName::COMMON_PLUGIN_OBJECTNAME).toString());
+
+    setToolTip(getCommonData(GObjectValueName::COMMON_TOOLTIP).toString());
+    setDescription(getCommonData(GObjectValueName::COMMON_DESCRIPTION).toString());
+
+    setLinePen(qvariant_cast<QPen>(getCommonData(GObjectValueName::COMMON_LINEPEN).toVariant()));
+    setBackgroundBrush(qvariant_cast<QBrush>(getCommonData(GObjectValueName::COMMON_BGRBRUSH).toVariant()));
+    setTitlePosition(VertexTitlePosition(getCommonData(GObjectValueName::COMMON_TITLEPOS).toInt()));
 }
 
-GVertex VertexItem::toVertex() const
+GObject VertexItem::toGObject() const
 {
-    GVertex graphVertex;
-    graphVertex.id = getItemId();
-    graphVertex.posX = x();
-    graphVertex.posY = y();
+    GObject graphVertex;
 
-    graphVertex.displayName = getDisplayName();
-    graphVertex.name = toolTip();
-    graphVertex.description = getDescription();
+    graphVertex.setId(getItemId());
+    graphVertex.setPos(scenePos());
+    graphVertex.setName(getDisplayName());
 
-    graphVertex.lineColor = getLinePen().color();
-    graphVertex.backgroundColor = getBackgroundBrush().color();
+    QJsonObject commonVertexItemData;
 
-    graphVertex.vertexExtraData[EXTRADATA_VALUE_TITLEPOS] = m_shapeTitlePos;
+    auto setCommonData = [&commonVertexItemData](const auto& fieldName, const auto& value) -> void {
+        commonVertexItemData[fieldName] = value;
+    };
+
+    setCommonData(GObjectValueName::COMMON_PLUGIN_NAME, getPluginName());
+    setCommonData(GObjectValueName::COMMON_PLUGIN_OBJECTNAME, getPluginObjectName());
+
+    setCommonData(GObjectValueName::COMMON_TOOLTIP, toolTip());
+    setCommonData(GObjectValueName::COMMON_DESCRIPTION, getDescription());
+    setCommonData(GObjectValueName::COMMON_LINEPEN, QJsonValue::fromVariant(QVariant::fromValue(getLinePen())));
+    setCommonData(GObjectValueName::COMMON_BGRBRUSH, QJsonValue::fromVariant(QVariant::fromValue(getBackgroundBrush())));
+
+    setCommonData(GObjectValueName::COMMON_TITLEPOS, getTitlePosition());
+    graphVertex.setCommonData(commonVertexItemData);
+
+    for (auto* pConnection : m_connectionsFromThis) {
+        if (nullptr == pConnection->getVertexTo()) {
+            LOG_WARNING("Invalid connection got (no VERTEX-TO set)");
+            continue;
+        }
+        graphVertex.addConnection(pConnection->getVertexTo()->getItemId());
+    }
 
     return graphVertex;
 }

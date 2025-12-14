@@ -1,7 +1,6 @@
-#ifndef SAVEMASTER_H
-#define SAVEMASTER_H
+#pragma once
 
-#include <GraphObject/Maintainer.h>
+#include <GraphObject/GraphObject.h>
 
 namespace Filework {
 class AbstractSaveFormat;
@@ -46,7 +45,7 @@ public:
      * @return false            если не удалось сохранить файл, например, при
      * неверном расширении. В логах будет указано, почему
      */
-    bool save(const QString& oFilePath, Graph::PMaintainer iGraphMaintaner);
+    bool save(const QString& oFilePath, Graph::GraphObjectManagerPtr iGraphMaintaner);
 
     /**
      * @brief load              Выгрузить граф из файла
@@ -55,7 +54,5 @@ public:
      * @return false            если не удалось выгрузить граф, например, при
      * неверном расширении. В логах будет указано, почему
      */
-    bool load(const QString& iFilePath, Graph::PMaintainer oGraphMaintaner);
+    bool load(const QString& iFilePath, Graph::GraphObjectManagerPtr oGraphMaintaner);
 };
-
-#endif  // SAVEMASTER_H

@@ -32,7 +32,7 @@ bool GSEJ_100_SaveSubsystem::canProcess(const QString &fileData) const
     return (iJson["version"] == getVersion());
 }
 
-bool GSEJ_100_SaveSubsystem::createSavedata(const Graph::PMaintainer &pGraph, QString &savedata) const
+bool GSEJ_100_SaveSubsystem::createSavedata(const Graph::GraphObjectManagerPtr &pGraph, QString &savedata) const
 {
     if (!m_gsjSubsys.createSavedata(pGraph, savedata)) {
         return false;
@@ -50,7 +50,7 @@ bool GSEJ_100_SaveSubsystem::createSavedata(const Graph::PMaintainer &pGraph, QS
     return true;
 }
 
-bool GSEJ_100_SaveSubsystem::parseSavedata(const Graph::PMaintainer &pGraph, const QString &savedata) const
+bool GSEJ_100_SaveSubsystem::parseSavedata(const Graph::GraphObjectManagerPtr &pGraph, const QString &savedata) const
 {
     QJsonParseError err;
     auto parsedJson = QJsonDocument::fromJson(savedata.toUtf8(), &err);

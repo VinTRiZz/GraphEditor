@@ -2,7 +2,7 @@
 
 #include <Components/Common/ApplicationSettings.h>
 #include <Components/Logger/Logger.h>
-#include <GraphObject/Object.h>
+#include <GraphObject/GraphObject.h>
 #include <Components/CustomQt/ObjectView/ObjectItems.h>
 
 #include <QBuffer>
@@ -48,21 +48,24 @@ SimpleVertexItem::~SimpleVertexItem() {
 
 }
 
-void SimpleVertexItem::fromVertex(const GVertex &vert)
+void SimpleVertexItem::fromGObject(const GObject &vert)
 {
-    VertexItem::fromVertex(vert);
+    VertexItem::fromGObject(vert);
 
-    if (!vert.vertexExtraData.contains(EXTRADATA_VALUE_SHAPETYPE)) {
+    auto pluginData = vert.getPluginData();
+    if (!pluginData.contains(EXTRADATA_VALUE_SHAPETYPE)) {
         LOG_WARNING("SimpleVertexItem: Failed to find required extra data");
         return;
     }
-    setShapeType(SimpleVertexShapeType(vert.vertexExtraData[EXTRADATA_VALUE_SHAPETYPE].toInt()));
+    setShapeType(SimpleVertexShapeType(pluginData[EXTRADATA_VALUE_SHAPETYPE].toInt()));
 }
 
-GVertex SimpleVertexItem::toVertex() const
+GObject SimpleVertexItem::toGObject() const
 {
-    auto graphVertex = VertexItem::toVertex();
-    graphVertex.vertexExtraData[EXTRADATA_VALUE_SHAPETYPE] = m_shapeType;
+    auto graphVertex = VertexItem::toGObject();
+    auto pluginData = graphVertex.getPluginData();
+    pluginData[EXTRADATA_VALUE_SHAPETYPE] = m_shapeType;
+    graphVertex.setPluginData(pluginData);
     return graphVertex;
 }
 

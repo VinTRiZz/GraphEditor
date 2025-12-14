@@ -6,7 +6,7 @@
 #include <Components/CustomQt/ObjectView/InternalScene.h>
 
 #include <GraphItems/GraphItemsConstants.h>
-#include <GraphItems/PluginObjectInterface.h>
+#include <GraphObject/PluginObjectInterface.h>
 #include <GraphItems/VertexItem.h>
 #include <GraphItems/VertexConnectionItem.h>
 
@@ -31,17 +31,18 @@ void GraphEditView::writeChanges()
 {
     LOG_INFO("Reading graph...");
     auto currentGraphObject = getGraph()->getObject();
-    currentGraphObject.clearVertices();
+    currentGraphObject->clearVertices();
 
     for (auto [itemId, pItem] : getObjects()) {
         switch (pItem->getObjectType())
         {
         case Graph::OBJECTTYPE_VERTEX:
-            currentGraphObject.updateVertex(static_cast<Graph::VertexItem*>(pItem)->toVertex());
+            currentGraphObject->updateVertex(static_cast<Graph::VertexItem*>(pItem)->toGObject());
             break;
 
         case Graph::OBJECTTYPE_CONNECTION:
-            currentGraphObject.addConnection(static_cast<Graph::VertexConnectionItem*>(pItem)->toConnection());
+            // TODO: Fix connection adding
+//            currentGraphObject->addConnection(static_cast<Graph::VertexConnectionItem*>(pItem)->toConnection());
             break;
         }
     }

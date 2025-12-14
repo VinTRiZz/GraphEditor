@@ -15,8 +15,8 @@ public:
 
     // AbstractSaveSubsystem interface
     bool canProcess(const QString &fileData) const;
-    bool createSavedata(const Graph::PMaintainer &pGraph, QString &savedata) const;
-    bool parseSavedata(const Graph::PMaintainer &pGraph, const QString &savedata) const;
+    bool createSavedata(const Graph::GraphObjectManagerPtr &pGraph, QString &savedata) const;
+    bool parseSavedata(const Graph::GraphObjectManagerPtr &pGraph, const QString &savedata) const;
 
 private:
     QString m_key;

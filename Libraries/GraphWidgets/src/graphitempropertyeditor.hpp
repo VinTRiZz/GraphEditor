@@ -2,7 +2,7 @@
 
 #include <QWidget>
 
-#include <GraphItems/PluginObjectInterface.h>
+#include <GraphObject/PluginObjectInterface.h>
 
 namespace Ui {
 class GraphItemPropertyEditor;

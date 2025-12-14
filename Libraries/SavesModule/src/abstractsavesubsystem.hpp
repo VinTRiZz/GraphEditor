@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GraphObject/Maintainer.h>
+#include <GraphObject/GraphObject.h>
 
 namespace Filework {
 
@@ -16,8 +16,8 @@ public:
     QString getVersion() const;
     QString getErrorText() const;
 
-    virtual bool createSavedata(const Graph::PMaintainer& pGraph, QString& savedata) const = 0;
-    virtual bool parseSavedata(const Graph::PMaintainer& pGraph, const QString& savedata) const = 0;
+    virtual bool createSavedata(const Graph::GraphObjectManagerPtr& pGraph, QString& savedata) const = 0;
+    virtual bool parseSavedata(const Graph::GraphObjectManagerPtr& pGraph, const QString& savedata) const = 0;
 
 protected:
     void setErrorText(const QString& errText) const; // const для константных методов

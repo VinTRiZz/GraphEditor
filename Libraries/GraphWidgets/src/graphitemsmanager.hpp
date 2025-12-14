@@ -3,7 +3,7 @@
 #include <QWidget>
 #include <QStandardItemModel>
 
-#include <GraphItems/PluginObjectInterface.h>
+#include <GraphObject/PluginObjectInterface.h>
 
 namespace Ui {
 class GraphItemsManager;

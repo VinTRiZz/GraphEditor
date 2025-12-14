@@ -18,9 +18,12 @@ public:
     void writeChanges(); // TODO: Добавить обратное действие
 
 private:
-    void addPendingConnection(Graph::VertexConnectionItem* pCon);
+    Graph::VertexConnectionItem* m_pendingConnection {nullptr};
 
-    std::list<Graph::VertexConnectionItem*> m_pendingConnections;
+    QMenu m_contextMenu;
+    QMenu* createConnectionsMenu();
+    QMenu* createGroupsMenu();
+    QMenu* createSelectionMenu();
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;
@@ -29,4 +32,6 @@ protected:
 
     void mousePressEvent(QMouseEvent* e) override;
     void mouseMoveEvent(QMouseEvent* e) override;
+
+    void contextMenuEvent(QContextMenuEvent* e) override;
 };

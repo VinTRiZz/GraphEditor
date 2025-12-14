@@ -21,11 +21,6 @@ bool VertexItem::isLineSubscribed(VertexConnectionItem* pLine) {
     return false;
 }
 
-VertexConnectionItem *VertexItem::getPendingConnection() const
-{
-    return m_pendingConnection;
-}
-
 VertexItem::VertexItem(QGraphicsItem *parent) :
     ObjectItems::BasicItem(parent)
 {
@@ -275,11 +270,6 @@ void VertexItem::updateLabelPosition()
     }
 
     getLabel()->setPos(targetPos);
-}
-
-void VertexItem::setPendingConnection(VertexConnectionItem *pConnection)
-{
-    m_pendingConnection = pConnection;
 }
 
 TextLabel *VertexItem::getLabel() const

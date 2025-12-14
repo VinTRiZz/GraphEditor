@@ -58,8 +58,6 @@ public:
 
     bool isLineSubscribed(VertexConnectionItem* pLine);
 
-    VertexConnectionItem* getPendingConnection() const;
-
 signals:
     void sizeChanged(VertexSizeType prevSizeT, VertexSizeType currentSizeT);
 
@@ -72,15 +70,11 @@ private:
     std::set<VertexConnectionItem*> m_connectionsFromThis;
     std::set<VertexConnectionItem*> m_connectionsToThis;
 
-    VertexConnectionItem* m_pendingConnection {nullptr};
-
 private slots:
     void updateConnectionLines();
 
 protected:
     void updateLabelPosition();
-
-    void setPendingConnection(VertexConnectionItem* pConnection);
 
     ObjectItems::TextLabel* getLabel() const;
 

@@ -9,6 +9,8 @@ namespace Graph {
 ImageVertexItem::ImageVertexItem(QGraphicsItem* parent)
     : VertexItem(parent)
 {
+    setSystemName("Изображение");
+
     createSubitem(m_pixmapItem);
     m_pixmapItem->setTransformationMode(Qt::SmoothTransformation);
 }
@@ -64,10 +66,6 @@ QMenu* ImageVertexItem::createContextMenu()
         setImage(CommonFunctions::readImage(targetFile));
     });
     res->addAction(pSetImageAction);
-
-    auto pCreateConnectionAction = new QMenu("Добавить соединение");
-    // TODO: Добавление соединений -- плагин должен будет задать варианты соединений
-    res->addMenu(pCreateConnectionAction);
 
     return res;
 }

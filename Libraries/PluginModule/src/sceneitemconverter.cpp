@@ -54,8 +54,12 @@ void SceneItemConverter::toGraph(const std::list<ObjectItems::BasicItem *> &item
     pGraphObj->clearGraphData();
 
     for (auto* pItem : items) {
-        if (auto pVertex = dynamic_cast<VertexItem*>(pItem); nullptr != pVertex) {
-            pGraphObj->addVertex(pVertex->toGObject());
+        auto itemType = pItem->getObjectType();
+        switch (itemType)
+        {
+        case Graph::OBJECTTYPE_VERTEX:
+            pGraphObj->addVertex(static_cast<VertexItem*>(pItem)->toGObject());
+            break;
         }
     }
 }

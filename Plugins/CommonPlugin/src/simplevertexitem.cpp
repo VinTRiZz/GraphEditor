@@ -26,7 +26,7 @@ const QString EXTRADATA_VALUE_SHAPETYPE {"shapeType"};
 
 SimpleVertexItem::SimpleVertexItem(QGraphicsItem* parent) :
     VertexItem(parent) {
-    setSystemName("Вершина");
+    setSystemName("Объект");
 
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setFlag(QGraphicsItem::ItemClipsToShape, true);

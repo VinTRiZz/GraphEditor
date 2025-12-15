@@ -57,9 +57,10 @@ QMenu *GraphEditView::createConnectionsMenu(VertexItem *hoverVertex)
     connect(pAction, &QAction::triggered,
             this, [this, hoverVertex](){
         if (m_pendingConnection) { removeObject(m_pendingConnection); }
-        m_pendingConnection = new VertexConnectionItem(getCanvas());
+        m_pendingConnection = new VertexConnectionItem;
         m_pendingConnection->setItemId(getFreeObjectId());
         addObject(m_pendingConnection);
+        m_pendingConnection->setParentItem(getCanvas());
         hoverVertex->subscribeAsConnectionFrom(m_pendingConnection);
     });
     pMenu->addAction(pAction);
@@ -68,9 +69,10 @@ QMenu *GraphEditView::createConnectionsMenu(VertexItem *hoverVertex)
     connect(pAction, &QAction::triggered,
             this, [this, hoverVertex](){
         if (m_pendingConnection) { removeObject(m_pendingConnection); }
-        m_pendingConnection = new VertexConnectionItem(getCanvas());
+        m_pendingConnection = new VertexConnectionItem;
         m_pendingConnection->setItemId(getFreeObjectId());
         addObject(m_pendingConnection);
+        m_pendingConnection->setParentItem(getCanvas());
         auto pConLine = new ObjectItems::ElegantConnectionLine;
         pConLine->setDirection(ObjectItems::LineDirectionType::Forward);
         m_pendingConnection->setLineItem(pConLine);

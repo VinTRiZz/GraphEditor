@@ -178,6 +178,10 @@ void VertexItem::subscribeAsConnectionFrom(VertexConnectionItem* pLine) {
 
     pLine->setVertexFrom(this);
     m_connectionsFromThis.emplace(pLine);
+    connect(pLine, &QObject::destroyed,
+            this, [this, pLine](){
+        m_connectionsFromThis.erase(pLine);
+    });
     updateConnectionLines();
 }
 
@@ -197,6 +201,10 @@ void VertexItem::subscribeAsConnectionTo(VertexConnectionItem* pLine) {
 
     pLine->setVertexTo(this);
     m_connectionsToThis.emplace(pLine);
+    connect(pLine, &QObject::destroyed,
+            this, [this, pLine](){
+        m_connectionsToThis.erase(pLine);
+    });
     updateConnectionLines();
 }
 

@@ -16,7 +16,9 @@ VertexConnectionItem::VertexConnectionItem(QGraphicsItem* parent)
     setSystemName("Соединение вершин");
     setObjectType(OBJECTTYPE_CONNECTION);
 
-    createSubitem(m_connectionLine);
+    auto pLine = new ObjectItems::ArrowedConnectionLine;
+    pLine->setDirection(LineDirectionType::Forward);
+    setLineItem(pLine);
 
     auto& appSettings = Common::ApplicationSettings::getInstance();
 
@@ -56,6 +58,16 @@ void VertexConnectionItem::setVertexTo(VertexItem* pVertexTo) {
 
 VertexItem* VertexConnectionItem::getVertexTo() const {
     return m_toVertex;
+}
+
+void VertexConnectionItem::setLineItem(ObjectItems::AbstractConnectionLine *pLine)
+{
+    if (pLine == nullptr) {
+        throw std::invalid_argument("VertexConnectionItem: Nullptr line item");
+    }
+    delete m_connectionLine;
+    m_connectionLine = pLine;
+    pLine->setParentItem(this);
 }
 
 AbstractConnectionLine *VertexConnectionItem::getLineItem() const

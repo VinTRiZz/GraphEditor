@@ -49,20 +49,39 @@ void GraphEditView::writeChanges()
     LOG_OK("Graph data write succeed");
 }
 
-QMenu *GraphEditView::createConnectionsMenu()
+QMenu *GraphEditView::createConnectionsMenu(VertexItem *hoverVertex)
 {
     auto pMenu = new QMenu("Соединить", this);
 
     auto pAction = new QAction("Напрямую", pMenu);
+    connect(pAction, &QAction::triggered,
+            this, [this, hoverVertex](){
+        if (m_pendingConnection) { removeObject(m_pendingConnection); }
+        m_pendingConnection = new VertexConnectionItem(getCanvas());
+        m_pendingConnection->setItemId(getFreeObjectId());
+        addObject(m_pendingConnection);
+        hoverVertex->subscribeAsConnectionFrom(m_pendingConnection);
+    });
     pMenu->addAction(pAction);
 
     pAction = new QAction("Фигурно", pMenu);
+    connect(pAction, &QAction::triggered,
+            this, [this, hoverVertex](){
+        if (m_pendingConnection) { removeObject(m_pendingConnection); }
+        m_pendingConnection = new VertexConnectionItem(getCanvas());
+        m_pendingConnection->setItemId(getFreeObjectId());
+        addObject(m_pendingConnection);
+        auto pConLine = new ObjectItems::ElegantConnectionLine;
+        pConLine->setDirection(ObjectItems::LineDirectionType::Forward);
+        m_pendingConnection->setLineItem(pConLine);
+        hoverVertex->subscribeAsConnectionFrom(m_pendingConnection);
+    });
     pMenu->addAction(pAction);
 
     return pMenu;
 }
 
-QMenu *GraphEditView::createGroupsMenu()
+QMenu *GraphEditView::createGroupsMenu(VertexItem *hoverVertex)
 {
     auto pMenu = new QMenu("Группа", this);
 
@@ -83,7 +102,15 @@ QMenu *GraphEditView::createGroupsMenu()
 
 QMenu *GraphEditView::createSelectionMenu()
 {
+    auto pMenu = new QMenu("Выбор", this);
 
+    auto pAction = new QAction("Удалить", pMenu);
+    pMenu->addAction(pAction);
+
+    pAction = new QAction("Объединить в группу", pMenu);
+    pMenu->addAction(pAction);
+
+    return pMenu;
 }
 
 void GraphEditView::dragEnterEvent(QDragEnterEvent *event)
@@ -122,6 +149,7 @@ void GraphEditView::dropEvent(QDropEvent *event)
         auto pItem = dynamic_cast<ObjectItems::BasicItem*>(pInterface);
         if (nullptr != pItem) {
             pItem->setPos(mapToScene(event->pos()) - pItem->boundingRect().center());
+            pItem->setItemId(getFreeObjectId());
             addObject(pItem);
             LOG_OK("Added item:", itemName, "from plugin:", itemPlugin);
             event->acceptProposedAction();
@@ -142,6 +170,7 @@ void GraphEditView::mousePressEvent(QMouseEvent *e)
         for (auto* pItem : topItems) {
             if (auto pVertex = dynamic_cast<VertexItem*>(pItem); pVertex != nullptr) {
                 pVertex->subscribeAsConnectionTo(m_pendingConnection);
+                m_pendingConnection = nullptr;
                 break;
             }
         }
@@ -171,7 +200,7 @@ void GraphEditView::contextMenuEvent(QContextMenuEvent *e)
         switch (itemType)
         {
         case Graph::OBJECTTYPE_VERTEX:
-            m_contextMenu.addMenu(createConnectionsMenu());
+            m_contextMenu.addMenu(createConnectionsMenu(static_cast<VertexItem*>(pHoverItemObject)));
             m_contextMenu.addAction("Комментарий", [this](){
                 LOG_DEBUG("ADD COMMENT, BRO!");
             });
@@ -181,20 +210,14 @@ void GraphEditView::contextMenuEvent(QContextMenuEvent *e)
 
     auto pGridAction = m_contextMenu.addAction("Сетка", [this]() {
         getScene()->setGridEnabled(!getScene()->getIsGridEnabled());
-        for (auto* pAction : m_contextMenu.actions()) {
-            if (pAction->text() == "Сетка") {
-                pAction->setChecked(getScene()->getIsGridEnabled());
-                break;
-            }
-        }
     });
     pGridAction->setCheckable(true);
+    pGridAction->setChecked(getScene()->getIsGridEnabled());
 
     m_contextMenu.addAction("Вернуться в центр", [this](){
         resetScale();
         centerOn(getCanvas()->boundingRect().center());
     });
 
-    // Подразумевается, что это меню не было определено
     m_contextMenu.exec(e->globalPos());
 }

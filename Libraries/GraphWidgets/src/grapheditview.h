@@ -6,6 +6,7 @@
 
 namespace Graph {
 class VertexConnectionItem;
+class VertexItem;
 }
 
 class GraphEditView final :
@@ -21,8 +22,8 @@ private:
     Graph::VertexConnectionItem* m_pendingConnection {nullptr};
 
     QMenu m_contextMenu;
-    QMenu* createConnectionsMenu();
-    QMenu* createGroupsMenu();
+    QMenu* createConnectionsMenu(Graph::VertexItem *hoverVertex);
+    QMenu* createGroupsMenu(Graph::VertexItem *hoverVertex);
     QMenu* createSelectionMenu();
 
 protected:

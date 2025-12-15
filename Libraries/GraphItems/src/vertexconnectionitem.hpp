@@ -27,6 +27,11 @@ public:
     void setVertexTo(VertexItem* pVertexTo);
     VertexItem* getVertexTo() const;
 
+    /**
+     * @brief setLineItem Задать новый айтем соединения. Удаляет предыдущий
+     * @param pLine
+     */
+    void setLineItem(ObjectItems::AbstractConnectionLine* pLine);
     ObjectItems::AbstractConnectionLine* getLineItem() const;
 
 private:

@@ -16,8 +16,7 @@ namespace Graph {
 class VertexItem;
 
 class VertexConnectionItem :
-        public ObjectItems::BasicItem,
-        public PluginObjectInterface {
+        public ObjectItems::BasicItem {
 public:
     explicit VertexConnectionItem(QGraphicsItem* parent = nullptr);
     ~VertexConnectionItem();

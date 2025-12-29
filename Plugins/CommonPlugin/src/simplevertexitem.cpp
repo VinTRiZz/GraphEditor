@@ -86,6 +86,16 @@ SimpleVertexShapeType SimpleVertexItem::getShapeType() const
     return m_shapeType;
 }
 
+QByteArray SimpleVertexItem::serialize() const
+{
+    return {};
+}
+
+bool SimpleVertexItem::deserialize(const QByteArray &arr)
+{
+    return true;
+}
+
 void SimpleVertexItem::initShapeItem()
 {
     registerSubitem(m_vertexShapeItem);

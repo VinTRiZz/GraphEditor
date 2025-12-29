@@ -1,18 +1,20 @@
-#include "gsj_100_savesubsystem.hpp"
+#include "gsj_200_savesubsystem.hpp"
 
 #include <QJsonArray>
 
 #include <Components/Logger/Logger.h>
 
+#include <GraphObject/PluginObjectInterface.h>
+
 namespace Filework {
 
-GSJ_100_SaveSubsystem::GSJ_100_SaveSubsystem() :
+GSJ_200_SaveSubsystem::GSJ_200_SaveSubsystem() :
     AbstractSaveSubsystem("1.0.0")
 {
 
 }
 
-bool GSJ_100_SaveSubsystem::canProcess(const QString &fileData) const
+bool GSJ_200_SaveSubsystem::canProcess(const QString &fileData) const
 {
     QJsonParseError err;
     auto parsedJson = QJsonDocument::fromJson(fileData.toUtf8(), &err);
@@ -77,7 +79,7 @@ bool GSJ_100_SaveSubsystem::canProcess(const QString &fileData) const
     return true;
 }
 
-bool GSJ_100_SaveSubsystem::createSavedata(const Graph::GraphObjectManagerPtr &pGraph, QString &savedata) const
+bool GSJ_200_SaveSubsystem::createSavedata(const Graph::GraphObjectManagerPtr &pGraph, QString &savedata) const
 {
     QJsonObject root;
 
@@ -99,9 +101,8 @@ bool GSJ_100_SaveSubsystem::createSavedata(const Graph::GraphObjectManagerPtr &p
     propertiesObj["common"] = commonObj;
 
     // Vertices section
-    QJsonObject verticesObj;
-    const auto vertices = pGraph->getObject()->getAllVertices();
-    for (const auto& vertex : vertices) {
+    QJsonArray verticesObj;
+    for (const auto& vertex : pGraph->getObject()->getAllVertices()) {
         QJsonObject vObj;
         vObj["id"] = QString::number(vertex.getId().value());
         vObj["posX"] = vertex.getPos().x();
@@ -112,22 +113,37 @@ bool GSJ_100_SaveSubsystem::createSavedata(const Graph::GraphObjectManagerPtr &p
         vObj["extraData"] = vertex.getExtraData();
 
         QJsonArray cons;
-        for (auto con : vertex.getConnections()) {
-            QJsonValue conV;
-            conV = con.value();
+        for (auto& con : vertex.getConnections()) {
+            QJsonObject conV;
+            conV["targetId"] = con.first.value();
+            conV["itemId"] = con.second;
             cons.push_back(conV);
         }
         vObj["connections"] = cons;
-
-        verticesObj[QString::number(vertex.getId().value())] = vObj;
+        verticesObj.push_back(vObj);
     }
-    root["objects"] = verticesObj;
+    root["vertices"] = verticesObj;
+
+    QJsonArray objectsObj;
+    for (const auto& obj : pGraph->getObject()->getPluginObjects()) {
+        if (!obj.objectId.has_value()) {
+            continue;
+        }
+        QJsonObject pluginObj;
+        pluginObj["id"] = obj.objectId.value();
+        pluginObj["pluginName"] = obj.pluginName;
+        pluginObj["pluginObjectName"] = obj.pluginObjectName;
+        pluginObj["serializedData"] = obj.serializedData.toHex().data();
+
+        objectsObj.push_back(pluginObj);
+    }
+    root["objects"] = objectsObj;
 
     savedata = QJsonDocument(root).toJson(QJsonDocument::Compact);
     return true;
 }
 
-bool GSJ_100_SaveSubsystem::parseSavedata(const Graph::GraphObjectManagerPtr &pGraph, const QString &savedata) const
+bool GSJ_200_SaveSubsystem::parseSavedata(const Graph::GraphObjectManagerPtr &pGraph, const QString &savedata) const
 {
     QJsonParseError err;
     auto parsedJson = QJsonDocument::fromJson(savedata.toUtf8(), &err);
@@ -154,7 +170,7 @@ bool GSJ_100_SaveSubsystem::parseSavedata(const Graph::GraphObjectManagerPtr &pG
     graphMetadata->setEditTime(QDateTime::fromString(commonObj["edited"].toString(), Graph::DATE_CONVERSION_FORMAT));
 
     // Vertices section
-    for (auto vertR : iJson["objects"].toArray()) {
+    for (auto vertR : iJson["vertices"].toArray()) {
         auto vert = vertR.toObject();
         Graph::GObject vObj;
         vObj.setId(vert["id"].toInt());
@@ -166,15 +182,31 @@ bool GSJ_100_SaveSubsystem::parseSavedata(const Graph::GraphObjectManagerPtr &pG
         vObj.setExtraData(QJsonDocument::fromJson(vert["extraData"].toString().toUtf8()).object());
 
         for (auto conR : iJson["connections"].toArray()) {
-            auto con = conR.toInt();
-            vObj.addConnection(con);
+            auto con = conR.toObject();
+            auto conTargetId = con["targetId"].toInt();
+            auto conItemId = con["itemId"].toInt();
+            vObj.addConnection({conTargetId, conItemId});
         }
         pGraphObj->addVertex(vObj);
+    }
+
+    // Objects
+    QJsonObject objectsObj;
+    for (auto pluginObjR : iJson["objects"].toArray()) {
+        auto pluginObj = pluginObjR.toObject();
+
+        Graph::PluginObjectInterface::ObjectMetadata obj;
+        obj.objectId            = pluginObj["id"].toInt();
+        obj.pluginName          = pluginObj["pluginName"].toString();
+        obj.pluginObjectName    = pluginObj["pluginObjectName"].toString();
+        obj.serializedData      = QByteArray::fromHex(pluginObj["serializedData"].toString().toUtf8());
+
+        pGraphObj->addPluginObject(obj);
     }
     return true;
 }
 
-QJsonObject GSJ_100_SaveSubsystem::createSystemJson() const
+QJsonObject GSJ_200_SaveSubsystem::createSystemJson() const
 {
     QJsonObject systemObj;
     systemObj["app_version"] = QString(GRAPH_EDITOR_VERSION);

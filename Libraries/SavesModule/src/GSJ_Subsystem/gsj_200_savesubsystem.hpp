@@ -4,10 +4,10 @@
 
 namespace Filework {
 
-class GSJ_100_SaveSubsystem : public AbstractSaveSubsystem
+class GSJ_200_SaveSubsystem : public AbstractSaveSubsystem
 {
 public:
-    GSJ_100_SaveSubsystem();
+    GSJ_200_SaveSubsystem();
 
     // AbstractSaveSubsystem interface
     bool canProcess(const QString &fileData) const override;

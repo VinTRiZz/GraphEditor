@@ -60,21 +60,26 @@ void GObject::setPos(const QPointF &p)
     m_pos = p;
 }
 
-void GObject::addConnection(graphId_t targetId)
+void GObject::addConnection(const GConnection_t &conInfo)
 {
-    assert(targetId.has_value());
-    m_connections.insert(targetId.value());
+    assert(conInfo.first.has_value());
+    m_connections.push_back(conInfo);
 }
 
-std::unordered_set<graphId_t> GObject::getConnections() const
+std::list<std::pair<graphId_t, ObjectItems::objectId_t> > GObject::getConnections() const
 {
     return m_connections;
 }
 
-void GObject::removeConnection(graphId_t targetId)
+void GObject::removeConnection(ObjectItems::objectId_t connectionItemId)
 {
-    assert(targetId.has_value());
-    m_connections.erase(targetId.value());
+    auto conInfoIt = std::find_if(m_connections.begin(), m_connections.end(), [connectionItemId](auto& conInfo){
+        return conInfo.second == connectionItemId;
+    });
+    if (conInfoIt == m_connections.end()) {
+        return;
+    }
+    m_connections.erase(conInfoIt);
 }
 
 QJsonObject GObject::getCommonData() const

@@ -39,6 +39,9 @@ set(CMAKE_AUTORCC ON)
 # Common things include (functions, etc.)
 include(cmake/CMakeLists.txt)
 
+message(STATUS "Searching for GTest")
+add_subdirectory(Testing EXCLUDE_FROM_ALL)
+
 # Subdirs
 message(STATUS "Searching for libraries...")
 add_subdirectory(Libraries)
@@ -50,5 +53,3 @@ add_subdirectory(Plugins)
 message(STATUS "Searching for apps...")
 add_subdirectory(App)
 
-message(STATUS "Searching for tests...")
-add_subdirectory(Testing EXCLUDE_FROM_ALL)

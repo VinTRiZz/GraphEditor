@@ -29,6 +29,9 @@ public:
     void setShapeType(SimpleVertexShapeType vst);
     SimpleVertexShapeType getShapeType() const;
 
+    virtual QByteArray serialize() const override;
+    virtual bool deserialize(const QByteArray& arr) override;
+
 private:
     SimpleVertexShapeType m_shapeType {SimpleVertexShapeType::SVST_Ellipse};
 

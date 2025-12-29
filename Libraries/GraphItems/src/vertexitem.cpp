@@ -118,7 +118,7 @@ GObject VertexItem::toGObject() const
             LOG_WARNING("Invalid connection got (no VERTEX-TO set)");
             continue;
         }
-        graphVertex.addConnection(pConnection->getVertexTo()->getItemId());
+        graphVertex.addConnection({pConnection->getVertexTo()->getItemId(), pConnection->getItemId()});
     }
 
     return graphVertex;

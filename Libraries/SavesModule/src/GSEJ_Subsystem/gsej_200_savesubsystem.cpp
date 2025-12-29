@@ -1,26 +1,26 @@
-#include "gsej_100_savesubsystem.hpp"
+#include "gsej_200_savesubsystem.hpp"
 
 #include <Components/Encryption/AES-256.h>
 
 namespace Filework {
 
-GSEJ_100_SaveSubsystem::GSEJ_100_SaveSubsystem() :
-    AbstractSaveSubsystem("1.0.0")
+GSEJ_200_SaveSubsystem::GSEJ_200_SaveSubsystem() :
+    AbstractSaveSubsystem("2.0.0")
 {
 
 }
 
-void GSEJ_100_SaveSubsystem::setEncryptionKey(const QString &key)
+void GSEJ_200_SaveSubsystem::setEncryptionKey(const QString &key)
 {
     m_key = key;
 }
 
-QString GSEJ_100_SaveSubsystem::getEncryptionKey() const
+QString GSEJ_200_SaveSubsystem::getEncryptionKey() const
 {
     return m_key;
 }
 
-bool GSEJ_100_SaveSubsystem::canProcess(const QString &fileData) const
+bool GSEJ_200_SaveSubsystem::canProcess(const QString &fileData) const
 {
     QJsonParseError err;
     auto parsedJson = QJsonDocument::fromJson(fileData.toUtf8(), &err);
@@ -32,7 +32,7 @@ bool GSEJ_100_SaveSubsystem::canProcess(const QString &fileData) const
     return (iJson["version"] == getVersion());
 }
 
-bool GSEJ_100_SaveSubsystem::createSavedata(const Graph::GraphObjectManagerPtr &pGraph, QString &savedata) const
+bool GSEJ_200_SaveSubsystem::createSavedata(const Graph::GraphObjectManagerPtr &pGraph, QString &savedata) const
 {
     if (!m_gsjSubsys.createSavedata(pGraph, savedata)) {
         return false;
@@ -50,7 +50,7 @@ bool GSEJ_100_SaveSubsystem::createSavedata(const Graph::GraphObjectManagerPtr &
     return true;
 }
 
-bool GSEJ_100_SaveSubsystem::parseSavedata(const Graph::GraphObjectManagerPtr &pGraph, const QString &savedata) const
+bool GSEJ_200_SaveSubsystem::parseSavedata(const Graph::GraphObjectManagerPtr &pGraph, const QString &savedata) const
 {
     QJsonParseError err;
     auto parsedJson = QJsonDocument::fromJson(savedata.toUtf8(), &err);

@@ -8,9 +8,12 @@
 
 #include "graphcommon.h"
 
+#include <Components/CustomQt/ObjectView/ObjectItems.h>
+
 namespace Graph {
 
 class PluginObjectInterface;
+using GConnection_t = std::pair<graphId_t, ObjectItems::objectId_t>;
 
 /**
  * @brief The GObject class Сущность в графе зависимостей
@@ -34,9 +37,9 @@ public:
     QPointF getPos() const;
     void setPos(const QPointF& p);
 
-    void addConnection(graphId_t targetId);
-    std::unordered_set<graphId_t> getConnections() const;
-    void removeConnection(graphId_t targetId);
+    void addConnection(const GConnection_t& conInfo);
+    std::list<GConnection_t> getConnections() const;
+    void removeConnection(ObjectItems::objectId_t connectionItemId);
 
     QJsonObject getCommonData() const;
     void setCommonData(const QJsonObject &nCommonData);
@@ -52,8 +55,8 @@ private:
     QPointF     m_pos {};
     QString     m_displayName;
 
-    PluginObjectInterface*          m_interface {nullptr};
-    std::unordered_set<graphId_t>   m_connections;
+    PluginObjectInterface*      m_interface {nullptr};
+    std::list<GConnection_t>    m_connections;
 
     QJsonObject m_commonData;   // Общие данные по объекту (графические, тултип и прочие)
     QJsonObject m_pluginData;   // Данные по самому объекту (относящиеся к PluginObjectInterface)

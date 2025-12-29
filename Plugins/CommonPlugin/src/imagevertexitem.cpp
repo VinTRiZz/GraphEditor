@@ -70,6 +70,16 @@ QMenu* ImageVertexItem::createContextMenu()
     return res;
 }
 
+QByteArray ImageVertexItem::serialize() const
+{
+    return {};
+}
+
+bool ImageVertexItem::deserialize(const QByteArray &arr)
+{
+    return true;
+}
+
 void ImageVertexItem::processSizeTypeChange(const QRectF& newSize)
 {
     updatePixmap();

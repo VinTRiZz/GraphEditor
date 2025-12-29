@@ -14,7 +14,6 @@
 namespace Graph {
 
 class VertexItem;
-
 class VertexConnectionItem :
         public ObjectItems::BasicItem {
 public:

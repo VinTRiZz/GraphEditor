@@ -8,13 +8,13 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 
-#include "GSJ_Subsystem/gsj_100_savesubsystem.hpp"
+#include "GSJ_Subsystem/gsj_200_savesubsystem.hpp"
 
 namespace Filework {
 
 GSJ_Format::GSJ_Format()
     : AbstractSaveFormat("gsj", "Файл сохранения графа", true) {
-    addSubsystem(std::make_shared<GSJ_100_SaveSubsystem>());
+    addSubsystem(std::make_shared<GSJ_200_SaveSubsystem>());
 }
 
 bool GSJ_Format::isVersionHigher(const QString &leftV, const QString &rightV) const

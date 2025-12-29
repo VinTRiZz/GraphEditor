@@ -32,6 +32,7 @@ void GraphEditView::writeChanges()
     LOG_INFO("Reading graph...");
     auto currentGraphObject = getGraph()->getObject();
     currentGraphObject->clearVertices();
+    currentGraphObject->clearObjects();
 
     for (auto [itemId, pItem] : getObjects()) {
         switch (pItem->getObjectType())
@@ -41,8 +42,8 @@ void GraphEditView::writeChanges()
             break;
 
         case Graph::OBJECTTYPE_CONNECTION:
-            // TODO: Fix connection adding
-//            currentGraphObject->addConnection(static_cast<Graph::VertexConnectionItem*>(pItem)->toConnection());
+            // TODO: Add connections using plugin (cast internal items)
+//            currentGraphObject->addPluginObject(static_cast<Graph::VertexConnectionItem*>(pItem)->g
             break;
         }
     }

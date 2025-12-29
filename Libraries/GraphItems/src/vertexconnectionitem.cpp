@@ -23,7 +23,7 @@ VertexConnectionItem::VertexConnectionItem(QGraphicsItem* parent)
     auto& appSettings = Common::ApplicationSettings::getInstance();
 
     m_connectionLine->setLinePen(Colors::DEFAULT_COLOR_CONNECTION_LINE);
-    m_connectionLine->setSelectionPen(Colors::DEFAULT_COLOR_CONNECTION_SEL);
+    m_connectionLine->setLineSelectionPen(Colors::DEFAULT_COLOR_CONNECTION_SEL);
 
     setZValue(Layers::CONNECTION_LAYER);
 }

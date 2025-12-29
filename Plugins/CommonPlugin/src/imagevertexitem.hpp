@@ -19,6 +19,8 @@ public:
     Qt::AspectRatioMode getAspectRatioMode() const;
 
     virtual QMenu *createContextMenu() override;
+    virtual QByteArray serialize() const override;
+    virtual bool deserialize(const QByteArray& arr) override;
 
 protected:
     void processSizeTypeChange(const QRectF& newSize) override;

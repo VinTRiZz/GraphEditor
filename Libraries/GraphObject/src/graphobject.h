@@ -6,6 +6,7 @@
 #include <QObject>
 
 #include "gobject.h"
+#include "pluginobjectitnterface.hpp"
 
 namespace Graph {
 
@@ -82,8 +83,15 @@ public:
     void removeVertex(graphId_t vertexId);
     void clearVertices();
 
+    void addPluginObject(const PluginObjectInterface::ObjectMetadata& objectMeta);
+    void removePluginObject(const graphId_t& objectId);
+    void removePluginObject(const PluginObjectInterface::ObjectMetadata& objectMeta);
+    const std::unordered_set<PluginObjectInterface::ObjectMetadata>& getPluginObjects() const;
+    void clearObjects();
+
 private:
     GraphMetaInformation* m_metaInfo {nullptr};
+    std::unordered_set<PluginObjectInterface::ObjectMetadata> m_pluginObjects;
     std::unordered_set<GObject> m_vertices;  //! Вершины графа
 };
 

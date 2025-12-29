@@ -67,9 +67,40 @@ std::size_t GraphObject::getVerticesCount() const {
     return m_vertices.size();
 }
 
+void GraphObject::removeVertex(graphId_t vertexId)
+{
+    
+}
+
 void GraphObject::clearVertices()
 {
     m_vertices.clear();
+}
+
+void GraphObject::addPluginObject(const PluginObjectInterface::ObjectMetadata &objectMeta)
+{
+    m_pluginObjects.erase(objectMeta);
+}
+
+void GraphObject::removePluginObject(const graphId_t &objectId)
+{
+    PluginObjectInterface::ObjectMetadata tmpMet;
+    m_pluginObjects.erase(tmpMet); // TODO: Сделать по-другому. Изменится определение std::hash и что будет?
+}
+
+void GraphObject::removePluginObject(const PluginObjectInterface::ObjectMetadata &objectMeta)
+{
+    m_pluginObjects.erase(objectMeta);
+}
+
+const std::unordered_set<PluginObjectInterface::ObjectMetadata> &GraphObject::getPluginObjects() const
+{
+    return m_pluginObjects;
+}
+
+void GraphObject::clearObjects()
+{
+    m_pluginObjects.clear();
 }
 
 

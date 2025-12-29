@@ -32,10 +32,10 @@ std::list<QGraphicsItem*> SceneItemConverter::fromGraph(
         for (auto* pItemFrom : res) {
             auto pVertFrom = static_cast<Graph::VertexItem*>(pItemFrom);
 
-            for (auto id : vert.getConnections()) {
+            for (auto [targetId, itemId] : vert.getConnections()) {
                 for (auto* pItemTo : res) {
                     auto pVertTo = static_cast<Graph::VertexItem*>(pItemTo);
-                    if (pVertTo->getItemId() != id.value()) {
+                    if (pVertTo->getItemId() != targetId.value()) {
                         continue;
                     }
 

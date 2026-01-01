@@ -72,12 +72,12 @@ QMenu* ImageVertexItem::createContextMenu()
 
 QJsonObject ImageVertexItem::toJson() const
 {
-    return {};
+    return GObjectItem::toJson();
 }
 
 bool ImageVertexItem::fromJson(const QJsonObject &arr)
 {
-    return true;
+    return GObjectItem::fromJson(arr);
 }
 
 void ImageVertexItem::processSizeTypeChange(const QRectF& newSize)

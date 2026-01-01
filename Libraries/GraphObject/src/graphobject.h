@@ -31,6 +31,8 @@ public:
     bool operator==(const GraphMetaInformation& gObj_) const;
     bool operator!=(const GraphMetaInformation& gObj_) const;
 
+    void clearData();
+
     QString getName() const;
     void setName(const QString &newName);
 

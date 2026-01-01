@@ -14,7 +14,7 @@ const QString IMAGEVERTEX {"Image with name"};
 
 
 CommonPluginCore::CommonPluginCore() :
-    Graph::AbstractPluginCore()
+    Graph::AbstractPluginCore(PLUGIN_NAME)
 {
     registerObject(PluginObjectType::Vertex, CommonPluginObjectName::SIMPLEVERTEX);
     registerObject(PluginObjectType::Vertex, CommonPluginObjectName::IMAGEVERTEX);
@@ -43,11 +43,16 @@ Graph::PluginInteractionWidget *CommonPluginCore::getInteractor()
 Graph::PluginObjectInterface *CommonPluginCore::createObject(const QString& name)
 {
     if (name == CommonPluginObjectName::SIMPLEVERTEX) {
-        return new Graph::SimpleVertexItem();
+        auto pSimpleVertex = new Graph::SimpleVertexItem();
+        pSimpleVertex->setPluginName(PLUGIN_NAME);
+        pSimpleVertex->setPluginObjectName(CommonPluginObjectName::SIMPLEVERTEX);
+        return pSimpleVertex;
     }
 
     if (name == CommonPluginObjectName::IMAGEVERTEX) {
         auto pImageVertex = new Graph::ImageVertexItem();
+        pImageVertex->setPluginName(PLUGIN_NAME);
+        pImageVertex->setPluginObjectName(CommonPluginObjectName::IMAGEVERTEX);
 
         auto emptyImageRect = QRect(0, 0, 500, 500);
         QImage emptyImg(emptyImageRect.width(), emptyImageRect.height(), QImage::Format_RGB32);

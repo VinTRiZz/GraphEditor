@@ -62,6 +62,8 @@ QJsonObject GObjectItem::toJson() const
 {
     auto res = PluginObjectInterface::toJson();
 
+    res["isVisible"] = isVisible();
+
     // TODO: Save data
 
     return res;
@@ -70,6 +72,8 @@ QJsonObject GObjectItem::toJson() const
 bool GObjectItem::fromJson(const QJsonObject &jsonObj)
 {
     auto res = PluginObjectInterface::fromJson(jsonObj);
+
+    setVisible(jsonObj["isVisible"].toBool());
 
     // TODO: Load data
 

@@ -13,7 +13,7 @@
 namespace Filework {
 
 GSJ_200_SaveSubsystem::GSJ_200_SaveSubsystem() :
-    AbstractSaveSubsystem("1.0.0")
+    AbstractSaveSubsystem("2.0.0")
 {
 
 }
@@ -39,43 +39,22 @@ bool GSJ_200_SaveSubsystem::canProcess(const QString &fileData) const
     }
 
     // Common properties
-    const QJsonObject props = iJson["properties"].toObject();
-    if (!props.contains("common")) {
-        LOG_ERROR("Not found section: properties:common");
+    if (!iJson.contains("properties")) {
+        LOG_ERROR("Not found section: properties");
         return false;
     }
-    if (!props["common"].isObject()) {
-        LOG_ERROR("Invalid properties:common section");
-        return false;
-    }
-
-    // Custom properties
-    if (!props.contains("custom")) {
-        LOG_ERROR("Not found section: properties:custom");
-        return false;
-    }
-    if (!props["custom"].isObject()) {
-        LOG_ERROR("Invalid properties:custom section");
+    if (!iJson["properties"].isObject()) {
+        LOG_ERROR("Invalid properties section");
         return false;
     }
 
     // Vertices
-    if (!iJson.contains("vertices")) {
-        LOG_ERROR("Not found section: vertices");
+    if (!iJson.contains("objects")) {
+        LOG_ERROR("Not found section: objects");
         return false;
     }
-    if (!iJson["vertices"].isObject()) {
-        LOG_ERROR("Invalid vertices section");
-        return false;
-    }
-
-    // Connections
-    if (!iJson.contains("connections")) {
-        LOG_ERROR("Not found section: connections");
-        return false;
-    }
-    if (!iJson["connections"].isObject()) {
-        LOG_ERROR("Not found section: connections");
+    if (!iJson["objects"].isArray()) {
+        LOG_ERROR("Invalid objects section");
         return false;
     }
 
@@ -90,21 +69,18 @@ bool GSJ_200_SaveSubsystem::createSavedata(const Graph::GraphObjectManagerPtr &p
     // System section
     root["system"] = createSystemJson();
 
-    // Properties section
+    // Properties
     QJsonObject propertiesObj;
-
-    // Common properties
-    QJsonObject commonObj;
     {
         auto graphMetadata = pGraph->getObject()->getMetaInfo();
-        commonObj["name"] = graphMetadata->getName();
-        commonObj["descr"] = graphMetadata->getDescription();
-        commonObj["created"] = graphMetadata->getCreateTime().toString(
+        propertiesObj["name"] = graphMetadata->getName();
+        propertiesObj["descr"] = graphMetadata->getDescription();
+        propertiesObj["created"] = graphMetadata->getCreateTime().toString(
             Graph::DATE_CONVERSION_FORMAT);
-        commonObj["edited"] = graphMetadata->getEditTime().toString(
+        propertiesObj["edited"] = graphMetadata->getEditTime().toString(
             Graph::DATE_CONVERSION_FORMAT);
     }
-    propertiesObj["common"] = commonObj;
+    root["properties"] = propertiesObj;
 
     QJsonArray objectsJsonA;
     for (auto* pVertex : pGraph->getObject()->getAllObjects()) {
@@ -134,16 +110,13 @@ bool GSJ_200_SaveSubsystem::parseSavedata(const Graph::GraphObjectManagerPtr &pG
     // Ресет для чистоты чтения
     pGraphObj->clearGraphData();
 
-    // Properties section
-    QJsonObject propertiesObj;
-
     // Common properties
     auto graphMetadata = pGraphObj->getMetaInfo();
-    auto commonObj = iJson["common"].toObject();
-    graphMetadata->setName(commonObj["name"].toString());
-    graphMetadata->setDescription(commonObj["descr"].toString());
-    graphMetadata->setCreateTime(QDateTime::fromString(commonObj["created"].toString(), Graph::DATE_CONVERSION_FORMAT));
-    graphMetadata->setEditTime(QDateTime::fromString(commonObj["edited"].toString(), Graph::DATE_CONVERSION_FORMAT));
+    auto propertiesObj = iJson["properties"].toObject();
+    graphMetadata->setName(propertiesObj["name"].toString());
+    graphMetadata->setDescription(propertiesObj["descr"].toString());
+    graphMetadata->setCreateTime(QDateTime::fromString(propertiesObj["created"].toString(), Graph::DATE_CONVERSION_FORMAT));
+    graphMetadata->setEditTime(QDateTime::fromString(propertiesObj["edited"].toString(), Graph::DATE_CONVERSION_FORMAT));
 
     // Get objects
     auto& pluginMaster = Graph::PluginMaster::getInstance();

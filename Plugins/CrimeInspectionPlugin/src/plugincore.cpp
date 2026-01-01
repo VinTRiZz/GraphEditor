@@ -10,7 +10,7 @@ const QString PERSONVERTEX {"Person"};
 
 
 CrimeInspectionPluginCore::CrimeInspectionPluginCore() :
-    Graph::AbstractPluginCore()
+    Graph::AbstractPluginCore(PLUGIN_NAME)
 {
     registerObject(PluginObjectType::Vertex, CrimeInspectionObjectName::PERSONVERTEX);
 }

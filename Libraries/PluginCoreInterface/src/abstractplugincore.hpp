@@ -25,7 +25,10 @@ class PluginObjectInterface;
  * @brief The AbstractPluginCore class Базовый класс для работы плагина
  */
 class AbstractPluginCore {
+    QString m_pluginName;
 public:
+    explicit AbstractPluginCore(const QString& pluginName) : m_pluginName {pluginName} {}
+
     enum class PluginObjectType : int {
         Unknown = -1,
         Vertex,

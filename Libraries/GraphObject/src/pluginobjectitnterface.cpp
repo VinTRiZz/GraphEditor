@@ -29,7 +29,7 @@ void PluginObjectInterface::setPluginObjectName(const QString &pluginObjectName)
 
 QString PluginObjectInterface::getPluginObjectName() const
 {
-    return m_metadata.pluginName;
+    return m_metadata.pluginObjectName;
 }
 
 QJsonObject PluginObjectInterface::toJson() const

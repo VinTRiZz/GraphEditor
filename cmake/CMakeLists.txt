@@ -83,6 +83,10 @@ function(CONFIGURE_PLUGIN PLUGIN_NAME)
         LIBRARY     DESTINATION ${INSTALL_DESTINATION_PREFIX}/plugins
     )
 
+    target_compile_definitions(${PLUGIN_NAME} PRIVATE
+        PLUGIN_NAME="${PLUGIN_NAME}"
+    )
+
     set(
         TARGET_LINKED_LIBS
         Qt5::Core

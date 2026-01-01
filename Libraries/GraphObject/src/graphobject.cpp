@@ -19,7 +19,7 @@ GraphObject::GraphObject(QObject *parent) :
 void GraphObject::clearGraphData()
 {
     clearVertices();
-    m_metaInfo = {};
+    m_metaInfo->clearData();
 }
 
 bool GraphObject::operator==(const GraphObject& gObj_) const {
@@ -178,6 +178,15 @@ bool GraphMetaInformation::operator==(const GraphMetaInformation &gObj_) const
 bool GraphMetaInformation::operator!=(const GraphMetaInformation &gObj_) const
 {
     return !(*this == gObj_);
+}
+
+void GraphMetaInformation::clearData()
+{
+    m_name.clear();
+    m_description.clear();
+    m_createTime = {};
+    m_editTime = {};
+    m_savepath.clear();
 }
 
 void GraphObjectUser::setGraph(const Graph::GraphObjectManagerPtr& pGraph) {

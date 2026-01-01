@@ -85,12 +85,12 @@ SimpleVertexShapeType SimpleVertexItem::getShapeType() const
 
 QJsonObject SimpleVertexItem::toJson() const
 {
-    return {};
+    return GObjectItem::toJson();
 }
 
 bool SimpleVertexItem::fromJson(const QJsonObject &arr)
 {
-    return true;
+    return GObjectItem::fromJson(arr);
 }
 
 void SimpleVertexItem::initShapeItem()

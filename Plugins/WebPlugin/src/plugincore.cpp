@@ -10,7 +10,7 @@ const QString LINKVERTEX {"Link"};
 
 
 WebPluginCore::WebPluginCore() :
-    Graph::AbstractPluginCore()
+    Graph::AbstractPluginCore(PLUGIN_NAME)
 {
     registerObject(PluginObjectType::Vertex, WebPluginObjectName::LINKVERTEX);
 }

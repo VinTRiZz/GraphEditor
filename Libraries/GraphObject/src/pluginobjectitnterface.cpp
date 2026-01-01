@@ -81,7 +81,8 @@ bool PluginObjectInterface::ObjectMetadata::operator <(const ObjectMetadata &iv)
 bool PluginObjectInterface::ObjectMetadata::operator ==(const ObjectMetadata &iv) const {
     return  objectId == iv.objectId &&
             pluginName == iv.pluginName &&
-            pluginObjectName == iv.pluginObjectName;
+            pluginObjectName == iv.pluginObjectName &&
+            pluginObjectData == iv.pluginObjectData;
 }
 
 } // namespace Graph

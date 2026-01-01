@@ -122,6 +122,7 @@ QString GraphMetaInformation::getName() const
 void GraphMetaInformation::setName(const QString &newName)
 {
     m_name = newName;
+    emit dataChanged();
 }
 
 QString GraphMetaInformation::getDescription() const
@@ -132,6 +133,7 @@ QString GraphMetaInformation::getDescription() const
 void GraphMetaInformation::setDescription(const QString &newDescription)
 {
     m_description = newDescription;
+    emit dataChanged();
 }
 
 QDateTime GraphMetaInformation::getCreateTime() const
@@ -142,6 +144,7 @@ QDateTime GraphMetaInformation::getCreateTime() const
 void GraphMetaInformation::setCreateTime(const QDateTime &newCreateTime)
 {
     m_createTime = newCreateTime;
+    emit dataChanged();
 }
 
 QDateTime GraphMetaInformation::getEditTime() const
@@ -152,6 +155,7 @@ QDateTime GraphMetaInformation::getEditTime() const
 void GraphMetaInformation::setEditTime(const QDateTime &newEditTime)
 {
     m_editTime = newEditTime;
+    emit dataChanged();
 }
 
 QString GraphMetaInformation::getSavepath() const
@@ -162,6 +166,7 @@ QString GraphMetaInformation::getSavepath() const
 void GraphMetaInformation::setSavepath(const QString &newSavepath)
 {
     m_savepath = newSavepath;
+    emit dataChanged();
 }
 
 bool GraphMetaInformation::operator==(const GraphMetaInformation &gObj_) const
@@ -177,6 +182,7 @@ bool GraphMetaInformation::operator!=(const GraphMetaInformation &gObj_) const
 
 void GraphObjectUser::setGraph(const Graph::GraphObjectManagerPtr& pGraph) {
     m_pGraph = pGraph;
+    processGraphChange();
 }
 
 bool GraphObjectUser::isGraphSet() const

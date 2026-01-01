@@ -144,6 +144,8 @@ void GraphTabWidget::createGraph() {
                     }
                 }
             });
+
+    ui->fileToolbar->setGraph(pGraph);
 }
 
 void GraphTabWidget::updatePluginList()

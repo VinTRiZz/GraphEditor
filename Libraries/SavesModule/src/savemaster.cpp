@@ -85,6 +85,19 @@ bool SaveMaster::save(const QString& oFilePath,
 
     pFormat->setGraph(iGraphMaintaner);
 
+    if (QFileInfo(oFilePath).exists()) {
+        auto backupFilename = Common::DirectoryManager::getDirectoryStatic(Common::DirectoryManager::DirectoryType::Backup).absolutePath() +
+                QDir::separator() + QFileInfo(oFilePath).fileName();
+        if (QFileInfo(backupFilename).exists()) {
+            LOG_INFO("Replacing backup...");
+            QFile::remove(backupFilename);
+            QFile::copy(oFilePath, backupFilename);
+        } else {
+            LOG_INFO("Creating backup...");
+            QFile::copy(oFilePath, backupFilename);
+        }
+    }
+
     auto res = false;
     if (QFileInfo(oFilePath).completeSuffix().isEmpty()) {
         res = pFormat->save(oFilePath + "." +

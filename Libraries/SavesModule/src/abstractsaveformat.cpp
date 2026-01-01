@@ -47,6 +47,7 @@ bool AbstractSaveFormat::save(const QString &targetPath) const
         LOG_ERROR("[SAVE FORMAT] Can not create save data");
         return false;
     }
+    LOG_INFO("[SAVE FORMAT] Writing data...");
     return Filework::Common::replaceFileData(targetPath.toStdString(), fileDataQt.toStdString());
 }
 
@@ -60,7 +61,7 @@ bool AbstractSaveFormat::load(const QString &targetPath)
     auto fileDataQt = QString::fromStdString(fileData);
     for (auto& [vers, pSubsys] : m_saveSubsystems) {
         if (pSubsys->canProcess(fileDataQt)) {
-            LOG_INFO("[SAVE FORMAT] Processing file data");
+            LOG_INFO("[SAVE FORMAT] Reading data...");
             return pSubsys->parseSavedata(getGraph(), fileDataQt);
         }
     }

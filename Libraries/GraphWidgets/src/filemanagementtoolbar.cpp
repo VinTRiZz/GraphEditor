@@ -19,7 +19,7 @@ FileManagementToolbar::FileManagementToolbar(QWidget *parent) :
             this, [this](){
         if (!isGraphSet()) { return; }
         auto savePath = SaveMaster::getSavePath();
-        if (savePath.isNull()) {
+        if (savePath.isEmpty()) {
             return;
         }
         auto saveRes = saveGraph(savePath);
@@ -30,7 +30,7 @@ FileManagementToolbar::FileManagementToolbar(QWidget *parent) :
     connect(ui->loadAs_toolButton, &QToolButton::clicked,
             this, [this](){
         auto loadPath = SaveMaster::getLoadPath();
-        if (loadPath.isNull()) {
+        if (loadPath.isEmpty()) {
             return;
         }
 
@@ -62,7 +62,7 @@ FileManagementToolbar::~FileManagementToolbar()
 bool FileManagementToolbar::saveGraph(const QString &savePath)
 {
     if (!isGraphSet()) { return false; }
-    if (savePath.isNull()) {
+    if (!savePath.isEmpty()) {
         getGraph()->getObject()->getMetaInfo()->setSavepath(savePath);
     } else if (!QFileInfo(savePath).dir().exists()) {
         LOG_ERROR("Can not save file with path:", savePath);
@@ -79,7 +79,7 @@ bool FileManagementToolbar::loadGraph(const QString &savePath)
     if (!isGraphSet()) { // Подразумевается, что результат будет забираться из этого объекта
         setGraph(Graph::GraphObjectManager::createGraphInstance());
     }
-    if (!savePath.isNull()) {
+    if (!savePath.isEmpty()) {
         auto targetFileInfo = QFileInfo(savePath);
         if (!targetFileInfo.exists() || !targetFileInfo.isReadable()) {
             LOG_ERROR("Can not loading file with path:", savePath);
@@ -98,7 +98,7 @@ void FileManagementToolbar::processGraphChange()
 
     if (isGraphSet()) {
         auto savePath = getGraph()->getObject()->getMetaInfo()->getSavepath();
-        auto isPathValid = !savePath.isNull() && QFileInfo(savePath).exists();
+        auto isPathValid = !savePath.isEmpty() && QFileInfo(savePath).exists();
         ui->save_toolButton->setEnabled(isPathValid);
         ui->load_toolButton->setEnabled(isPathValid);
     } else {

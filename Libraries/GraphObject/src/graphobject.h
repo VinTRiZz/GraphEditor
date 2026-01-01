@@ -5,8 +5,8 @@
 
 #include <QObject>
 
-#include "gobject.h"
-#include "pluginobjectitnterface.hpp"
+#include "gobjectitem.hpp"
+#include "gobjectconnectionitem.hpp"
 
 namespace Graph {
 
@@ -76,23 +76,21 @@ public:
     // ============================================================== //
     // ================= Работа с вершинами графа =================== //
     // ============================================================== //
-    void addVertex(const GObject& iVert);
-    bool updateVertex(const GObject& iVert);
-    const std::unordered_set<GObject>& getAllVertices() const;
-    std::size_t getVerticesCount() const;
-    void removeVertex(graphId_t vertexId);
+    void addObject(GObjectItem* iVert);
+    const std::unordered_set<GObjectItem*>& getAllObjects() const;
+    std::size_t getObjectCount() const;
+    void removeObject(graphId_t vertexId);
     void clearVertices();
 
-    void addPluginObject(const PluginObjectInterface::ObjectMetadata& objectMeta);
-    void removePluginObject(const graphId_t& objectId);
-    void removePluginObject(const PluginObjectInterface::ObjectMetadata& objectMeta);
-    const std::unordered_set<PluginObjectInterface::ObjectMetadata>& getPluginObjects() const;
+    void addPluginObject(PluginObjectInterface* pObject);
+    void removePluginObject(PluginObjectInterface* pObject);
+    const std::unordered_set<PluginObjectInterface*>& getPluginObjects() const;
     void clearObjects();
 
 private:
     GraphMetaInformation* m_metaInfo {nullptr};
-    std::unordered_set<PluginObjectInterface::ObjectMetadata> m_pluginObjects;
-    std::unordered_set<GObject> m_vertices;  //! Вершины графа
+    std::unordered_set<PluginObjectInterface*> m_pluginObjects;
+    std::unordered_set<GObjectItem*> m_objects;  //! Вершины графа
 };
 
 /**

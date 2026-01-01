@@ -5,10 +5,9 @@
 #include <Components/CustomQt/ObjectView/ObjectItems.h>
 #include <Components/CustomQt/ObjectView/InternalScene.h>
 
-#include <GraphItems/GraphItemsConstants.h>
+
 #include <GraphObject/PluginObjectInterface.h>
-#include <GraphItems/VertexItem.h>
-#include <GraphItems/VertexConnectionItem.h>
+#include <GraphObject/GraphObject.h>
 
 #include <PluginModule/PluginMaster.h>
 #include <PluginCoreInterface/Core.h>
@@ -27,30 +26,7 @@ GraphEditView::GraphEditView(QWidget* parent) :
     getCanvas()->setRect(QRectF(0, 0, 10000, 10000));
 }
 
-void GraphEditView::writeChanges()
-{
-    LOG_INFO("Reading graph...");
-    auto currentGraphObject = getGraph()->getObject();
-    currentGraphObject->clearVertices();
-    currentGraphObject->clearObjects();
-
-    for (auto [itemId, pItem] : getObjects()) {
-        switch (pItem->getObjectType())
-        {
-        case Graph::OBJECTTYPE_VERTEX:
-            currentGraphObject->updateVertex(static_cast<Graph::VertexItem*>(pItem)->toGObject());
-            break;
-
-        case Graph::OBJECTTYPE_CONNECTION:
-            // TODO: Add connections using plugin (cast internal items)
-//            currentGraphObject->addPluginObject(static_cast<Graph::VertexConnectionItem*>(pItem)->g
-            break;
-        }
-    }
-    LOG_OK("Graph data write succeed");
-}
-
-QMenu *GraphEditView::createConnectionsMenu(VertexItem *hoverVertex)
+QMenu *GraphEditView::createConnectionsMenu(GObjectItem *hoverVertex)
 {
     auto pMenu = new QMenu("Соединить", this);
 
@@ -58,7 +34,7 @@ QMenu *GraphEditView::createConnectionsMenu(VertexItem *hoverVertex)
     connect(pAction, &QAction::triggered,
             this, [this, hoverVertex](){
         if (m_pendingConnection) { removeObject(m_pendingConnection); }
-        m_pendingConnection = new VertexConnectionItem;
+        m_pendingConnection = new GObjectConnectionItem;
         m_pendingConnection->setItemId(getFreeObjectId());
         addObject(m_pendingConnection);
         m_pendingConnection->setParentItem(getCanvas());
@@ -70,7 +46,7 @@ QMenu *GraphEditView::createConnectionsMenu(VertexItem *hoverVertex)
     connect(pAction, &QAction::triggered,
             this, [this, hoverVertex](){
         if (m_pendingConnection) { removeObject(m_pendingConnection); }
-        m_pendingConnection = new VertexConnectionItem;
+        m_pendingConnection = new GObjectConnectionItem;
         m_pendingConnection->setItemId(getFreeObjectId());
         addObject(m_pendingConnection);
         m_pendingConnection->setParentItem(getCanvas());
@@ -84,7 +60,7 @@ QMenu *GraphEditView::createConnectionsMenu(VertexItem *hoverVertex)
     return pMenu;
 }
 
-QMenu *GraphEditView::createGroupsMenu(VertexItem *hoverVertex)
+QMenu *GraphEditView::createGroupsMenu(GObjectItem *hoverVertex)
 {
     auto pMenu = new QMenu("Группа", this);
 
@@ -154,6 +130,11 @@ void GraphEditView::dropEvent(QDropEvent *event)
             pItem->setPos(mapToScene(event->pos()) - pItem->boundingRect().center());
             pItem->setItemId(getFreeObjectId());
             addObject(pItem);
+            if (auto pObj = dynamic_cast<GObjectItem*>(pItem); nullptr != pObj) {
+                getGraph()->getObject()->addObject(pObj);
+            } else {
+                getGraph()->getObject()->addPluginObject(pInterface);
+            }
             LOG_OK("Added item:", itemName, "from plugin:", itemPlugin);
             event->acceptProposedAction();
         } else {
@@ -169,9 +150,9 @@ void GraphEditView::mousePressEvent(QMouseEvent *e)
     if (e->buttons() & Qt::MouseButton::LeftButton &&
         nullptr != m_pendingConnection) {
         auto topItems = getItems(e->pos(), true);
-        std::list<VertexConnectionItem*> connections;
+        std::list<GObjectConnectionItem*> connections;
         for (auto* pItem : topItems) {
-            if (auto pVertex = dynamic_cast<VertexItem*>(pItem); pVertex != nullptr) {
+            if (auto pVertex = dynamic_cast<GObjectItem*>(pItem); pVertex != nullptr) {
                 pVertex->subscribeAsConnectionTo(m_pendingConnection);
                 m_pendingConnection = nullptr;
                 break;
@@ -203,7 +184,7 @@ void GraphEditView::contextMenuEvent(QContextMenuEvent *e)
         switch (itemType)
         {
         case Graph::OBJECTTYPE_VERTEX:
-            m_contextMenu.addMenu(createConnectionsMenu(static_cast<VertexItem*>(pHoverItemObject)));
+            m_contextMenu.addMenu(createConnectionsMenu(static_cast<GObjectItem*>(pHoverItemObject)));
             m_contextMenu.addAction("Комментарий", [this](){
                 LOG_DEBUG("ADD COMMENT, BRO!");
             });

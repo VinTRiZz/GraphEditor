@@ -6,5 +6,6 @@ COMPONENTS_LINK_COMPONENT(SavesModule Encryption)
 COMPONENTS_LINK_COMPONENT(SavesModule Qt-Custom)
 
 LINK_TARGET_LIBRARY(SavesModule GraphObject)
+LINK_TARGET_LIBRARY(SavesModule PluginModule)
 
 ADD_EDITOR_TEST(SavesModule)

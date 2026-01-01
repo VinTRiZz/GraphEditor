@@ -8,23 +8,22 @@
 #include <QGraphicsPolygonItem>
 #include <QPen>
 
-#include <GraphObject/GraphObject.h>
 #include <GraphObject/PluginObjectInterface.h>
 
 namespace Graph {
 
-class VertexItem;
-class VertexConnectionItem :
+class GObjectItem;
+class GObjectConnectionItem :
         public ObjectItems::BasicItem {
 public:
-    explicit VertexConnectionItem(QGraphicsItem* parent = nullptr);
-    ~VertexConnectionItem();
+    explicit GObjectConnectionItem(QGraphicsItem* parent = nullptr);
+    ~GObjectConnectionItem();
 
-    void setVertexFrom(VertexItem* pVertexFrom);
-    VertexItem* getVertexFrom() const;
+    void setVertexFrom(GObjectItem* pVertexFrom);
+    GObjectItem* getVertexFrom() const;
 
-    void setVertexTo(VertexItem* pVertexTo);
-    VertexItem* getVertexTo() const;
+    void setVertexTo(GObjectItem* pVertexTo);
+    GObjectItem* getVertexTo() const;
 
     /**
      * @brief setLineItem Задать новый айтем соединения. Удаляет предыдущий
@@ -34,8 +33,8 @@ public:
     ObjectItems::AbstractConnectionLine* getLineItem() const;
 
 private:
-    VertexItem* m_fromVertex{nullptr};
-    VertexItem* m_toVertex{nullptr};
+    GObjectItem* m_fromVertex{nullptr};
+    GObjectItem* m_toVertex{nullptr};
 
     ObjectItems::AbstractConnectionLine* m_connectionLine {nullptr};
 };

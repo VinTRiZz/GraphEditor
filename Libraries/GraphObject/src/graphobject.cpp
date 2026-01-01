@@ -23,7 +23,7 @@ void GraphObject::clearGraphData()
 }
 
 bool GraphObject::operator==(const GraphObject& gObj_) const {
-    if (m_vertices != gObj_.m_vertices) {
+    if (m_objects != gObj_.m_objects) {
         return false;
     }
 
@@ -42,58 +42,39 @@ GraphMetaInformation *GraphObject::getMetaInfo() const
     return m_metaInfo;
 }
 
-void GraphObject::addVertex(const GObject& iVert) {
-    if (!iVert.isValid()) {
-        throw std::invalid_argument("Invalid vertex");
-    }
-    m_vertices.insert(iVert);
+void GraphObject::addObject(GObjectItem *iVert) {
+    m_objects.insert(iVert);
 }
 
-bool GraphObject::updateVertex(const GObject& iVert) {
-    if (!iVert.isValid()) {
-        throw std::invalid_argument("Invalid vertex");
-    }
-    if (m_vertices.count(iVert)) {
-        m_vertices.insert(iVert);
-    }
-    return true;
+const std::unordered_set<GObjectItem*> &GraphObject::getAllObjects() const {
+    return m_objects;
 }
 
-const std::unordered_set<GObject> &GraphObject::getAllVertices() const {
-    return m_vertices;
+std::size_t GraphObject::getObjectCount() const {
+    return m_objects.size();
 }
 
-std::size_t GraphObject::getVerticesCount() const {
-    return m_vertices.size();
-}
-
-void GraphObject::removeVertex(graphId_t vertexId)
+void GraphObject::removeObject(graphId_t vertexId)
 {
     
 }
 
 void GraphObject::clearVertices()
 {
-    m_vertices.clear();
+    m_objects.clear();
 }
 
-void GraphObject::addPluginObject(const PluginObjectInterface::ObjectMetadata &objectMeta)
+void GraphObject::addPluginObject(PluginObjectInterface* pObject)
 {
-    m_pluginObjects.erase(objectMeta);
+    m_pluginObjects.insert(pObject);
 }
 
-void GraphObject::removePluginObject(const graphId_t &objectId)
+void GraphObject::removePluginObject(PluginObjectInterface *pObject)
 {
-    PluginObjectInterface::ObjectMetadata tmpMet;
-    m_pluginObjects.erase(tmpMet); // TODO: Сделать по-другому. Изменится определение std::hash и что будет?
+    m_pluginObjects.erase(pObject);
 }
 
-void GraphObject::removePluginObject(const PluginObjectInterface::ObjectMetadata &objectMeta)
-{
-    m_pluginObjects.erase(objectMeta);
-}
-
-const std::unordered_set<PluginObjectInterface::ObjectMetadata> &GraphObject::getPluginObjects() const
+const std::unordered_set<PluginObjectInterface *> &GraphObject::getPluginObjects() const
 {
     return m_pluginObjects;
 }

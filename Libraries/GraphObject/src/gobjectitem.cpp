@@ -1,7 +1,6 @@
-#include "vertexitem.hpp"
+#include "gobjectitem.hpp"
 
-#include "constants.hpp"
-#include "vertexconnectionitem.hpp"
+#include "gobjectconnectionitem.hpp"
 
 #include <Components/Logger/Logger.h>
 
@@ -9,7 +8,7 @@ using namespace ObjectItems;
 
 namespace Graph {
 
-bool VertexItem::isLineSubscribed(VertexConnectionItem* pLine) {
+bool GObjectItem::isLineSubscribed(GObjectConnectionItem* pLine) {
     // Нет смысла проверять исходящие, т.к. нельзя регистрировать вершину саму
     // на себя
     for (auto pLineTo : m_connectionsToThis) {
@@ -21,7 +20,7 @@ bool VertexItem::isLineSubscribed(VertexConnectionItem* pLine) {
     return false;
 }
 
-VertexItem::VertexItem(QGraphicsItem *parent) :
+GObjectItem::GObjectItem(QGraphicsItem *parent) :
     ObjectItems::BasicItem(parent)
 {
     setObjectType(OBJECTTYPE_VERTEX);
@@ -43,10 +42,12 @@ VertexItem::VertexItem(QGraphicsItem *parent) :
     });
 
     connect(this, &BasicItem::itemMoved,
-            this, &VertexItem::updateConnectionLines);
+            this, &GObjectItem::updateConnectionLines);
+    connect(this, &BasicItem::idChanged,
+            this, [this](){ setPluginObjectId(getItemId()); });
 }
 
-VertexItem::~VertexItem()
+GObjectItem::~GObjectItem()
 {
     for (auto pLine : m_connectionsToThis) {
         pLine->setVertexTo(nullptr);
@@ -57,74 +58,43 @@ VertexItem::~VertexItem()
     }
 }
 
-void VertexItem::fromGObject(const GObject &vert)
+QJsonObject GObjectItem::toJson() const
 {
-    setItemId(vert.getId().value());
+    auto res = PluginObjectInterface::toJson();
 
-    auto itemPos = vert.getPos();
-    if (parentItem()) {
-        itemPos = parentItem()->mapFromScene(itemPos);
-    }
-    setPos(itemPos);
+    // TODO: Save data
 
-    setDisplayName(vert.getName());
-
-    auto commonVertexItemData = vert.getCommonData();
-    auto getCommonData = [&commonVertexItemData](const auto& fieldName) -> QJsonValue {
-        if (commonVertexItemData.contains(fieldName)) {
-            return commonVertexItemData[fieldName];
-        }
-        return QJsonValue();
-    };
-
-    setPluginName(getCommonData(GObjectValueName::COMMON_PLUGIN_NAME).toString());
-    setPluginObjectName(getCommonData(GObjectValueName::COMMON_PLUGIN_OBJECTNAME).toString());
-
-    setToolTip(getCommonData(GObjectValueName::COMMON_TOOLTIP).toString());
-    setDescription(getCommonData(GObjectValueName::COMMON_DESCRIPTION).toString());
-
-    setLinePen(qvariant_cast<QPen>(getCommonData(GObjectValueName::COMMON_LINEPEN).toVariant()));
-    setBackgroundBrush(qvariant_cast<QBrush>(getCommonData(GObjectValueName::COMMON_BGRBRUSH).toVariant()));
-    setTitlePosition(VertexTitlePosition(getCommonData(GObjectValueName::COMMON_TITLEPOS).toInt()));
+    return res;
 }
 
-GObject VertexItem::toGObject() const
+bool GObjectItem::fromJson(const QJsonObject &jsonObj)
 {
-    GObject graphVertex;
+    auto res = PluginObjectInterface::fromJson(jsonObj);
 
-    graphVertex.setId(getItemId());
-    graphVertex.setPos(scenePos());
-    graphVertex.setName(getDisplayName());
+    // TODO: Load data
 
-    QJsonObject commonVertexItemData;
-
-    auto setCommonData = [&commonVertexItemData](const auto& fieldName, const auto& value) -> void {
-        commonVertexItemData[fieldName] = value;
-    };
-
-    setCommonData(GObjectValueName::COMMON_PLUGIN_NAME, getPluginName());
-    setCommonData(GObjectValueName::COMMON_PLUGIN_OBJECTNAME, getPluginObjectName());
-
-    setCommonData(GObjectValueName::COMMON_TOOLTIP, toolTip());
-    setCommonData(GObjectValueName::COMMON_DESCRIPTION, getDescription());
-    setCommonData(GObjectValueName::COMMON_LINEPEN, QJsonValue::fromVariant(QVariant::fromValue(getLinePen())));
-    setCommonData(GObjectValueName::COMMON_BGRBRUSH, QJsonValue::fromVariant(QVariant::fromValue(getBackgroundBrush())));
-
-    setCommonData(GObjectValueName::COMMON_TITLEPOS, getTitlePosition());
-    graphVertex.setCommonData(commonVertexItemData);
-
-    for (auto* pConnection : m_connectionsFromThis) {
-        if (nullptr == pConnection->getVertexTo()) {
-            LOG_WARNING("Invalid connection got (no VERTEX-TO set)");
-            continue;
-        }
-        graphVertex.addConnection({pConnection->getVertexTo()->getItemId(), pConnection->getItemId()});
-    }
-
-    return graphVertex;
+    return res;
 }
 
-void VertexItem::setVertexSizeType(VertexSizeType vst)
+void GObjectItem::setItemNotFound()
+{
+    QGraphicsRectItem* pInvalidRect {nullptr};
+    createSubitem(pInvalidRect);
+    pInvalidRect->setBrush(QBrush(Qt::darkMagenta, Qt::DiagCrossPattern));
+
+    QGraphicsSimpleTextItem* pInvalidText {nullptr};
+    createSubitem(pInvalidText);
+    pInvalidText->setText(QString("Not found:\n%0::%1").arg(getPluginName(), getPluginObjectName()));
+
+    m_isItemFound = false;
+}
+
+bool GObjectItem::isItemFound() const
+{
+    return m_isItemFound;
+}
+
+void GObjectItem::setVertexSizeType(VertexSizeType vst)
 {
     auto prevSizeT = m_vertexSizeType;
     m_vertexSizeType = vst;
@@ -162,12 +132,12 @@ void VertexItem::setVertexSizeType(VertexSizeType vst)
     emit sizeChanged(prevSizeT, m_vertexSizeType);
 }
 
-VertexSizeType VertexItem::getVertexSizeType() const
+VertexSizeType GObjectItem::getVertexSizeType() const
 {
     return m_vertexSizeType;
 }
 
-void VertexItem::subscribeAsConnectionFrom(VertexConnectionItem* pLine) {
+void GObjectItem::subscribeAsConnectionFrom(GObjectConnectionItem* pLine) {
     if (this == pLine->getVertexTo()) {
         return;
     }
@@ -185,12 +155,12 @@ void VertexItem::subscribeAsConnectionFrom(VertexConnectionItem* pLine) {
     updateConnectionLines();
 }
 
-void VertexItem::unsubscribeConnectionFrom(VertexConnectionItem* pLine) {
+void GObjectItem::unsubscribeConnectionFrom(GObjectConnectionItem* pLine) {
     pLine->setVertexFrom(nullptr);
     m_connectionsFromThis.erase(pLine);
 }
 
-void VertexItem::subscribeAsConnectionTo(VertexConnectionItem* pLine) {
+void GObjectItem::subscribeAsConnectionTo(GObjectConnectionItem* pLine) {
     if (this == pLine->getVertexFrom()) {
         return;
     }
@@ -208,12 +178,12 @@ void VertexItem::subscribeAsConnectionTo(VertexConnectionItem* pLine) {
     updateConnectionLines();
 }
 
-void VertexItem::unsubscribeConnectionTo(VertexConnectionItem* pLine) {
+void GObjectItem::unsubscribeConnectionTo(GObjectConnectionItem* pLine) {
     pLine->setVertexTo(nullptr);
     m_connectionsToThis.erase(pLine);
 }
 
-void VertexItem::updateConnectionLines() {
+void GObjectItem::updateConnectionLines() {
     unsigned connectionNumber{0};
     auto vertexRadius = static_cast<double>(boundingRect().width()) / 2.0;
 
@@ -235,18 +205,18 @@ void VertexItem::updateConnectionLines() {
     }
 }
 
-void VertexItem::setTitlePosition(VertexTitlePosition vtp)
+void GObjectItem::setTitlePosition(VertexTitlePosition vtp)
 {
     m_shapeTitlePos = vtp;
     updateLabelPosition();
 }
 
-VertexTitlePosition VertexItem::getTitlePosition() const
+VertexTitlePosition GObjectItem::getTitlePosition() const
 {
     return m_shapeTitlePos;
 }
 
-void VertexItem::updateLabelPosition()
+void GObjectItem::updateLabelPosition()
 {
     auto shapeBRect = toVertexBoundingRect(getVertexSizeType());
     QPointF targetPos;
@@ -280,10 +250,12 @@ void VertexItem::updateLabelPosition()
     getLabel()->setPos(targetPos);
 }
 
-TextLabel *VertexItem::getLabel() const
+TextLabel *GObjectItem::getLabel() const
 {
     return m_nameItem;
 }
+
+void GObjectItem::processSizeTypeChange(const QRectF &newSize) {}
 
 QRectF toVertexBoundingRect(VertexSizeType vst)
 {

@@ -1,10 +1,14 @@
 #include "gsj_200_savesubsystem.hpp"
 
 #include <QJsonArray>
+#include <QJsonObject>
+#include <QJsonDocument>
 
 #include <Components/Logger/Logger.h>
 
 #include <GraphObject/PluginObjectInterface.h>
+#include <PluginCoreInterface/Core.h>
+#include <PluginModule/PluginMaster.h>
 
 namespace Filework {
 
@@ -91,53 +95,25 @@ bool GSJ_200_SaveSubsystem::createSavedata(const Graph::GraphObjectManagerPtr &p
 
     // Common properties
     QJsonObject commonObj;
-    auto graphMetadata = pGraph->getObject()->getMetaInfo();
-    commonObj["name"] = graphMetadata->getName();
-    commonObj["descr"] = graphMetadata->getDescription();
-    commonObj["created"] = graphMetadata->getCreateTime().toString(
-        Graph::DATE_CONVERSION_FORMAT);
-    commonObj["edited"] = graphMetadata->getEditTime().toString(
-        Graph::DATE_CONVERSION_FORMAT);
+    {
+        auto graphMetadata = pGraph->getObject()->getMetaInfo();
+        commonObj["name"] = graphMetadata->getName();
+        commonObj["descr"] = graphMetadata->getDescription();
+        commonObj["created"] = graphMetadata->getCreateTime().toString(
+            Graph::DATE_CONVERSION_FORMAT);
+        commonObj["edited"] = graphMetadata->getEditTime().toString(
+            Graph::DATE_CONVERSION_FORMAT);
+    }
     propertiesObj["common"] = commonObj;
 
-    // Vertices section
-    QJsonArray verticesObj;
-    for (const auto& vertex : pGraph->getObject()->getAllVertices()) {
-        QJsonObject vObj;
-        vObj["id"] = QString::number(vertex.getId().value());
-        vObj["posX"] = vertex.getPos().x();
-        vObj["posY"] = vertex.getPos().x();
-        vObj["name"] = vertex.getName();
-        vObj["commonData"] = vertex.getCommonData();
-        vObj["pluginData"] = vertex.getPluginData();
-        vObj["extraData"] = vertex.getExtraData();
-
-        QJsonArray cons;
-        for (auto& con : vertex.getConnections()) {
-            QJsonObject conV;
-            conV["targetId"] = con.first.value();
-            conV["itemId"] = con.second;
-            cons.push_back(conV);
-        }
-        vObj["connections"] = cons;
-        verticesObj.push_back(vObj);
+    QJsonArray objectsJsonA;
+    for (auto* pVertex : pGraph->getObject()->getAllObjects()) {
+        objectsJsonA.push_back(pVertex->toJson());
     }
-    root["vertices"] = verticesObj;
-
-    QJsonArray objectsObj;
-    for (const auto& obj : pGraph->getObject()->getPluginObjects()) {
-        if (!obj.objectId.has_value()) {
-            continue;
-        }
-        QJsonObject pluginObj;
-        pluginObj["id"] = obj.objectId.value();
-        pluginObj["pluginName"] = obj.pluginName;
-        pluginObj["pluginObjectName"] = obj.pluginObjectName;
-        pluginObj["serializedData"] = obj.serializedData.toHex().data();
-
-        objectsObj.push_back(pluginObj);
+    for (auto* pObj : pGraph->getObject()->getPluginObjects()) {
+        objectsJsonA.push_back(pObj->toJson());
     }
-    root["objects"] = objectsObj;
+    root["objects"] = objectsJsonA;
 
     savedata = QJsonDocument(root).toJson(QJsonDocument::Compact);
     return true;
@@ -169,39 +145,43 @@ bool GSJ_200_SaveSubsystem::parseSavedata(const Graph::GraphObjectManagerPtr &pG
     graphMetadata->setCreateTime(QDateTime::fromString(commonObj["created"].toString(), Graph::DATE_CONVERSION_FORMAT));
     graphMetadata->setEditTime(QDateTime::fromString(commonObj["edited"].toString(), Graph::DATE_CONVERSION_FORMAT));
 
-    // Vertices section
-    for (auto vertR : iJson["vertices"].toArray()) {
-        auto vert = vertR.toObject();
-        Graph::GObject vObj;
-        vObj.setId(vert["id"].toInt());
+    // Get objects
+    auto& pluginMaster = Graph::PluginMaster::getInstance();
+    Graph::GObjectItem* pInvalidObject {nullptr};
+    QJsonArray objectsJsonA = iJson["objects"].toArray();
 
-        vObj.setPos(QPointF(vert["posX"].toDouble(), vert["posX"].toDouble()));
-        vObj.setName(vert["name"].toString());
-        vObj.setPluginData(QJsonDocument::fromJson(vert["commonData"].toString().toUtf8()).object());
-        vObj.setPluginData(QJsonDocument::fromJson(vert["pluginData"].toString().toUtf8()).object());
-        vObj.setExtraData(QJsonDocument::fromJson(vert["extraData"].toString().toUtf8()).object());
+    for (auto objectJsonR : objectsJsonA) {
+        auto vObj = objectJsonR.toObject();
 
-        for (auto conR : iJson["connections"].toArray()) {
-            auto con = conR.toObject();
-            auto conTargetId = con["targetId"].toInt();
-            auto conItemId = con["itemId"].toInt();
-            vObj.addConnection({conTargetId, conItemId});
+        auto pluginName = vObj["pluginName"].toString();
+        auto pluginObjectName = vObj["pluginObjectName"].toString();
+
+        auto pPluginInterface = pluginMaster.getPlugin(pluginName);
+        if (!pPluginInterface) {
+            LOG_WARNING("Not found plugin:", pluginName);
+            pInvalidObject = new Graph::GObjectItem;
+            pInvalidObject->fromJson(vObj);
+            pInvalidObject->setItemNotFound();
+            pGraphObj->addObject(pInvalidObject);
+            pInvalidObject = nullptr;
+            continue;
         }
-        pGraphObj->addVertex(vObj);
-    }
+        auto pItem = pPluginInterface->getPluginCore()->createObject(pluginObjectName);
+        if (!pItem) {
+            LOG_WARNING("Not found plugin item:", QString("%0::%1").arg(pluginName, pluginObjectName));
+            pInvalidObject = new Graph::GObjectItem;
+            pInvalidObject->fromJson(vObj);
+            pInvalidObject->setItemNotFound();
+            pGraphObj->addObject(pInvalidObject);
+            pInvalidObject = nullptr;
+            continue;
+        }
 
-    // Objects
-    QJsonObject objectsObj;
-    for (auto pluginObjR : iJson["objects"].toArray()) {
-        auto pluginObj = pluginObjR.toObject();
-
-        Graph::PluginObjectInterface::ObjectMetadata obj;
-        obj.objectId            = pluginObj["id"].toInt();
-        obj.pluginName          = pluginObj["pluginName"].toString();
-        obj.pluginObjectName    = pluginObj["pluginObjectName"].toString();
-        obj.serializedData      = QByteArray::fromHex(pluginObj["serializedData"].toString().toUtf8());
-
-        pGraphObj->addPluginObject(obj);
+        if (auto pObj = dynamic_cast<Graph::GObjectItem*>(pItem); pObj != nullptr) {
+            pGraphObj->addObject(pObj);
+        } else {
+            pGraphObj->addPluginObject(pItem);
+        }
     }
     return true;
 }

@@ -1,11 +1,12 @@
 #pragma once
 
-#include <GraphItems/VertexItem.h>
+#include <GraphObject/GraphObject.h>
+
 #include <QGraphicsPixmapItem>
 
 namespace Graph {
 
-class ImageVertexItem : public VertexItem
+class ImageVertexItem : public GObjectItem
 {
     Q_OBJECT
 public:
@@ -19,8 +20,9 @@ public:
     Qt::AspectRatioMode getAspectRatioMode() const;
 
     virtual QMenu *createContextMenu() override;
-    virtual QByteArray serialize() const override;
-    virtual bool deserialize(const QByteArray& arr) override;
+
+    virtual QJsonObject toJson() const override;
+    virtual bool fromJson(const QJsonObject& arr) override;
 
 protected:
     void processSizeTypeChange(const QRectF& newSize) override;

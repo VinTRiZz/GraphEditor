@@ -2,7 +2,7 @@
 
 #include <Components/Logger/Logger.h>
 
-#include <GraphItems/VertexItem.h>
+
 
 namespace CrimeInspectionObjectName {
 const QString PERSONVERTEX {"Person"};

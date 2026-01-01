@@ -2,6 +2,9 @@
 
 #include <Components/Encryption/AES-256.h>
 
+#include <QJsonDocument>
+#include <QJsonObject>
+
 namespace Filework {
 
 GSEJ_200_SaveSubsystem::GSEJ_200_SaveSubsystem() :

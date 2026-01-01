@@ -10,7 +10,6 @@ COMPONENTS_LINK_COMPONENT(PluginModule Common)
 COMPONENTS_LINK_COMPONENT(PluginModule Qt-Custom)
 
 LINK_TARGET_LIBRARY(PluginModule GraphObject)
-LINK_TARGET_LIBRARY(PluginModule GraphItems)
 LINK_TARGET_LIBRARY(PluginModule PluginCoreInterface)
 
 ADD_EDITOR_TEST(PluginModule)

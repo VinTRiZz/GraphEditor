@@ -5,6 +5,5 @@ COMPONENTS_LINK_COMPONENT(PluginCoreInterface Common)
 COMPONENTS_LINK_COMPONENT(PluginCoreInterface Qt-Custom)
 
 LINK_TARGET_LIBRARY(PluginCoreInterface GraphObject)
-LINK_TARGET_LIBRARY(PluginCoreInterface GraphItems)
 
 ADD_EDITOR_TEST(PluginCoreInterface)

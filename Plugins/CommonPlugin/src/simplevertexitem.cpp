@@ -11,9 +11,6 @@
 #include <QLabel>
 #include <QTextOption>
 
-#include <GraphItems/VertexItem.h>
-#include <GraphItems/VertexConnectionItem.h>
-
 #include "vertexshapeprovider.hpp"
 
 using namespace ObjectItems;
@@ -25,7 +22,7 @@ const QString EXTRADATA_VALUE_SHAPETYPE {"shapeType"};
 }
 
 SimpleVertexItem::SimpleVertexItem(QGraphicsItem* parent) :
-    VertexItem(parent) {
+    GObjectItem(parent) {
     setSystemName("Объект");
 
     setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -48,26 +45,26 @@ SimpleVertexItem::~SimpleVertexItem() {
 
 }
 
-void SimpleVertexItem::fromGObject(const GObject &vert)
-{
-    VertexItem::fromGObject(vert);
+//void SimpleVertexItem::fromGObject(const GObject &vert)
+//{
+//    GObjectItem::fromGObject(vert);
 
-    auto pluginData = vert.getPluginData();
-    if (!pluginData.contains(EXTRADATA_VALUE_SHAPETYPE)) {
-        LOG_WARNING("SimpleVertexItem: Failed to find required extra data");
-        return;
-    }
-    setShapeType(SimpleVertexShapeType(pluginData[EXTRADATA_VALUE_SHAPETYPE].toInt()));
-}
+//    auto pluginData = vert.getPluginData();
+//    if (!pluginData.contains(EXTRADATA_VALUE_SHAPETYPE)) {
+//        LOG_WARNING("SimpleVertexItem: Failed to find required extra data");
+//        return;
+//    }
+//    setShapeType(SimpleVertexShapeType(pluginData[EXTRADATA_VALUE_SHAPETYPE].toInt()));
+//}
 
-GObject SimpleVertexItem::toGObject() const
-{
-    auto graphVertex = VertexItem::toGObject();
-    auto pluginData = graphVertex.getPluginData();
-    pluginData[EXTRADATA_VALUE_SHAPETYPE] = m_shapeType;
-    graphVertex.setPluginData(pluginData);
-    return graphVertex;
-}
+//GObject SimpleVertexItem::toGObject() const
+//{
+//    auto graphVertex = GObjectItem::toGObject();
+//    auto pluginData = graphVertex.getPluginData();
+//    pluginData[EXTRADATA_VALUE_SHAPETYPE] = m_shapeType;
+//    graphVertex.setPluginData(pluginData);
+//    return graphVertex;
+//}
 
 void SimpleVertexItem::setShapeType(SimpleVertexShapeType vst)
 {
@@ -86,12 +83,12 @@ SimpleVertexShapeType SimpleVertexItem::getShapeType() const
     return m_shapeType;
 }
 
-QByteArray SimpleVertexItem::serialize() const
+QJsonObject SimpleVertexItem::toJson() const
 {
     return {};
 }
 
-bool SimpleVertexItem::deserialize(const QByteArray &arr)
+bool SimpleVertexItem::fromJson(const QJsonObject &arr)
 {
     return true;
 }

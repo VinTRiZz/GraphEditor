@@ -1,9 +1,11 @@
 #pragma once
 
 #include <QString>
-#include "graphcommon.h"
+#include <QJsonObject>
 
 #include <hash_fun.h>
+
+#include "graphcommon.h"
 
 namespace Graph {
 
@@ -22,14 +24,14 @@ public:
     void setPluginObjectName(const QString& pluginObjectName);
     QString getPluginObjectName() const;
 
-    virtual QByteArray serialize() const = 0;
-    virtual bool deserialize(const QByteArray& arr) = 0;
+    virtual QJsonObject toJson() const;
+    virtual bool fromJson(const QJsonObject& arr);
 
     struct ObjectMetadata {
         graphId_t objectId;
         QString pluginName;
         QString pluginObjectName;
-        QByteArray serializedData;
+        QJsonObject pluginObjectData;
 
         bool operator <(const ObjectMetadata& iv) const;
         bool operator ==(const ObjectMetadata& iv) const;

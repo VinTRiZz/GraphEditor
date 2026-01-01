@@ -5,8 +5,8 @@
 #include <GraphObject/GraphObject.h>
 
 namespace Graph {
-class VertexConnectionItem;
-class VertexItem;
+class GObjectConnectionItem;
+class GObjectItem;
 }
 
 class GraphEditView final :
@@ -16,14 +16,12 @@ class GraphEditView final :
 public:
     GraphEditView(QWidget* parent = nullptr);
 
-    void writeChanges(); // TODO: Добавить обратное действие
-
 private:
-    Graph::VertexConnectionItem* m_pendingConnection {nullptr};
+    Graph::GObjectConnectionItem* m_pendingConnection {nullptr};
 
     QMenu m_contextMenu;
-    QMenu* createConnectionsMenu(Graph::VertexItem *hoverVertex);
-    QMenu* createGroupsMenu(Graph::VertexItem *hoverVertex);
+    QMenu* createConnectionsMenu(Graph::GObjectItem *hoverVertex);
+    QMenu* createGroupsMenu(Graph::GObjectItem *hoverVertex);
     QMenu* createSelectionMenu();
 
 protected:

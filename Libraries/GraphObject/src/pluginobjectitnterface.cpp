@@ -32,6 +32,35 @@ QString PluginObjectInterface::getPluginObjectName() const
     return m_metadata.pluginName;
 }
 
+QJsonObject PluginObjectInterface::toJson() const
+{
+    if (!getPluginObjectId().has_value()) {
+        return {};
+    }
+    QJsonObject vObj;
+    vObj["id"] = QString::number(getPluginObjectId().value());
+    vObj["pluginName"] = getPluginName();
+    vObj["pluginObjectName"] = getPluginObjectName();
+    return vObj;
+}
+
+bool PluginObjectInterface::fromJson(const QJsonObject &arr)
+{
+    if (arr.contains("id")) {
+        setPluginObjectId(arr["id"].toInt());
+    }
+
+    if (arr.contains("pluginName")) {
+        setPluginName(arr["pluginName"].toString());
+    }
+
+    if (arr.contains("pluginObjectName")) {
+        setPluginObjectName(arr["pluginObjectName"].toString());
+    }
+
+    return getPluginObjectId().has_value();
+}
+
 const PluginObjectInterface::ObjectMetadata &PluginObjectInterface::getMetadata() const
 {
     return m_metadata;
@@ -52,8 +81,7 @@ bool PluginObjectInterface::ObjectMetadata::operator <(const ObjectMetadata &iv)
 bool PluginObjectInterface::ObjectMetadata::operator ==(const ObjectMetadata &iv) const {
     return  objectId == iv.objectId &&
             pluginName == iv.pluginName &&
-            pluginObjectName == iv.pluginObjectName &&
-            serializedData == iv.serializedData;
+            pluginObjectName == iv.pluginObjectName;
 }
 
 } // namespace Graph

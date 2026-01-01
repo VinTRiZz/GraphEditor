@@ -4,7 +4,7 @@
 #include <QPen>
 #include <set>
 
-#include <GraphItems/VertexItem.h>
+#include <GraphObject/GraphObject.h>
 
 namespace Graph {
 
@@ -16,21 +16,18 @@ enum SimpleVertexShapeType : int {
     SVST_Circle,
 };
 
-class VertexConnectionItem;
+class GObjectConnectionItem;
 
-class SimpleVertexItem : public VertexItem {
+class SimpleVertexItem : public GObjectItem {
 public:
     explicit SimpleVertexItem(QGraphicsItem* parent = nullptr);
     ~SimpleVertexItem();
 
-    void fromGObject(const GObject& vert) override;
-    GObject toGObject() const override;
-
     void setShapeType(SimpleVertexShapeType vst);
     SimpleVertexShapeType getShapeType() const;
 
-    virtual QByteArray serialize() const override;
-    virtual bool deserialize(const QByteArray& arr) override;
+    virtual QJsonObject toJson() const override;
+    virtual bool fromJson(const QJsonObject& arr) override;
 
 private:
     SimpleVertexShapeType m_shapeType {SimpleVertexShapeType::SVST_Ellipse};

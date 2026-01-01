@@ -1,6 +1,5 @@
 #pragma once
 
-#include <GraphObject/GraphObject.h>
 #include <GraphObject/PluginObjectInterface.h>
 
 #include <Components/CustomQt/ObjectView/ObjectItems.h>
@@ -8,7 +7,7 @@
 
 namespace Graph {
 
-class VertexConnectionItem;
+class GObjectConnectionItem;
 
 /**
  * @brief The VertexSizeType enum Условная градация размера вершины
@@ -32,17 +31,24 @@ enum VertexTitlePosition : int {
     VTP_RightBottom,
 };
 
-class VertexItem :
+class GObjectItem :
         public ObjectItems::BasicItem,
         public PluginObjectInterface
 {
     Q_OBJECT
 public:
-    explicit VertexItem(QGraphicsItem* parent = nullptr);
-    ~VertexItem();
+    explicit GObjectItem(QGraphicsItem* parent = nullptr);
+    ~GObjectItem();
 
-    virtual void fromGObject(const GObject& vert);
-    virtual GObject toGObject() const;
+    virtual QJsonObject toJson() const;;
+    virtual bool fromJson(const QJsonObject& jsonObj);
+
+    /**
+     * @brief setVertexNotFound Меняет внешний вид вершины на "не валидный"
+     * @note Для отработки случаев, когда не удалось загрузить
+     */
+    void setItemNotFound();
+    bool isItemFound() const;
 
     void setVertexSizeType(VertexSizeType vst);
     VertexSizeType getVertexSizeType() const;
@@ -50,25 +56,26 @@ public:
     void setTitlePosition(VertexTitlePosition vtp);
     VertexTitlePosition getTitlePosition() const;
 
-    void subscribeAsConnectionFrom(VertexConnectionItem* pLine);
-    void unsubscribeConnectionFrom(VertexConnectionItem* pLine);
+    void subscribeAsConnectionFrom(GObjectConnectionItem* pLine);
+    void unsubscribeConnectionFrom(GObjectConnectionItem* pLine);
 
-    void subscribeAsConnectionTo(VertexConnectionItem* pLine);
-    void unsubscribeConnectionTo(VertexConnectionItem* pLine);
+    void subscribeAsConnectionTo(GObjectConnectionItem* pLine);
+    void unsubscribeConnectionTo(GObjectConnectionItem* pLine);
 
-    bool isLineSubscribed(VertexConnectionItem* pLine);
+    bool isLineSubscribed(GObjectConnectionItem* pLine);
 
 signals:
     void sizeChanged(VertexSizeType prevSizeT, VertexSizeType currentSizeT);
 
 private:
     ObjectItems::TextLabel* m_nameItem{nullptr};
+    bool m_isItemFound {true};
 
     VertexSizeType m_vertexSizeType {VertexSizeType::VST_Medium};
     VertexTitlePosition m_shapeTitlePos {VertexTitlePosition::VTP_Center};
 
-    std::set<VertexConnectionItem*> m_connectionsFromThis;
-    std::set<VertexConnectionItem*> m_connectionsToThis;
+    std::set<GObjectConnectionItem*> m_connectionsFromThis;
+    std::set<GObjectConnectionItem*> m_connectionsToThis;
 
 private slots:
     void updateConnectionLines();
@@ -78,7 +85,7 @@ protected:
 
     ObjectItems::TextLabel* getLabel() const;
 
-    virtual void processSizeTypeChange(const QRectF& newSize) = 0;
+    virtual void processSizeTypeChange(const QRectF& newSize);
 };
 
 }

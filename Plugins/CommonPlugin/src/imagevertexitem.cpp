@@ -7,7 +7,7 @@
 namespace Graph {
 
 ImageVertexItem::ImageVertexItem(QGraphicsItem* parent)
-    : VertexItem(parent)
+    : GObjectItem(parent)
 {
     setSystemName("Изображение");
 
@@ -45,7 +45,7 @@ Qt::AspectRatioMode ImageVertexItem::getAspectRatioMode() const
 
 QMenu* ImageVertexItem::createContextMenu()
 {
-    auto res = VertexItem::createContextMenu();
+    auto res = GObjectItem::createContextMenu();
 
     auto pSetImageAction = new QAction("Выбрать изображение");
     connect(pSetImageAction, &QAction::triggered,
@@ -70,12 +70,12 @@ QMenu* ImageVertexItem::createContextMenu()
     return res;
 }
 
-QByteArray ImageVertexItem::serialize() const
+QJsonObject ImageVertexItem::toJson() const
 {
     return {};
 }
 
-bool ImageVertexItem::deserialize(const QByteArray &arr)
+bool ImageVertexItem::fromJson(const QJsonObject &arr)
 {
     return true;
 }

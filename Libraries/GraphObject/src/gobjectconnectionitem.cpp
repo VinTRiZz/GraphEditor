@@ -1,17 +1,16 @@
-#include "vertexconnectionitem.hpp"
+#include "gobjectconnectionitem.hpp"
 
 #include <Components/Common/ApplicationSettings.h>
 #include <Components/Logger/Logger.h>
 #include <GraphObject/GraphObject.h>
 
-#include "vertexitem.hpp"
-#include "constants.hpp"
+#include "gobjectitem.hpp"
 
 using namespace ObjectItems;
 
 namespace Graph {
 
-VertexConnectionItem::VertexConnectionItem(QGraphicsItem* parent)
+GObjectConnectionItem::GObjectConnectionItem(QGraphicsItem* parent)
     : BasicItem(parent) {
     setSystemName("Соединение вершин");
     setObjectType(OBJECTTYPE_CONNECTION);
@@ -28,7 +27,7 @@ VertexConnectionItem::VertexConnectionItem(QGraphicsItem* parent)
     setZValue(Layers::CONNECTION_LAYER);
 }
 
-VertexConnectionItem::~VertexConnectionItem() {
+GObjectConnectionItem::~GObjectConnectionItem() {
     if (m_fromVertex) {
         m_fromVertex->unsubscribeConnectionFrom(this);
     }
@@ -38,29 +37,29 @@ VertexConnectionItem::~VertexConnectionItem() {
     }
 }
 
-void VertexConnectionItem::setVertexFrom(VertexItem* pVertexFrom) {
+void GObjectConnectionItem::setVertexFrom(GObjectItem* pVertexFrom) {
     if (m_toVertex == pVertexFrom) {
         return;
     }
     m_fromVertex = pVertexFrom;
 }
 
-VertexItem* VertexConnectionItem::getVertexFrom() const {
+GObjectItem* GObjectConnectionItem::getVertexFrom() const {
     return m_fromVertex;
 }
 
-void VertexConnectionItem::setVertexTo(VertexItem* pVertexTo) {
+void GObjectConnectionItem::setVertexTo(GObjectItem* pVertexTo) {
     if (m_fromVertex == pVertexTo) {
         return;
     }
     m_toVertex = pVertexTo;
 }
 
-VertexItem* VertexConnectionItem::getVertexTo() const {
+GObjectItem* GObjectConnectionItem::getVertexTo() const {
     return m_toVertex;
 }
 
-void VertexConnectionItem::setLineItem(ObjectItems::AbstractConnectionLine *pLine)
+void GObjectConnectionItem::setLineItem(ObjectItems::AbstractConnectionLine *pLine)
 {
     if (pLine == nullptr) {
         throw std::invalid_argument("VertexConnectionItem: Nullptr line item");
@@ -70,7 +69,7 @@ void VertexConnectionItem::setLineItem(ObjectItems::AbstractConnectionLine *pLin
     pLine->setParentItem(this);
 }
 
-AbstractConnectionLine *VertexConnectionItem::getLineItem() const
+AbstractConnectionLine *GObjectConnectionItem::getLineItem() const
 {
     return m_connectionLine;
 }

@@ -63,8 +63,7 @@ QJsonObject GObjectItem::toJson() const
     auto res = PluginObjectInterface::toJson();
 
     res["isVisible"] = isVisible();
-
-    // TODO: Save data
+    res["pos"] = QString("%0;%1").arg(QString::number(pos().x()), QString::number(pos().y()));
 
     return res;
 }
@@ -72,10 +71,13 @@ QJsonObject GObjectItem::toJson() const
 bool GObjectItem::fromJson(const QJsonObject &jsonObj)
 {
     auto res = PluginObjectInterface::fromJson(jsonObj);
+    if (!res) { return res; }
 
+    setItemId(getPluginObjectId());
     setVisible(jsonObj["isVisible"].toBool());
 
-    // TODO: Load data
+    auto serializedPos = jsonObj["pos"].toString().split(";");
+    setPos(QPointF(serializedPos[0].toDouble(), serializedPos[1].toDouble()));
 
     return res;
 }

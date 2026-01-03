@@ -89,6 +89,8 @@ void GraphTabWidget::addTab(const QString& filePath) {
     auto pEditorForm = new GraphEditView(this);
     pEditorForm->setGraph(pGraph);
 
+    pGraph->getObject()->synchronizeParents(pEditorForm);
+
     ui->editorForms_tabWidget->addTab(pEditorForm,
                                       pGraph->getObject()->getMetaInfo()->getName());
     ui->editorForms_tabWidget->setCurrentIndex(

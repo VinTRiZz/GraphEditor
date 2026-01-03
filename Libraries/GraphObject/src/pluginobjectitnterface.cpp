@@ -1,6 +1,18 @@
 #include "pluginobjectitnterface.hpp"
 
+#include <Components/Logger/Logger.h>
+
 namespace Graph {
+
+void PluginObjectInterface::setParentObjectId(const graphId_t &id)
+{
+    m_metadata.parentObjectId = id;
+}
+
+graphId_t PluginObjectInterface::getParentObjectId() const
+{
+    return m_metadata.parentObjectId;
+}
 
 void PluginObjectInterface::setPluginObjectId(const graphId_t &id)
 {
@@ -34,11 +46,12 @@ QString PluginObjectInterface::getPluginObjectName() const
 
 QJsonObject PluginObjectInterface::toJson() const
 {
-    if (!getPluginObjectId().has_value()) {
+    if (getPluginObjectId() == 0) {
         return {};
     }
     QJsonObject vObj;
-    vObj["id"] = QString::number(getPluginObjectId().value());
+    vObj["id"] = QString::number(getPluginObjectId());
+    vObj["parentId"] = QString::number(getParentObjectId());
     vObj["pluginName"] = getPluginName();
     vObj["pluginObjectName"] = getPluginObjectName();
     return vObj;
@@ -47,18 +60,14 @@ QJsonObject PluginObjectInterface::toJson() const
 bool PluginObjectInterface::fromJson(const QJsonObject &arr)
 {
     if (arr.contains("id")) {
-        setPluginObjectId(arr["id"].toInt());
+        setPluginObjectId(arr["id"].toString().toLongLong());
     }
 
-    if (arr.contains("pluginName")) {
-        setPluginName(arr["pluginName"].toString());
+    if (arr.contains("parentId")) {
+        setParentObjectId(arr["parentId"].toString().toLongLong());
     }
 
-    if (arr.contains("pluginObjectName")) {
-        setPluginObjectName(arr["pluginObjectName"].toString());
-    }
-
-    return getPluginObjectId().has_value();
+    return (0 != getPluginObjectId());
 }
 
 const PluginObjectInterface::ObjectMetadata &PluginObjectInterface::getMetadata() const
@@ -67,15 +76,7 @@ const PluginObjectInterface::ObjectMetadata &PluginObjectInterface::getMetadata(
 }
 
 bool PluginObjectInterface::ObjectMetadata::operator <(const ObjectMetadata &iv) const {
-    if (!iv.objectId.has_value() && iv.objectId.has_value()) {
-        return true;
-    }
-
-    if (iv.objectId.has_value() && !iv.objectId.has_value()) {
-        return false;
-    }
-
-    return iv.objectId.value() < objectId.value();
+    return iv.objectId < objectId;
 }
 
 bool PluginObjectInterface::ObjectMetadata::operator ==(const ObjectMetadata &iv) const {

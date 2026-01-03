@@ -8,6 +8,10 @@
 #include "gobjectitem.hpp"
 #include "gobjectconnectionitem.hpp"
 
+namespace OVLayers {
+class OVCanvasLayer;
+}
+
 namespace Graph {
 
 class GraphObjectManager;
@@ -65,6 +69,11 @@ public:
      * @brief clearGraphData Утилитарный метод для полной очистки объекта без пересоздания
      */
     void clearGraphData();
+
+    /**
+     * @brief synchronizeParents Метод, который проверяет и "расставляет" родительские айтемы
+     */
+    void synchronizeParents(OVLayers::OVCanvasLayer* pHostView);
 
     bool operator==(const GraphObject& gObj_) const;
     bool operator!=(const GraphObject& gObj_) const;

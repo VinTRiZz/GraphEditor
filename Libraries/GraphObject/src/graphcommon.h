@@ -11,7 +11,7 @@
 
 namespace Graph {
 
-using graphId_t = std::optional<long long>;
+using graphId_t = ObjectItems::objectId_t;
 
 /**
  * @brief The GraphProperty enum Обычные для всех свойства графа

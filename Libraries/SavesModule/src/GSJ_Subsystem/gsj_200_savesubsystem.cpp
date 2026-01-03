@@ -38,13 +38,7 @@ bool GSJ_200_SaveSubsystem::canProcess(const QString &fileData) const
         return false;
     }
 
-    // Common properties
-    if (!iJson.contains("properties")) {
-        LOG_ERROR("Not found section: properties");
-        return false;
-    }
-    if (!iJson["properties"].isObject()) {
-        LOG_ERROR("Invalid properties section");
+    if (iJson["system"].toObject()["format_version"] != getVersion()) {
         return false;
     }
 
@@ -58,7 +52,6 @@ bool GSJ_200_SaveSubsystem::canProcess(const QString &fileData) const
         return false;
     }
 
-    LOG_OK("Structure check succeed");
     return true;
 }
 
@@ -148,6 +141,10 @@ bool GSJ_200_SaveSubsystem::parseSavedata(const Graph::GraphObjectManagerPtr &pG
             pGraphObj->addObject(pInvalidObject);
             pInvalidObject = nullptr;
             continue;
+        }
+
+        if (!pItem->fromJson(vObj)) {
+            LOG_WARNING("Failed to parse object:", QString("%0::%1").arg(pluginName, pluginObjectName));
         }
 
         if (auto pObj = dynamic_cast<Graph::GObjectItem*>(pItem); pObj != nullptr) {

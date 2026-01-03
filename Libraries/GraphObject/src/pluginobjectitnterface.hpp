@@ -15,6 +15,9 @@ public:
     PluginObjectInterface() = default;
     virtual ~PluginObjectInterface() = default;
 
+    void setParentObjectId(const graphId_t& id);
+    graphId_t getParentObjectId() const;
+
     void setPluginObjectId(const graphId_t& id);
     graphId_t getPluginObjectId() const;
 
@@ -29,6 +32,7 @@ public:
 
     struct ObjectMetadata {
         graphId_t objectId;
+        graphId_t parentObjectId {0};
         QString pluginName;
         QString pluginObjectName;
         QJsonObject pluginObjectData;
@@ -51,10 +55,7 @@ struct hash<Graph::PluginObjectInterface::ObjectMetadata>
 {
     std::size_t operator()(const Graph::PluginObjectInterface::ObjectMetadata& metaData) const noexcept
     {
-        if (!metaData.objectId.has_value()) {
-            return 0;
-        }
-        return hash<long long>{}(metaData.objectId.value());
+        return hash<long long>{}(metaData.objectId);
     }
 };
 }

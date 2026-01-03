@@ -23,7 +23,7 @@ using namespace Graph;
 
 GraphEditView::GraphEditView(QWidget* parent) :
     OVLayers::ObjectView(parent) {
-    getCanvas()->setRect(QRectF(0, 0, 10000, 10000));
+    getCanvas()->setRect(QRectF(0, 0, 2100, 2970));
 }
 
 QMenu *GraphEditView::createConnectionsMenu(GObjectItem *hoverVertex)

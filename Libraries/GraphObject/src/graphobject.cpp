@@ -7,6 +7,9 @@
 
 #include <QMetaObject>
 
+#include <Components/CustomQt/ObjectView/ObjectView.h>
+#include <Components/CustomQt/ObjectView/InternalScene.h>
+
 namespace Graph {
 
 GraphObject::GraphObject(QObject *parent) :
@@ -20,6 +23,91 @@ void GraphObject::clearGraphData()
 {
     clearVertices();
     m_metaInfo->clearData();
+}
+
+void GraphObject::synchronizeParents(OVLayers::OVCanvasLayer *pHostView)
+{
+    LOG_INFO("Parent sync started..."); // TODO: Проработать рекурсивные зависимости ID?
+
+    auto pHostScene = pHostView->getScene();
+
+    LOG_INFO("Objects sync...");
+    for (auto* pObj : m_objects) {
+        if (pObj->scene() != pHostScene) {
+            pHostView->addObject(pObj);
+        }
+        if (pObj->getParentObjectId() != 0) {
+            auto targetParentIt =
+                    std::find_if(m_objects.begin(), m_objects.end(),
+                                 [childId = pObj->getParentObjectId()](auto* pParentObj){
+                return (childId == pParentObj->getPluginObjectId());
+            });
+            if (targetParentIt != m_objects.end()) {
+                pObj->setParentItem(*targetParentIt);
+                continue;
+            }
+
+            auto targetPluginParentIt =
+                    std::find_if(m_pluginObjects.begin(), m_pluginObjects.end(),
+                                 [childId = pObj->getParentObjectId()](auto* pParentObj){
+                return (childId == pParentObj->getPluginObjectId());
+            });
+            if (targetPluginParentIt == m_pluginObjects.end()) {
+                LOG_WARNING("Did not found parent object with id:", pObj->getParentObjectId());
+                continue;
+            }
+
+            auto pParent = dynamic_cast<ObjectItems::BasicItem*>(*targetPluginParentIt);
+            if (pParent == nullptr) {
+                LOG_WARNING("Object is not a scene item with id:", (*targetPluginParentIt)->getPluginObjectId());
+            }
+            pObj->setParentItem(pParent);
+        } else {
+            pObj->setParentItem(pHostView->getCanvas());
+        }
+    }
+
+    LOG_INFO("Extra items sync...");
+    for (auto* pObjI : m_pluginObjects) {
+        auto pObj = dynamic_cast<ObjectItems::BasicItem*>(pObjI);
+        if (nullptr == pObj) {
+            LOG_WARNING("Can not synchronize parent for plugin object:", pObjI->getPluginObjectId(), "REASON: Not a item");
+            continue;
+        }
+
+        if (pObj->scene() != pHostScene) {
+            pHostView->addObject(pObj);
+        }
+        if (pObjI->getParentObjectId() != 0) {
+            auto targetParentIt =
+                    std::find_if(m_objects.begin(), m_objects.end(),
+                                 [childId = pObjI->getParentObjectId()](auto* pParentObj){
+                return (childId == pParentObj->getPluginObjectId());
+            });
+            if (targetParentIt != m_objects.end()) {
+                pObj->setParentItem(*targetParentIt);
+                continue;
+            }
+
+            auto targetPluginParentIt =
+                    std::find_if(m_pluginObjects.begin(), m_pluginObjects.end(),
+                                 [childId = pObjI->getParentObjectId()](auto* pParentObj){
+                return (childId == pParentObj->getPluginObjectId());
+            });
+            if (targetPluginParentIt == m_pluginObjects.end()) {
+                LOG_WARNING("Did not found parent object with id:", pObjI->getParentObjectId());
+                continue;
+            }
+            auto pParent = dynamic_cast<ObjectItems::BasicItem*>(*targetPluginParentIt);
+            if (pParent == nullptr) {
+                LOG_WARNING("Object is not a scene item with id:", (*targetPluginParentIt)->getPluginObjectId());
+            }
+            pObj->setParentItem(pParent);
+        } else {
+            pObj->setParentItem(pHostView->getCanvas());
+        }
+    }
+    LOG_INFO("Parent sync complete");
 }
 
 bool GraphObject::operator==(const GraphObject& gObj_) const {

@@ -119,8 +119,10 @@ bool GSJ_200_SaveSubsystem::parseSavedata(const Graph::GraphObjectManagerPtr &pG
     for (auto objectJsonR : objectsJsonA) {
         auto vObj = objectJsonR.toObject();
 
-        auto pluginName = vObj["pluginName"].toString();
-        auto pluginObjectName = vObj["pluginObjectName"].toString();
+        // TODO: Вынести?
+        auto mainObjectInfo = vObj["PluginObjectInterface"].toObject();
+        auto pluginName = mainObjectInfo["pluginName"].toString();
+        auto pluginObjectName = mainObjectInfo["pluginObjectName"].toString();
 
         auto pPluginInterface = pluginMaster.getPlugin(pluginName);
         if (!pPluginInterface) {

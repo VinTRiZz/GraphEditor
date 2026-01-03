@@ -49,23 +49,27 @@ QJsonObject PluginObjectInterface::toJson() const
     if (getPluginObjectId() == 0) {
         return {};
     }
+    QJsonObject resultJson;
+
     QJsonObject vObj;
     vObj["id"] = QString::number(getPluginObjectId());
     vObj["parentId"] = QString::number(getParentObjectId());
     vObj["pluginName"] = getPluginName();
     vObj["pluginObjectName"] = getPluginObjectName();
-    return vObj;
+
+    resultJson["PluginObjectInterface"] = vObj;
+    return resultJson;
 }
 
 bool PluginObjectInterface::fromJson(const QJsonObject &arr)
 {
-    if (arr.contains("id")) {
-        setPluginObjectId(arr["id"].toString().toLongLong());
+    if (!arr.contains("PluginObjectInterface")) {
+        return false;
     }
 
-    if (arr.contains("parentId")) {
-        setParentObjectId(arr["parentId"].toString().toLongLong());
-    }
+    auto vObj = arr["PluginObjectInterface"].toObject();
+    setPluginObjectId(vObj["id"].toString().toLongLong());
+    setParentObjectId(vObj["parentId"].toString().toLongLong());
 
     return (0 != getPluginObjectId());
 }

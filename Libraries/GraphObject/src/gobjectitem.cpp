@@ -62,9 +62,11 @@ QJsonObject GObjectItem::toJson() const
 {
     auto res = PluginObjectInterface::toJson();
 
-    res["isVisible"] = isVisible();
-    res["pos"] = QString("%0;%1").arg(QString::number(pos().x()), QString::number(pos().y()));
+    QJsonObject vObj;
+    vObj["isVisible"] = isVisible();
+    vObj["pos"] = QString("%0;%1").arg(QString::number(pos().x()), QString::number(pos().y()));
 
+    res["GObjectItem"] = vObj;
     return res;
 }
 
@@ -72,11 +74,12 @@ bool GObjectItem::fromJson(const QJsonObject &jsonObj)
 {
     auto res = PluginObjectInterface::fromJson(jsonObj);
     if (!res) { return res; }
+    auto vObj = jsonObj["GObjectItem"].toObject();
 
-    setItemId(getPluginObjectId());
-    setVisible(jsonObj["isVisible"].toBool());
+    setItemId(getPluginObjectId()); // Он уже получен уровнем выше
 
-    auto serializedPos = jsonObj["pos"].toString().split(";");
+    setVisible(vObj["isVisible"].toBool());
+    auto serializedPos = vObj["pos"].toString().split(";");
     setPos(QPointF(serializedPos[0].toDouble(), serializedPos[1].toDouble()));
 
     return res;

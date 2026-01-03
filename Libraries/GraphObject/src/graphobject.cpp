@@ -22,6 +22,7 @@ GraphObject::GraphObject(QObject *parent) :
 void GraphObject::clearGraphData()
 {
     clearVertices();
+    clearObjects();
     m_metaInfo->clearData();
 }
 
@@ -149,6 +150,9 @@ void GraphObject::removeObject(graphId_t vertexId)
 
 void GraphObject::clearVertices()
 {
+    for (auto* pItem : m_objects) {
+        delete pItem;
+    }
     m_objects.clear();
 }
 
@@ -169,6 +173,9 @@ const std::unordered_set<PluginObjectInterface *> &GraphObject::getPluginObjects
 
 void GraphObject::clearObjects()
 {
+    for (auto* pObject : m_pluginObjects) {
+        delete pObject;
+    }
     m_pluginObjects.clear();
 }
 

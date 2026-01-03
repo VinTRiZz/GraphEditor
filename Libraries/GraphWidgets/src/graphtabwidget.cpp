@@ -22,7 +22,18 @@ GraphTabWidget::GraphTabWidget(QWidget* parent)
             this, &GraphTabWidget::createGraph);
 
     connect(ui->fileToolbar, &FileManagementToolbar::loadedGraph,
-            this, &GraphTabWidget::addTab);
+            this, [this](const QString& filePath){
+        if (ui->editorForms_tabWidget->count() == 0) {
+            return addTab(filePath);
+        }
+
+        auto pTargetForm = static_cast<GraphEditView*>(ui->editorForms_tabWidget->currentWidget());
+        if (ui->fileToolbar->getGraph() != pTargetForm->getGraph()) {
+            addTab(filePath);
+        } else {
+            pTargetForm->getGraph()->getObject()->synchronizeParents(pTargetForm);
+        }
+    });
 
     connect(ui->editorForms_tabWidget, &QTabWidget::tabCloseRequested, this,
             [this](int tabIndex) {

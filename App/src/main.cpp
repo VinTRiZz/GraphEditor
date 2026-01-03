@@ -2,6 +2,7 @@
 #include <Components/Common/ApplicationSettings.h>
 #include <Components/Common/DirectoryManager.h>
 
+#include <GraphObject/Common.h>
 #include <PluginModule/PluginMaster.h>
 
 #include <QApplication>
@@ -26,18 +27,21 @@ void initStylesheet(QApplication& a);
 void printStacktrace(int signumber);
 
 int main(int argc, char* argv[]) {
+    int res {0};
+
     initStacktrace();
+    { // Нюанс работы (в деструкторах записываются кэши)
+        QApplication a(argc, argv);
+        initApplication(a);
 
-    QApplication a(argc, argv);
-    initApplication(a);
+        processArguments(a);
+        initStylesheet(a);
+        LOG_INFO("Starting GraphEditor");
 
-    processArguments(a);
-    initStylesheet(a);
-
-    LOG_INFO("Starting GraphEditor");
-    MainWindow w;
-    w.show();
-    auto res = a.exec();
+        MainWindow w;
+        w.show();
+        res = a.exec();
+    }
 
     Common::ApplicationSettings::getInstance().saveSettings();
     LOG_OK_SYNC("App exited normally");
@@ -47,13 +51,15 @@ int main(int argc, char* argv[]) {
 void initSettings() {
     auto& settingsInstance = Common::ApplicationSettings::getInstance();
 
-    const std::vector<QString> CANVAS_SETTINGS {
-        "canvas_size",
-    };
+    for (auto& sett : Graph::SettingsNames::CANVAS_SETTINGS) {
+        if (!settingsInstance.hasSetting(Graph::SettingsNames::CANVAS, sett)) {
+            settingsInstance.addSetting(Graph::SettingsNames::CANVAS, sett);
+        }
+    }
 
-    for (auto& sett : CANVAS_SETTINGS) {
-        if (!settingsInstance.hasSetting("CANVAS", sett)) {
-            settingsInstance.addSetting("CANVAS", sett);
+    for (auto& sett : Graph::SettingsNames::SESSIONCACHE_SETTINGS) {
+        if (!settingsInstance.hasSetting(Graph::SettingsNames::SESSIONCACHE, sett)) {
+            settingsInstance.addSetting(Graph::SettingsNames::SESSIONCACHE, sett);
         }
     }
 }

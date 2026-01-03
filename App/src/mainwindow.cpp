@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 
 #include <Components/Logger/Logger.h>
+#include <Components/Common/ApplicationSettings.h>
 #include <Components/CustomQt/WaitIndicatorDialog.h>
 
 #include <QFile>

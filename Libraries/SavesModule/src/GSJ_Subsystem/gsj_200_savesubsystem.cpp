@@ -101,7 +101,9 @@ bool GSJ_200_SaveSubsystem::parseSavedata(const Graph::GraphObjectManagerPtr &pG
     auto pGraphObj = pGraph->getObject();
 
     // Ресет для чистоты чтения
+    auto fileSavepath = pGraphObj->getMetaInfo()->getSavepath(); // Нюанс работы
     pGraphObj->clearGraphData();
+    pGraphObj->getMetaInfo()->setSavepath(fileSavepath);
 
     // Common properties
     auto graphMetadata = pGraphObj->getMetaInfo();

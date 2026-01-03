@@ -2,10 +2,12 @@
 #include "ui_graphtabwidget.h"
 
 #include <Components/Common/ApplicationSettings.h>
+#include <Components/Logger/Logger.h>
 #include <PluginModule/PluginMaster.h>
-#include <QMessageBox>
-
 #include <GraphWidgets/EditView.h>
+
+#include <QMessageBox>
+#include <QFileInfo>
 
 GraphTabWidget::GraphTabWidget(QWidget* parent)
     : QWidget(parent), ui(new Ui::GraphTabWidget) {
@@ -39,7 +41,6 @@ GraphTabWidget::GraphTabWidget(QWidget* parent)
                                                               QMessageBox::StandardButton::Yes,
                                                               QMessageBox::StandardButton::No);
                     if (userResponse == QMessageBox::StandardButton::Yes) {
-
                         ui->fileToolbar->saveGraph();
                     }
                 }
@@ -77,9 +78,24 @@ GraphTabWidget::GraphTabWidget(QWidget* parent)
         ui->graphItemsManager->setCurrentPlugin(curPluginName);
     });
     updatePluginList();
+
+    auto& settingsInstance = Common::ApplicationSettings::getInstance();
+    auto pRecentFiles = settingsInstance.getSetting(Graph::SettingsNames::SESSIONCACHE, Graph::SettingsNames::RECENTFILES);
+    auto recentFiles = QByteArray::fromHex(pRecentFiles->getValue().toByteArray()).split('\n');
+    for (auto& recfile : recentFiles) {
+        if (QFileInfo(recfile).exists()) {
+            auto pGraph = Graph::GraphObjectManager::createGraphInstance();
+            ui->fileToolbar->setGraph(pGraph);
+            ui->fileToolbar->loadGraph(recfile);
+        }
+    }
 }
 
 GraphTabWidget::~GraphTabWidget() {
+
+    // Сохраняем как временные все те, что были на вкладках
+    saveTemporaryGraphs();
+
     delete ui;
 }
 
@@ -155,4 +171,27 @@ void GraphTabWidget::updatePluginList()
     for (auto& pPlugin : Graph::PluginMaster::getInstance().getAllPlugins()) {
         ui->pluginSelector_comboBox->addItem(pPlugin->getPluginName());
     }
+}
+
+void GraphTabWidget::saveTemporaryGraphs()
+{
+    auto& settingsInstance = Common::ApplicationSettings::getInstance();
+    auto pRecentFiles = settingsInstance.getSetting(Graph::SettingsNames::SESSIONCACHE, Graph::SettingsNames::RECENTFILES);
+
+    QStringList recentFiles;
+    for (int i = 0; i < ui->editorForms_tabWidget->count(); ++i) {
+        auto pTargetForm = static_cast<GraphEditView*>(
+            ui->editorForms_tabWidget->widget(i));
+
+        auto pCurrentGraph = pTargetForm->getGraph();
+        ui->fileToolbar->setGraph(pCurrentGraph);
+        if (pCurrentGraph && pCurrentGraph->getObject()) {
+            auto pGraph = pCurrentGraph->getObject();
+            if (pGraph->getMetaInfo()->getSavepath().isEmpty()) {
+                ui->fileToolbar->saveGraphAsTemporary();
+            }
+        }
+        recentFiles << pCurrentGraph->getObject()->getMetaInfo()->getSavepath();
+    }
+    pRecentFiles->setValue(recentFiles.join("\n").toUtf8().toHex());
 }

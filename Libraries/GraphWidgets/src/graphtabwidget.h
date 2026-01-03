@@ -26,6 +26,8 @@ private slots:
 
 private:
     Ui::GraphTabWidget* ui;
+
+    void saveTemporaryGraphs();
 };
 
 #endif  // GRAPHTABWIDGET_H

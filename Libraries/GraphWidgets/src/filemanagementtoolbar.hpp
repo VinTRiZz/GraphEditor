@@ -19,6 +19,7 @@ public:
     ~FileManagementToolbar();
 
     bool saveGraph(const QString& savePath = {});
+    bool saveGraphAsTemporary();
     bool loadGraph(const QString& savePath = {});
 
 signals:

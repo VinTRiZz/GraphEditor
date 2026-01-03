@@ -7,6 +7,8 @@
 #include <Filework/SaveMaster.h>
 
 #include <Components/Logger/Logger.h>
+#include <Components/Common/DirectoryManager.h>
+#include <Components/Common/Utils.h>
 
 FileManagementToolbar::FileManagementToolbar(QWidget *parent) :
     QWidget(parent),
@@ -34,12 +36,16 @@ FileManagementToolbar::FileManagementToolbar(QWidget *parent) :
             return;
         }
 
+        auto pCurrentGraph = getGraph();
+        setGraph(Graph::GraphObjectManager::createGraphInstance());
         auto loadRes = loadGraph(loadPath);
-        if (loadRes) {
-            emit loadedGraph(loadPath);
+
+        // Обновляем свойства формы
+        if (!loadRes) {
+            setGraph(pCurrentGraph);
+        } else {
+            setGraph(getGraph());
         }
-        ui->save_toolButton->setEnabled(loadRes);
-        ui->load_toolButton->setEnabled(loadRes);
     });
 
     ui->save_toolButton->setEnabled(false);
@@ -74,6 +80,25 @@ bool FileManagementToolbar::saveGraph(const QString &savePath)
     return saveMaster.save(getGraph()->getObject()->getMetaInfo()->getSavepath(), getGraph());
 }
 
+bool FileManagementToolbar::saveGraphAsTemporary()
+{
+    if (!isGraphSet()) { return false; }
+    SaveMaster saveMaster;
+
+    // Создаём временное название для файла
+    auto graphFileName = Common::createRandomString(8);
+    auto tmpSavePathBase = Common::DirectoryManager::getDirectoryStatic(Common::DirectoryManager::DirectoryType::Temporary).absolutePath();
+    auto graphSavepath = saveMaster.formatToDefaultPath(tmpSavePathBase + QDir::separator() + graphFileName.c_str());
+    while (QFileInfo(graphSavepath).exists()) {
+        graphFileName = Common::createRandomString(8);
+        graphSavepath = saveMaster.formatToDefaultPath(tmpSavePathBase + QDir::separator() + graphFileName.c_str());
+    }
+    getGraph()->getObject()->getMetaInfo()->setSavepath(graphSavepath);
+
+    // Сохраняем
+    return saveMaster.save(graphSavepath, getGraph());
+}
+
 bool FileManagementToolbar::loadGraph(const QString &savePath)
 {
     if (!isGraphSet()) { // Подразумевается, что результат будет забираться из этого объекта
@@ -88,8 +113,14 @@ bool FileManagementToolbar::loadGraph(const QString &savePath)
         getGraph()->getObject()->getMetaInfo()->setSavepath(savePath);
     }
 
+    auto graphPath = getGraph()->getObject()->getMetaInfo()->getSavepath();
+
     SaveMaster saveMaster;
-    return saveMaster.load(getGraph()->getObject()->getMetaInfo()->getSavepath(), getGraph());
+    auto res = saveMaster.load(graphPath, getGraph());
+    if (res) {
+        emit loadedGraph(graphPath);
+    }
+    return res;
 }
 
 void FileManagementToolbar::processGraphChange()

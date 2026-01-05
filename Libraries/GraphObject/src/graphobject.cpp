@@ -133,6 +133,10 @@ GraphMetaInformation *GraphObject::getMetaInfo() const
 
 void GraphObject::addObject(GObjectItem *iVert) {
     m_objects.insert(iVert);
+    connect(iVert, &QObject::destroyed,
+            this, [this, iVert](){
+        removeObject(iVert);
+    });
 }
 
 const std::unordered_set<GObjectItem*> &GraphObject::getAllObjects() const {
@@ -143,27 +147,38 @@ std::size_t GraphObject::getObjectCount() const {
     return m_objects.size();
 }
 
-void GraphObject::removeObject(graphId_t vertexId)
+void GraphObject::removeObject(GObjectItem *iVert)
 {
-    
+    m_objects.erase(iVert);
+    disconnect(iVert, nullptr,  this, nullptr);
 }
 
 void GraphObject::clearVertices()
 {
-    for (auto* pItem : m_objects) {
-        delete pItem;
+    auto objectsCopy = m_objects;
+    for (auto* pItem : objectsCopy) {
+        removeObject(pItem);
     }
-    m_objects.clear();
 }
 
 void GraphObject::addPluginObject(PluginObjectInterface* pObject)
 {
     m_pluginObjects.insert(pObject);
+
+    if (auto pCastedObj = dynamic_cast<QObject*>(pObject); nullptr != pCastedObj) {
+        connect(pCastedObj, &QObject::destroyed,
+                this, [this, pObject](){
+            removePluginObject(pObject);
+        });
+    }
 }
 
 void GraphObject::removePluginObject(PluginObjectInterface *pObject)
 {
     m_pluginObjects.erase(pObject);
+    if (auto pCastedObj = dynamic_cast<QObject*>(pObject); nullptr != pCastedObj) {
+        disconnect(pCastedObj, nullptr, this, nullptr);
+    }
 }
 
 const std::unordered_set<PluginObjectInterface *> &GraphObject::getPluginObjects() const
@@ -173,10 +188,10 @@ const std::unordered_set<PluginObjectInterface *> &GraphObject::getPluginObjects
 
 void GraphObject::clearObjects()
 {
-    for (auto* pObject : m_pluginObjects) {
-        delete pObject;
+    auto objectsCopy = m_pluginObjects;
+    for (auto* pObject : objectsCopy) {
+        removePluginObject(pObject);
     }
-    m_pluginObjects.clear();
 }
 
 

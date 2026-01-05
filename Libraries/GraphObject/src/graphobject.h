@@ -90,7 +90,7 @@ public:
     void addObject(GObjectItem* iVert);
     const std::unordered_set<GObjectItem*>& getAllObjects() const;
     std::size_t getObjectCount() const;
-    void removeObject(graphId_t vertexId);
+    void removeObject(GObjectItem* iVert);
     void clearVertices();
 
     void addPluginObject(PluginObjectInterface* pObject);

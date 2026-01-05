@@ -1,8 +1,11 @@
 #include "graphtabwidget.h"
 #include "ui_graphtabwidget.h"
 
-#include <Components/Common/ApplicationSettings.h>
 #include <Components/Logger/Logger.h>
+#include <Components/Common/ApplicationSettings.h>
+#include <Components/Common/DirectoryManager.h>
+#include <Components/Database/SQlite.h>
+
 #include <PluginModule/PluginMaster.h>
 #include <GraphWidgets/EditView.h>
 
@@ -90,10 +93,10 @@ GraphTabWidget::GraphTabWidget(QWidget* parent)
     });
     updatePluginList();
 
-    auto& settingsInstance = Common::ApplicationSettings::getInstance();
-    auto pRecentFiles = settingsInstance.getSetting(Graph::SettingsNames::SESSIONCACHE, Graph::SettingsNames::RECENTFILES);
-    auto recentFiles = QByteArray::fromHex(pRecentFiles->getValue().toByteArray()).split('\n');
-    for (auto& recfile : recentFiles) {
+    auto filesTable = getRecentFilesTable();
+    for (auto& row : filesTable.getRow({"file_path"}, {}, "ID ASC")) {
+        auto filePath = std::get<Database::DBCellString>(row[0]).value();
+        auto recfile = QByteArray::fromHex(QByteArray::fromStdString(filePath));
         if (QFileInfo(recfile).exists()) {
             auto pGraph = Graph::GraphObjectManager::createGraphInstance();
             ui->fileToolbar->setGraph(pGraph);
@@ -186,10 +189,9 @@ void GraphTabWidget::updatePluginList()
 
 void GraphTabWidget::saveTemporaryGraphs()
 {
-    auto& settingsInstance = Common::ApplicationSettings::getInstance();
-    auto pRecentFiles = settingsInstance.getSetting(Graph::SettingsNames::SESSIONCACHE, Graph::SettingsNames::RECENTFILES);
+    auto filesTable = getRecentFilesTable();
+    filesTable.removeRow(); // Чистим столбцы
 
-    QStringList recentFiles;
     for (int i = 0; i < ui->editorForms_tabWidget->count(); ++i) {
         auto pTargetForm = static_cast<GraphEditView*>(
             ui->editorForms_tabWidget->widget(i));
@@ -202,7 +204,39 @@ void GraphTabWidget::saveTemporaryGraphs()
                 ui->fileToolbar->saveGraphAsTemporary();
             }
         }
-        recentFiles << pCurrentGraph->getObject()->getMetaInfo()->getSavepath();
+
+        auto savePath = pCurrentGraph->getObject()->getMetaInfo()->getSavepath().toUtf8().toHex().toStdString();
+        filesTable.addRow(std::map<std::string, Database::DBCell>{ {"file_path", savePath} });
     }
-    pRecentFiles->setValue(recentFiles.join("\n").toUtf8().toHex());
+}
+
+Database::SQLiteTable GraphTabWidget::getRecentFilesTable() const
+{
+    // TODO: Вынести в некий общий класс
+
+    Database::SQLiteDatabase cacheDb;
+    auto dbFilepath = Common::DirectoryManager::getDirectoryStatic(Common::DirectoryManager::DirectoryType::Temporary).absolutePath() + QDir::separator() + "cache.db";
+    cacheDb.setDatabase(dbFilepath.toStdString());
+    Database::SQLiteTable filesTable(cacheDb);
+
+    filesTable.setTable("recent_files");
+    if (!filesTable.isTableExist()) {
+        std::list<Database::SQLiteTable::ColumnInfo> cols;
+
+        Database::SQLiteTable::ColumnInfo col;
+        col.name = "id";
+        col.isPrimaryKey = true;
+        col.canBeNull = false;
+        col.type = Database::CT_INTEGER;
+        cols.push_back(col);
+
+        col = {};
+        col.name = "file_path";
+        col.canBeNull = false;
+        col.type = Database::CT_TEXT;
+        cols.push_back(col);
+
+        filesTable.create(cols);
+    }
+    return filesTable;
 }

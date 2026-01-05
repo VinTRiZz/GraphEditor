@@ -8,6 +8,10 @@ namespace Ui {
 class GraphTabWidget;
 }
 
+namespace Database {
+class SQLiteTable;
+}
+
 /**
  * @brief The GraphTabWidget class  Форма вкладок с открытыми графами
  */
@@ -28,6 +32,7 @@ private:
     Ui::GraphTabWidget* ui;
 
     void saveTemporaryGraphs();
+    Database::SQLiteTable getRecentFilesTable() const;
 };
 
 #endif  // GRAPHTABWIDGET_H

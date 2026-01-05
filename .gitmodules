@@ -55,3 +55,6 @@
 [submodule "Libraries/Components/Components-Qt-Custom"]
 	path = Libraries/Components/Components-Qt-Custom
 	url = git@github.com:VinTRiZz/Components-Qt-Custom.git
+[submodule "Libraries/Components/Components-Database"]
+	path = Libraries/Components/Components-Database
+	url = git@github.com:VinTRiZz/Components-Database.git

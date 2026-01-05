@@ -24,6 +24,23 @@ using namespace Graph;
 GraphEditView::GraphEditView(QWidget* parent) :
     OVLayers::ObjectView(parent) {
     getCanvas()->setRect(QRectF(0, 0, 2100, 2970));
+    customZoom(0.5);
+    setInformationLabelEnabled(false);
+
+    setCursorValuesPresenter([this](const QPointF& curPoint) -> QString {
+        auto pObject = getObject(mapFromScene(curPoint));
+        QString objectName {};
+        QString objectDescription {};
+        if (pObject != nullptr) {
+            objectName = pObject->getDisplayName();
+            objectDescription = pObject->getDescription();
+            getCursorLabel()->setMaxSymbolCount(250);
+            return objectName + (objectDescription.isEmpty() ? "" : "\n" + objectDescription);
+        }
+
+        getCursorLabel()->setMaxSymbolCount(100);
+        return QString("(%0; %1)").arg(QString::number(curPoint.x()), QString::number(curPoint.y()));
+    });
 }
 
 QMenu *GraphEditView::createConnectionsMenu(GObjectItem *hoverVertex)

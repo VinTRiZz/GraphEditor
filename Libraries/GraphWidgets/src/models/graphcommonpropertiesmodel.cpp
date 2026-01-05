@@ -3,7 +3,7 @@
 
 namespace Graph {
 
-void GraphPropertiesModel::processGraphChange()
+void GraphPropertiesModel::processGraphChange(const GraphObjectManagerPtr &pPrevGraph)
 {
     beginResetModel();
     endResetModel();

@@ -285,8 +285,9 @@ void GraphMetaInformation::clearData()
 }
 
 void GraphObjectUser::setGraph(const Graph::GraphObjectManagerPtr& pGraph) {
+    auto pPrevGraph = m_pGraph;
     m_pGraph = pGraph;
-    processGraphChange();
+    processGraphChange(pPrevGraph);
 }
 
 bool GraphObjectUser::isGraphSet() const

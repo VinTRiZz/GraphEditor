@@ -39,7 +39,7 @@ public:
     Qt::ItemFlags flags(const QModelIndex& index) const override;
 
 private:
-    void processGraphChange() override;
+    void processGraphChange([[maybe_unused]] const Graph::GraphObjectManagerPtr& pPrevGraph) override;
 };
 
 }

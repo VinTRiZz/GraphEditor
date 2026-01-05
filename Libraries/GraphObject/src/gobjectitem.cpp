@@ -4,6 +4,8 @@
 
 #include <Components/Logger/Logger.h>
 
+#include <QPainterPathStroker>
+
 using namespace ObjectItems;
 
 namespace Graph {
@@ -20,6 +22,23 @@ bool GObjectItem::isLineSubscribed(GObjectConnectionItem* pLine) {
     return false;
 }
 
+void GObjectItem::updateSelectionPathItem()
+{
+    QPainterPath selectionShape;
+
+    auto selfBRect = toVertexBoundingRect(getVertexSizeType());
+    QTransform scaleTr;
+    scaleTr.scale(1.2, 1.2);
+    selfBRect = scaleTr.mapRect(selfBRect);
+    selfBRect.moveCenter(toVertexBoundingRect(getVertexSizeType()).center());
+    selectionShape.addRoundedRect(selfBRect, 10, 10);
+
+    QPainterPathStroker strk;
+    selectionShape = strk.createStroke(selectionShape);
+
+    m_selectionPathItem->setPath(selectionShape);
+}
+
 GObjectItem::GObjectItem(QGraphicsItem *parent) :
     ObjectItems::BasicItem(parent)
 {
@@ -29,6 +48,15 @@ GObjectItem::GObjectItem(QGraphicsItem *parent) :
     m_nameItem->setLinePen({Qt::black, 1, Qt::SolidLine, Qt::RoundCap});
     m_nameItem->setZValue(100);
     m_nameItem->setObjectType(OBJECTTYPE_VERTEX);
+
+    createSubitem(m_selectionPathItem);
+    m_selectionPathItem->setZValue(100);
+    m_selectionPathItem->setPen(Colors::DEFAULT_COLOR_VERTEX_SEL);
+    m_selectionPathItem->setBrush(Colors::DEFAULT_COLOR_VERTEX_SEL);
+    updateSelectionPathItem();
+    m_selectionPathItem->hide();
+
+    setFlag(ItemIsSelectable, true);
 
     setLinePen(Colors::DEFAULT_COLOR_VERTEX_LINE);
     setBackgroundBrush(Colors::DEFAULT_COLOR_VERTEX_BGR);
@@ -45,6 +73,16 @@ GObjectItem::GObjectItem(QGraphicsItem *parent) :
             this, &GObjectItem::updateConnectionLines);
     connect(this, &BasicItem::idChanged,
             this, [this](){ setPluginObjectId(getItemId()); });
+
+    connect(this, &BasicItem::itemSelected,
+            this, [this](){
+        updateSelectionPathItem();
+        m_selectionPathItem->setVisible(true);
+    });
+    connect(this, &BasicItem::itemDeselected,
+            this, [this](){
+        m_selectionPathItem->setVisible(false);
+    });
 
     setDisplayName("Объект без названия");
 }
@@ -269,7 +307,9 @@ TextLabel *GObjectItem::getLabel() const
     return m_nameItem;
 }
 
-void GObjectItem::processSizeTypeChange(const QRectF &newSize) {}
+void GObjectItem::processSizeTypeChange(const QRectF &newSize) {
+    updateSelectionPathItem();
+}
 
 QRectF toVertexBoundingRect(VertexSizeType vst)
 {

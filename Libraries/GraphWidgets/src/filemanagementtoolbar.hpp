@@ -29,5 +29,5 @@ signals:
 private:
     Ui::FileManagementToolbar *ui;
 
-    void processGraphChange() override;
+    void processGraphChange([[maybe_unused]] const Graph::GraphObjectManagerPtr& pPrevGraph) override;
 };

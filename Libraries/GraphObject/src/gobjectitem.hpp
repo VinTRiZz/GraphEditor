@@ -71,11 +71,15 @@ private:
     ObjectItems::TextLabel* m_nameItem{nullptr};
     bool m_isItemFound {true};
 
+    QGraphicsPathItem* m_selectionPathItem {nullptr};
+
     VertexSizeType m_vertexSizeType {VertexSizeType::VST_Medium};
     VertexTitlePosition m_shapeTitlePos {VertexTitlePosition::VTP_Center};
 
     std::set<GObjectConnectionItem*> m_connectionsFromThis;
     std::set<GObjectConnectionItem*> m_connectionsToThis;
+
+    void updateSelectionPathItem();
 
 private slots:
     void updateConnectionLines();

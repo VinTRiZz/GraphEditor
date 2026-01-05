@@ -109,6 +109,34 @@ QMenu *GraphEditView::createSelectionMenu()
     return pMenu;
 }
 
+void GraphEditView::connectItem(ObjectItems::BasicItem *pItem)
+{
+    connect(pItem, &ObjectItems::BasicItem::itemAboutToMove,
+            this, [this, pItem](auto nPos){
+        // Защита от стек оверфлоу
+        if (m_isMovingGroup) {
+            return;
+        }
+        m_isMovingGroup = true;
+
+        if (nullptr != pItem->parentItem()) {
+            nPos = pItem->parentItem()->mapToScene(nPos);
+        }
+        auto deltaPos = pItem->scenePos() - nPos;
+        for (auto* pSelectedItem : getScene()->selectedItems()) {
+            if (pSelectedItem == pItem) {
+                continue;
+            }
+            auto deltaSelPos = deltaPos;
+            if (nullptr != pSelectedItem->parentItem()) {
+                deltaSelPos = pSelectedItem->parentItem()->mapToScene(deltaSelPos);
+            }
+            pSelectedItem->setPos(pSelectedItem->pos() - deltaSelPos);
+        }
+        m_isMovingGroup = false;
+    });
+}
+
 void GraphEditView::dragEnterEvent(QDragEnterEvent *event)
 {
     OVLayers::ObjectView::updateCursorLabel();
@@ -152,6 +180,8 @@ void GraphEditView::dropEvent(QDropEvent *event)
             } else {
                 getGraph()->getObject()->addPluginObject(pInterface);
             }
+            connectItem(pItem);
+
             LOG_OK("Added item:", itemName, "from plugin:", itemPlugin);
             event->acceptProposedAction();
         } else {
@@ -221,4 +251,32 @@ void GraphEditView::contextMenuEvent(QContextMenuEvent *e)
     });
 
     m_contextMenu.exec(e->globalPos());
+}
+
+void GraphEditView::processGraphChange(const Graph::GraphObjectManagerPtr& pPrevGraph)
+{
+    if (pPrevGraph && pPrevGraph->getObject()) {
+        auto pPrevObj = pPrevGraph->getObject();
+        for (auto* pItem : pPrevObj->getAllObjects()) {
+            disconnect(pItem, nullptr, this, nullptr);
+        }
+        for (auto* pItem : pPrevObj->getPluginObjects()) {
+            if (auto pCastedItem = dynamic_cast<ObjectItems::BasicItem*>(pItem); nullptr != pCastedItem) {
+                disconnect(pCastedItem, nullptr, this, nullptr);
+            }
+        }
+    }
+
+    auto pCurrentGraph = getGraph();
+    if (pCurrentGraph && pCurrentGraph->getObject()) {
+        auto pCurrentObj = pCurrentGraph->getObject();
+        for (auto* pItem : pCurrentObj->getAllObjects()) {
+            connectItem(pItem);
+        }
+        for (auto* pItem : pCurrentObj->getPluginObjects()) {
+            if (auto pCastedItem = dynamic_cast<ObjectItems::BasicItem*>(pItem); nullptr != pCastedItem) {
+                connectItem(pCastedItem);
+            }
+        }
+    }
 }

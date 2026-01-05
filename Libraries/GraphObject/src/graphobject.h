@@ -129,7 +129,7 @@ public:
     Graph::GraphObjectManagerPtr getGraph() const;
 
 protected:
-    virtual void processGraphChange() { }
+    virtual void processGraphChange([[maybe_unused]] const Graph::GraphObjectManagerPtr& pPrevGraph) { }
 
 private:
     Graph::GraphObjectManagerPtr m_pGraph;

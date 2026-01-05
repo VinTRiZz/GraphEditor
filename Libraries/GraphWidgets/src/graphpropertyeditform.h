@@ -29,7 +29,7 @@ public:
 private:
     Ui::GraphPropertyEditForm* ui;
 
-    void processGraphChange() override;
+    void processGraphChange([[maybe_unused]] const Graph::GraphObjectManagerPtr& pPrevGraph) override;
 
     enum GraphPropertyRows : int {
         NAMEROW = 0,

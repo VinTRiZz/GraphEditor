@@ -123,7 +123,7 @@ bool FileManagementToolbar::loadGraph(const QString &savePath)
     return res;
 }
 
-void FileManagementToolbar::processGraphChange()
+void FileManagementToolbar::processGraphChange(const Graph::GraphObjectManagerPtr &pPrevGraph)
 {
     ui->saveAs_toolButton->setEnabled(isGraphSet());
 

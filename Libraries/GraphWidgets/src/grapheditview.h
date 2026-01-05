@@ -24,6 +24,9 @@ private:
     QMenu* createGroupsMenu(Graph::GObjectItem *hoverVertex);
     QMenu* createSelectionMenu();
 
+    void connectItem(ObjectItems::BasicItem* pItem);
+    bool m_isMovingGroup {false};
+
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dragMoveEvent(QDragMoveEvent *event) override;
@@ -33,4 +36,6 @@ protected:
     void mouseMoveEvent(QMouseEvent* e) override;
 
     void contextMenuEvent(QContextMenuEvent* e) override;
+
+    void processGraphChange(const Graph::GraphObjectManagerPtr& pPrevGraph) override;
 };

@@ -24,7 +24,7 @@ GraphPropertyEditForm::~GraphPropertyEditForm() {
     delete ui;
 }
 
-void GraphPropertyEditForm::processGraphChange()
+void GraphPropertyEditForm::processGraphChange(const GraphObjectManagerPtr &pPrevGraph)
 {
     auto GraphObjectManager = getGraph();
     m_pCommonPropertiesModel->setGraph(GraphObjectManager);

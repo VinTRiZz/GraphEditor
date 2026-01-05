@@ -86,10 +86,11 @@ QMenu *GraphEditView::createSelectionMenu()
             this, [this](){
         auto pGroup = new ObjectItems::CommentItem;
         pGroup->enableDeleteOnEmpty();
-        pGroup->setZValue(Layers::VERTEX_LAYER - 1);
         pGroup->setItemId(getFreeObjectId());
-        pGroup->setDisplayName("Группа объектов");
         addObject(pGroup);
+
+        pGroup->setZValue(Layers::VERTEX_LAYER - 1);
+        pGroup->setDisplayName("Группа объектов");
         pGroup->setParentItem(getCanvas());
 
         for (auto* pItem : getScene()->selectedItems()) {

@@ -70,6 +70,7 @@ signals:
 private:
     ObjectItems::TextLabel* m_nameItem{nullptr};
     bool m_isItemFound {true};
+    bool m_isTextEditedByUser {false};
 
     QGraphicsPathItem* m_selectionPathItem {nullptr};
 

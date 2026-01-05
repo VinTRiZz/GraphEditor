@@ -66,13 +66,16 @@ GObjectItem::GObjectItem(QGraphicsItem *parent) :
 
     connect(this, &BasicItem::displayNameChanged,
             m_nameItem, [this](){
+        if (m_isTextEditedByUser) { return; }
         m_nameItem->setDisplayName(getDisplayName());
         updateLabelPosition();
     });
 
     connect(m_nameItem, &BasicItem::displayNameChanged,
             this, [this](){
+        m_isTextEditedByUser = true;
         setDisplayName(m_nameItem->getDisplayName());
+        m_isTextEditedByUser = false;
     });
 
     connect(this, &BasicItem::itemMoved,

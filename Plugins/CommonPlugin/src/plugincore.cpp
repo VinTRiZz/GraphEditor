@@ -54,7 +54,7 @@ Graph::PluginObjectInterface *CommonPluginCore::createObject(const QString& name
         pImageVertex->setPluginName(PLUGIN_NAME);
         pImageVertex->setPluginObjectName(CommonPluginObjectName::IMAGEVERTEX);
 
-        auto emptyImageRect = QRect(0, 0, 500, 500);
+        auto emptyImageRect = Graph::toVertexBoundingRect(pImageVertex->getVertexSizeType());
         QImage emptyImg(emptyImageRect.width(), emptyImageRect.height(), QImage::Format_RGB32);
         emptyImg.fill(Qt::lightGray);
 

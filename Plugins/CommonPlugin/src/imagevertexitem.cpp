@@ -17,6 +17,7 @@ ImageVertexItem::ImageVertexItem(QGraphicsItem* parent)
 
 ImageVertexItem::~ImageVertexItem()
 {
+
 }
 
 void ImageVertexItem::setImage(const QImage& pixmap)
@@ -72,7 +73,13 @@ QMenu* ImageVertexItem::createContextMenu()
 
 QJsonObject ImageVertexItem::toJson() const
 {
-    return GObjectItem::toJson();
+    auto js = GObjectItem::toJson();
+
+    QJsonObject selfJson;
+//    selfJson["image"] = ;
+
+    js["ImageVertexItem"] = selfJson;
+    return js;
 }
 
 bool ImageVertexItem::fromJson(const QJsonObject &arr)

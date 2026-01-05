@@ -67,6 +67,7 @@ QJsonObject GObjectItem::toJson() const
     QJsonObject vObj;
     vObj["isVisible"] = isVisible();
     vObj["pos"] = QString("%0;%1").arg(QString::number(pos().x()), QString::number(pos().y()));
+    vObj["size"] = static_cast<int>(getVertexSizeType());
 
     res["GObjectItem"] = vObj;
     return res;
@@ -83,6 +84,8 @@ bool GObjectItem::fromJson(const QJsonObject &jsonObj)
     setVisible(vObj["isVisible"].toBool());
     auto serializedPos = vObj["pos"].toString().split(";");
     setPos(QPointF(serializedPos[0].toDouble(), serializedPos[1].toDouble()));
+
+    setVertexSizeType(static_cast<VertexSizeType>(vObj["size"].toInt(VertexSizeType::VST_Medium)));
 
     return res;
 }

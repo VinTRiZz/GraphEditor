@@ -70,6 +70,11 @@ GObjectItem::GObjectItem(QGraphicsItem *parent) :
         updateLabelPosition();
     });
 
+    connect(m_nameItem, &BasicItem::displayNameChanged,
+            this, [this](){
+        setDisplayName(m_nameItem->getDisplayName());
+    });
+
     connect(this, &BasicItem::itemMoved,
             this, &GObjectItem::updateConnectionLines);
     connect(this, &BasicItem::idChanged,
@@ -86,6 +91,7 @@ GObjectItem::GObjectItem(QGraphicsItem *parent) :
     });
 
     setDisplayName("Объект без названия");
+    m_nameItem->setEditableByUser(true);
 }
 
 GObjectItem::~GObjectItem()

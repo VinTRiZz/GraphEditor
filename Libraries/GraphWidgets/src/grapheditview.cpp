@@ -77,33 +77,28 @@ QMenu *GraphEditView::createConnectionsMenu(GObjectItem *hoverVertex)
     return pMenu;
 }
 
-QMenu *GraphEditView::createGroupsMenu(GObjectItem *hoverVertex)
-{
-    auto pMenu = new QMenu("Группа", this);
-
-    auto pAction = new QAction("Создать", pMenu);
-    pMenu->addAction(pAction);
-
-    pAction = new QAction("Добавить в группу", pMenu);
-    pMenu->addAction(pAction);
-
-    pAction = new QAction("Исключить из группы", pMenu);
-    pMenu->addAction(pAction);
-
-    pAction = new QAction("Удалить группу", pMenu);
-    pMenu->addAction(pAction);
-
-    return pMenu;
-}
-
 QMenu *GraphEditView::createSelectionMenu()
 {
     auto pMenu = new QMenu("Выбор", this);
 
-    auto pAction = new QAction("Удалить", pMenu);
-    pMenu->addAction(pAction);
+    auto pAction = new QAction("Объединить в группу", pMenu);
+    connect(pAction, &QAction::triggered,
+            this, [this](){
+        auto pGroup = new ObjectItems::CommentItem;
+        pGroup->enableDeleteOnEmpty();
+        pGroup->setZValue(Layers::VERTEX_LAYER - 1);
+        pGroup->setItemId(getFreeObjectId());
+        pGroup->setDisplayName("Группа объектов");
+        addObject(pGroup);
+        pGroup->setParentItem(getCanvas());
 
-    pAction = new QAction("Объединить в группу", pMenu);
+        for (auto* pItem : getScene()->selectedItems()) {
+            auto pCastedItem = dynamic_cast<ObjectItems::BasicItem*>(pItem);
+            if (nullptr != pCastedItem) {
+                pGroup->addGroupItem(pCastedItem);
+            }
+        }
+    });
     pMenu->addAction(pAction);
 
     return pMenu;
@@ -114,7 +109,7 @@ void GraphEditView::connectItem(ObjectItems::BasicItem *pItem)
     connect(pItem, &ObjectItems::BasicItem::itemAboutToMove,
             this, [this, pItem](auto nPos){
         // Защита от стек оверфлоу
-        if (m_isMovingGroup) {
+        if (m_isMovingGroup || !pItem->isSelected()) {
             return;
         }
         m_isMovingGroup = true;
@@ -224,7 +219,16 @@ void GraphEditView::contextMenuEvent(QContextMenuEvent *e)
     auto pHoverItem = getTopItem(e->pos());
 
     auto pHoverItemObject = dynamic_cast<ObjectItems::BasicItem*>(pHoverItem);
+    if ((pHoverItemObject == nullptr) && (nullptr != pHoverItem)) {
+        pHoverItemObject = pHoverItem->data(ObjectItems::OBJECTDATAROLE_PARENTITEM_POINTER).value<ObjectItems::BasicItem*>();
+    }
+
     if (pHoverItemObject != nullptr) {
+        auto pParent = pHoverItemObject->getParentObject();
+        if (nullptr != pParent) {
+            pHoverItemObject = pParent;
+        }
+
         m_contextMenu.addMenu(pHoverItemObject->createContextMenu());
 
         auto itemType = pHoverItemObject->getObjectType();
@@ -232,11 +236,27 @@ void GraphEditView::contextMenuEvent(QContextMenuEvent *e)
         {
         case Graph::OBJECTTYPE_VERTEX:
             m_contextMenu.addMenu(createConnectionsMenu(static_cast<GObjectItem*>(pHoverItemObject)));
-            m_contextMenu.addAction("Комментарий", [this](){
-                LOG_DEBUG("ADD COMMENT, BRO!");
-            });
             break;
         }
+
+        auto pAction = new QAction("Удалить", &m_contextMenu);
+        connect(pAction, &QAction::triggered,
+                this, [this, pHoverItemObject](){
+            if (getScene()->selectedItems().empty()) {
+                removeObject(pHoverItemObject);
+            }
+            for (auto* pItem : getScene()->selectedItems()) {
+                auto pCastedItem = dynamic_cast<ObjectItems::BasicItem*>(pItem);
+                if (nullptr != pCastedItem) {
+                    removeObject(pCastedItem);
+                }
+            }
+        });
+        m_contextMenu.addAction(pAction);
+    }
+
+    if (!getScene()->selectedItems().empty()) {
+        m_contextMenu.addMenu(createSelectionMenu());
     }
 
     auto pGridAction = m_contextMenu.addAction("Сетка", [this]() {

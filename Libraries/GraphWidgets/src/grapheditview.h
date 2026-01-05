@@ -21,7 +21,6 @@ private:
 
     QMenu m_contextMenu;
     QMenu* createConnectionsMenu(Graph::GObjectItem *hoverVertex);
-    QMenu* createGroupsMenu(Graph::GObjectItem *hoverVertex);
     QMenu* createSelectionMenu();
 
     void connectItem(ObjectItems::BasicItem* pItem);

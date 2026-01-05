@@ -15,7 +15,8 @@ GObjectConnectionItem::GObjectConnectionItem(QGraphicsItem* parent)
     setSystemName("Соединение вершин");
     setObjectType(OBJECTTYPE_CONNECTION);
 
-    auto pLine = new ObjectItems::ArrowedConnectionLine;
+    ObjectItems::ArrowedConnectionLine* pLine {nullptr};
+    createSubitem(pLine);
     pLine->setDirection(LineDirectionType::Forward);
     setLineItem(pLine);
 

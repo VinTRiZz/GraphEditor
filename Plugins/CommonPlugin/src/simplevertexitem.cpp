@@ -74,7 +74,7 @@ bool SimpleVertexItem::fromJson(const QJsonObject &arr)
 
 void SimpleVertexItem::initShapeItem()
 {
-    registerSubitem(m_vertexShapeItem);
+    m_vertexShapeItem->setParentItem(this);
 
     m_vertexShapeItem->setPen(getLinePen());
     m_vertexShapeItem->setBrush(getBackgroundBrush());

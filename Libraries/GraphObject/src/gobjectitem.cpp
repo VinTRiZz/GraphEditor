@@ -54,6 +54,7 @@ GObjectItem::GObjectItem(QGraphicsItem *parent) :
     m_selectionPathItem->setPen(Colors::DEFAULT_COLOR_VERTEX_SEL);
     m_selectionPathItem->setBrush(Colors::DEFAULT_COLOR_VERTEX_SEL);
     updateSelectionPathItem();
+    m_selectionPathItem->setFlag(ItemClipsToShape, true);
     m_selectionPathItem->hide();
 
     setFlag(ItemIsSelectable, true);

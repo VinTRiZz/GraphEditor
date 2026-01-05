@@ -45,6 +45,8 @@ GObjectItem::GObjectItem(QGraphicsItem *parent) :
             this, &GObjectItem::updateConnectionLines);
     connect(this, &BasicItem::idChanged,
             this, [this](){ setPluginObjectId(getItemId()); });
+
+    setDisplayName("Объект без названия");
 }
 
 GObjectItem::~GObjectItem()

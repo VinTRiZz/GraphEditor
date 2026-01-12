@@ -40,8 +40,8 @@ public:
     explicit GObjectItem(QGraphicsItem* parent = nullptr);
     ~GObjectItem();
 
-    virtual QJsonObject toJson() const;;
-    virtual bool fromJson(const QJsonObject& jsonObj);
+    virtual QJsonObject toJson() const override;
+    virtual bool fromJson(const QJsonObject& jsonObj) override;
 
     /**
      * @brief setVertexNotFound Меняет внешний вид вершины на "не валидный"
@@ -89,7 +89,6 @@ protected:
     void updateLabelPosition();
 
     ObjectItems::TextLabel* getLabel() const;
-
     virtual void processSizeTypeChange(const QRectF& newSize);
 };
 

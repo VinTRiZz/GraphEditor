@@ -48,6 +48,7 @@ GObjectItem::GObjectItem(QGraphicsItem *parent) :
     m_nameItem->setLinePen({Qt::black, 1, Qt::SolidLine, Qt::RoundCap});
     m_nameItem->setZValue(100);
     m_nameItem->setObjectType(OBJECTTYPE_VERTEX);
+    m_nameItem->setFlag(ItemIsMovable, false);
 
     createSubitem(m_selectionPathItem);
     m_selectionPathItem->setZValue(100);
@@ -58,6 +59,7 @@ GObjectItem::GObjectItem(QGraphicsItem *parent) :
     m_selectionPathItem->hide();
 
     setFlag(ItemIsSelectable, true);
+    setFlag(ItemIsMovable, true);
 
     setLinePen(Colors::DEFAULT_COLOR_VERTEX_LINE);
     setBackgroundBrush(Colors::DEFAULT_COLOR_VERTEX_BGR);

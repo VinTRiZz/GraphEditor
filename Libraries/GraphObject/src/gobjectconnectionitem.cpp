@@ -8,6 +8,11 @@
 
 #include <math.h>
 
+#include <QLineF>
+#include <QRectF>
+#include <QPointF>
+#include <optional>
+
 using namespace ObjectItems;
 
 namespace Graph {
@@ -111,23 +116,27 @@ void GObjectConnectionItem::updateLine()
 
     if (nullptr != m_fromVertex) {
         auto bRect = m_fromVertex->boundingRect();
-        m_connectionLine->setPositionFrom(QPointF(bRect.center().x() + m_fromVertex->x(), bRect.bottom() + m_fromVertex->y() + 5));
+        if (m_isStraightLine) {
+            auto betweenPos = m_fromVertex->pos() + bRect.center();
+            auto resLine = QLineF(betweenPos, m_connectionLine->getLine().p2());
+
+            auto hypo = QLineF(bRect.center(), bRect.topLeft()).length();
+            auto linePosParameter = hypo * 1.2 / resLine.length();
+            m_connectionLine->setPositionFrom(resLine.pointAt(linePosParameter));
+        } else {
+            m_connectionLine->setPositionFrom(QPointF(bRect.center().x() + m_fromVertex->x(), bRect.bottom() + m_fromVertex->y() + 5));
+        }
     }
 
     if (nullptr != m_toVertex) {
         auto bRect = m_toVertex->boundingRect();
         if (m_isStraightLine) {
-            auto angle = m_connectionLine->getLine().angle();
-            auto hypot = m_connectionLine->getLine().length();
-            auto p1 = m_connectionLine->getLine().p1();
+            auto betweenPos = m_toVertex->pos() + bRect.center();
+            auto resLine = QLineF(m_connectionLine->getLine().p1(), betweenPos);
 
-            double xOffset = bRect.width() / 2.0 * std::cos(angle);
-            double yOffset = bRect.height() / 2.0 * std::sin(angle);
-
-            LOG_DEBUG("VALUES:", angle, hypot, p1, xOffset, yOffset);
-            auto targetPos = QPointF(p1.x() + hypot * std::cos(angle) + xOffset,
-                                    p1.y() + hypot * std::sin(angle) + yOffset);
-            m_connectionLine->setPositionTo(targetPos);
+            auto hypo = QLineF(bRect.center(), bRect.topLeft()).length();
+            auto linePosParameter = hypo * 1.2 / resLine.length();
+            m_connectionLine->setPositionTo(resLine.pointAt(1 - linePosParameter));
         } else {
             m_connectionLine->setPositionTo(QPointF(bRect.center().x() + m_toVertex->x(), bRect.top() + m_toVertex->y() - 5));
         }

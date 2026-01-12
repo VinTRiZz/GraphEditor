@@ -34,6 +34,7 @@ void GraphObject::synchronizeParents(OVLayers::OVCanvasLayer *pHostView)
 
     LOG_INFO("Objects sync...");
     for (auto* pObj : m_objects) {
+
         if (pObj->scene() != pHostScene) {
             pHostView->addObject(pObj);
         }
@@ -70,6 +71,7 @@ void GraphObject::synchronizeParents(OVLayers::OVCanvasLayer *pHostView)
 
     LOG_INFO("Extra items sync...");
     for (auto* pObjI : m_pluginObjects) {
+
         auto pObj = dynamic_cast<ObjectItems::BasicItem*>(pObjI);
         if (nullptr == pObj) {
             LOG_WARNING("Can not synchronize parent for plugin object:", pObjI->getPluginObjectId(), "REASON: Not a item");

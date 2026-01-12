@@ -6,6 +6,8 @@
 
 #include "gobjectitem.hpp"
 
+#include <math.h>
+
 using namespace ObjectItems;
 
 namespace Graph {
@@ -29,20 +31,36 @@ GObjectConnectionItem::GObjectConnectionItem(QGraphicsItem* parent)
 }
 
 GObjectConnectionItem::~GObjectConnectionItem() {
-    if (m_fromVertex) {
-        m_fromVertex->unsubscribeConnectionFrom(this);
-    }
 
-    if (m_toVertex) {
-        m_toVertex->unsubscribeConnectionTo(this);
-    }
+}
+
+QJsonObject GObjectConnectionItem::toJson() const
+{
+    auto resJson = PluginObjectInterface::toJson();
+
+    return resJson;
+}
+
+bool GObjectConnectionItem::fromJson(const QJsonObject &arr)
+{
+    auto res = PluginObjectInterface::fromJson(arr);
+
+    return res;
 }
 
 void GObjectConnectionItem::setVertexFrom(GObjectItem* pVertexFrom) {
-    if (m_toVertex == pVertexFrom) {
-        return;
+    if (nullptr != m_fromVertex) {
+        disconnect(m_fromVertex, nullptr, this, nullptr);
     }
+
     m_fromVertex = pVertexFrom;
+    if (nullptr != m_fromVertex) {
+        connect(m_fromVertex, &QObject::destroyed,
+                this, [this](){ m_fromVertex = nullptr; });
+        connect(m_fromVertex, &BasicItem::itemMoved,
+                this, &GObjectConnectionItem::updateLine);
+    }
+    updateLine();
 }
 
 GObjectItem* GObjectConnectionItem::getVertexFrom() const {
@@ -50,10 +68,18 @@ GObjectItem* GObjectConnectionItem::getVertexFrom() const {
 }
 
 void GObjectConnectionItem::setVertexTo(GObjectItem* pVertexTo) {
-    if (m_fromVertex == pVertexTo) {
-        return;
+    if (nullptr != m_toVertex) {
+        disconnect(m_toVertex, nullptr, this, nullptr);
     }
+
     m_toVertex = pVertexTo;
+    if (nullptr != m_toVertex) {
+        connect(m_toVertex, &QObject::destroyed,
+                this, [this](){ m_toVertex = nullptr; });
+        connect(m_toVertex, &BasicItem::itemMoved,
+                this, &GObjectConnectionItem::updateLine);
+    }
+    updateLine();
 }
 
 GObjectItem* GObjectConnectionItem::getVertexTo() const {
@@ -68,11 +94,44 @@ void GObjectConnectionItem::setLineItem(ObjectItems::AbstractConnectionLine *pLi
     delete m_connectionLine;
     m_connectionLine = pLine;
     pLine->setParentItem(this);
+
+    m_isStraightLine = (nullptr != dynamic_cast<ObjectItems::ArrowedConnectionLine*>(pLine));
 }
 
 AbstractConnectionLine *GObjectConnectionItem::getLineItem() const
 {
     return m_connectionLine;
+}
+
+void GObjectConnectionItem::updateLine()
+{
+    if (nullptr == m_connectionLine) [[unlikely]] {
+        return;
+    }
+
+    if (nullptr != m_fromVertex) {
+        auto bRect = m_fromVertex->boundingRect();
+        m_connectionLine->setPositionFrom(QPointF(bRect.center().x() + m_fromVertex->x(), bRect.bottom() + m_fromVertex->y() + 5));
+    }
+
+    if (nullptr != m_toVertex) {
+        auto bRect = m_toVertex->boundingRect();
+        if (m_isStraightLine) {
+            auto angle = m_connectionLine->getLine().angle();
+            auto hypot = m_connectionLine->getLine().length();
+            auto p1 = m_connectionLine->getLine().p1();
+
+            double xOffset = bRect.width() / 2.0 * std::cos(angle);
+            double yOffset = bRect.height() / 2.0 * std::sin(angle);
+
+            LOG_DEBUG("VALUES:", angle, hypot, p1, xOffset, yOffset);
+            auto targetPos = QPointF(p1.x() + hypot * std::cos(angle) + xOffset,
+                                    p1.y() + hypot * std::sin(angle) + yOffset);
+            m_connectionLine->setPositionTo(targetPos);
+        } else {
+            m_connectionLine->setPositionTo(QPointF(bRect.center().x() + m_toVertex->x(), bRect.top() + m_toVertex->y() - 5));
+        }
+    }
 }
 
 }  // namespace ObjectItems

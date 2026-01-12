@@ -7,8 +7,6 @@
 
 namespace Graph {
 
-class GObjectConnectionItem;
-
 /**
  * @brief The VertexSizeType enum Условная градация размера вершины
  */
@@ -56,14 +54,6 @@ public:
     void setTitlePosition(VertexTitlePosition vtp);
     VertexTitlePosition getTitlePosition() const;
 
-    void subscribeAsConnectionFrom(GObjectConnectionItem* pLine);
-    void unsubscribeConnectionFrom(GObjectConnectionItem* pLine);
-
-    void subscribeAsConnectionTo(GObjectConnectionItem* pLine);
-    void unsubscribeConnectionTo(GObjectConnectionItem* pLine);
-
-    bool isLineSubscribed(GObjectConnectionItem* pLine);
-
 signals:
     void sizeChanged(VertexSizeType prevSizeT, VertexSizeType currentSizeT);
 
@@ -77,13 +67,7 @@ private:
     VertexSizeType m_vertexSizeType {VertexSizeType::VST_Medium};
     VertexTitlePosition m_shapeTitlePos {VertexTitlePosition::VTP_Center};
 
-    std::set<GObjectConnectionItem*> m_connectionsFromThis;
-    std::set<GObjectConnectionItem*> m_connectionsToThis;
-
     void updateSelectionPathItem();
-
-private slots:
-    void updateConnectionLines();
 
 protected:
     void updateLabelPosition();

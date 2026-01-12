@@ -55,7 +55,8 @@ QMenu *GraphEditView::createConnectionsMenu(GObjectItem *hoverVertex)
         m_pendingConnection->setItemId(getFreeObjectId());
         addObject(m_pendingConnection);
         m_pendingConnection->setParentItem(getCanvas());
-        hoverVertex->subscribeAsConnectionFrom(m_pendingConnection);
+        m_pendingConnection->setVertexFrom(hoverVertex);
+        m_pendingConnection->getLineItem()->setPositionTo(mapToScene(mapFromGlobal(cursor().pos())));
     });
     pMenu->addAction(pAction);
 
@@ -69,8 +70,10 @@ QMenu *GraphEditView::createConnectionsMenu(GObjectItem *hoverVertex)
         m_pendingConnection->setParentItem(getCanvas());
         auto pConLine = new ObjectItems::ElegantConnectionLine;
         pConLine->setDirection(ObjectItems::LineDirectionType::Forward);
+        pConLine->setArrowFilled(true);
         m_pendingConnection->setLineItem(pConLine);
-        hoverVertex->subscribeAsConnectionFrom(m_pendingConnection);
+        m_pendingConnection->setVertexFrom(hoverVertex);
+        m_pendingConnection->getLineItem()->setPositionTo(mapToScene(mapFromGlobal(cursor().pos())));
     });
     pMenu->addAction(pAction);
 
@@ -196,7 +199,7 @@ void GraphEditView::mousePressEvent(QMouseEvent *e)
         std::list<GObjectConnectionItem*> connections;
         for (auto* pItem : topItems) {
             if (auto pVertex = dynamic_cast<GObjectItem*>(pItem); pVertex != nullptr) {
-                pVertex->subscribeAsConnectionTo(m_pendingConnection);
+                m_pendingConnection->setVertexTo(pVertex);
                 m_pendingConnection = nullptr;
                 break;
             }

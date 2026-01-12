@@ -10,18 +10,6 @@ using namespace ObjectItems;
 
 namespace Graph {
 
-bool GObjectItem::isLineSubscribed(GObjectConnectionItem* pLine) {
-    // Нет смысла проверять исходящие, т.к. нельзя регистрировать вершину саму
-    // на себя
-    for (auto pLineTo : m_connectionsToThis) {
-        if (pLineTo->getVertexFrom()->getItemId() ==
-            pLine->getVertexFrom()->getItemId()) {
-            return true;
-        }
-    }
-    return false;
-}
-
 void GObjectItem::updateSelectionPathItem()
 {
     QPainterPath selectionShape;
@@ -80,8 +68,6 @@ GObjectItem::GObjectItem(QGraphicsItem *parent) :
         m_isTextEditedByUser = false;
     });
 
-    connect(this, &BasicItem::itemMoved,
-            this, &GObjectItem::updateConnectionLines);
     connect(this, &BasicItem::idChanged,
             this, [this](){ setPluginObjectId(getItemId()); });
 
@@ -101,13 +87,7 @@ GObjectItem::GObjectItem(QGraphicsItem *parent) :
 
 GObjectItem::~GObjectItem()
 {
-    for (auto pLine : m_connectionsToThis) {
-        pLine->setVertexTo(nullptr);
-    }
 
-    for (auto pLine : m_connectionsFromThis) {
-        pLine->setVertexFrom(nullptr);
-    }
 }
 
 QJsonObject GObjectItem::toJson() const
@@ -199,74 +179,6 @@ void GObjectItem::setVertexSizeType(VertexSizeType vst)
 VertexSizeType GObjectItem::getVertexSizeType() const
 {
     return m_vertexSizeType;
-}
-
-void GObjectItem::subscribeAsConnectionFrom(GObjectConnectionItem* pLine) {
-    if (this == pLine->getVertexTo()) {
-        return;
-    }
-
-    if (nullptr != pLine->getVertexFrom()) {
-        pLine->getVertexFrom()->unsubscribeConnectionFrom(pLine);
-    }
-
-    pLine->setVertexFrom(this);
-    m_connectionsFromThis.emplace(pLine);
-    connect(pLine, &QObject::destroyed,
-            this, [this, pLine](){
-        m_connectionsFromThis.erase(pLine);
-    });
-    updateConnectionLines();
-}
-
-void GObjectItem::unsubscribeConnectionFrom(GObjectConnectionItem* pLine) {
-    pLine->setVertexFrom(nullptr);
-    m_connectionsFromThis.erase(pLine);
-}
-
-void GObjectItem::subscribeAsConnectionTo(GObjectConnectionItem* pLine) {
-    if (this == pLine->getVertexFrom()) {
-        return;
-    }
-
-    if (nullptr != pLine->getVertexTo()) {
-        pLine->getVertexTo()->unsubscribeConnectionTo(pLine);
-    }
-
-    pLine->setVertexTo(this);
-    m_connectionsToThis.emplace(pLine);
-    connect(pLine, &QObject::destroyed,
-            this, [this, pLine](){
-        m_connectionsToThis.erase(pLine);
-    });
-    updateConnectionLines();
-}
-
-void GObjectItem::unsubscribeConnectionTo(GObjectConnectionItem* pLine) {
-    pLine->setVertexTo(nullptr);
-    m_connectionsToThis.erase(pLine);
-}
-
-void GObjectItem::updateConnectionLines() {
-    unsigned connectionNumber{0};
-    auto vertexRadius = static_cast<double>(boundingRect().width()) / 2.0;
-
-    for (auto pConFrom : m_connectionsFromThis) {
-        auto fromPos =
-            QPointF(x() + vertexRadius,
-                    y() + 2 * vertexRadius + pConFrom->getLineItem()->getArrowHeight().height() +
-                        m_nameItem->boundingRect().height() * 0.7);
-
-        pConFrom->getLineItem()->setPositionFrom(fromPos);
-        connectionNumber++;
-    }
-
-    connectionNumber = 0;
-    for (auto pConTo : m_connectionsToThis) {
-        auto toPos = QPointF(x() + vertexRadius, y() - pConTo->getLineItem()->getArrowHeight().height());
-        pConTo->getLineItem()->setPositionTo(toPos);
-        connectionNumber++;
-    }
 }
 
 void GObjectItem::setTitlePosition(VertexTitlePosition vtp)

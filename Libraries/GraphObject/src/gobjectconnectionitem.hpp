@@ -14,10 +14,14 @@ namespace Graph {
 
 class GObjectItem;
 class GObjectConnectionItem :
-        public ObjectItems::BasicItem {
+        public ObjectItems::BasicItem,
+        public PluginObjectInterface {
 public:
     explicit GObjectConnectionItem(QGraphicsItem* parent = nullptr);
     ~GObjectConnectionItem();
+
+    virtual QJsonObject toJson() const override;
+    virtual bool fromJson(const QJsonObject& arr) override;
 
     void setVertexFrom(GObjectItem* pVertexFrom);
     GObjectItem* getVertexFrom() const;
@@ -36,7 +40,11 @@ private:
     GObjectItem* m_fromVertex{nullptr};
     GObjectItem* m_toVertex{nullptr};
 
+    bool m_isStraightLine {false};
+
     ObjectItems::AbstractConnectionLine* m_connectionLine {nullptr};
+
+    void updateLine();
 };
 
 }  // namespace ObjectItems

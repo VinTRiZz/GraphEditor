@@ -22,17 +22,11 @@ GObjectConnectionItem::GObjectConnectionItem(QGraphicsItem* parent)
     setSystemName("Соединение вершин");
     setObjectType(OBJECTTYPE_CONNECTION);
 
-    ObjectItems::ArrowedConnectionLine* pLine {nullptr};
-    createSubitem(pLine);
-    pLine->setDirection(LineDirectionType::Forward);
-    setLineItem(pLine);
-
-    auto& appSettings = Common::ApplicationSettings::getInstance();
-
-    m_connectionLine->setLinePen(Colors::DEFAULT_COLOR_CONNECTION_LINE);
-    m_connectionLine->setLineSelectionPen(Colors::DEFAULT_COLOR_CONNECTION_SEL);
-
     setZValue(Layers::CONNECTION_LAYER);
+
+    // TODO: Подумать на этот счёт, выглядит как костыль из-за логики
+    setPluginName("CommonPlugin");
+    setPluginObjectName("Connection line");
 }
 
 GObjectConnectionItem::~GObjectConnectionItem() {
@@ -50,6 +44,10 @@ QJsonObject GObjectConnectionItem::toJson() const
         conInfoJ["lineData"] = {};
     }
 
+    conInfoJ["lineType"] = m_isStraightLine; // TODO: Продумать для других типов соединений?
+    conInfoJ["idFrom"] = (nullptr == m_fromVertex ? 0 : m_fromVertex->getItemId());
+    conInfoJ["idTo"] = (nullptr == m_toVertex ? 0 : m_toVertex->getItemId());
+
     resJson["GObjectConnectionItem"] = conInfoJ;
     return resJson;
 }
@@ -58,7 +56,18 @@ bool GObjectConnectionItem::fromJson(const QJsonObject &arr)
 {
     auto res = PluginObjectInterface::fromJson(arr);
 
-    m_connectionLineConfig = arr["GObjectConnectionItem"]["lineData"].toObject();
+    auto conInfoJ = arr["GObjectConnectionItem"].toObject();
+    setItemId(getPluginObjectId()); // Он уже получен уровнем выше
+
+    if (conInfoJ["lineType"].toBool()) {
+        setLineItem(new ConnectionLineBase<ObjectItems::ArrowedConnectionLine>(this));
+    } else {
+        setLineItem(new ConnectionLineBase<ObjectItems::ElegantConnectionLine>(this));
+    }
+
+    dynamic_cast<PluginObjectInterface*>(m_connectionLine)->fromJson(conInfoJ["lineData"].toObject());
+    m_loadedFromId = conInfoJ["idFrom"].toInt();
+    m_loadedToId = conInfoJ["idTo"].toInt();
 
     return res;
 }
@@ -101,21 +110,20 @@ GObjectItem* GObjectConnectionItem::getVertexTo() const {
     return m_toVertex;
 }
 
+std::pair<graphId_t, graphId_t> GObjectConnectionItem::getVertexIds() const
+{
+    return std::make_pair(m_loadedFromId, m_loadedToId);
+}
+
 void GObjectConnectionItem::setLineItem(ObjectItems::AbstractConnectionLine *pLine)
 {
-    if (pLine == nullptr) {
-        throw std::invalid_argument("VertexConnectionItem: Nullptr line item");
+    if (pLine == nullptr ||
+            nullptr == dynamic_cast<PluginObjectInterface*>(pLine)) {
+        throw std::invalid_argument("VertexConnectionItem: Nullptr or invalid line item");
     }
     delete m_connectionLine;
     m_connectionLine = pLine;
     pLine->setParentItem(this);
-
-    if (!m_connectionLineConfig.isEmpty()) {
-        if (auto pLineCasted = dynamic_cast<PluginObjectInterface*>(pLine); nullptr != pLineCasted) {
-            pLineCasted->fromJson(m_connectionLineConfig);
-        }
-        m_connectionLineConfig = {};
-    }
 
     m_isStraightLine = (nullptr != dynamic_cast<ObjectItems::ArrowedConnectionLine*>(pLine));
 }
@@ -130,33 +138,36 @@ void GObjectConnectionItem::updateLine()
     if (nullptr == m_connectionLine) [[unlikely]] {
         return;
     }
+    auto bRect = m_fromVertex->boundingRect();
 
-    if (nullptr != m_fromVertex) {
-        auto bRect = m_fromVertex->boundingRect();
-        if (m_isStraightLine) {
+    // Straight
+    if (m_isStraightLine) {
+        if (nullptr != m_fromVertex) {
             auto betweenPos = m_fromVertex->pos() + bRect.center();
             auto resLine = QLineF(betweenPos, m_connectionLine->getLine().p2());
 
             auto hypo = QLineF(bRect.center(), bRect.topLeft()).length();
             auto linePosParameter = hypo * 1.2 / resLine.length();
             m_connectionLine->setPositionFrom(resLine.pointAt(linePosParameter));
-        } else {
-            m_connectionLine->setPositionFrom(QPointF(bRect.center().x() + m_fromVertex->x(), bRect.bottom() + m_fromVertex->y() + 5));
         }
-    }
 
-    if (nullptr != m_toVertex) {
-        auto bRect = m_toVertex->boundingRect();
-        if (m_isStraightLine) {
+        if (nullptr != m_toVertex) {
             auto betweenPos = m_toVertex->pos() + bRect.center();
             auto resLine = QLineF(m_connectionLine->getLine().p1(), betweenPos);
 
             auto hypo = QLineF(bRect.center(), bRect.topLeft()).length();
             auto linePosParameter = hypo * 1.2 / resLine.length();
             m_connectionLine->setPositionTo(resLine.pointAt(1 - linePosParameter));
-        } else {
-            m_connectionLine->setPositionTo(QPointF(bRect.center().x() + m_toVertex->x(), bRect.top() + m_toVertex->y() - 5));
         }
+        return;
+    }
+
+    // Not straight
+    if (nullptr != m_fromVertex) {
+        m_connectionLine->setPositionFrom(QPointF(bRect.center().x() + m_fromVertex->x(), bRect.bottom() + m_fromVertex->y() + 5));
+    }
+    if (nullptr != m_toVertex) {
+        m_connectionLine->setPositionTo(QPointF(bRect.center().x() + m_toVertex->x(), bRect.top() + m_toVertex->y() - 5));
     }
 }
 

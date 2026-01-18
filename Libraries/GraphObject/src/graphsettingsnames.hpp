@@ -3,6 +3,7 @@
 #include <QString>
 
 #include <vector>
+#include <map>
 
 namespace Graph::SettingsNames {
 
@@ -12,16 +13,22 @@ using settingConstType_t = const settingType_t;
 
 settingConstType_t SYSTEM_PREFIX {"GES_"};
 
-settingConstType_t CANVAS {SYSTEM_PREFIX + "canvas"};
-settingConstType_t CANVAS_SIZE {"c_size"};
-const std::vector<settingType_t> CANVAS_SETTINGS {
-    CANVAS_SIZE,
+settingConstType_t DEBUGCONFIG {SYSTEM_PREFIX + "debug"};
+settingConstType_t DEBUGCONFIG_JSON_SAVE_MODE {SYSTEM_PREFIX + "gsj_save_mode"};
+const std::vector<settingType_t> DEBUGCONFIG_SETTINGS {
+    DEBUGCONFIG_JSON_SAVE_MODE,
 };
 
-settingConstType_t SESSIONCACHE {SYSTEM_PREFIX + "session_cache"};
-settingConstType_t RECENTFILES {"recent_files"};
-const std::vector<settingType_t> SESSIONCACHE_SETTINGS {
-    RECENTFILES,
+settingConstType_t CANVASCONFIG {SYSTEM_PREFIX + "canvas"};
+settingConstType_t CANVASCONFIG_SIZE {"size"};
+const std::vector<settingType_t> CANVASCONFIG_SETTINGS {
+    CANVASCONFIG_SIZE,
+};
+
+// Для упрощения кода
+const std::map<settingType_t, std::vector<settingType_t> > SETTING_SECTIONS {
+    {DEBUGCONFIG, DEBUGCONFIG_SETTINGS},
+    {CANVASCONFIG, CANVASCONFIG_SETTINGS}
 };
 
 }

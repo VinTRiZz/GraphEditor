@@ -10,6 +10,7 @@
 namespace CommonPluginObjectName {
 const QString SIMPLEVERTEX {"Simple vertex"};
 const QString IMAGEVERTEX {"Image with name"};
+const QString CONNECTIONLINE {"Connection line"};
 }
 
 
@@ -42,6 +43,13 @@ Graph::PluginObjectInterface *CommonPluginCore::createObject(const QString& name
         pSimpleVertex->setPluginName(PLUGIN_NAME);
         pSimpleVertex->setPluginObjectName(CommonPluginObjectName::SIMPLEVERTEX);
         return pSimpleVertex;
+    }
+
+    if (name == CommonPluginObjectName::CONNECTIONLINE) {
+        auto pLineItem = new Graph::GObjectConnectionItem;
+        pLineItem->setPluginName(PLUGIN_NAME);
+        pLineItem->setPluginObjectName(CommonPluginObjectName::SIMPLEVERTEX);
+        return pLineItem;
     }
 
     if (name == CommonPluginObjectName::IMAGEVERTEX) {

@@ -51,15 +51,11 @@ int main(int argc, char* argv[]) {
 void initSettings() {
     auto& settingsInstance = Common::ApplicationSettings::getInstance();
 
-    for (auto& sett : Graph::SettingsNames::CANVAS_SETTINGS) {
-        if (!settingsInstance.hasSetting(Graph::SettingsNames::CANVAS, sett)) {
-            settingsInstance.addSetting(Graph::SettingsNames::CANVAS, sett);
-        }
-    }
-
-    for (auto& sett : Graph::SettingsNames::SESSIONCACHE_SETTINGS) {
-        if (!settingsInstance.hasSetting(Graph::SettingsNames::SESSIONCACHE, sett)) {
-            settingsInstance.addSetting(Graph::SettingsNames::SESSIONCACHE, sett);
+    for (auto& [settingSection, settings] : Graph::SettingsNames::SETTING_SECTIONS) {
+        for (auto& sett : settings) {
+            if (!settingsInstance.hasSetting(settingSection, sett)) {
+                settingsInstance.addSetting(settingSection, sett);
+            }
         }
     }
 }

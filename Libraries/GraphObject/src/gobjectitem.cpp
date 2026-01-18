@@ -98,6 +98,8 @@ QJsonObject GObjectItem::toJson() const
     vObj["isVisible"] = isVisible();
     vObj["pos"] = QString("%0;%1").arg(QString::number(pos().x()), QString::number(pos().y()));
     vObj["size"] = static_cast<int>(getSize());
+    vObj["name"] = getDisplayName().toUtf8().toHex().data();
+    vObj["description"] = getDescription().toUtf8().toHex().data();
 
     res["GObjectItem"] = vObj;
     return res;
@@ -110,6 +112,9 @@ bool GObjectItem::fromJson(const QJsonObject &jsonObj)
     auto vObj = jsonObj["GObjectItem"].toObject();
 
     setItemId(getPluginObjectId()); // Он уже получен уровнем выше
+
+    setDisplayName(QByteArray::fromHex(vObj["name"].toString().toUtf8()));
+    setDescription(QByteArray::fromHex(vObj["description"].toString().toUtf8()));
 
     setVisible(vObj["isVisible"].toBool());
     auto serializedPos = vObj["pos"].toString().split(";");
@@ -153,6 +158,7 @@ void GObjectItem::setSize(VertexSizeType vst)
     }
     getLabel()->setTextSizePt(currentFontSizePt);
     updateLabelPosition();
+    updateSelectionPathItem();
 
     processSizeTypeChange(toVertexBoundingRect(vst));
     emit sizeChanged(prevSizeT, m_vertexSizeType);

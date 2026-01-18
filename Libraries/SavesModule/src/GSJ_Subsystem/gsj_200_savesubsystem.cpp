@@ -5,6 +5,7 @@
 #include <QJsonDocument>
 
 #include <Components/Logger/Logger.h>
+#include <Components/Common/ApplicationSettings.h>
 
 #include <GraphObject/PluginObjectInterface.h>
 #include <PluginCoreInterface/Core.h>
@@ -84,7 +85,12 @@ bool GSJ_200_SaveSubsystem::createSavedata(const Graph::GraphObjectManagerPtr &p
     }
     root["objects"] = objectsJsonA;
 
-    savedata = QJsonDocument(root).toJson(QJsonDocument::Compact);
+    auto& settings = Common::ApplicationSettings::getInstance();
+    auto savemodeSetting = settings.getSetting(Graph::SettingsNames::DEBUGCONFIG, Graph::SettingsNames::DEBUGCONFIG_JSON_SAVE_MODE);
+    if (savemodeSetting->getValue().isNull()) {
+        savemodeSetting->setValue(QJsonDocument::Compact);
+    }
+    savedata = QJsonDocument(root).toJson(QJsonDocument::JsonFormat(savemodeSetting->getValue().toInt()));
     return true;
 }
 

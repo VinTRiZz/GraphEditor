@@ -89,6 +89,7 @@ bool ImageVertexItem::fromJson(const QJsonObject &arr)
 
 void ImageVertexItem::processSizeTypeChange(const QRectF& newSize)
 {
+    GObjectItem::processSizeTypeChange(newSize);
     updatePixmap();
 }
 

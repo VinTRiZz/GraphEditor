@@ -81,10 +81,13 @@ void SimpleVertexItem::initShapeItem()
 
     m_vertexShapeItem->setZValue(1);
     m_vertexShapeItem->show();
+
+    VertexShapeProvider::scaleShape(m_vertexShapeItem, getSize());
 }
 
 void SimpleVertexItem::processSizeTypeChange([[maybe_unused]] const QRectF &newSize)
 {
+    GObjectItem::processSizeTypeChange(newSize);
     VertexShapeProvider::scaleShape(m_vertexShapeItem, getSize());
 }
 

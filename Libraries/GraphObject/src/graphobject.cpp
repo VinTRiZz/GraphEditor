@@ -109,6 +109,28 @@ void GraphObject::synchronizeParents(OVLayers::OVCanvasLayer *pHostView)
         } else {
             pObj->setParentItem(pHostView->getCanvas());
         }
+
+        if (pObj->getObjectType() == OBJECTTYPE_CONNECTION) {
+            auto pCon = static_cast<GObjectConnectionItem*>(pObj);
+            auto conIds = pCon->getVertexIds();
+
+            auto pVert = std::find_if(m_objects.begin(), m_objects.end(),
+                                      [&conIds](auto* pObj){
+                return (pObj->getItemId() == conIds.first);
+            });
+            if (pVert != m_objects.end()) {
+                pCon->setVertexFrom((*pVert));
+            }
+
+            // Дубль 2
+            pVert = std::find_if(m_objects.begin(), m_objects.end(),
+                                      [&conIds](auto* pObj){
+                return (pObj->getItemId() == conIds.second);
+            });
+            if (pVert != m_objects.end()) {
+                pCon->setVertexTo((*pVert));
+            }
+        }
     }
     LOG_INFO("Parent sync complete");
 }

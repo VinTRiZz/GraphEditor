@@ -11,7 +11,7 @@ namespace Graph {
  * @brief The VertexSizeType enum Условная градация размера вершины
  */
 enum VertexSizeType : int {
-    VST_UltraSmall,
+    VST_UltraSmall = 0,
     VST_Small,
     VST_Medium,
     VST_Big,

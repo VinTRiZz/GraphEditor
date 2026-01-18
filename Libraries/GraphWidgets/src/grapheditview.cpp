@@ -4,7 +4,7 @@
 
 #include <Components/CustomQt/ObjectView/ObjectItems.h>
 #include <Components/CustomQt/ObjectView/InternalScene.h>
-
+#include <Components/Common/ApplicationSettings.h>
 
 #include <GraphObject/PluginObjectInterface.h>
 #include <GraphObject/GraphObject.h>
@@ -55,8 +55,20 @@ QMenu *GraphEditView::createConnectionsMenu(GObjectItem *hoverVertex)
         m_pendingConnection->setItemId(getFreeObjectId());
         addObject(m_pendingConnection);
         m_pendingConnection->setParentItem(getCanvas());
-        m_pendingConnection->setVertexFrom(hoverVertex);
+
+        auto pConLine = new StraightConnection;
+        pConLine->setItemId(getFreeObjectId());
+        pConLine->setDirection(ObjectItems::LineDirectionType::Forward);
+        pConLine->setArrowFilled(true);
+
+        auto& appSettings = Common::ApplicationSettings::getInstance();
+        pConLine->setLinePen(Colors::DEFAULT_COLOR_CONNECTION_LINE);
+        pConLine->setLineSelectionPen(Colors::DEFAULT_COLOR_CONNECTION_SEL);
+        m_pendingConnection->setLineItem(pConLine);
+
         m_pendingConnection->getLineItem()->setPositionTo(mapToScene(mapFromGlobal(cursor().pos())));
+        m_pendingConnection->setVertexFrom(hoverVertex);
+        getGraph()->getObject()->addPluginObject(m_pendingConnection);
     });
     pMenu->addAction(pAction);
 
@@ -68,12 +80,20 @@ QMenu *GraphEditView::createConnectionsMenu(GObjectItem *hoverVertex)
         m_pendingConnection->setItemId(getFreeObjectId());
         addObject(m_pendingConnection);
         m_pendingConnection->setParentItem(getCanvas());
-        auto pConLine = new ObjectItems::ElegantConnectionLine;
+
+        auto pConLine = new ElegantConnection;
+        pConLine->setItemId(getFreeObjectId());
         pConLine->setDirection(ObjectItems::LineDirectionType::Forward);
         pConLine->setArrowFilled(true);
+
+        auto& appSettings = Common::ApplicationSettings::getInstance();
+        pConLine->setLinePen(Colors::DEFAULT_COLOR_CONNECTION_LINE);
+        pConLine->setLineSelectionPen(Colors::DEFAULT_COLOR_CONNECTION_SEL);
         m_pendingConnection->setLineItem(pConLine);
-        m_pendingConnection->setVertexFrom(hoverVertex);
+
         m_pendingConnection->getLineItem()->setPositionTo(mapToScene(mapFromGlobal(cursor().pos())));
+        m_pendingConnection->setVertexFrom(hoverVertex);
+        getGraph()->getObject()->addPluginObject(m_pendingConnection);
     });
     pMenu->addAction(pAction);
 

@@ -31,7 +31,7 @@ SimpleVertexItem::SimpleVertexItem(QGraphicsItem* parent) :
 
     getLabel()->setContrastRectVisible(false);
 
-    m_vertexShapeItem = VertexShapeProvider::createShape(m_shapeType, getVertexSizeType());
+    m_vertexShapeItem = VertexShapeProvider::createShape(m_shapeType, getSize());
     initShapeItem();
 
     connect(this, &ObjectItems::BasicItem::graphicalDataChanged,
@@ -52,7 +52,7 @@ void SimpleVertexItem::setShapeType(SimpleVertexShapeType vst)
     }
 
     delete m_vertexShapeItem;
-    m_vertexShapeItem = VertexShapeProvider::createShape(vst, getVertexSizeType());
+    m_vertexShapeItem = VertexShapeProvider::createShape(vst, getSize());
     initShapeItem();
     m_shapeType = vst;
 }
@@ -85,7 +85,7 @@ void SimpleVertexItem::initShapeItem()
 
 void SimpleVertexItem::processSizeTypeChange([[maybe_unused]] const QRectF &newSize)
 {
-    VertexShapeProvider::scaleShape(m_vertexShapeItem, getVertexSizeType());
+    VertexShapeProvider::scaleShape(m_vertexShapeItem, getSize());
 }
 
 }  // namespace ObjectItems

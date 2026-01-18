@@ -25,11 +25,6 @@ Graph::PluginConfigurationWidget *WebPluginCore::getConfigurationEditor()
     return nullptr;
 }
 
-Graph::PluginItemPropertyWidget *WebPluginCore::getPropertyEditor(Graph::PluginObjectInterface *pTarget)
-{
-    return nullptr;
-}
-
 Graph::PluginInteractionWidget *WebPluginCore::getInteractor()
 {
     return nullptr;

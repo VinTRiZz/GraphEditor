@@ -99,7 +99,7 @@ void ImageVertexItem::updatePixmap()
         return;
     }
 
-    QRectF boundingRect = toVertexBoundingRect(getVertexSizeType());
+    QRectF boundingRect = toVertexBoundingRect(getSize());
     QSize targetSize = boundingRect.size().toSize();
 
     QPixmap scaledPixmap = QPixmap::fromImage(m_originalImage).scaled(

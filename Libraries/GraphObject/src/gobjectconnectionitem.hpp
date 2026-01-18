@@ -40,11 +40,32 @@ private:
     GObjectItem* m_fromVertex{nullptr};
     GObjectItem* m_toVertex{nullptr};
 
+    QJsonObject m_connectionLineConfig;
+
     bool m_isStraightLine {false};
 
     ObjectItems::AbstractConnectionLine* m_connectionLine {nullptr};
 
     void updateLine();
+};
+
+template <typename LineBaseT>
+class ConnectionLineBase :
+        public LineBaseT,
+        public PluginObjectInterface
+{
+public:
+    virtual QJsonObject toJson() const override {
+        auto res = PluginObjectInterface::toJson();
+
+        return res;
+    }
+
+    virtual bool fromJson(const QJsonObject& arr) override {
+        auto res = PluginObjectInterface::fromJson(arr);
+
+        return res;
+    }
 };
 
 }  // namespace ObjectItems

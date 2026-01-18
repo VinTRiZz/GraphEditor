@@ -129,9 +129,8 @@ bool GSJ_200_SaveSubsystem::parseSavedata(const Graph::GraphObjectManagerPtr &pG
         auto pPluginInterface = pluginMaster.getPlugin(pluginName);
         if (!pPluginInterface) {
             LOG_WARNING("Not found plugin:", pluginName);
-            pInvalidObject = new Graph::GObjectItem;
+            pInvalidObject = new Graph::GInvalidObjectItem(pluginName, pluginObjectName);
             pInvalidObject->fromJson(vObj);
-            pInvalidObject->setItemNotFound();
             pGraphObj->addObject(pInvalidObject);
             pInvalidObject = nullptr;
             continue;
@@ -139,9 +138,8 @@ bool GSJ_200_SaveSubsystem::parseSavedata(const Graph::GraphObjectManagerPtr &pG
         auto pItem = pPluginInterface->getPluginCore()->createObject(pluginObjectName);
         if (!pItem) {
             LOG_WARNING("Not found plugin item:", QString("%0::%1").arg(pluginName, pluginObjectName));
-            pInvalidObject = new Graph::GObjectItem;
+            pInvalidObject = new Graph::GInvalidObjectItem(pluginName, pluginObjectName);
             pInvalidObject->fromJson(vObj);
-            pInvalidObject->setItemNotFound();
             pGraphObj->addObject(pInvalidObject);
             pInvalidObject = nullptr;
             continue;

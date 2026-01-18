@@ -43,12 +43,22 @@ QJsonObject GObjectConnectionItem::toJson() const
 {
     auto resJson = PluginObjectInterface::toJson();
 
+    QJsonObject conInfoJ;
+    if (auto pCon = dynamic_cast<PluginObjectInterface*>(m_connectionLine); nullptr != pCon) {
+        conInfoJ["lineData"] = pCon->toJson();
+    } else {
+        conInfoJ["lineData"] = {};
+    }
+
+    resJson["GObjectConnectionItem"] = conInfoJ;
     return resJson;
 }
 
 bool GObjectConnectionItem::fromJson(const QJsonObject &arr)
 {
     auto res = PluginObjectInterface::fromJson(arr);
+
+    m_connectionLineConfig = arr["GObjectConnectionItem"]["lineData"].toObject();
 
     return res;
 }
@@ -99,6 +109,13 @@ void GObjectConnectionItem::setLineItem(ObjectItems::AbstractConnectionLine *pLi
     delete m_connectionLine;
     m_connectionLine = pLine;
     pLine->setParentItem(this);
+
+    if (!m_connectionLineConfig.isEmpty()) {
+        if (auto pLineCasted = dynamic_cast<PluginObjectInterface*>(pLine); nullptr != pLineCasted) {
+            pLineCasted->fromJson(m_connectionLineConfig);
+        }
+        m_connectionLineConfig = {};
+    }
 
     m_isStraightLine = (nullptr != dynamic_cast<ObjectItems::ArrowedConnectionLine*>(pLine));
 }

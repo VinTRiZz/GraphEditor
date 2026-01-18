@@ -10,7 +10,6 @@ public:
 
     // AbstractPluginCore interface
     Graph::PluginConfigurationWidget *getConfigurationEditor() override;
-    Graph::PluginItemPropertyWidget *getPropertyEditor(Graph::PluginObjectInterface *pTarget) override;
     Graph::PluginInteractionWidget *getInteractor() override;
 
     Graph::PluginObjectInterface *createObject(const QString &name) override;

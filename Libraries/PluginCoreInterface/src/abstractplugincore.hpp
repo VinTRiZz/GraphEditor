@@ -45,7 +45,6 @@ public:
     PluginObjectType getObjectType(const QString& itemName);
 
     virtual Graph::PluginConfigurationWidget* getConfigurationEditor() = 0;
-    virtual Graph::PluginItemPropertyWidget* getPropertyEditor(Graph::PluginObjectInterface* pTarget) = 0;
     virtual Graph::PluginInteractionWidget* getInteractor() = 0;
 
     virtual Graph::PluginObjectInterface* createObject(const QString& name) = 0;

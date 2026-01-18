@@ -41,15 +41,8 @@ public:
     virtual QJsonObject toJson() const override;
     virtual bool fromJson(const QJsonObject& jsonObj) override;
 
-    /**
-     * @brief setVertexNotFound Меняет внешний вид вершины на "не валидный"
-     * @note Для отработки случаев, когда не удалось загрузить
-     */
-    void setItemNotFound();
-    bool isItemFound() const;
-
-    void setVertexSizeType(VertexSizeType vst);
-    VertexSizeType getVertexSizeType() const;
+    void setSize(VertexSizeType vst);
+    VertexSizeType getSize() const;
 
     void setTitlePosition(VertexTitlePosition vtp);
     VertexTitlePosition getTitlePosition() const;
@@ -57,9 +50,13 @@ public:
 signals:
     void sizeChanged(VertexSizeType prevSizeT, VertexSizeType currentSizeT);
 
+
+    void sigProcessEvent(ConnectionEvent* cEvent);
+public slots:
+    void slotProcessEvent(ConnectionEvent* cEvent);
+
 private:
     ObjectItems::TextLabel* m_nameItem{nullptr};
-    bool m_isItemFound {true};
     bool m_isTextEditedByUser {false};
 
     QGraphicsPathItem* m_selectionPathItem {nullptr};
@@ -71,9 +68,9 @@ private:
 
 protected:
     void updateLabelPosition();
-
     ObjectItems::TextLabel* getLabel() const;
     virtual void processSizeTypeChange(const QRectF& newSize);
+    virtual void processConnectionEvent(ConnectionEvent* pEvent);
 };
 
 }

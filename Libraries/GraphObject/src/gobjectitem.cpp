@@ -14,11 +14,11 @@ void GObjectItem::updateSelectionPathItem()
 {
     QPainterPath selectionShape;
 
-    auto selfBRect = toVertexBoundingRect(getVertexSizeType());
+    auto selfBRect = toVertexBoundingRect(getSize());
     QTransform scaleTr;
     scaleTr.scale(1.2, 1.2);
     selfBRect = scaleTr.mapRect(selfBRect);
-    selfBRect.moveCenter(toVertexBoundingRect(getVertexSizeType()).center());
+    selfBRect.moveCenter(toVertexBoundingRect(getSize()).center());
     selectionShape.addRoundedRect(selfBRect, 10, 10);
 
     QPainterPathStroker strk;
@@ -97,7 +97,7 @@ QJsonObject GObjectItem::toJson() const
     QJsonObject vObj;
     vObj["isVisible"] = isVisible();
     vObj["pos"] = QString("%0;%1").arg(QString::number(pos().x()), QString::number(pos().y()));
-    vObj["size"] = static_cast<int>(getVertexSizeType());
+    vObj["size"] = static_cast<int>(getSize());
 
     res["GObjectItem"] = vObj;
     return res;
@@ -115,30 +115,12 @@ bool GObjectItem::fromJson(const QJsonObject &jsonObj)
     auto serializedPos = vObj["pos"].toString().split(";");
     setPos(QPointF(serializedPos[0].toDouble(), serializedPos[1].toDouble()));
 
-    setVertexSizeType(static_cast<VertexSizeType>(vObj["size"].toInt(VertexSizeType::VST_Medium)));
+    setSize(static_cast<VertexSizeType>(vObj["size"].toInt(VertexSizeType::VST_Medium)));
 
     return res;
 }
 
-void GObjectItem::setItemNotFound()
-{
-    QGraphicsRectItem* pInvalidRect {nullptr};
-    createSubitem(pInvalidRect);
-    pInvalidRect->setBrush(QBrush(Qt::darkMagenta, Qt::DiagCrossPattern));
-
-    QGraphicsSimpleTextItem* pInvalidText {nullptr};
-    createSubitem(pInvalidText);
-    pInvalidText->setText(QString("Not found:\n%0::%1").arg(getPluginName(), getPluginObjectName()));
-
-    m_isItemFound = false;
-}
-
-bool GObjectItem::isItemFound() const
-{
-    return m_isItemFound;
-}
-
-void GObjectItem::setVertexSizeType(VertexSizeType vst)
+void GObjectItem::setSize(VertexSizeType vst)
 {
     auto prevSizeT = m_vertexSizeType;
     m_vertexSizeType = vst;
@@ -176,7 +158,7 @@ void GObjectItem::setVertexSizeType(VertexSizeType vst)
     emit sizeChanged(prevSizeT, m_vertexSizeType);
 }
 
-VertexSizeType GObjectItem::getVertexSizeType() const
+VertexSizeType GObjectItem::getSize() const
 {
     return m_vertexSizeType;
 }
@@ -192,9 +174,14 @@ VertexTitlePosition GObjectItem::getTitlePosition() const
     return m_shapeTitlePos;
 }
 
+void GObjectItem::slotProcessEvent(ConnectionEvent *cEvent)
+{
+    processConnectionEvent(cEvent);
+}
+
 void GObjectItem::updateLabelPosition()
 {
-    auto shapeBRect = toVertexBoundingRect(getVertexSizeType());
+    auto shapeBRect = toVertexBoundingRect(getSize());
     QPointF targetPos;
 
     auto labelBRect = getLabel()->shape().boundingRect();
@@ -233,6 +220,11 @@ TextLabel *GObjectItem::getLabel() const
 
 void GObjectItem::processSizeTypeChange(const QRectF &newSize) {
     updateSelectionPathItem();
+}
+
+void GObjectItem::processConnectionEvent(ConnectionEvent *pEvent)
+{
+
 }
 
 QRectF toVertexBoundingRect(VertexSizeType vst)

@@ -30,11 +30,6 @@ Graph::PluginConfigurationWidget *CommonPluginCore::getConfigurationEditor()
     return nullptr;
 }
 
-Graph::PluginItemPropertyWidget *CommonPluginCore::getPropertyEditor(Graph::PluginObjectInterface *pTarget)
-{
-    return nullptr;
-}
-
 Graph::PluginInteractionWidget *CommonPluginCore::getInteractor()
 {
     return nullptr;
@@ -54,7 +49,7 @@ Graph::PluginObjectInterface *CommonPluginCore::createObject(const QString& name
         pImageVertex->setPluginName(PLUGIN_NAME);
         pImageVertex->setPluginObjectName(CommonPluginObjectName::IMAGEVERTEX);
 
-        auto emptyImageRect = Graph::toVertexBoundingRect(pImageVertex->getVertexSizeType());
+        auto emptyImageRect = Graph::toVertexBoundingRect(pImageVertex->getSize());
         QImage emptyImg(emptyImageRect.width(), emptyImageRect.height(), QImage::Format_RGB32);
         emptyImg.fill(Qt::lightGray);
 

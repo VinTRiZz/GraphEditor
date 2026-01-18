@@ -57,4 +57,25 @@ const QColor DEFAULT_COLOR_CONNECTION_SEL {QColor("#ffbc20")};
 }
 
 
+enum ConnectionEventType : unsigned short
+{
+    CET_AnyType = 0,
+    CET_Feedback,
+
+    CET_UserType = 50,
+};
+
+struct ConnectionEvent
+{
+    // Без задания ивент не будет сохранён
+    graphId_t senderId      {};
+    graphId_t receiverId    {};
+
+    // Основные параметры
+    bool isAccepted             {false};
+    ConnectionEventType type    {CET_AnyType};
+    void* pEventData            {nullptr};
+    QByteArray eventExtraData;
+};
+
 }  // namespace Graph

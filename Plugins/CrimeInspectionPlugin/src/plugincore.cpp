@@ -25,11 +25,6 @@ Graph::PluginConfigurationWidget *CrimeInspectionPluginCore::getConfigurationEdi
     return nullptr;
 }
 
-Graph::PluginItemPropertyWidget *CrimeInspectionPluginCore::getPropertyEditor(Graph::PluginObjectInterface *pTarget)
-{
-    return nullptr;
-}
-
 Graph::PluginInteractionWidget *CrimeInspectionPluginCore::getInteractor()
 {
     return nullptr;

@@ -6,6 +6,7 @@
 #include <QObject>
 
 #include "gobjectitem.hpp"
+#include "ginvalidobjectitem.hpp"
 #include "gobjectconnectionitem.hpp"
 
 namespace OVLayers {

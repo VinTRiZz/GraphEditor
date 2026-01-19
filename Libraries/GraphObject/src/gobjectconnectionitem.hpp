@@ -76,9 +76,7 @@ public:
                                                         QString::number(selfLine.p1().y()),
                                                         QString::number(selfLine.p2().x()),
                                                         QString::number(selfLine.p2().y()));
-
-        auto selfSize = pThis->getArrowHeight();
-        selfJson["arrowHeight"] = QString("%0").arg(QString::number(selfSize));
+        selfJson["arrowHeight"] = pThis->getArrowHeight();
 
         res["ConnectionLineBase"] = selfJson;
 
@@ -91,10 +89,6 @@ public:
         auto pThis = static_cast<LineBaseT*>(this);
 
         auto selfJson = arr["ConnectionLineBase"].toObject();
-        pThis->setDirection(ObjectItems::LineDirectionType(selfJson["direction"].toInt()));
-        pThis->setArrowAngle(ObjectItems::LineAngleType(selfJson["arrowAngle"].toInt()));
-        pThis->setArrowFilled(selfJson["arrowIsFilled"].toBool());
-        pThis->setLinePen(QColor(selfJson["color"].toString()));
 
         QLineF selfLine;
         auto lineDataComponents = selfJson["line"].toString().split(";");
@@ -104,13 +98,18 @@ public:
         }
         pThis->setLine(selfLine);
 
+        pThis->setLinePen(QColor(selfJson["color"].toString()));
+        pThis->setArrowFilled(selfJson["arrowIsFilled"].toBool());
         pThis->setArrowHeight(selfJson["arrowHeight"].toDouble());
+        pThis->setArrowAngle(ObjectItems::LineAngleType(selfJson["arrowAngle"].toInt()));
+        pThis->setDirection(ObjectItems::LineDirectionType(selfJson["direction"].toInt()));
+        pThis->resetCachedArrowPath();
 
         return res;
     }
 };
-using ElegantConnection = ConnectionLineBase<ObjectItems::ElegantConnectionLine>;
 using StraightConnection = ConnectionLineBase<ObjectItems::ArrowedConnectionLine>;
+using ElegantConnection = ConnectionLineBase<ObjectItems::ElegantConnectionLine>;
 
 }  // namespace ObjectItems
 

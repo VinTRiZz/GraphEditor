@@ -22,11 +22,16 @@ GObjectConnectionItem::GObjectConnectionItem(QGraphicsItem* parent)
     setSystemName("Соединение вершин");
     setObjectType(OBJECTTYPE_CONNECTION);
 
+    setDisplayName("Соединение");
+
     setZValue(Layers::CONNECTION_LAYER);
 
-    // TODO: Подумать на этот счёт, выглядит как костыль из-за логики
+    // TODO: Подумать на этот счёт, выглядит как костыль из-за логики с плагинами
     setPluginName("CommonPlugin");
     setPluginObjectName("Connection line");
+
+    connect(this, &BasicItem::idChanged,
+            this, [this](){ setPluginObjectId(getItemId()); });
 }
 
 GObjectConnectionItem::~GObjectConnectionItem() {
@@ -138,11 +143,11 @@ void GObjectConnectionItem::updateLine()
     if (nullptr == m_connectionLine) [[unlikely]] {
         return;
     }
-    auto bRect = m_fromVertex->boundingRect();
 
     // Straight
     if (m_isStraightLine) {
         if (nullptr != m_fromVertex) {
+            auto bRect = m_fromVertex->boundingRect();
             auto betweenPos = m_fromVertex->pos() + bRect.center();
             auto resLine = QLineF(betweenPos, m_connectionLine->getLine().p2());
 
@@ -152,6 +157,7 @@ void GObjectConnectionItem::updateLine()
         }
 
         if (nullptr != m_toVertex) {
+            auto bRect = m_toVertex->boundingRect();
             auto betweenPos = m_toVertex->pos() + bRect.center();
             auto resLine = QLineF(m_connectionLine->getLine().p1(), betweenPos);
 
@@ -164,9 +170,11 @@ void GObjectConnectionItem::updateLine()
 
     // Not straight
     if (nullptr != m_fromVertex) {
+        auto bRect = m_fromVertex->boundingRect();
         m_connectionLine->setPositionFrom(QPointF(bRect.center().x() + m_fromVertex->x(), bRect.bottom() + m_fromVertex->y() + 5));
     }
     if (nullptr != m_toVertex) {
+        auto bRect = m_toVertex->boundingRect();
         m_connectionLine->setPositionTo(QPointF(bRect.center().x() + m_toVertex->x(), bRect.top() + m_toVertex->y() - 5));
     }
 }

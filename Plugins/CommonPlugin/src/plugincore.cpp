@@ -48,7 +48,7 @@ Graph::PluginObjectInterface *CommonPluginCore::createObject(const QString& name
     if (name == CommonPluginObjectName::CONNECTIONLINE) {
         auto pLineItem = new Graph::GObjectConnectionItem;
         pLineItem->setPluginName(PLUGIN_NAME);
-        pLineItem->setPluginObjectName(CommonPluginObjectName::SIMPLEVERTEX);
+        pLineItem->setPluginObjectName(CommonPluginObjectName::CONNECTIONLINE);
         return pLineItem;
     }
 

@@ -31,7 +31,7 @@ public:
     virtual bool fromJson(const QJsonObject& arr);
 
     struct ObjectMetadata {
-        graphId_t objectId;
+        graphId_t objectId {0};
         graphId_t parentObjectId {0};
         QString pluginName;
         QString pluginObjectName;

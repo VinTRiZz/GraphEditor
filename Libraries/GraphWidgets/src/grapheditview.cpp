@@ -87,7 +87,6 @@ void GraphEditView::setCanvasSize(Graph::CanvasSize sizeType)
         throw std::runtime_error("Invalid size type");
     }
     m_canvasSize = sizeType;
-    LOG_DEBUG("Canvas changed to:", int(sizeType));
 
     auto targetSize = Graph::CANVAS_SIZE.at(sizeType);
 

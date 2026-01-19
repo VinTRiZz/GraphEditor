@@ -20,9 +20,13 @@ const std::vector<settingType_t> DEBUGCONFIG_SETTINGS {
 };
 
 settingConstType_t CANVASCONFIG {SYSTEM_PREFIX + "canvas"};
+settingConstType_t CANVASCONFIG_SIZE_TYPE {"size_type"};
 settingConstType_t CANVASCONFIG_SIZE {"size"};
+settingConstType_t CANVASCONFIG_ORIENTATION {"orientation"};
 const std::vector<settingType_t> CANVASCONFIG_SETTINGS {
+    CANVASCONFIG_SIZE_TYPE,
     CANVASCONFIG_SIZE,
+    CANVASCONFIG_ORIENTATION,
 };
 
 // Для упрощения кода

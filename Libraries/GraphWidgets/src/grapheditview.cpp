@@ -23,9 +23,8 @@ using namespace Graph;
 
 GraphEditView::GraphEditView(QWidget* parent) :
     OVLayers::ObjectView(parent) {
-    getCanvas()->setRect(QRectF(0, 0, 2100, 2970));
-    customZoom(0.5);
     setInformationLabelEnabled(false);
+    customZoom(0.5);
 
     setCursorValuesPresenter([this](const QPointF& curPoint) -> QString {
         auto pObject = getObject(mapFromScene(curPoint));
@@ -41,6 +40,101 @@ GraphEditView::GraphEditView(QWidget* parent) :
         getCursorLabel()->setMaxSymbolCount(100);
         return QString("(%0; %1)").arg(QString::number(curPoint.x()), QString::number(curPoint.y()));
     });
+
+    auto& appSettings = Common::ApplicationSettings::getInstance();
+    auto pSizeSetting = appSettings.getSetting(Graph::SettingsNames::CANVASCONFIG, Graph::SettingsNames::CANVASCONFIG_SIZE);
+    auto pSizeTypeSetting = appSettings.getSetting(Graph::SettingsNames::CANVASCONFIG, Graph::SettingsNames::CANVASCONFIG_SIZE_TYPE);
+    auto pOrientationSetting = appSettings.getSetting(Graph::SettingsNames::CANVASCONFIG, Graph::SettingsNames::CANVASCONFIG_ORIENTATION);
+    if (pSizeTypeSetting->getValue().isNull()) {
+        resetCanvas();
+    } else {
+        auto canvasSizeInfo = pSizeTypeSetting->getValue().toString();
+        if (canvasSizeInfo == "custom") {
+            auto sizeData = pSizeSetting->getValue().toString();
+            auto sizeValues = sizeData.split("x");
+            if (sizeValues.size() > 2) {
+                setCanvasSize(QSizeF(sizeValues[0].toDouble(), sizeValues[1].toDouble()));
+            } else {
+                setCanvasSize(Graph::CanvasSize::CS_A4);
+            }
+        } else if (canvasSizeInfo.isEmpty() || canvasSizeInfo.size() != 2) {
+            LOG_WARNING("Unknown canvas size type:", canvasSizeInfo, "(try English letters and symbols)");
+            resetCanvas();
+        } else {
+            setCanvasSize(Graph::CanvasSize(canvasSizeInfo.remove(0, 1).toInt() + 1)); // Грязно, но эффективно
+        }
+
+        auto canvasOrientation = pOrientationSetting->getValue().toString();
+        if (canvasOrientation == "vertical") {
+            setCanvasOrientation(Qt::Vertical);
+        } else if (canvasOrientation == "horizontal") {
+            setCanvasOrientation(Qt::Horizontal);
+        } else {
+            LOG_WARNING("Unknown orientation:", canvasOrientation, "(try \"vertical\" or \"horizontal\")");
+        }
+    }
+}
+
+void GraphEditView::resetCanvas()
+{
+    setCanvasSize(Graph::CanvasSize::CS_A4);
+    setCanvasOrientation(Qt::Vertical);
+}
+
+void GraphEditView::setCanvasSize(Graph::CanvasSize sizeType)
+{
+    if (Graph::CANVAS_SIZE.count(sizeType) == 0) {
+        throw std::runtime_error("Invalid size type");
+    }
+    m_canvasSize = sizeType;
+    LOG_DEBUG("Canvas changed to:", int(sizeType));
+
+    auto targetSize = Graph::CANVAS_SIZE.at(sizeType);
+
+    // TODO: Вынести в скейл фактор или что-то такого рода
+    targetSize.setWidth(targetSize.width() * 10.0);
+    targetSize.setHeight(targetSize.height() * 10.0);
+
+    // Поворачиваем в альбомную
+    if (m_canvasOrientation == Qt::Horizontal) {
+        auto sizeW = targetSize.width();
+        targetSize.setWidth(targetSize.height());
+        targetSize.setHeight(sizeW);
+    }
+
+    setCanvasRect(QRectF(0, 0, targetSize.width(), targetSize.height()));
+
+    auto& appSettings = Common::ApplicationSettings::getInstance();
+    auto pSizeSetting = appSettings.getSetting(Graph::SettingsNames::CANVASCONFIG, Graph::SettingsNames::CANVASCONFIG_SIZE_TYPE);
+
+    if (m_canvasSize > Graph::CanvasSize::CS_Custom) {
+        pSizeSetting->setValue(QString("A%0").arg(int(m_canvasSize - 1)));
+    } else {
+        pSizeSetting->setValue("custom");
+    }
+}
+
+void GraphEditView::setCanvasSize(const QSizeF &siz)
+{
+    setCanvasSize(Graph::CanvasSize::CS_Custom);
+    setCanvasRect(QRectF(0, 0, siz.width(), siz.height()));
+
+    auto& appSettings = Common::ApplicationSettings::getInstance();
+    auto pSizeTypeSetting = appSettings.getSetting(Graph::SettingsNames::CANVASCONFIG, Graph::SettingsNames::CANVASCONFIG_SIZE_TYPE);
+    pSizeTypeSetting->setValue("custom");
+
+    auto pSizeSetting = appSettings.getSetting(Graph::SettingsNames::CANVASCONFIG, Graph::SettingsNames::CANVASCONFIG_SIZE);
+    pSizeSetting->setValue(QString("%0x%1").arg(QString::number(siz.width()), QString::number(siz.height())));
+}
+
+void GraphEditView::setCanvasOrientation(Qt::Orientation orient)
+{
+    m_canvasOrientation = orient;
+    auto& appSettings = Common::ApplicationSettings::getInstance();
+    auto pOrientationSetting = appSettings.getSetting(Graph::SettingsNames::CANVASCONFIG, Graph::SettingsNames::CANVASCONFIG_ORIENTATION);
+    pOrientationSetting->setValue(m_canvasOrientation == Qt::Vertical ? "vertical" : "horizontal");
+
+    setCanvasSize(m_canvasSize); // Обновляем
 }
 
 QMenu *GraphEditView::createConnectionsMenu(GObjectItem *hoverVertex)

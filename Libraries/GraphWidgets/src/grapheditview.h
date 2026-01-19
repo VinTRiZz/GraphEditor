@@ -13,10 +13,21 @@ class GraphEditView final :
         public OVLayers::ObjectView,
         public Graph::GraphObjectUser {
     Q_OBJECT
+
 public:
     GraphEditView(QWidget* parent = nullptr);
 
+    void resetCanvas();
+    void setCanvasSize(Graph::CanvasSize sizeType);
+    void setCanvasSize(const QSizeF& siz);
+    void setCanvasOrientation(Qt::Orientation orient);
+
 private:
+    using OVLayers::ObjectView::setCanvasRect; // Скрываем интерфейс
+
+    Graph::CanvasSize m_canvasSize {Graph::CanvasSize::CS_Custom};
+    Qt::Orientation m_canvasOrientation {Qt::Horizontal};
+
     Graph::GObjectConnectionItem* m_pendingConnection {nullptr};
 
     QMenu m_contextMenu;

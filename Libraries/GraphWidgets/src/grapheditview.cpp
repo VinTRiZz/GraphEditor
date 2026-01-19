@@ -52,7 +52,7 @@ GraphEditView::GraphEditView(QWidget* parent) :
         if (canvasSizeInfo == "custom") {
             auto sizeData = pSizeSetting->getValue().toString();
             auto sizeValues = sizeData.split("x");
-            if (sizeValues.size() > 2) {
+            if (sizeValues.size() > 1) {
                 setCanvasSize(QSizeF(sizeValues[0].toDouble(), sizeValues[1].toDouble()));
             } else {
                 setCanvasSize(Graph::CanvasSize::CS_A4);
@@ -83,11 +83,19 @@ void GraphEditView::resetCanvas()
 
 void GraphEditView::setCanvasSize(Graph::CanvasSize sizeType)
 {
+    m_canvasSize = sizeType;
+
+    auto& appSettings = Common::ApplicationSettings::getInstance();
+    auto pSizeTypeSetting = appSettings.getSetting(Graph::SettingsNames::CANVASCONFIG, Graph::SettingsNames::CANVASCONFIG_SIZE_TYPE);
+
+    if (m_canvasSize == Graph::CanvasSize::CS_Custom) {
+        pSizeTypeSetting->setValue("custom");
+        return;
+    }
+
     if (Graph::CANVAS_SIZE.count(sizeType) == 0) {
         throw std::runtime_error("Invalid size type");
     }
-    m_canvasSize = sizeType;
-
     auto targetSize = Graph::CANVAS_SIZE.at(sizeType);
 
     // TODO: Вынести в скейл фактор или что-то такого рода
@@ -103,14 +111,10 @@ void GraphEditView::setCanvasSize(Graph::CanvasSize sizeType)
 
     setCanvasRect(QRectF(0, 0, targetSize.width(), targetSize.height()));
 
-    auto& appSettings = Common::ApplicationSettings::getInstance();
-    auto pSizeSetting = appSettings.getSetting(Graph::SettingsNames::CANVASCONFIG, Graph::SettingsNames::CANVASCONFIG_SIZE_TYPE);
+    pSizeTypeSetting->setValue(QString("A%0").arg(int(m_canvasSize - 1)));
 
-    if (m_canvasSize > Graph::CanvasSize::CS_Custom) {
-        pSizeSetting->setValue(QString("A%0").arg(int(m_canvasSize - 1)));
-    } else {
-        pSizeSetting->setValue("custom");
-    }
+    auto pSizeSetting = appSettings.getSetting(Graph::SettingsNames::CANVASCONFIG, Graph::SettingsNames::CANVASCONFIG_SIZE);
+    pSizeSetting->setValue({});
 }
 
 void GraphEditView::setCanvasSize(const QSizeF &siz)

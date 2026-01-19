@@ -70,7 +70,6 @@ enum CanvasSize : short
     CS_A6
 };
 const std::map<CanvasSize, QSizeF> CANVAS_SIZE { //! Размеры листа формата А в миллиметрах
-    {CS_Custom, {1000, 1000}},
     {CS_A0,     {841,  1189}},
     {CS_A1,     {594,  841}},
     {CS_A2,     {420,  594}},

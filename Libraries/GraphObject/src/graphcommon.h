@@ -57,6 +57,28 @@ const QColor DEFAULT_COLOR_CONNECTION_SEL {QColor("#ffbc20")};
 }
 
 
+enum CanvasSize : short
+{
+    CS_Undefined = -1,
+    CS_A0,
+    CS_A1,
+    CS_A2,
+    CS_A3,
+    CS_A4,
+    CS_A5,
+    CS_A6
+};
+std::map<CanvasSize, QSizeF> CANVAS_SIZE { //! Размеры листа формата А в миллиметрах
+    {CS_A0, {1189, 841}},
+    {CS_A1, {841,  594}},
+    {CS_A2, {594,  420}},
+    {CS_A3, {420,  297}},
+    {CS_A4, {297,  210}},
+    {CS_A5, {210,  148}},
+    {CS_A6, {148,  105}},
+};
+
+
 enum ConnectionEventType : unsigned short
 {
     CET_AnyType = 0,

@@ -151,9 +151,17 @@ void GObjectConnectionItem::updateLine()
             auto betweenPos = m_fromVertex->pos() + bRect.center();
             auto resLine = QLineF(betweenPos, m_connectionLine->getLine().p2());
 
-            auto hypo = QLineF(bRect.center(), bRect.topLeft()).length();
-            auto linePosParameter = hypo * 1.2 / resLine.length();
-            m_connectionLine->setPositionFrom(resLine.pointAt(linePosParameter));
+            // Соединение скорее по вертикали
+            auto lineAngle = resLine.angle();
+            if ((lineAngle > 45 && lineAngle < 135) ||
+                (lineAngle > 225 && lineAngle < 315)) {
+                auto linePosParameter = bRect.height() / 2.0 * 1.2 / resLine.length();
+                m_connectionLine->setPositionFrom(resLine.pointAt(linePosParameter));
+
+            } else { // Скорее по горизонтали
+                auto linePosParameter = bRect.width() / 2.0 * 1.2 / resLine.length();
+                m_connectionLine->setPositionFrom(resLine.pointAt(linePosParameter));
+            }
         }
 
         if (nullptr != m_toVertex) {
@@ -161,9 +169,17 @@ void GObjectConnectionItem::updateLine()
             auto betweenPos = m_toVertex->pos() + bRect.center();
             auto resLine = QLineF(m_connectionLine->getLine().p1(), betweenPos);
 
-            auto hypo = QLineF(bRect.center(), bRect.topLeft()).length();
-            auto linePosParameter = hypo * 1.2 / resLine.length();
-            m_connectionLine->setPositionTo(resLine.pointAt(1 - linePosParameter));
+            // Соединение скорее по вертикали
+            auto lineAngle = resLine.angle();
+            if ((lineAngle > 45 && lineAngle < 135) ||
+                (lineAngle > 225 && lineAngle < 315)) {
+                auto linePosParameter = bRect.height() / 2.0 * 1.2 / resLine.length();
+                m_connectionLine->setPositionTo(resLine.pointAt(1 - linePosParameter));
+
+            } else { // Скорее по горизонтали
+                auto linePosParameter = bRect.width() / 2.0 * 1.2 / resLine.length();
+                m_connectionLine->setPositionTo(resLine.pointAt(1 - linePosParameter));
+            }
         }
         return;
     }

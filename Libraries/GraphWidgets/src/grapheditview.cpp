@@ -163,8 +163,8 @@ QMenu *GraphEditView::createConnectionsMenu(GObjectItem *hoverVertex)
         pConLine->setLineSelectionPen(Colors::DEFAULT_COLOR_CONNECTION_SEL);
         m_pendingConnection->setLineItem(pConLine);
 
-        m_pendingConnection->getLineItem()->setPositionTo(mapToScene(mapFromGlobal(cursor().pos())));
         m_pendingConnection->setVertexFrom(hoverVertex);
+        m_pendingConnection->getLineItem()->setPositionTo(mapToScene(mapFromGlobal(cursor().pos())));
         getGraph()->getObject()->addPluginObject(m_pendingConnection);
     });
     pMenu->addAction(pAction);
@@ -188,8 +188,8 @@ QMenu *GraphEditView::createConnectionsMenu(GObjectItem *hoverVertex)
         pConLine->setLineSelectionPen(Colors::DEFAULT_COLOR_CONNECTION_SEL);
         m_pendingConnection->setLineItem(pConLine);
 
-        m_pendingConnection->getLineItem()->setPositionTo(mapToScene(mapFromGlobal(cursor().pos())));
         m_pendingConnection->setVertexFrom(hoverVertex);
+        m_pendingConnection->getLineItem()->setPositionTo(mapToScene(mapFromGlobal(cursor().pos())));
         getGraph()->getObject()->addPluginObject(m_pendingConnection);
     });
     pMenu->addAction(pAction);

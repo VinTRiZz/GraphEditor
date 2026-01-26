@@ -38,7 +38,7 @@ GObjectItem::GObjectItem(QGraphicsItem *parent) :
     m_nameItem->setObjectType(OBJECTTYPE_VERTEX);
     m_nameItem->setFlag(ItemIsMovable, false);
 
-    createSubitem(m_selectionPathItem);
+    createSubitem<false>(m_selectionPathItem);
     m_selectionPathItem->setZValue(100);
     m_selectionPathItem->setPen(Colors::DEFAULT_COLOR_VERTEX_SEL);
     m_selectionPathItem->setBrush(Colors::DEFAULT_COLOR_VERTEX_SEL);

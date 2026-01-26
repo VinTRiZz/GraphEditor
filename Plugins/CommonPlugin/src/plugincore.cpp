@@ -65,6 +65,9 @@ Graph::PluginObjectInterface *CommonPluginCore::createObject(const QString& name
         imgPainter.fillRect(emptyImageRect, QBrush(Qt::black, Qt::DiagCrossPattern));
 
         pImageVertex->setImage(emptyImg);
+
+        pImageVertex->setSize(Graph::VertexSizeType::VST_Medium);
+
         return pImageVertex;
     }
 

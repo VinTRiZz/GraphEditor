@@ -7,8 +7,6 @@
 #include <Components/Logger/Logger.h>
 #include <Components/Common/ApplicationSettings.h>
 
-#include <GraphObject/PluginObjectInterface.h>
-#include <PluginCoreInterface/Core.h>
 #include <PluginModule/PluginMaster.h>
 
 namespace Filework {
@@ -127,32 +125,9 @@ bool GSJ_200_SaveSubsystem::parseSavedata(const Graph::GraphObjectManagerPtr &pG
     for (auto objectJsonR : objectsJsonA) {
         auto vObj = objectJsonR.toObject();
 
-        // TODO: Вынести?
-        auto mainObjectInfo = vObj["PluginObjectInterface"].toObject();
-        auto pluginName = mainObjectInfo["pluginName"].toString();
-        auto pluginObjectName = mainObjectInfo["pluginObjectName"].toString();
-
-        auto pPluginInterface = pluginMaster.getPlugin(pluginName);
-        if (!pPluginInterface) {
-            LOG_WARNING("Not found plugin:", pluginName);
-            pInvalidObject = new Graph::GInvalidObjectItem(pluginName, pluginObjectName);
-            pInvalidObject->fromJson(vObj);
-            pGraphObj->addObject(pInvalidObject);
-            pInvalidObject = nullptr;
-            continue;
-        }
-        auto pItem = pPluginInterface->getPluginCore()->createObject(pluginObjectName);
+        auto pItem = pluginMaster.createObject(vObj);
         if (!pItem) {
-            LOG_WARNING("Not found plugin item:", QString("%0::%1").arg(pluginName, pluginObjectName));
-            pInvalidObject = new Graph::GInvalidObjectItem(pluginName, pluginObjectName);
-            pInvalidObject->fromJson(vObj);
-            pGraphObj->addObject(pInvalidObject);
-            pInvalidObject = nullptr;
             continue;
-        }
-
-        if (!pItem->fromJson(vObj)) {
-            LOG_WARNING("Failed to parse object:", QString("%0::%1").arg(pluginName, pluginObjectName));
         }
 
         if (auto pObj = dynamic_cast<Graph::GObjectItem*>(pItem); pObj != nullptr) {

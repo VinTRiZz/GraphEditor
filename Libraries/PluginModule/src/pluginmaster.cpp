@@ -2,6 +2,9 @@
 
 #include <Components/Logger/Logger.h>
 
+#include <GraphObject/GraphObject.h>
+#include <PluginCoreInterface/Core.h>
+
 #include <filesystem>
 
 namespace Graph {
@@ -89,6 +92,35 @@ std::shared_ptr<GraphEditorPlugin> PluginMaster::getPlugin(const QString &plugin
 std::list<std::shared_ptr<GraphEditorPlugin> > PluginMaster::getAllPlugins() const
 {
     return m_plugins;
+}
+
+PluginObjectInterface *PluginMaster::createObject(const QJsonObject &objectData)
+{
+    auto mainObjectInfo = objectData["PluginObjectInterface"].toObject();
+    auto pluginName = mainObjectInfo["pluginName"].toString();
+    auto pluginObjectName = mainObjectInfo["pluginObjectName"].toString();
+    auto pPluginInterface = getPlugin(pluginName);
+
+    Graph::GInvalidObjectItem* pInvalidObject {nullptr};
+    if (!pPluginInterface) {
+        LOG_WARNING("Not found plugin:", pluginName);
+        pInvalidObject = new Graph::GInvalidObjectItem(pluginName, pluginObjectName);
+        pInvalidObject->fromJson(objectData);
+        return pInvalidObject;
+    }
+    auto pItem = pPluginInterface->getPluginCore()->createObject(pluginObjectName);
+    if (!pItem) {
+        LOG_WARNING("Not found plugin item:", QString("%0::%1").arg(pluginName, pluginObjectName));
+        pInvalidObject = new Graph::GInvalidObjectItem(pluginName, pluginObjectName);
+        pInvalidObject->fromJson(objectData);
+        return pInvalidObject;
+    }
+
+    if (!pItem->fromJson(objectData)) {
+        LOG_WARNING("Failed to parse object:", QString("%0::%1").arg(pluginName, pluginObjectName));
+    }
+
+    return pItem;
 }
 
 }

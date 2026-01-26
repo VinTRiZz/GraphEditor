@@ -12,6 +12,8 @@
 
 namespace Graph {
 
+class PluginObjectInterface;
+
 class PluginMaster : public QObject
 {
     PluginMaster();
@@ -26,6 +28,8 @@ public:
     std::list<QString> getPluginNames() const;
     std::shared_ptr<GraphEditorPlugin> getPlugin(const QString& pluginName) const;
     std::list<std::shared_ptr<GraphEditorPlugin> > getAllPlugins() const;
+
+    PluginObjectInterface* createObject(const QJsonObject& objectData);
 
 signals:
     void pluginListChanged();

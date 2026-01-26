@@ -182,6 +182,7 @@ void GraphObject::clearVertices()
     auto objectsCopy = m_objects;
     for (auto* pItem : objectsCopy) {
         removeObject(pItem);
+        delete pItem;
     }
 }
 
@@ -215,6 +216,7 @@ void GraphObject::clearObjects()
     auto objectsCopy = m_pluginObjects;
     for (auto* pObject : objectsCopy) {
         removePluginObject(pObject);
+        delete pObject;
     }
 }
 

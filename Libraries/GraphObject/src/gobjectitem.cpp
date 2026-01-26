@@ -90,6 +90,14 @@ GObjectItem::~GObjectItem()
 
 }
 
+QMenu *GObjectItem::createContextMenu()
+{
+    auto pMenu = BasicItem::createContextMenu();
+    pMenu->addMenu(createSizesMenu());
+    pMenu->addMenu(createTitlePositionMenu());
+    return pMenu;
+}
+
 QJsonObject GObjectItem::toJson() const
 {
     auto res = PluginObjectInterface::toJson();
@@ -98,6 +106,7 @@ QJsonObject GObjectItem::toJson() const
     vObj["isVisible"] = isVisible();
     vObj["pos"] = QString("%0;%1").arg(QString::number(pos().x()), QString::number(pos().y()));
     vObj["size"] = static_cast<int>(getSize());
+    vObj["titlePos"] = static_cast<int>(getTitlePosition());
     vObj["name"] = getDisplayName().toUtf8().toHex().data();
     vObj["description"] = getDescription().toUtf8().toHex().data();
 
@@ -121,6 +130,7 @@ bool GObjectItem::fromJson(const QJsonObject &jsonObj)
     setPos(QPointF(serializedPos[0].toDouble(), serializedPos[1].toDouble()));
 
     setSize(static_cast<VertexSizeType>(vObj["size"].toInt(VertexSizeType::VST_Medium)));
+    setTitlePosition(static_cast<VertexTitlePosition>(vObj["titlePos"].toInt(VertexTitlePosition::VTP_Center)));
 
     return res;
 }
@@ -185,6 +195,45 @@ void GObjectItem::slotProcessEvent(ConnectionEvent *cEvent)
     processConnectionEvent(cEvent);
 }
 
+QMenu *GObjectItem::createSizesMenu()
+{
+    auto pMenu = new QMenu("Размер");
+
+    auto createEnumAction = [pMenu, this](VertexSizeType st){
+        auto pAction = new QAction(toString(st), pMenu);
+        connect(pAction, &QAction::triggered,
+                this, [this, st, pMenu](){ setSize(st); pMenu->deleteLater(); });
+        return pAction;
+    };
+
+    pMenu->addAction(createEnumAction(VertexSizeType::VST_UltraSmall));
+    pMenu->addAction(createEnumAction(VertexSizeType::VST_Small));
+    pMenu->addAction(createEnumAction(VertexSizeType::VST_Medium));
+    pMenu->addAction(createEnumAction(VertexSizeType::VST_Big));
+    pMenu->addAction(createEnumAction(VertexSizeType::VST_Huge));
+
+    return pMenu;
+}
+
+QMenu *GObjectItem::createTitlePositionMenu()
+{
+    auto pMenu = new QMenu("Положение текста");
+
+    auto createEnumAction = [pMenu, this](VertexTitlePosition vtp){
+        auto pAction = new QAction(toString(vtp), pMenu);
+        connect(pAction, &QAction::triggered,
+                this, [this, vtp, pMenu](){ setTitlePosition(vtp); pMenu->deleteLater(); });
+        return pAction;
+    };
+
+    pMenu->addAction(createEnumAction(VertexTitlePosition::VTP_Top));
+    pMenu->addAction(createEnumAction(VertexTitlePosition::VTP_Center));
+    pMenu->addAction(createEnumAction(VertexTitlePosition::VTP_Bottom));
+    pMenu->addAction(createEnumAction(VertexTitlePosition::VTP_RightBottom));
+
+    return pMenu;
+}
+
 void GObjectItem::updateLabelPosition()
 {
     auto shapeBRect = toVertexBoundingRect(getSize());
@@ -226,6 +275,7 @@ TextLabel *GObjectItem::getLabel() const
 
 void GObjectItem::processSizeTypeChange(const QRectF &newSize) {
     updateSelectionPathItem();
+    emit graphicalDataChanged();
 }
 
 void GObjectItem::processConnectionEvent(ConnectionEvent *pEvent)
@@ -263,6 +313,51 @@ QRectF toVertexBoundingRect(VertexSizeType vst)
         throw std::invalid_argument(std::string("Invalid vertex size type: ") + std::to_string(vst));
     }
     return scaleTransform.mapRect(resultRect);
+}
+
+QString toString(VertexSizeType vst)
+{
+    switch (vst)
+    {
+    case VertexSizeType::VST_UltraSmall:
+        return "Крохотный";
+
+    case VertexSizeType::VST_Small:
+        return "Маленький";
+
+    case VertexSizeType::VST_Medium:
+        return "Обычный";
+
+    case VertexSizeType::VST_Big:
+        return "Большой";
+
+    case VertexSizeType::VST_Huge:
+        return "Огромный";
+    }
+
+    throw std::invalid_argument("Invalid vertex size type got");
+    return {};
+}
+
+QString toString(VertexTitlePosition vtp)
+{
+    switch (vtp)
+    {
+    case VertexTitlePosition::VTP_Center:
+        return "В центре";
+
+    case VertexTitlePosition::VTP_Bottom:
+        return "Снизу";
+
+    case VertexTitlePosition::VTP_Top:
+        return "Сверху";
+
+    case VertexTitlePosition::VTP_RightBottom:
+        return "Справа снизу";
+    }
+
+    throw std::invalid_argument("Invalid vertex title position type got");
+    return {};
 }
 
 }

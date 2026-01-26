@@ -29,6 +29,9 @@
    </item>
    <item>
     <widget class="QToolButton" name="openSettins_toolButton">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="text">
       <string>...</string>
      </property>

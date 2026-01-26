@@ -48,9 +48,9 @@ QMenu* ImageVertexItem::createContextMenu()
 {
     auto res = GObjectItem::createContextMenu();
 
-    auto pSetImageAction = new QAction("Выбрать изображение");
+    auto pSetImageAction = new QAction("Выбрать изображение", res);
     connect(pSetImageAction, &QAction::triggered,
-            this, [this](){
+            this, [this, res](){
         QStringList mimeTypes;
         foreach (const QByteArray &format, QImageReader::supportedMimeTypes()) {
             mimeTypes.append(format);
@@ -61,10 +61,12 @@ QMenu* ImageVertexItem::createContextMenu()
                                            "",
                                            QString("Поддерживаемые изображения (%1)").arg(mimeTypes.join(" ")));
         if (targetFile.isEmpty()) { // canceled
+            res->deleteLater();
             return;
         }
 
         setImage(CommonFunctions::readImage(targetFile));
+        res->deleteLater();
     });
     res->addAction(pSetImageAction);
 

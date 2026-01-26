@@ -17,7 +17,6 @@ enum VertexSizeType : int {
     VST_Big,
     VST_Huge,
 };
-QRectF toVertexBoundingRect(VertexSizeType vst);
 
 /**
  * @brief The VertexTitlePosition enum Положение текста на вершине
@@ -29,6 +28,10 @@ enum VertexTitlePosition : int {
     VTP_RightBottom,
 };
 
+QRectF toVertexBoundingRect(VertexSizeType vst);
+QString toString(VertexSizeType vst);
+QString toString(VertexTitlePosition vtp);
+
 class GObjectItem :
         public ObjectItems::BasicItem,
         public PluginObjectInterface
@@ -37,6 +40,8 @@ class GObjectItem :
 public:
     explicit GObjectItem(QGraphicsItem* parent = nullptr);
     ~GObjectItem();
+
+    virtual QMenu* createContextMenu() override;
 
     virtual QJsonObject toJson() const override;
     virtual bool fromJson(const QJsonObject& jsonObj) override;
@@ -65,6 +70,9 @@ private:
     VertexTitlePosition m_shapeTitlePos {VertexTitlePosition::VTP_Center};
 
     void updateSelectionPathItem();
+
+    QMenu* createSizesMenu();
+    QMenu* createTitlePositionMenu();
 
 protected:
     void updateLabelPosition();

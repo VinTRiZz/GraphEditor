@@ -88,6 +88,8 @@ void GObjectConnectionItem::setVertexFrom(GObjectItem* pVertexFrom) {
                 this, [this](){ m_fromVertex = nullptr; });
         connect(m_fromVertex, &BasicItem::itemMoved,
                 this, &GObjectConnectionItem::updateLine);
+        connect(m_fromVertex, &BasicItem::graphicalDataChanged,
+                this, &GObjectConnectionItem::updateLine);
     }
     updateLine();
 }
@@ -106,6 +108,8 @@ void GObjectConnectionItem::setVertexTo(GObjectItem* pVertexTo) {
         connect(m_toVertex, &QObject::destroyed,
                 this, [this](){ m_toVertex = nullptr; });
         connect(m_toVertex, &BasicItem::itemMoved,
+                this, &GObjectConnectionItem::updateLine);
+        connect(m_toVertex, &BasicItem::graphicalDataChanged,
                 this, &GObjectConnectionItem::updateLine);
     }
     updateLine();

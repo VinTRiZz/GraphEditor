@@ -335,6 +335,7 @@ void GraphEditView::mouseMoveEvent(QMouseEvent *e)
 
 void GraphEditView::contextMenuEvent(QContextMenuEvent *e)
 {
+    QMenu* pSubmenu {nullptr}; // TODO: Придумать, как удалять по-нормальному
     m_contextMenu.clear();
 
     auto pHoverItem = getTopItem(e->pos());
@@ -350,7 +351,8 @@ void GraphEditView::contextMenuEvent(QContextMenuEvent *e)
             pHoverItemObject = pParent;
         }
 
-        m_contextMenu.addMenu(pHoverItemObject->createContextMenu());
+        pSubmenu = pHoverItemObject->createContextMenu();
+        m_contextMenu.addMenu(pSubmenu);
 
         auto itemType = pHoverItemObject->getObjectType();
         switch (itemType)
@@ -392,6 +394,7 @@ void GraphEditView::contextMenuEvent(QContextMenuEvent *e)
     });
 
     m_contextMenu.exec(e->globalPos());
+    delete pSubmenu;
 }
 
 void GraphEditView::processGraphChange(const Graph::GraphObjectManagerPtr& pPrevGraph)

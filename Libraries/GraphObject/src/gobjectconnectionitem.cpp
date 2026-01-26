@@ -152,6 +152,12 @@ void GObjectConnectionItem::updateLine()
     if (m_isStraightLine) {
         if (nullptr != m_fromVertex) {
             auto bRect = m_fromVertex->boundingRect();
+
+            // TODO: Придумать, как обойти этот... костыль?
+            if (m_fromVertex->getTitlePosition() == VertexTitlePosition::VTP_RightBottom) {
+                bRect = toVertexBoundingRect(m_fromVertex->getSize());
+            }
+
             auto betweenPos = m_fromVertex->pos() + bRect.center();
             auto resLine = QLineF(betweenPos, m_connectionLine->getLine().p2());
 
@@ -170,6 +176,12 @@ void GObjectConnectionItem::updateLine()
 
         if (nullptr != m_toVertex) {
             auto bRect = m_toVertex->boundingRect();
+
+            // TODO: Придумать, как обойти этот... костыль?
+            if (m_toVertex->getTitlePosition() == VertexTitlePosition::VTP_RightBottom) {
+                bRect = toVertexBoundingRect(m_toVertex->getSize());
+            }
+
             auto betweenPos = m_toVertex->pos() + bRect.center();
             auto resLine = QLineF(m_connectionLine->getLine().p1(), betweenPos);
 
@@ -191,10 +203,21 @@ void GObjectConnectionItem::updateLine()
     // Not straight
     if (nullptr != m_fromVertex) {
         auto bRect = m_fromVertex->boundingRect();
+
+        // TODO: Придумать, как обойти этот... костыль?
+        if (m_fromVertex->getTitlePosition() == VertexTitlePosition::VTP_RightBottom) {
+            bRect = toVertexBoundingRect(m_fromVertex->getSize());
+        }
         m_connectionLine->setPositionFrom(QPointF(bRect.center().x() + m_fromVertex->x(), bRect.bottom() + m_fromVertex->y() + 5));
     }
     if (nullptr != m_toVertex) {
         auto bRect = m_toVertex->boundingRect();
+
+        // TODO: Придумать, как обойти этот... костыль?
+        if (m_toVertex->getTitlePosition() == VertexTitlePosition::VTP_Top) {
+            bRect = toVertexBoundingRect(m_toVertex->getSize());
+        }
+
         m_connectionLine->setPositionTo(QPointF(bRect.center().x() + m_toVertex->x(), bRect.top() + m_toVertex->y() - 5));
     }
 }

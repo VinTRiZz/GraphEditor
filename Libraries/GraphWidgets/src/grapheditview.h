@@ -4,6 +4,8 @@
 
 #include <GraphObject/GraphObject.h>
 
+#include <QJsonArray>
+
 namespace Graph {
 class GObjectConnectionItem;
 class GObjectItem;
@@ -34,8 +36,12 @@ private:
     QMenu* createConnectionsMenu(Graph::GObjectItem *hoverVertex);
     QMenu* createSelectionMenu();
 
+    QJsonArray m_serializedItems;
+
     void connectItem(ObjectItems::BasicItem* pItem);
     bool m_isMovingGroup {false};
+
+    void setupHotkeys();
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;

@@ -25,6 +25,7 @@ GraphEditView::GraphEditView(QWidget* parent) :
     OVLayers::ObjectView(parent) {
     setInformationLabelEnabled(false);
     customZoom(0.5);
+    setupHotkeys();
 
     setCursorValuesPresenter([this](const QPointF& curPoint) -> QString {
         auto pObject = getObject(mapFromScene(curPoint));
@@ -251,6 +252,111 @@ void GraphEditView::connectItem(ObjectItems::BasicItem *pItem)
         }
         m_isMovingGroup = false;
     });
+}
+
+void GraphEditView::setupHotkeys()
+{
+    // Создаем действия для горячих клавиш
+    QAction* copyAction = new QAction("Копировать", this);
+    copyAction->setShortcut(QKeySequence::Copy);
+    connect(copyAction, &QAction::triggered,
+            this, [this](){
+        m_serializedItems = {};
+        for (auto* pSelectedItem : getScene()->selectedItems()) {
+            if (auto pGraphItem = dynamic_cast<PluginObjectInterface*>(pSelectedItem); pGraphItem != nullptr) {
+
+                if (auto* pCon = dynamic_cast<GObjectConnectionItem*>(pGraphItem); pCon != nullptr) {
+                    LOG_DEBUG("GOT CONNECTION!");
+                }
+
+                m_serializedItems.push_back(pGraphItem->toJson());
+                continue;
+            }
+        }
+    });
+
+    QAction* pasteAction = new QAction("Вставить", this);
+    pasteAction->setShortcut(QKeySequence::Paste);
+    connect(pasteAction, &QAction::triggered,
+            this, [this](){
+        auto& pluginMaster = PluginMaster::getInstance();
+
+        std::list<PluginObjectInterface*> items;
+        for (auto itemData : m_serializedItems) {
+            items.push_back(pluginMaster.createObject(itemData.toObject()));
+        }
+
+        std::map<Graph::graphId_t, Graph::graphId_t> replacementMap; // Замена уже имеющихся ID
+        for (auto* pItem : items) {
+            // Исправляем объекты
+            if (auto* pObj = dynamic_cast<GObjectItem*>(pItem); pObj != nullptr) {
+                replacementMap[pObj->getItemId()] = getFreeObjectId();
+                pObj->setItemId(replacementMap.at(pObj->getItemId()));
+                addObject(pObj);
+
+                LOG_DEBUG("REPLACED VERTEX ID:", pObj->getItemId());
+                continue;
+            }
+
+            // Исправляем соединения
+            if (auto* pCon = dynamic_cast<GObjectConnectionItem*>(pItem); pCon != nullptr) {
+                LOG_DEBUG("GOT CONNECTION");
+                if (pCon->getVertexFrom() != nullptr) {
+                    auto pVertFrom = pCon->getVertexFrom();
+                    if (auto objectIdEq = replacementMap.find(pVertFrom->getItemId()); objectIdEq != replacementMap.end()) {
+                        auto pObj = getObject(objectIdEq->second);
+                        pCon->setVertexFrom(static_cast<GObjectItem*>(pObj));
+                        LOG_DEBUG("1 REPLACED FROM");
+                    } else {
+                        auto pObjCopy = std::find_if(items.begin(), items.end(), [pVertFrom](auto* pObj){
+                            return (pVertFrom->getItemId() == pObj->getPluginObjectId());
+                        });
+                        replacementMap[pVertFrom->getPluginObjectId()] = getFreeObjectId();
+                        (*pObjCopy)->setPluginObjectId(replacementMap.at(pVertFrom->getPluginObjectId()));
+                        LOG_DEBUG("2 REPLACED FROM");
+                    }
+                }
+
+                if (pCon->getVertexTo() != nullptr) {
+                    auto pVertTo = pCon->getVertexTo();
+                    if (auto objectIdEq = replacementMap.find(pVertTo->getItemId()); objectIdEq != replacementMap.end()) {
+                        auto pObj = getObject(objectIdEq->second);
+                        pCon->setVertexTo(static_cast<GObjectItem*>(pObj));
+                        LOG_DEBUG("1 REPLACED TO");
+                    } else {
+                        auto pObjCopy = std::find_if(items.begin(), items.end(), [pVertTo](auto* pObj){
+                            return (pVertTo->getItemId() == pObj->getPluginObjectId());
+                        });
+                        replacementMap[pVertTo->getPluginObjectId()] = getFreeObjectId();
+                        (*pObjCopy)->setPluginObjectId(replacementMap.at(pVertTo->getPluginObjectId()));
+                        LOG_DEBUG("2 REPLACED TO");
+                    }
+                }
+
+                addObject(pCon);
+                continue;
+            }
+        }
+    });
+
+    QAction* cutAction = new QAction("Вырезать", this);
+    cutAction->setShortcut(QKeySequence::Cut);
+    connect(cutAction, &QAction::triggered,
+            this, [this](){
+        m_serializedItems = {};
+        for (auto* pSelectedItem : getScene()->selectedItems()) {
+            if (auto pGraphItem = dynamic_cast<PluginObjectInterface*>(pSelectedItem); pGraphItem != nullptr) {
+                m_serializedItems.push_back(pGraphItem->toJson());
+                getScene()->removeItem(pSelectedItem);
+                delete pSelectedItem;
+            }
+        }
+    });
+
+    // Добавляем действия в виджет
+    this->addAction(copyAction);
+    this->addAction(pasteAction);
+    this->addAction(cutAction);
 }
 
 void GraphEditView::dragEnterEvent(QDragEnterEvent *event)

@@ -130,9 +130,18 @@ void GObjectConnectionItem::setLineItem(ObjectItems::AbstractConnectionLine *pLi
             nullptr == dynamic_cast<PluginObjectInterface*>(pLine)) {
         throw std::invalid_argument("VertexConnectionItem: Nullptr or invalid line item");
     }
-    delete m_connectionLine;
+
+    if (m_connectionLine) {
+        disconnect(pLine, nullptr, this, nullptr);
+        delete m_connectionLine;
+    }
+
     m_connectionLine = pLine;
     pLine->setParentItem(this);
+
+    pLine->setFlag(ItemIsSelectable, true);
+    connect(pLine, &ObjectItems::BasicItem::itemSelectionChanged,
+            this, [this](bool isSel){ setSelected(isSel); });
 
     m_isStraightLine = (nullptr != dynamic_cast<ObjectItems::ArrowedConnectionLine*>(pLine));
 }

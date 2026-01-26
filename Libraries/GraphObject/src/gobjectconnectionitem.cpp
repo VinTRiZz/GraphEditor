@@ -214,7 +214,8 @@ void GObjectConnectionItem::updateLine()
         auto bRect = m_toVertex->boundingRect();
 
         // TODO: Придумать, как обойти этот... костыль?
-        if (m_toVertex->getTitlePosition() == VertexTitlePosition::VTP_Top) {
+        if (m_toVertex->getTitlePosition() == VertexTitlePosition::VTP_Top ||
+            m_toVertex->getTitlePosition() == VertexTitlePosition::VTP_RightBottom) {
             bRect = toVertexBoundingRect(m_toVertex->getSize());
         }
 

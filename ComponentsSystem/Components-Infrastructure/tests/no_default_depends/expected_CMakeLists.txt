@@ -1,0 +1,14 @@
+COMPONENTS_CONFIGURE_COMPONENT(NoDefaultDepends "2.3.4"
+    boost_thread
+)
+option(COMPONENTS_SW_feature "" OFF)
+COMPONENTS_CCR_CONAN_IS_CONFIGURED(COMPONENTS_CONAN_CONFIGURED)
+if (COMPONENTS_CONAN_CONFIGURED)
+    COMPONENTS_CCR_CONAN_REQUIRE(Boost.Thread)
+endif()
+COMPONENTS_LINK_COMPONENT(Components-NoDefaultDepends Core)
+if (NOT COMPONENTS_SW_feature)
+    COMPONENTS_REMOVE_SOURCES(Components-NoDefaultDepends
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/legacy.cpp"
+    )
+endif()

@@ -1,3 +1,0 @@
-CONFIGURE_PLUGIN(WebPlugin)
-
-LINK_TARGET_LIBRARY(WebPlugin GraphObject)

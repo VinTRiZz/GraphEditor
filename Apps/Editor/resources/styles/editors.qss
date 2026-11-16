@@ -1,0 +1,186 @@
+/* ========================= */
+/* ========================= */
+/* ==== Text input fields == */
+/* ========================= */
+/* ========================= */
+QLineEdit,
+QAbstractSpinBox {
+    background-color: #151515;
+    color: #d0d0d0;
+    border: 1px solid #1f4f4d;
+    border-radius: 4px;
+    padding: 3px 5px;
+    min-height: 16px;
+    selection-background-color: #1f4f4d;
+    selection-color: #e0e0e0;
+}
+
+QLineEdit:hover,
+QAbstractSpinBox:hover {
+    border-color: #30605e;
+}
+
+QLineEdit:focus,
+QAbstractSpinBox:focus,
+QPlainTextEdit:focus,
+QTextEdit:focus {
+    border: 1px solid #30605e;
+}
+
+QLineEdit:disabled,
+QAbstractSpinBox:disabled {
+    background-color: #0b0b0b;
+    color: #6a6a6a;
+    border-color: #3a3a3a;
+}
+
+
+/* ========================= */
+/* ========================= */
+/* ====== Text editors ===== */
+/* ========================= */
+/* ========================= */
+QPlainTextEdit,
+QTextEdit {
+    background-color: #151515;
+    color: #c0c0c0;
+    border: 1px solid #1f4f4d;
+    border-radius: 4px;
+    padding: 3px;
+    selection-background-color: #1f4f4d;
+    selection-color: #e0e0e0;
+}
+
+QPlainTextEdit:disabled,
+QTextEdit:disabled {
+    background-color: #0b0b0b;
+    color: #6a6a6a;
+    border-color: #3a3a3a;
+}
+
+
+/* ========================= */
+/* ========================= */
+/* = Check / radio buttons = */
+/* ========================= */
+/* ========================= */
+QCheckBox,
+QRadioButton {
+    background: transparent;
+    color: #c0c0c0;
+    spacing: 6px;
+}
+
+QCheckBox:disabled,
+QRadioButton:disabled {
+    color: #6a6a6a;
+}
+
+QCheckBox::indicator,
+QRadioButton::indicator {
+    width: 14px;
+    height: 14px;
+    background-color: #151515;
+    border: 1px solid #1f4f4d;
+}
+
+QCheckBox::indicator {
+    border-radius: 3px;
+}
+
+QRadioButton::indicator {
+    border-radius: 7px;
+}
+
+QCheckBox::indicator:hover,
+QRadioButton::indicator:hover {
+    border-color: #30605e;
+}
+
+QCheckBox::indicator:checked,
+QRadioButton::indicator:checked {
+    background-color: #1f4f4d;
+    border-color: #30605e;
+}
+
+QRadioButton::indicator:checked {
+    background-color: #30605e;
+}
+
+QCheckBox::indicator:disabled,
+QRadioButton::indicator:disabled {
+    background-color: #0b0b0b;
+    border-color: #3a3a3a;
+}
+
+
+/* ========================= */
+/* ========================= */
+/* ==== Sliders / progress = */
+/* ========================= */
+/* ========================= */
+QSlider::groove:horizontal {
+    height: 4px;
+    background-color: #0d0d0d;
+    border: 1px solid #1f4f4d;
+    border-radius: 2px;
+}
+
+QSlider::sub-page:horizontal {
+    background-color: #1f4f4d;
+    border-radius: 2px;
+}
+
+QSlider::handle:horizontal {
+    background-color: #2a2a2a;
+    border: 2px solid #1f4f4d;
+    width: 12px;
+    margin: -6px 0px;
+    border-radius: 6px;
+}
+
+QSlider::groove:vertical {
+    width: 4px;
+    background-color: #0d0d0d;
+    border: 1px solid #1f4f4d;
+    border-radius: 2px;
+}
+
+QSlider::sub-page:vertical {
+    background-color: #1f4f4d;
+    border-radius: 2px;
+}
+
+QSlider::handle:vertical {
+    background-color: #2a2a2a;
+    border: 2px solid #1f4f4d;
+    height: 12px;
+    margin: 0px -6px;
+    border-radius: 6px;
+}
+
+QSlider::handle:hover {
+    background-color: #2d2d2d;
+    border-color: #30605e;
+}
+
+QProgressBar {
+    background-color: #151515;
+    color: #d0d0d0;
+    border: 1px solid #1f4f4d;
+    border-radius: 4px;
+    text-align: center;
+    min-height: 16px;
+}
+
+QProgressBar::chunk {
+    background-color: #1f4f4d;
+    border-radius: 3px;
+    margin: 1px;
+}
+
+QProgressBar:disabled {
+    background-color: #0b0b0b;
+    color: #6a6a6a;
+    border-color: #3a3a3a;
+}

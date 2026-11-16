@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>styles/common.qss</file>
+        <file>styles/buttons.qss</file>
+        <file>styles/editors.qss</file>
+        <file>styles/area.qss</file>
+        <file>styles/views.qss</file>
+        <file>styles/menus.qss</file>
+        <file>styles/docstyles.css</file>
+    </qresource>
+</RCC>

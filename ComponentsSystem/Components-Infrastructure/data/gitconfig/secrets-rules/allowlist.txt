@@ -1,0 +1,33 @@
+# Check-secrets allowlist.
+#
+# Format:
+#   path:<regex>   skip a whole staged file when its repository path matches
+#   line:<regex>   skip a line when it matches
+#   value:<regex>  skip a matched value when it matches
+#   rule:<id>      disable one rule completely
+#
+# All regular expressions are case-insensitive.
+# A line containing "check-secrets:ignore" is also skipped by the scanner.
+# Use line: rules sparingly: they hide every rule on the matched line.
+
+# Rule definitions contain secret-like regular expressions by design.
+path:^gitconfig/secrets-rules/
+
+# Empty values and obvious placeholders. Assignment rules capture quoted and
+# bare values; the scanner strips matching outer quotes before this check.
+value:^(?:|null|none|nil|true|false|changeme|change[_-]?me|example|dummy|placeholder|password|passwd|pwd|token|secret|test|testuser|demo|username|user_name|login|your[_-][A-Za-z0-9_-]+|<[^>]*>|\$\{[^}]*\}|\$\([^)]*\)|%\([^)]*\)s|\{\{[^}]*\}\}|(?:f|r|fr|rf)?["']\{[^}]*\}["']|[xX*]{3,}|\.{3,}|…)$
+
+# Environment lookups, function calls, attribute access and indexed values
+# are references rather than literal secrets.
+value:^[A-Za-z_][A-Za-z0-9_.]*\([^)]*\)$
+value:^[A-Za-z_][A-Za-z0-9_.]*(?:\[[^\]]*\])+$
+value:^(?:request|self|this|config|settings|env|environ|ctx|context|user|data|response|req|res|app|os|sys|event|auth)\.[A-Za-z_][A-Za-z0-9_.]*$
+value:^[A-Za-z_][A-Za-z0-9_]*\.(?:env|environ)\.[A-Za-z_][A-Za-z0-9_]*$
+value:^(?:current_user|currentUser|whoami)$
+
+# Type names and annotations are not secrets.
+value:^(?:str|int|float|bool|bytes|bytearray|string|number|boolean|object|any|unknown|void|list|dict|tuple|set|frozenset|array|map|user|userdata|secretstr|secretbytes|path|uuid)$
+
+# Common placeholder e-mail domains.
+value:^[A-Za-z0-9._%+-]+@(?:example\.(?:com|org|net)|test\.(?:com|org)|localhost)$
+value:^(?:localhost|127\.0\.0\.1|0\.0\.0\.0)$

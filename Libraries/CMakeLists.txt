@@ -1,9 +1,0 @@
-# Components
-add_subdirectory(Components)
-
-# Modules
-add_subdirectory(GraphObject)
-add_subdirectory(GraphWidgets)
-add_subdirectory(SavesModule)
-add_subdirectory(PluginModule)
-add_subdirectory(PluginCoreInterface)

@@ -1,60 +1,32 @@
-[submodule "Libraries/Components-Qt-Custom"]
-	path = Libraries/Components-Qt-Custom
+[submodule "ComponentsSystem/Components-CMake"]
+	path = ComponentsSystem/Components-CMake
+	url = git@github.com:VinTRiZz/Components-CMake.git
+[submodule "ComponentsSystem/Components-Core"]
+	path = ComponentsSystem/Components-Core
+	url = git@github.com:VinTRiZz/Components-Core.git
+[submodule "ComponentsSystem/Components-Common"]
+	path = ComponentsSystem/Components-Common
+	url = git@github.com:VinTRiZz/Components-Common.git
+[submodule "ComponentsSystem/Components-Encryption"]
+	path = ComponentsSystem/Components-Encryption
+	url = git@github.com:VinTRiZz/Components-Encryption.git
+[submodule "ComponentsSystem/Components-ExtraClasses"]
+	path = ComponentsSystem/Components-ExtraClasses
+	url = git@github.com:VinTRiZz/Components-ExtraClasses.git
+[submodule "ComponentsSystem/Components-Qt-Custom"]
+	path = ComponentsSystem/Components-Qt-Custom
 	url = git@github.com:VinTRiZz/Components-Qt-Custom.git
-[submodule "Testing/googletest"]
-	path = Testing/googletest
-	url = https://github.com/google/googletest.git
-[submodule "Libraries/Libraries/Qt-Custom"]
-	path = Libraries/Libraries/Qt-Custom
-	url = git@github.com:VinTRiZz/Components-Qt-Custom.git
+[submodule "ComponentsSystem/Components-Logger"]
+	path = ComponentsSystem/Components-Logger
+	url = git@github.com:VinTRiZz/Components-Logger.git
+[submodule "ComponentsSystem/Components-Filework"]
+	path = ComponentsSystem/Components-Filework
+	url = git@github.com:VinTRiZz/Components-Filework.git
+[submodule "ComponentsSystem/Components-Infrastructure"]
+	path = ComponentsSystem/Components-Infrastructure
+	url = git@github.com:VinTRiZz/Components-Infrastructure.git
 [submodule "Deploy/tools/mxe"]
 	path = Deploy/tools/mxe
-	url = https://github.com/mxe/mxe.git
-[submodule "Libraries/Components-Logger"]
-	path = Libraries/Components-Logger
-	url = git@github.com:VinTRiZz/Components-Logger.git
-[submodule "Libraries/Components-Common"]
-	path = Libraries/Components-Common
-	url = git@github.com:VinTRiZz/Components-Common.git
-[submodule "Libraries/Components-Maths"]
-	path = Libraries/Components-Maths
+[submodule "ComponentsSystem/Components-Maths"]
+	path = ComponentsSystem/Components-Maths
 	url = git@github.com:VinTRiZz/Components-Maths.git
-[submodule "Libraries/Components-Encryption"]
-	path = Libraries/Components-Encryption
-	url = git@github.com:VinTRiZz/Components-Encryption.git
-[submodule "Libraries/Components-Filework"]
-	path = Libraries/Components-Filework
-	url = git@github.com:VinTRiZz/Components-Filework.git
-[submodule "Libraries/Components-ExtraClasses"]
-	path = Libraries/Components-ExtraClasses
-	url = git@github.com:VinTRiZz/Components-ExtraClasses.git
-[submodule "Libraries/Components-Core"]
-	path = Libraries/Components-Core
-	url = git@github.com:VinTRiZz/Components-Core.git
-[submodule "Libraries/Components/Components-Core"]
-	path = Libraries/Components/Components-Core
-	url = git@github.com:VinTRiZz/Components-Core.git
-[submodule "Libraries/Components/Components-Common"]
-	path = Libraries/Components/Components-Common
-	url = git@github.com:VinTRiZz/Components-Common.git
-[submodule "Libraries/Components/Components-Logger"]
-	path = Libraries/Components/Components-Logger
-	url = git@github.com:VinTRiZz/Components-Logger.git
-[submodule "Libraries/Components/Components-Filework"]
-	path = Libraries/Components/Components-Filework
-	url = git@github.com:VinTRiZz/Components-Filework.git
-[submodule "Libraries/Components/Components-Encryption"]
-	path = Libraries/Components/Components-Encryption
-	url = git@github.com:VinTRiZz/Components-Encryption.git
-[submodule "Libraries/Components/Components-ExtraClasses"]
-	path = Libraries/Components/Components-ExtraClasses
-	url = git@github.com:VinTRiZz/Components-ExtraClasses.git
-[submodule "Libraries/Components/Components-Maths"]
-	path = Libraries/Components/Components-Maths
-	url = git@github.com:VinTRiZz/Components-Maths.git
-[submodule "Libraries/Components/Components-Qt-Custom"]
-	path = Libraries/Components/Components-Qt-Custom
-	url = git@github.com:VinTRiZz/Components-Qt-Custom.git
-[submodule "Libraries/Components/Components-Database"]
-	path = Libraries/Components/Components-Database
-	url = git@github.com:VinTRiZz/Components-Database.git

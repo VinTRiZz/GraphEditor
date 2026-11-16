@@ -1,0 +1,12 @@
+COMPONENTS_CONFIGURE_COMPONENT(SwitchDefaults "0.1.0")
+option(COMPONENTS_SW_alpha "" ON)
+option(COMPONENTS_SW_beta "" OFF)
+if (NOT COMPONENTS_ENABLE_TESTS)
+    COMPONENTS_REMOVE_SOURCES(Components-SwitchDefaults
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/test_only.cpp"
+    )
+endif()
+if (COMPONENTS_IS_ENABLED_QT)
+    target_compile_definitions(Components-SwitchDefaults PRIVATE COMPONENTS_IS_ENABLED_QT)
+    COMPONENTS_LINK_COMPONENT(Components-SwitchDefaults Logger)
+endif()

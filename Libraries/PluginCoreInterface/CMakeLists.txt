@@ -1,9 +1,0 @@
-CONFIGURE_LIBRARY(PluginCoreInterface)
-
-COMPONENTS_LINK_COMPONENT(PluginCoreInterface Logger)
-COMPONENTS_LINK_COMPONENT(PluginCoreInterface Common)
-COMPONENTS_LINK_COMPONENT(PluginCoreInterface Qt-Custom)
-
-LINK_TARGET_LIBRARY(PluginCoreInterface GraphObject)
-
-ADD_EDITOR_TEST(PluginCoreInterface)

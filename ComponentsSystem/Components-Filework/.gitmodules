@@ -1,0 +1,9 @@
+[submodule "depends/Components-Logger"]
+	path = depends/Components-Logger
+	url = git@github.com:VinTRiZz/Components-Logger.git
+[submodule "depends/Components-ExtraClasses"]
+	path = depends/Components-ExtraClasses
+	url = git@github.com:VinTRiZz/Components-ExtraClasses.git
+[submodule "depends/Components-Common"]
+	path = depends/Components-Common
+	url = git@github.com:VinTRiZz/Components-Common.git

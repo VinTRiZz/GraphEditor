@@ -1,0 +1,219 @@
+# Common functions
+
+# Project definition function
+# CCR_PROJ_NAME         --> Name of a project. Can be used in targets
+# CCR_PROJECT_VERSION   --> Version string of a project
+# ARGN                  --> Subdirectories of a project
+function (COMPONENTS_CCR_DEFINE_PROJECT CCR_PROJ_NAME CCR_PROJECT_VERSION)
+
+    # Components system variables
+    set_property(GLOBAL PROPERTY COMPONENTS_CCR_PROJECT_NAME ${CCR_PROJ_NAME})
+    set_property(GLOBAL PROPERTY COMPONENTS_CCR_PROJECT_ROOTDIR ${CMAKE_CURRENT_SOURCE_DIR})
+    get_property(COMPONENTS_CCR_PROJECT_ROOTDIR GLOBAL PROPERTY COMPONENTS_CCR_PROJECT_ROOTDIR)
+    message(STATUS "[COMPONENTS] Configuring project ${COMPONENTS_CCR_PROJECT_NAME} in ${COMPONENTS_CCR_PROJECT_ROOTDIR}")
+
+    # Tests
+    option(${CCR_PROJ_NAME}_BUILD_TESTS OFF)
+
+    # In-app defines
+    add_compile_definitions(PROJECT_VERSION_STRING="${PROJECT_VERSION}")
+    add_compile_definitions(PROJECT_NAME_STRING="${PROJECT_NAME}")
+    message(STATUS "[COMPONENTS] Added C++ defines: PROJECT_NAME_STRING PROJECT_VERSION_STRING")
+
+    # Add subdirectories
+    message(STATUS "[COMPONENTS] Searching for subprojects...")
+    foreach(CCR_PROJ_SUBDIR IN LISTS ARGN)
+        message(STATUS "[COMPONENTS] Checking " ${CCR_PROJ_SUBDIR})
+        add_subdirectory(${COMPONENTS_CCR_PROJECT_ROOTDIR}/${CCR_PROJ_SUBDIR})
+    endforeach()
+endfunction()
+
+
+# Android build detection
+# CCR_OUT --> TRUE / FALSE
+function(COMPONENTS_CCR_IS_ANDROID CCR_OUT)
+    if (ANDROID OR CMAKE_SYSTEM_NAME STREQUAL "Android")
+        set(${CCR_OUT} TRUE PARENT_SCOPE)
+    else()
+        set(${CCR_OUT} FALSE PARENT_SCOPE)
+    endif()
+endfunction()
+
+
+# Enable Link Time Optimisation (LTO or InterProcedural Optimisation, IPO)
+function(COMPONENTS_CCR_ENABLE_LTO)
+    cmake_policy(SET CMP0069 NEW) # Required for LTO
+    include(CheckIPOSupported)
+    check_ipo_supported(RESULT supported OUTPUT error)
+    if(supported)
+        message(STATUS "[COMPONENTS] LTO is supported and enabled")
+        set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
+    else()
+        message(WARNING "[COMPONENTS] LTO is not supported: ${error}")
+    endif()
+endfunction()
+
+
+# Version of Qt and it's components to search and link
+# Search for Qt modules of a version
+function (COMPONENTS_CCR_ADD_QT CCR_QTVERS)
+    # Sugar
+    set(CMAKE_AUTOUIC ON PARENT_SCOPE)
+    set(CMAKE_AUTOMOC ON PARENT_SCOPE)
+    set(CMAKE_AUTORCC ON PARENT_SCOPE)
+
+    # Packages
+    find_package(QT NAMES Qt${CCR_QTVERS} REQUIRED COMPONENTS ${ARGN})
+    find_package(Qt${CCR_QTVERS} REQUIRED COMPONENTS ${ARGN})
+
+    message(STATUS "[COMPONENTS] Found Qt${CCR_QTVERS} components: ${ARGN}")
+endfunction()
+
+
+# Tests for project. Also links to all libraries host depend on
+# CCR_TARGET_NAME   --> Target to add tests for
+# ARGN              --> Sources of a test
+function(COMPONENTS_CCR_ADD_TEST CCR_TARGET_NAME ) # Other args is sources for test
+
+    # Target
+    set(CCR_TEST_TARGETNAME TEST_${CCR_TARGET_NAME})
+    add_executable(${CCR_TEST_TARGETNAME} ${ARGN})
+    target_include_directories(${CCR_TEST_TARGETNAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
+
+    # Link to self if it's library
+    get_target_property(CCR_TARGET_TYPE ${CCR_TARGET_NAME} TYPE)
+    get_target_property(CCR_TARGET_LIBS ${CCR_TARGET_NAME} LINK_LIBRARIES)
+    if (CCR_TARGET_TYPE MATCHES ".*_LIBRARY")
+        set(CCR_TARGET_LIBS ${CCR_TARGET_LIBS} ${CCR_TARGET_NAME})
+    endif()
+
+    # Remove not found libraries (in most cases, it's not built yet libs)
+    if(CCR_TARGET_LIBS)
+        list(FILTER CCR_TARGET_LIBS EXCLUDE REGEX ".*NOTFOUND")
+    endif()
+
+    # Google Test linking
+    target_link_libraries(
+        ${CCR_TEST_TARGETNAME} PRIVATE
+        GTest::gtest_main
+        GTest::gtest
+        ${CCR_TARGET_LIBS}
+    )
+
+    # Copy defines from target
+    target_compile_definitions(${CCR_TEST_TARGETNAME} PRIVATE
+        $<TARGET_PROPERTY:${CCR_TARGET_NAME},COMPILE_DEFINITIONS>
+        $<TARGET_PROPERTY:${CCR_TARGET_NAME},INTERFACE_COMPILE_DEFINITIONS>
+    )
+
+    # Includes
+    get_target_property(EDITOR_MODULE_INCLUDES ${CCR_TARGET_NAME} INCLUDE_DIRECTORIES)
+    target_include_directories(${CCR_TEST_TARGETNAME} PUBLIC ${EDITOR_MODULE_INCLUDES})
+
+    # GTest
+    include(GoogleTest)
+    gtest_discover_tests(${CCR_TEST_TARGETNAME})
+
+    message(STATUS "[COMPONENTS] Added test: " ${CCR_TARGET_NAME})
+endfunction()
+
+
+# Benchmarks for project. Also links to all libraries host depend on
+# CCR_TARGET_NAME   --> Target to add tests for
+# ARGN              --> Sources of a test
+function(COMPONENTS_CCR_ADD_BENCHMARK CCR_TARGET_NAME )
+
+    # Target
+    set(CCR_TEST_TARGETNAME TEST_BENCHMARK_${CCR_TARGET_NAME})
+    add_executable(${CCR_TEST_TARGETNAME} ${ARGN})
+    target_include_directories(${CCR_TEST_TARGETNAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
+
+    # Link to self if it's library
+    get_target_property(CCR_TARGET_TYPE ${CCR_TARGET_NAME} TYPE)
+    get_target_property(CCR_TARGET_LIBS ${CCR_TARGET_NAME} LINK_LIBRARIES)
+    if (CCR_TARGET_TYPE MATCHES ".*_LIBRARY")
+        set(CCR_TARGET_LIBS ${CCR_TARGET_LIBS} ${CCR_TARGET_NAME})
+    endif()
+
+    # Remove not found libraries (in most cases, it's not built yet libs)
+    if(CCR_TARGET_LIBS)
+        list(FILTER CCR_TARGET_LIBS EXCLUDE REGEX ".*NOTFOUND")
+    endif()
+
+    # Remove internal test building
+    set(BENCHMARK_ENABLE_TESTING OFF CACHE INTERNAL "")
+    set(BENCHMARK_ENABLE_EXCEPTIONS ON CACHE INTERNAL "")
+
+    # GTest issues
+    set(BENCHMARK_ENABLE_GTEST_TESTS OFF CACHE INTERNAL "")
+    set(BENCHMARK_ENABLE_INSTALL OFF CACHE INTERNAL "")
+
+    # Google Benchmark linking
+    target_link_libraries(
+        ${CCR_TEST_TARGETNAME} PRIVATE
+        benchmark::benchmark_main
+        ${CCR_TARGET_LIBS}
+    )
+
+    # Copy defines from target
+    target_compile_definitions(${CCR_TEST_TARGETNAME} PRIVATE
+        $<TARGET_PROPERTY:${CCR_TARGET_NAME},COMPILE_DEFINITIONS>
+        $<TARGET_PROPERTY:${CCR_TARGET_NAME},INTERFACE_COMPILE_DEFINITIONS>
+    )
+
+    # Includes
+    get_target_property(EDITOR_MODULE_INCLUDES ${CCR_TARGET_NAME} INCLUDE_DIRECTORIES)
+    target_include_directories(${CCR_TEST_TARGETNAME} PUBLIC ${EDITOR_MODULE_INCLUDES})
+
+    # Compile options
+    if(MSVC)
+        # For MSVC
+        target_compile_options(${CCR_TEST_TARGETNAME} PRIVATE /O2 /Gy)
+        # /OPT:REF — remove unused functions and data
+        # /OPT:ICF — remove function dublicates
+        target_link_options(${CCR_TEST_TARGETNAME} PRIVATE /OPT:REF /OPT:ICF)
+    else()
+        # For GCC и Clang (Linux, macOS, MinGW)
+        target_compile_options(${CCR_TEST_TARGETNAME} PRIVATE -O2 -ffunction-sections -fdata-sections)
+        target_link_options(${CCR_TEST_TARGETNAME} PRIVATE -Wl,--gc-sections)
+    endif()
+    set_target_properties(${CCR_TEST_TARGETNAME} PROPERTIES SUFFIX ".bin")
+
+    message(STATUS "[COMPONENTS] Added benchmark test: " ${CCR_TARGET_NAME})
+endfunction()
+
+
+# CCR_TARGET_NAME       --> Target to link to
+# CCR_LIBRARY_NAME      --> Library to link
+# CCR_LIBRARY_ROOT_DIR  --> Directory where "include" stated
+function(COMPONENTS_CCR_LINK_LIBRARY CCR_TARGET_NAME CCR_LIBRARY_NAME CCR_LIBRARY_ROOT_DIR)
+    if (NOT EXISTS ${CCR_LIBRARY_ROOT_DIR})
+        message(FATAL_ERROR "[COMPONENTS] Invalid ${CCR_LIBRARY_NAME} root directory: ${CCR_LIBRARY_ROOT_DIR}")
+        return()
+    endif()
+
+    # Checkup includes
+    set(LTL_LIBRARY_INCLUDE_DIR "${CCR_LIBRARY_ROOT_DIR}/include")
+    if (NOT EXISTS ${LTL_LIBRARY_INCLUDE_DIR})
+        message(FATAL_ERROR "[COMPONENTS] Error searching for includes of ${CCR_LIBRARY_NAME} (not found include dir)")
+        return()
+    endif()
+
+    # Linking
+    target_link_libraries(${CCR_TARGET_NAME} PRIVATE ${CCR_LIBRARY_NAME})
+    target_include_directories(${CCR_TARGET_NAME} PUBLIC ${LTL_LIBRARY_INCLUDE_DIR})
+
+    message(STATUS "[COMPONENTS] Linking target " ${CCR_TARGET_NAME} " : added lib " ${CCR_LIBRARY_NAME})
+endfunction()
+
+
+# Target sources removing
+# CCR_TARGET_NAME   --> Target to edit
+# ARGN              --> Sources list to remove (must be same as in target)
+function(COMPONENTS_REMOVE_SOURCES CCR_TARGET_NAME)
+    get_target_property(CCR_CURRENT_SOURCES ${CCR_TARGET_NAME} SOURCES)
+    foreach(SOURCE_FILE ${ARGN})
+        list(REMOVE_ITEM CCR_CURRENT_SOURCES ${SOURCE_FILE})
+    endforeach()
+    set_target_properties(${CCR_TARGET_NAME} PROPERTIES SOURCES "${CCR_CURRENT_SOURCES}")
+endfunction()

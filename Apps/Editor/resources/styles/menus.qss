@@ -1,0 +1,68 @@
+/* ========================= */
+/* ========================= */
+/* ======== Menu bar ======= */
+/* ========================= */
+/* ========================= */
+QMenuBar {
+    background-color: #1f1f1f;
+    color: #c0c0c0;
+    border-bottom: 1px solid #1f4f4d;
+}
+
+QMenuBar::item {
+    background: transparent;
+    padding: 4px 10px;
+}
+
+QMenuBar::item:selected {
+    background-color: #598868;
+    color: #262626;
+    border-radius: 3px;
+    padding: 4px 8px;
+}
+
+QMenuBar::item:pressed {
+    background-color: #377169;
+    border-radius: 3px;
+    padding: 4px 8px;
+}
+
+
+/* ========================= */
+/* ========================= */
+/* ========= Menus ========= */
+/* ========================= */
+/* ========================= */
+QMenu {
+    background-color: #1a1a1a;
+    color: #c0c0c0;
+    border: 1px solid #1f4f4d;
+    border-radius: 4px;
+    padding: 4px;
+}
+
+QMenu::item {
+    background: transparent;
+    padding: 4px 24px 4px 10px;
+    border-radius: 3px;
+}
+
+QMenu::item:selected {
+    background-color: #1f2f2d;
+    color: #e0e0e0;
+}
+
+QMenu::item:disabled {
+    color: #6a6a6a;
+}
+
+QMenu::separator {
+    height: 1px;
+    background-color: #1f4f4d;
+    margin: 4px 6px;
+}
+
+QMenu::indicator {
+    width: 14px;
+    height: 14px;
+}

@@ -1,0 +1,118 @@
+# ====================================== #
+# Local libraries configuration
+#
+# ========== EXAMPLE OF USAGE: =========
+#
+# Just copy this into another Component and write your values
+#
+# COMPONENTS_CCR_CONFIGURE_LIBRARY(
+#    false
+#    MyExtraLibrary
+#    boost_system
+# )
+# COMPONENTS_CCR_SET_LIBRARY_VERSION(MyExtraLibrary "1.0.0")
+#
+# COMPONENTS_LINK_COMPONENT(Common Logger)
+#
+# ====================================== #
+
+
+# Configuring library version
+# CCR_LIBRARY_NAME      --> Library name to set version of
+# CCR_LIBRARY_VERSION   --> Version string
+function(COMPONENTS_CCR_SET_LIBRARY_VERSION CCR_LIBRARY_NAME CCR_LIBRARY_VERSION CCR_IS_LIB_STATIC)
+    # Keep the suffix consistent with the real target type. This is important
+    # for Android where COMPONENTS_CCR_CONFIGURE_ANDROID_LIB forces STATIC.
+    get_target_property(CCR_TARGET_TYPE ${CCR_LIBRARY_NAME} TYPE)
+    if (CCR_TARGET_TYPE STREQUAL "STATIC_LIBRARY")
+        set(CCR_IS_LIB_STATIC TRUE)
+    elseif (CCR_TARGET_TYPE STREQUAL "SHARED_LIBRARY"
+            OR CCR_TARGET_TYPE STREQUAL "MODULE_LIBRARY")
+        set(CCR_IS_LIB_STATIC FALSE)
+    endif()
+
+    if(${CCR_IS_LIB_STATIC})
+        set(CCR_SUFFX "a")
+    else()
+        set(CCR_SUFFX "so")
+    endif()
+
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        set_target_properties(${CCR_LIBRARY_NAME} PROPERTIES SUFFIX "_${CCR_LIBRARY_VERSION}.DEBUG.${CCR_SUFFX}")
+    elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+        set_target_properties(${CCR_LIBRARY_NAME} PROPERTIES SUFFIX "_${CCR_LIBRARY_VERSION}.${CCR_SUFFX}")
+    endif()
+    target_compile_definitions(${CCR_LIBRARY_NAME} PRIVATE CCR_LIB_VERSION="${CCR_LIBRARY_VERSION}")
+endfunction()
+
+
+# Common library configuration function
+# CCR_LIBRARY_NAME      --> Library target name to configure
+# CCR_IS_LIB_STATIC     --> true / false to use static or shared mode
+# CCR_LIB_ROOT_DIR      --> Root directory of a library (where sources directory stated)
+# ARGN                  --> Libraries that target require
+function(COMPONENTS_CCR_CONFIGURE_LIBRARY CCR_IS_LIB_STATIC CCR_LIBRARY_NAME CCR_LIB_ROOT_DIR)
+    if (NOT CCR_IS_LIB_STATIC MATCHES "TRUE|FALSE|true|false|ON|on|OFF|off")
+        message(FATAL_ERROR "[COMPONENTS] Invalid library type (expected TRUE / FALSE or ON / OFF): " ${CCR_IS_LIB_STATIC})
+        return()
+    endif()
+
+    if (NOT EXISTS ${CCR_LIB_ROOT_DIR})
+        message(FATAL_ERROR "[COMPONENTS] Invalid ${CCR_LIBRARY_NAME} root directory: ${CCR_LIBRARY_ROOT_DIR}")
+        return()
+    endif()
+
+    # Files
+    file(GLOB_RECURSE HEADERS "${CCR_LIB_ROOT_DIR}/src/*.hpp" "${CCR_LIB_ROOT_DIR}/src/*.h")
+    file(GLOB_RECURSE SOURCES "${CCR_LIB_ROOT_DIR}/src/*.cpp" "${CCR_LIB_ROOT_DIR}/src/*.c")
+    file(GLOB_RECURSE UIFILES "${CCR_LIB_ROOT_DIR}/src/*.ui")
+    source_group("Ui Files" FILES ${UIFILES})
+
+    # Library target
+    if ( ${CCR_IS_LIB_STATIC} )
+        message(STATUS "[COMPONENTS] Configuring STATIC library ${CCR_LIBRARY_NAME}")
+        add_library(${CCR_LIBRARY_NAME} STATIC
+            ${HEADERS} ${SOURCES} ${UIFILES}
+        )
+    else()
+        message(STATUS "[COMPONENTS] Configuring SHARED library ${CCR_LIBRARY_NAME}")
+        add_library(${CCR_LIBRARY_NAME} SHARED
+            ${HEADERS} ${SOURCES} ${UIFILES}
+        )
+    endif()
+    target_include_directories(${CCR_LIBRARY_NAME} PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src"
+    )
+    target_link_libraries(${CCR_LIBRARY_NAME} PRIVATE ${ARGN})
+
+    # Installation
+    install(TARGETS ${CCR_LIBRARY_NAME}
+        RUNTIME     DESTINATION ${INSTALL_DESTINATION_PREFIX}
+        LIBRARY     DESTINATION ${INSTALL_DESTINATION_PREFIX}/lib
+        ARCHIVE     DESTINATION ${INSTALL_DESTINATION_PREFIX}/lib/static
+        INCLUDES    DESTINATION ${INSTALL_DESTINATION_PREFIX}/include
+    )
+
+    # Build type processing
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        add_compile_definitions(BUILD_MODE_DEBUG)
+        target_compile_options(${CCR_LIBRARY_NAME} PRIVATE -g)
+    elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+        if(MSVC)
+            # For MSVC
+            target_compile_options(${CCR_LIBRARY_NAME} PRIVATE /O2 /Gy)
+            # /OPT:REF — remove unused functions and data
+            # /OPT:ICF — remove function dublicates
+            target_link_options(${CCR_LIBRARY_NAME} PRIVATE /OPT:REF /OPT:ICF)
+        else()
+            # For GCC и Clang (Linux, macOS, MinGW)
+            target_compile_options(${CCR_LIBRARY_NAME} PRIVATE -O2 -ffunction-sections -fdata-sections)
+            target_link_options(${CCR_LIBRARY_NAME} PRIVATE -Wl,--gc-sections)
+        endif()
+        target_compile_options(${CCR_LIBRARY_NAME} PRIVATE -O2 -ffunction-sections -fdata-sections)
+        target_link_options(${CCR_LIBRARY_NAME} PRIVATE -Wl,--gc-sections)
+    endif()
+
+    message(STATUS "[COMPONENTS] Configured library " ${CCR_LIBRARY_NAME})
+endfunction()

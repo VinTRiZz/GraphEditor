@@ -1,0 +1,389 @@
+# ============================================================================
+# Conan 2.x integration (simplified, self-managing)
+# ============================================================================
+#
+# Analogous to the other COMPONENTS_CCR_* configure functions, this module
+# allows a Components-based project to set Conan up in a simplified format.
+#
+# It is deliberately forgiving: it never fails the configure by default and it
+# degrades to a no-op when
+#   * Conan is not installed,
+#   * no conanfile is present,
+#   * or an external tool (Qt Creator / CMake-Conan provider) already ran
+#     "conan install" for this build.
+#
+# Typical usage (project root, AFTER add_subdirectory(ComponentsSystem)):
+#
+#     COMPONENTS_CCR_CONAN_SETUP(
+#         CONANFILE "${CMAKE_CURRENT_SOURCE_DIR}/conanfile.txt"
+#         BUILD     missing                     # optional, default "missing"
+#     )
+#
+#     COMPONENTS_CCR_CONAN_FIND_LIBRARY(boost_system)         # -> Boost::system
+#     COMPONENTS_CCR_CONAN_FIND_LIBRARY(boost_thread)         # -> Boost::thread
+#     COMPONENTS_CCR_CONAN_REQUIRE(SQLite3)                   # -> SQLite::SQLite3
+#
+# The generated Conan "generators" folder (CMakeDeps config files) is injected
+# into CMAKE_PREFIX_PATH / CMAKE_MODULE_PATH, so ordinary find_package() calls
+# work unchanged.
+# ============================================================================
+
+# Include guard: the project may include this file more than once.
+if (COMPONENTS_CCR_CONAN_INCLUDED)
+    return()
+endif()
+set(COMPONENTS_CCR_CONAN_INCLUDED TRUE)
+
+
+# ----------------------------------------------------------------------------
+# COMPONENTS_CCR_CONAN_IS_CONFIGURED(<out_var>)
+#
+# Detects whether Conan has already been configured during this configure run
+# (by a previous COMPONENTS_CCR_CONAN_SETUP call, by the CMake-Conan provider,
+# or by Qt Creator's package manager auto-setup).
+# ----------------------------------------------------------------------------
+function(COMPONENTS_CCR_CONAN_IS_CONFIGURED CCR_OUT)
+    set(_configured FALSE)
+
+    # Marker written by COMPONENTS_CCR_CONAN_SETUP itself
+    get_property(_gen GLOBAL PROPERTY COMPONENTS_CCR_CONAN_GENERATORS_FOLDER)
+    if (_gen)
+        set(_configured TRUE)
+    endif()
+
+    # Marker left by the official CMake-Conan / Qt Creator provider
+    if (DEFINED CONAN_GENERATORS_FOLDER AND CONAN_GENERATORS_FOLDER)
+        set(_configured TRUE)
+    endif()
+    if (DEFINED COMPONENTS_CCR_CONAN_GENERATORS_FOLDER AND COMPONENTS_CCR_CONAN_GENERATORS_FOLDER)
+        set(_configured TRUE)
+    endif()
+
+    # A "conan" entry already injected into the find paths
+    foreach(_entry IN LISTS CMAKE_PREFIX_PATH CMAKE_MODULE_PATH)
+        if (_entry MATCHES "[Cc]onan")
+            set(_configured TRUE)
+        endif()
+    endforeach()
+
+    set(${CCR_OUT} ${_configured} PARENT_SCOPE)
+endfunction()
+
+
+# Convenience alias with a friendlier name for consumers.
+function(COMPONENTS_CCR_CONAN_AVAILABLE CCR_OUT)
+    COMPONENTS_CCR_CONAN_IS_CONFIGURED(_configured)
+    set(${CCR_OUT} ${_configured} PARENT_SCOPE)
+endfunction()
+
+
+# ----------------------------------------------------------------------------
+# COMPONENTS_CCR_CONAN_ENSURE_PROFILE(<conan_executable>)
+#
+# Makes sure a default Conan profile exists, detecting it on demand.
+# ----------------------------------------------------------------------------
+function(COMPONENTS_CCR_CONAN_ENSURE_PROFILE CCR_CONAN_CMD)
+    execute_process(
+        COMMAND "${CCR_CONAN_CMD}" profile path default
+        RESULT_VARIABLE _rc
+        OUTPUT_QUIET
+        ERROR_QUIET
+    )
+    if (_rc EQUAL 0)
+        return()
+    endif()
+
+    message(STATUS "[COMPONENTS] Conan: no default profile found, detecting one")
+    execute_process(
+        COMMAND "${CCR_CONAN_CMD}" profile detect
+        RESULT_VARIABLE _rc
+        OUTPUT_VARIABLE _out
+        ERROR_VARIABLE _out
+    )
+    if (NOT _rc EQUAL 0)
+        message(WARNING "[COMPONENTS] Conan: failed to detect the default profile:\n${_out}")
+    endif()
+endfunction()
+
+
+# ----------------------------------------------------------------------------
+# COMPONENTS_CCR_CONAN_SETUP(...)
+#
+# Versatile Conan bootstrap for a Components-based project.
+#
+# One-value arguments:
+#   CONANFILE      path to conanfile.txt / conanfile.py
+#                  (default: <current dir>/conanfile.txt or conanfile.py)
+#   OUTPUT_FOLDER  folder the generators are written into
+#                  (default: <build>/conan)
+#   PROFILE        Conan profile name for host & build (default: built-in
+#                  "default" profile, detected if missing)
+#   BUILD          build policy passed to "conan install"
+#                  (default: "missing")
+#
+# Multi-value arguments:
+#   SETTINGS       extra "-s key=value" settings
+#   OPTIONS        extra "-o pkg/*:opt=value" options
+#   CONF           extra "-c key=value" confs
+#   GENERATORS     extra generators ("-g <name>"); CMakeDeps is expected to be
+#                  declared in the conanfile
+#   ARGS           raw extra arguments forwarded to "conan install"
+#
+# Options:
+#   REQUIRED       fail the configure when Conan cannot be set up
+#   NO_INSTALL     only (re)apply already generated paths, never run install
+#   FORCE          force "conan install" even when the conanfile is unchanged
+# ----------------------------------------------------------------------------
+function(COMPONENTS_CCR_CONAN_SETUP)
+    cmake_parse_arguments(
+        CCR_CONAN
+        "REQUIRED;NO_INSTALL;FORCE"
+        "CONANFILE;OUTPUT_FOLDER;PROFILE;BUILD"
+        "SETTINGS;OPTIONS;CONF;GENERATORS;ARGS"
+        ${ARGN}
+    )
+
+    # --- 1) Already configured (previous call / provider / Qt Creator)? ------
+    COMPONENTS_CCR_CONAN_IS_CONFIGURED(_already)
+    if (_already AND NOT CCR_CONAN_FORCE)
+        get_property(_gen GLOBAL PROPERTY COMPONENTS_CCR_CONAN_GENERATORS_FOLDER)
+        if (NOT _gen AND DEFINED COMPONENTS_CCR_CONAN_GENERATORS_FOLDER)
+            set(_gen "${COMPONENTS_CCR_CONAN_GENERATORS_FOLDER}")
+        endif()
+        if (NOT _gen)
+            # Recover the generators folder from the paths injected externally
+            foreach(_entry IN LISTS CMAKE_PREFIX_PATH CMAKE_MODULE_PATH)
+                if (_entry MATCHES "[Cc]onan")
+                    set(_gen "${_entry}")
+                    break()
+                endif()
+            endforeach()
+        endif()
+        if (_gen)
+            list(PREPEND CMAKE_PREFIX_PATH "${_gen}")
+            list(PREPEND CMAKE_MODULE_PATH "${_gen}")
+            list(REMOVE_DUPLICATES CMAKE_PREFIX_PATH)
+            list(REMOVE_DUPLICATES CMAKE_MODULE_PATH)
+            set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH}" PARENT_SCOPE)
+            set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" PARENT_SCOPE)
+        endif()
+        message(STATUS "[COMPONENTS] Conan: already configured, skipping install")
+        return()
+    endif()
+
+    # --- 2) Under Qt Creator, its auto-setup runs before us. Do not duplicate.
+    if (DEFINED QTCREATOR_CMAKE_HELPER_DIRECTORY
+            AND DEFINED QT_CREATOR_CONAN_BUILD_POLICY
+            AND NOT QT_CREATOR_SKIP_CONAN_SETUP)
+        message(STATUS "[COMPONENTS] Conan: handled by Qt Creator, skipping install")
+        return()
+    endif()
+
+    # --- 3) Locate the conanfile --------------------------------------------
+    set(_conanfile "${CCR_CONAN_CONANFILE}")
+    if (NOT _conanfile)
+        foreach(_candidate conanfile.txt conanfile.py)
+            if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${_candidate}")
+                set(_conanfile "${CMAKE_CURRENT_SOURCE_DIR}/${_candidate}")
+                break()
+            endif()
+        endforeach()
+    endif()
+
+    if (NOT _conanfile OR NOT EXISTS "${_conanfile}")
+        if (CCR_CONAN_REQUIRED)
+            message(FATAL_ERROR "[COMPONENTS] Conan: conanfile not found ('${_conanfile}')")
+        endif()
+        message(STATUS "[COMPONENTS] Conan: no conanfile found, skipping")
+        return()
+    endif()
+
+    # --- 4) Locate the conan executable -------------------------------------
+    if (NOT COMPONENTS_CCR_CONAN_EXECUTABLE)
+        find_program(COMPONENTS_CCR_CONAN_EXECUTABLE NAMES conan)
+    endif()
+    if (NOT COMPONENTS_CCR_CONAN_EXECUTABLE)
+        if (CCR_CONAN_REQUIRED)
+            message(FATAL_ERROR "[COMPONENTS] Conan: executable not found in PATH")
+        endif()
+        message(STATUS "[COMPONENTS] Conan: executable not found, skipping (external setup required)")
+        return()
+    endif()
+
+    if (CCR_CONAN_NO_INSTALL)
+        message(STATUS "[COMPONENTS] Conan: NO_INSTALL requested, skipping 'conan install'")
+        return()
+    endif()
+
+    set(_cmd "${COMPONENTS_CCR_CONAN_EXECUTABLE}")
+
+    # --- 5) Output folder ----------------------------------------------------
+    set(_of "${CCR_CONAN_OUTPUT_FOLDER}")
+    if (NOT _of)
+        set(_of "${CMAKE_BINARY_DIR}/conan")
+    endif()
+    file(MAKE_DIRECTORY "${_of}")
+
+    # --- 6) Reuse the previous run when the conanfile did not change --------
+    set(_stampfile "${_of}/.conanfile.stamp")
+    set(_genfile "${_of}/.conan_generators_folder")
+    file(TIMESTAMP "${_conanfile}" _conanfile_stamp)
+
+    set(_skip_install FALSE)
+    if (EXISTS "${_stampfile}" AND EXISTS "${_genfile}" AND NOT CCR_CONAN_FORCE)
+        file(READ "${_stampfile}" _old_stamp)
+        if ("${_conanfile_stamp}" STREQUAL "${_old_stamp}")
+            set(_skip_install TRUE)
+        endif()
+    endif()
+
+    if (_skip_install)
+        file(READ "${_genfile}" _gen)
+        string(STRIP "${_gen}" _gen)
+        message(STATUS "[COMPONENTS] Conan: conanfile unchanged, reusing '${_gen}'")
+    else()
+        # --- 7) Ensure a usable profile -------------------------------------
+        COMPONENTS_CCR_CONAN_ENSURE_PROFILE("${_cmd}")
+
+        # --- 8) Assemble "conan install" arguments --------------------------
+        set(_args install "${_conanfile}" "-of=${_of}" "--format=json")
+
+        if (CCR_CONAN_PROFILE)
+            list(APPEND _args "-pr:h=${CCR_CONAN_PROFILE}" "-pr:b=${CCR_CONAN_PROFILE}")
+        endif()
+        if (CCR_CONAN_BUILD)
+            list(APPEND _args "--build=${CCR_CONAN_BUILD}")
+        else()
+            list(APPEND _args "--build=missing")
+        endif()
+        if (CMAKE_BUILD_TYPE)
+            list(APPEND _args "-s" "build_type=${CMAKE_BUILD_TYPE}")
+        endif()
+        foreach(_g IN LISTS CCR_CONAN_GENERATORS)
+            list(APPEND _args "-g" "${_g}")
+        endforeach()
+        foreach(_s IN LISTS CCR_CONAN_SETTINGS)
+            list(APPEND _args "-s" "${_s}")
+        endforeach()
+        foreach(_o IN LISTS CCR_CONAN_OPTIONS)
+            list(APPEND _args "-o" "${_o}")
+        endforeach()
+        foreach(_c IN LISTS CCR_CONAN_CONF)
+            list(APPEND _args "-c" "${_c}")
+        endforeach()
+        list(APPEND _args ${CCR_CONAN_ARGS})
+
+        message(STATUS "[COMPONENTS] Conan: running '${_cmd} ${_args}'")
+        execute_process(
+            COMMAND ${_cmd} ${_args}
+            WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+            RESULT_VARIABLE _rc
+            OUTPUT_VARIABLE _out
+            ERROR_VARIABLE _err
+        )
+        if (NOT _rc EQUAL 0)
+            message(STATUS "[COMPONENTS] Conan output:\n${_err}")
+            if (CCR_CONAN_REQUIRED)
+                message(FATAL_ERROR "[COMPONENTS] Conan: 'conan install' failed (${_rc})")
+            endif()
+            message(WARNING "[COMPONENTS] Conan: 'conan install' failed (${_rc})")
+            return()
+        endif()
+
+        # --- 9) Extract the generators folder from the JSON output ----------
+        set(_gen "")
+        if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.19")
+            string(JSON _gen ERROR_VARIABLE _json_err
+                   GET "${_out}" graph nodes 0 generators_folder)
+            if (_json_err)
+                set(_gen "")
+            endif()
+        endif()
+        if (NOT _gen OR NOT EXISTS "${_gen}")
+            set(_gen "${_of}")
+        endif()
+
+        file(WRITE "${_stampfile}" "${_conanfile_stamp}")
+        file(WRITE "${_genfile}" "${_gen}")
+    endif()
+
+    # --- 10) Publish the generators folder ----------------------------------
+    set_property(GLOBAL PROPERTY COMPONENTS_CCR_CONAN_GENERATORS_FOLDER "${_gen}")
+    set(COMPONENTS_CCR_CONAN_GENERATORS_FOLDER "${_gen}"
+        CACHE PATH "Conan generators folder" FORCE)
+
+    list(PREPEND CMAKE_PREFIX_PATH "${_gen}")
+    list(PREPEND CMAKE_MODULE_PATH "${_gen}")
+    list(REMOVE_DUPLICATES CMAKE_PREFIX_PATH)
+    list(REMOVE_DUPLICATES CMAKE_MODULE_PATH)
+    set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH}" PARENT_SCOPE)
+    set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" PARENT_SCOPE)
+
+    message(STATUS "[COMPONENTS] Conan: dependencies ready (generators: ${_gen})")
+endfunction()
+
+
+# ----------------------------------------------------------------------------
+# COMPONENTS_CCR_CONAN_FIND_LIBRARY(<alias> [components...])
+#
+# Simplified find_package() wrapper for Conan-managed dependencies, mirroring
+# COMPONENTS_CCR_FIND_LIBRARY. Two conveniences are provided:
+#
+#   * When Conan is active, "boost_<component>" aliases are resolved against the
+#     Conan "boost" package (Boost::<component>), while legacy raw link names
+#     ("boost_system", "boost_thread", ...) keep working through an INTERFACE
+#     bridge target.
+#   * Otherwise it falls back to an ordinary find_package(<alias>), which keeps
+#     system/Debian style packages (e.g. boost_system-config.cmake) working.
+# ----------------------------------------------------------------------------
+function(COMPONENTS_CCR_CONAN_FIND_LIBRARY CCR_ALIAS)
+    COMPONENTS_CCR_CONAN_IS_CONFIGURED(_conan_on)
+
+    if (_conan_on AND CCR_ALIAS MATCHES "^boost_(.+)$")
+        set(_components ${CMAKE_MATCH_1} ${ARGN})
+        find_package(Boost QUIET COMPONENTS ${_components})
+        if (Boost_FOUND)
+            foreach(_component IN LISTS _components)
+                if (TARGET Boost::${_component} AND NOT TARGET boost_${_component})
+                    add_library(boost_${_component} INTERFACE)
+                    target_link_libraries(boost_${_component} INTERFACE Boost::${_component})
+                endif()
+            endforeach()
+            message(STATUS "[COMPONENTS] Conan: ${CCR_ALIAS} -> Boost components: ${_components}")
+            return()
+        endif()
+    endif()
+
+    if (ARGN)
+        find_package(${CCR_ALIAS} ${ARGN})
+    else()
+        find_package(${CCR_ALIAS})
+    endif()
+
+    if (${CCR_ALIAS}_FOUND)
+        message(STATUS "[COMPONENTS] Found ${CCR_ALIAS} components: ${ARGN}")
+    else()
+        message(WARNING "[COMPONENTS] Library ${CCR_ALIAS} not found")
+    endif()
+endfunction()
+
+
+# ----------------------------------------------------------------------------
+# COMPONENTS_CCR_CONAN_REQUIRE(<package> [components...])
+#
+# Alias of COMPONENTS_CCR_CONAN_FIND_LIBRARY for readability.
+# ----------------------------------------------------------------------------
+function(COMPONENTS_CCR_CONAN_REQUIRE CCR_PACKAGE)
+    COMPONENTS_CCR_CONAN_FIND_LIBRARY(${CCR_PACKAGE} ${ARGN})
+endfunction()
+
+
+# ----------------------------------------------------------------------------
+# COMPONENTS_CCR_CONAN_LINK(<target> <libraries...>)
+#
+# Sugar for linking Conan targets into a target.
+# ----------------------------------------------------------------------------
+function(COMPONENTS_CCR_CONAN_LINK CCR_TARGET)
+    target_link_libraries(${CCR_TARGET} PRIVATE ${ARGN})
+    message(STATUS "[COMPONENTS] Conan-linked ${CCR_TARGET}: ${ARGN}")
+endfunction()

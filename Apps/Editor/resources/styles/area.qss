@@ -1,0 +1,230 @@
+/* ========================= */
+/* ========================= */
+/* ======== Combo box ====== */
+/* ========================= */
+/* ========================= */
+QComboBox {
+    background-color: #151515;
+    color: #d0d0d0;
+    border: 1px solid #1f4f4d;
+    border-radius: 4px;
+    padding: 3px 5px;
+    min-height: 16px;
+    selection-background-color: #1f4f4d;
+    selection-color: #e0e0e0;
+}
+
+QComboBox:hover {
+    border-color: #30605e;
+}
+
+QComboBox:focus {
+    border: 1px solid #30605e;
+}
+
+QComboBox:disabled {
+    background-color: #0b0b0b;
+    color: #6a6a6a;
+    border-color: #3a3a3a;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 18px;
+    border-left: 1px solid #1f4f4d;
+    background: transparent;
+}
+
+QComboBox::drop-down:hover {
+    background-color: #2d2d2d;
+    border-left-color: #30605e;
+}
+
+QComboBox QAbstractItemView {
+    background-color: #151515;
+    alternate-background-color: #191919;
+    color: #c0c0c0;
+    border: 2px solid #1f4f4d;
+    border-radius: 4px;
+    outline: 0;
+    selection-background-color: #ddf0a8;
+    selection-color: #e0e0e0;
+}
+
+QComboBox QAbstractItemView::item {
+    padding: 3px 6px;
+}
+
+QComboBox QAbstractItemView::item:hover {
+    background-color: #2d2d2d;
+}
+
+QComboBox QAbstractItemView::item:selected {
+    background-color: #0f1f1d;
+    color: #e0e0e0;
+}
+
+
+/* ========================= */
+/* ========================= */
+/* ======= Tab widget ====== */
+/* ========================= */
+/* ========================= */
+QTabWidget::pane {
+    border: 1px solid #1f4f4d;
+    border-radius: 0 0 4px 4px;
+    background-color: #1a1a1a;
+    padding: 5px;
+}
+
+QTabBar {
+    background-color: #1f1f1f;
+    border-bottom: 1px solid #1f4f4d;
+    spacing: 2px;
+}
+
+QTabBar::close-button {
+    background: transparent;
+    subcontrol-position: right;
+    margin: 3px;
+}
+
+QTabBar::close-button:hover {
+    background-color: #30605e;
+    border-radius: 3px;
+}
+
+QTabBar::tab {
+    background-color: #2d2d2d;
+    color: #d0d0d0;
+    padding: 4px 7px 3px 7px;
+    border: 1px solid #1f4f4d;
+    border-bottom: none;
+    min-width: 80px;
+}
+
+QTabBar::tab:first {
+    border-radius: 0px;
+    border-top-left-radius: 15px;
+    border-right: none;
+
+    padding-left: 7px;
+    padding-right: 6px;
+}
+
+QTabBar::tab:middle {
+    border-radius: 0px;
+    border-left: none;
+    border-right: none;
+
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+QTabBar::tab:only-one {
+    border-radius: 0px;
+    border-left: none;
+    border-right: none;
+
+    padding-left: 6px;
+    padding-right: 6px;
+
+    border-top-right-radius: 15px;
+    border-top-left-radius: 15px;
+}
+
+QTabBar::tab:last {
+    border-radius: 0px;
+    border-top-right-radius: 15px;
+    border-left: none;
+
+    padding-left: 6px;
+    padding-right: 7px;
+}
+
+QTabBar::tab:disabled {
+    background-color: #2d2d2d;
+    color: #6a6a6a;
+    border-color: #3a3a3a;
+}
+
+QTabBar::tab:hover {
+    background-color: #216862;
+    border-color: #30605e;
+    color: #bbb;
+}
+
+QTabBar::tab:selected:hover {
+    background-color: #326861;
+    border-color: #30605e;
+}
+
+QTabBar::tab:selected {
+    background-color: #20433e;
+    color: #e0e0e0;
+    border: 1px solid;
+    border-bottom: none;
+    border-color: #1f4f4d;
+    border-bottom-color: #1a1a1a;
+}
+
+
+/* ========================= */
+/* ========================= */
+/* ======= Tool boxes ====== */
+/* ========================= */
+/* ========================= */
+QToolBox {
+    background-color: #1f1f1f;
+    border-bottom: 1px solid #1f4f4d;
+    spacing: 2px;
+}
+
+QToolBox::close-button {
+    background: transparent;
+    subcontrol-position: right;
+    margin: 3px;
+}
+
+QToolBox::close-button:hover {
+    background-color: #30605e;
+    border-radius: 3px;
+}
+
+QToolBox::tab {
+    background-color: #2d2d2d;
+    color: #d0d0d0;
+    margin-top: 4px;
+    padding-bottom: 3px;
+    padding-top: 4px;
+    border: 1px solid #1f4f4d;
+    border-bottom: none;
+    min-width: 80px;
+}
+
+QToolBox::tab:disabled {
+    background-color: #2d2d2d;
+    color: #6a6a6a;
+    border-color: #3a3a3a;
+}
+
+QToolBox::tab:hover {
+    background-color: #2d2d2d;
+    border-color: #30605e;
+    color: #bbb;
+}
+
+QToolBox::tab:selected:hover {
+    background-color: #1c1c1c;
+    border-color: #30605e;
+}
+
+QToolBox::tab:selected {
+    background-color: #0f1f1d;
+    color: #e0e0e0;
+    border: 1px solid;
+    border-bottom: none;
+    border-color: #1f4f4d;
+    border-bottom-color: #1a1a1a;
+}

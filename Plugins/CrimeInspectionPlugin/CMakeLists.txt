@@ -1,3 +1,0 @@
-CONFIGURE_PLUGIN(CrimeInspectionPlugin)
-
-LINK_TARGET_LIBRARY(CrimeInspectionPlugin GraphObject)

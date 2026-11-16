@@ -1,0 +1,160 @@
+# ====================================== #
+# Components core functions, used to configure all others
+#
+# ========== EXAMPLE OF USAGE: =========
+#
+# Just copy this into another Component and write your values
+#
+# COMPONENTS_CONFIGURE_COMPONENT_V2(Common
+#    "1.0.0"
+#    Qt5::Core
+#    Qt5::Gui
+#    Qt5::Widgets
+# )
+#
+# COMPONENTS_LINK_COMPONENT(Common Logger)
+#
+# ====================================== #
+
+# Options
+option(COMPONENTS_IS_ENABLED_QT "Allows using Qt" OFF)
+option(COMPONENTS_BUILD_STATIC "Allows building Components as static libraries" ON)
+option(COMPONENTS_ENABLE_TESTS "Allows building tests for components" OFF)
+
+# Root directory of a components
+get_property(COMPONENTS_COMPONENT_ROOT_DIR GLOBAL PROPERTY COMPONENTS_COMPONENT_ROOT_DIR)
+if (NOT COMPONENTS_COMPONENT_ROOT_DIR)
+    set_property(GLOBAL PROPERTY COMPONENTS_COMPONENT_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
+    get_property(COMPONENTS_COMPONENT_ROOT_DIR GLOBAL PROPERTY COMPONENTS_COMPONENT_ROOT_DIR)
+else()
+    message(STATUS "[COMPONENTS] Components root dir set as: " ${COMPONENTS_COMPONENT_ROOT_DIR})
+endif()
+
+# Installation path of a directory
+get_property(COMPONENTS_INSTALL_PATH GLOBAL PROPERTY COMPONENTS_INSTALL_PATH)
+if (NOT COMPONENTS_INSTALL_PATH)
+    set_property(GLOBAL PROPERTY COMPONENTS_INSTALL_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../BIN)
+    get_property(COMPONENTS_INSTALL_PATH GLOBAL PROPERTY COMPONENTS_INSTALL_PATH)
+else()
+    message(STATUS "[COMPONENTS] Components install prefix set as: " ${COMPONENTS_INSTALL_PATH})
+endif()
+
+
+# Component add common function
+# ARGUMENTS:
+# COMPONENT_NAME    --> Name of linking component
+# ARGN              --> Required component (Logger, Filework, etc.)
+function(COMPONENTS_LINK_COMPONENT TARGET_NAME COMPONENT_NAME)
+    get_property(COMPONENTS_COMPONENT_ROOT_DIR GLOBAL PROPERTY COMPONENTS_COMPONENT_ROOT_DIR)
+    set(LIBRARY_INCLUDE_DIR ${COMPONENTS_COMPONENT_ROOT_DIR}/Components-${COMPONENT_NAME}/include)
+    if( NOT EXISTS ${COMPONENTS_COMPONENT_ROOT_DIR}/Components-${COMPONENT_NAME}
+        OR NOT EXISTS ${LIBRARY_INCLUDE_DIR})
+        message(FATAL_ERROR "[COMPONENTS] Error searching for: ${COMPONENT_NAME} or includes (not exist). Search directory: ${COMPONENTS_COMPONENT_ROOT_DIR}")
+    endif()
+
+    COMPONENTS_CCR_LINK_LIBRARY(
+        ${TARGET_NAME}
+        Components-${COMPONENT_NAME}
+        ${COMPONENTS_COMPONENT_ROOT_DIR}/Components-${COMPONENT_NAME}
+    )
+    if (COMPONENTS_IS_ENABLED_QT)
+        target_compile_definitions(${TARGET_NAME} PRIVATE -DCOMPONENTS_IS_ENABLED_QT)
+    endif()
+
+    message(STATUS "[COMPONENTS] Linking target " ${TARGET_NAME} " : added component " ${COMPONENT_NAME})
+endfunction()
+
+
+# Component configuration function
+# COMPONENT_NAME        --> Name of a component
+# COMPONENT_VERSION     --> Version string of a component
+# ARGN                  --> Libraries, component require to work
+function(COMPONENTS_CONFIGURE_COMPONENT COMPONENT_NAME COMPONENT_VERSION)
+    get_property(COMPONENTS_COMPONENT_ROOT_DIR GLOBAL PROPERTY COMPONENTS_COMPONENT_ROOT_DIR)
+
+    # Android packages require project libraries to be statically linked into
+    # the application shared library. Use the Android-aware wrapper there.
+    COMPONENTS_CCR_IS_ANDROID(CCR_IS_ANDROID_BUILD)
+    if (CCR_IS_ANDROID_BUILD)
+        set(CCR_COMPONENT_IS_STATIC TRUE)
+        COMPONENTS_CCR_CONFIGURE_ANDROID_LIB(
+            ${CCR_COMPONENT_IS_STATIC}
+            Components-${COMPONENT_NAME}
+            ${COMPONENTS_COMPONENT_ROOT_DIR}/Components-${COMPONENT_NAME}
+            ${ARGN}
+        )
+    else()
+        set(CCR_COMPONENT_IS_STATIC ${COMPONENTS_BUILD_STATIC})
+        COMPONENTS_CCR_CONFIGURE_LIBRARY(
+            ${CCR_COMPONENT_IS_STATIC}
+            Components-${COMPONENT_NAME}
+            ${COMPONENTS_COMPONENT_ROOT_DIR}/Components-${COMPONENT_NAME}
+            ${ARGN}
+        )
+    endif()
+
+    if (COMPONENTS_IS_ENABLED_QT)
+        target_compile_definitions(Components-${COMPONENT_NAME} PRIVATE -DCOMPONENTS_IS_ENABLED_QT)
+    endif()
+    COMPONENTS_CCR_SET_LIBRARY_VERSION(Components-${COMPONENT_NAME} ${COMPONENT_VERSION} ${CCR_COMPONENT_IS_STATIC})
+endfunction()
+
+
+# Components test adding function
+# COMPONENT_NAME    --> Target of a component
+# ARGN              --> Sources of a component
+function(COMPONENTS_ADD_COMPONENT_TEST COMPONENT_NAME)
+    if (NOT ${COMPONENTS_ENABLE_TESTS})
+        return()
+    endif()
+
+    if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/tests" OR NOT TARGET GTest::gtest)
+        message(WARNING "[COMPONENTS] Failed to add tests for component: ${COMPONENT_NAME}")
+        return()
+    endif()
+
+    file(GLOB TESTING_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cpp")
+    COMPONENTS_CCR_ADD_TEST(Components-${COMPONENT_NAME} ${TESTING_SOURCES})
+
+    # Workaround with function (crutch?)
+    set(COMPONENT_TEST_TARGET TEST_Components-${COMPONENT_NAME})
+    target_link_libraries(${COMPONENT_TEST_TARGET} PRIVATE Components-${COMPONENT_NAME})
+
+    get_target_property(COMPONENT_MODULE_INCLUDES Components-${COMPONENT_NAME} INCLUDE_DIRECTORIES)
+    target_include_directories(${COMPONENT_TEST_TARGET} PUBLIC ${COMPONENT_MODULE_INCLUDES})
+
+    # Header fixing
+    if (COMPONENTS_IS_ENABLED_QT)
+        target_compile_definitions(${COMPONENT_TEST_TARGET} PRIVATE -DCOMPONENTS_IS_ENABLED_QT)
+    endif()
+endfunction()
+
+
+# Components benchmark adding function
+# COMPONENT_NAME    --> Target of a component
+# ARGN              --> Sources of a component
+function(COMPONENTS_ADD_BENCHMARK COMPONENT_NAME)
+    if (NOT ${COMPONENTS_ENABLE_TESTS})
+        return()
+    endif()
+
+    if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/benchmarks" OR NOT TARGET benchmark::benchmark_main)
+        message(WARNING "[COMPONENTS] Failed to add benchmark for component: ${COMPONENT_NAME}")
+        return()
+    endif()
+
+    file(GLOB TESTING_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/*.cpp")
+    COMPONENTS_CCR_ADD_BENCHMARK(Components-${COMPONENT_NAME} ${TESTING_SOURCES})
+
+    # Workaround with function (crutch?)
+    set(COMPONENT_TEST_TARGET TEST_BENCHMARK_Components-${COMPONENT_NAME})
+    target_link_libraries(${COMPONENT_TEST_TARGET} PRIVATE Components-${COMPONENT_NAME})
+
+    get_target_property(COMPONENT_MODULE_INCLUDES Components-${COMPONENT_NAME} INCLUDE_DIRECTORIES)
+    target_include_directories(${COMPONENT_TEST_TARGET} PUBLIC ${COMPONENT_MODULE_INCLUDES})
+
+    # Header fixing
+    if (COMPONENTS_IS_ENABLED_QT)
+        target_compile_definitions(${COMPONENT_TEST_TARGET} PRIVATE -DCOMPONENTS_IS_ENABLED_QT)
+    endif()
+endfunction()

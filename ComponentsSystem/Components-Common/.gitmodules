@@ -1,0 +1,3 @@
+[submodule "depends/Components-Logger"]
+	path = depends/Components-Logger
+	url = git@github.com:VinTRiZz/Components-Logger.git

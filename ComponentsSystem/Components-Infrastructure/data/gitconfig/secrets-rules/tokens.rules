@@ -1,0 +1,136 @@
+# Check-secrets rules: tokens and keys.
+#
+# [rule-id]
+# type = regex | literal | entropy
+# pattern = regular expression (regex) or literal text (literal)
+# flags = i, m, s, x, a (optional)
+# description = human-readable text
+# scope = staged | message | both (default: both)
+# paths = regex that a repository path must match (optional)
+# exclude_paths = regex that a repository path must not match (optional)
+# enabled = true | false (default: true)
+#
+# A regex may define a named group (?P<value>...) to report and allowlist
+# only the secret value instead of the whole match.
+
+[github-token]
+type = regex
+pattern = \b(?:gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{50,})\b
+description = GitHub personal access token
+
+[gitlab-token]
+type = regex
+pattern = \bglpat-[A-Za-z0-9_-]{20,}\b
+description = GitLab personal access token
+
+[aws-access-key-id]
+type = regex
+pattern = \b(?:AKIA|ASIA|AIDA|AROA|AIPA|ANPA|ANVA|ASCA)[0-9A-Z]{16}\b
+description = AWS access key ID
+
+[aws-secret-access-key]
+type = regex
+pattern = (?i)(?:^|[^\w.-])["']?aws_secret_access_key["']?\s*[:=]\s*["']?(?P<value>[A-Za-z0-9/+=]{40})["']?
+description = AWS secret access key
+
+[slack-token]
+type = regex
+pattern = \bxox[baprs]-[A-Za-z0-9-]{10,}\b
+description = Slack token
+
+[stripe-key]
+type = regex
+pattern = \b(?:sk|rk)_(?:live|test)_[A-Za-z0-9]{16,}\b
+description = Stripe secret or restricted key
+
+[google-api-key]
+type = regex
+pattern = \bAIza[0-9A-Za-z_-]{35}\b
+description = Google API key
+
+[openai-anthropic-key]
+type = regex
+pattern = \bsk-(?:proj-|ant-)?[A-Za-z0-9_-]{20,}\b
+description = OpenAI or Anthropic API key
+
+[npm-token]
+type = regex
+pattern = \bnpm_[A-Za-z0-9]{36}\b
+description = npm access token
+
+[telegram-bot-token]
+type = regex
+pattern = \b\d{8,10}:[A-Za-z0-9_-]{35}\b
+description = Telegram bot token
+
+[sendgrid-key]
+type = regex
+pattern = \bSG\.[A-Za-z0-9_-]{22}\.[A-Za-z0-9_-]{43}\b
+description = SendGrid API key
+
+[jwt]
+type = regex
+pattern = \beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b
+description = JSON Web Token
+
+[bearer-token]
+type = regex
+pattern = (?i)(?:^|[^\w.-])["']?authorization["']?\s*[:=]\s*["']?bearer\s+(?P<value>[A-Za-z0-9._~+/-]{8,}=*)["']?
+description = Bearer token in an authorization header
+
+[private-key-block]
+type = regex
+pattern = -----BEGIN (?:[A-Z0-9]+ )?(?:PRIVATE KEY|PGP PRIVATE KEY BLOCK)-----
+description = Private key block
+
+[discord-bot-token]
+type = regex
+pattern = \b(?:mfa\.[A-Za-z0-9_-]{80,}|[A-Za-z0-9_-]{24,26}\.[A-Za-z0-9_-]{6}\.[A-Za-z0-9_-]{27,38})\b
+description = Discord bot token
+
+[mailgun-key]
+type = regex
+pattern = \bkey-[0-9a-zA-Z]{32}\b
+description = Mailgun API key
+
+[huggingface-token]
+type = regex
+pattern = \bhf_[A-Za-z0-9]{30,}\b
+description = Hugging Face access token
+
+[digitalocean-token]
+type = regex
+pattern = \bdop_v1_[a-f0-9]{64}\b
+description = DigitalOcean personal access token
+
+[supabase-token]
+type = regex
+pattern = \bsbp_[A-Za-z0-9]{40,}\b
+description = Supabase access token
+
+[twilio-api-key]
+type = regex
+pattern = \bSK[0-9a-fA-F]{32}\b
+description = Twilio API key
+
+[shopify-token]
+type = regex
+pattern = \b(?:shpat|shpca|shppa)_[0-9a-fA-F]{32}\b
+description = Shopify access token
+
+[generic-token-assignment]
+type = regex
+pattern = (?i)(?:^|[^\w.-])["']?(?:(?:[A-Za-z0-9]+[_-])?(?:api[_-]?key|apikey|access[_-]?key|secret[_-]?key|private[_-]?key|token|secret|bearer)|(?-i:(?:[a-z][A-Za-z0-9]*)?(?:Token|Secret|Bearer)|apiKey|accessKey|secretKey|privateKey))["']?\s*[:=]\s*(?P<value>"(?:\\.|[^"\\]){8,}"|'(?:\\.|[^'\\]){8,}'|[^\s#;,]{8,})
+description = Token-like value assigned to a secret-named field
+
+# Entropy detection also catches tokens without a recognizable prefix, but it
+# can flag hashes, certificates and base64-encoded text. It is disabled by
+# default; enable it and tune min_length/threshold for the repository.
+[high-entropy-token]
+type = entropy
+enabled = false
+min_length = 32
+threshold = 4.5
+description = High-entropy token-like string
+scope = staged
+exclude_paths = (?i)(?:^|/)(?:package-lock\.json|yarn\.lock|pnpm-lock\.yaml|Cargo\.lock|poetry\.lock|composer\.lock|go\.sum|[^/]+\.min\.(?:js|css)|[^/]+\.map)$

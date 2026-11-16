@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+# commit-msg hook: run format, forbidden-word, and secret checks before a commit.
+set -u -o pipefail
+
+if ! declare -F f_LOG_info >/dev/null 2>&1; then
+  f_LOG_info() { printf '%s\n' "$*"; }
+fi
+if ! declare -F f_LOG_warn >/dev/null 2>&1; then
+  f_LOG_warn() { printf '%s\n' "$*" >&2; }
+fi
+if ! declare -F f_LOG_error >/dev/null 2>&1; then
+  f_LOG_error() { printf '%s\n' "$*" >&2; }
+fi
+export -f f_LOG_info f_LOG_warn f_LOG_error
+
+LOCAL_scriptPath="$(realpath -- "${BASH_SOURCE[0]}")"
+LOCAL_scriptBasedir="$(dirname -- "$LOCAL_scriptPath")"
+LOCAL_messageFile="${1:-}"
+
+if [[ -z "$LOCAL_messageFile" || ! -f "$LOCAL_messageFile" || ! -r "$LOCAL_messageFile" ]]; then
+  f_LOG_error "commit-msg: commit message file is missing or unreadable: ${LOCAL_messageFile:-<none>}"
+  exit 2
+fi
+
+LOCAL_formatChecker="${LOCAL_scriptBasedir}/check-commit-format.sh"
+LOCAL_debugChecker="${LOCAL_scriptBasedir}/check-debug-words.sh"
+LOCAL_secretsChecker="${LOCAL_scriptBasedir}/check-secrets.sh"
+LOCAL_versionUpdater="${LOCAL_scriptBasedir}/update-cmake-version.sh"
+
+for LOCAL_checker in "$LOCAL_formatChecker" "$LOCAL_debugChecker" "$LOCAL_secretsChecker" "$LOCAL_versionUpdater"; do
+  if [[ ! -f "$LOCAL_checker" ]]; then
+    f_LOG_error "commit-msg: checker not found: $LOCAL_checker"
+    exit 2
+  fi
+done
+
+LOCAL_status=0
+
+if ! bash -- "$LOCAL_formatChecker" "$LOCAL_messageFile"; then
+  LOCAL_status=1
+fi
+
+if ! bash -- "$LOCAL_debugChecker" "$LOCAL_messageFile"; then
+  LOCAL_status=1
+fi
+
+if ! bash -- "$LOCAL_secretsChecker" "$LOCAL_messageFile"; then
+  LOCAL_status=1
+fi
+
+# This version update MUST be the last check: it stages CMakeLists.txt updates
+# and intentionally aborts the first attempt so the retry commits them.
+if (( LOCAL_status == 0 )); then
+  if ! bash -- "$LOCAL_versionUpdater" "$LOCAL_messageFile"; then
+    LOCAL_status=1
+  fi
+fi
+
+if (( LOCAL_status != 0 )); then
+  f_LOG_error "commit-msg: commit blocked by hook checks."
+  exit 1
+fi
+
+f_LOG_info "commit-msg: all checks passed."
+exit 0

@@ -1,0 +1,19 @@
+# Forbidden words and phrases for check-debug-words.sh.
+# One entry per line; an entry can contain up to 3 words.
+# Matching is case-insensitive; phrases match across any whitespace.
+# Lines starting with # are comments.
+
+COMPLOG_DEBUG
+COMPLOG_SYNC_DEBUG
+TODO
+FIXME
+HACK
+XXX
+TEMP COMMIT
+WIP
+
+hren
+hui
+aboba
+shit
+her

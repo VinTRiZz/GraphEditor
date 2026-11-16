@@ -1,3 +1,0 @@
-CONFIGURE_PLUGIN(CommonPlugin)
-
-LINK_TARGET_LIBRARY(CommonPlugin GraphObject)

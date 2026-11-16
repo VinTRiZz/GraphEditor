@@ -1,0 +1,12 @@
+- Local script variables: LOCAL_name, for example "LOCAL_migrationScript", "LOCAL_scriptDir"
+- Generate scripts, assuming that it can be called from other than script's dir. You must add variable "LOCAL_scriptBasedir" with realpath to script's directory and make all paths relative to $PWD or $LOCAL_scriptBasedir.
+- Do NOT write scripts referring to "sh" command. Assume that Bash WILL be on target machine
+- Make as laconic script as possible, but do NOT break logic from task.
+- All comments add in English (US), add less comments and ONLY in difficult places.
+- Name subscripts, required by desired one, with it's name or place into dir "<base script name without sh>_impl/" directory.
+- All subscripts must be as simple as possible, atomic and independent of rules from their user.
+- You can reuse scripts from directories you found, but you MUST ask user if you can use relative path to them or not.
+- All logging of a scripts must be using functions like f_LOG_error, f_LOG_info, etc., declared in main script file (or user of your task script).
+- If you develop script, that will be used from other one, than use variables it exports instead of creating your ones, if it's available. Otherwise you can ask user to add some extra variables, if they depend on caller's logic.
+- Add script tests, if possible, that will check their logic. Do NOT add tests, that depend on root permissions. Do NOT change tests so they will work, if there's mistake or logic error inside scripts. If test doesn't work, fix issues inside script and ONLY if script's absolutely correct, than fix test logic. There MUST be test for executing with other environment (change variables that can affect script logic, but do not change binary search paths).
+- Task is completed ONLY when developed script works just as expected, all tests are passed, there's no secrets inside test, script does not add commit into git and it does not do anything harmful to user's computer.

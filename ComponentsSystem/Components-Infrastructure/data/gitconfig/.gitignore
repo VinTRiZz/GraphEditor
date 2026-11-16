@@ -1,0 +1,63 @@
+# Build output directories
+BUILD/
+build/
+BIN/
+bin/
+out/
+cmake-build-*/
+
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CTestTestfile.cmake
+install_manifest.txt
+build.ninja
+.ninja_deps
+.ninja_log
+compile_commands.json
+CMakeUserPresets.json
+
+# qmake and Qt Creator artifacts
+.qmake.stash
+Makefile
+*.user
+.qtc_clangd/
+*.autosave
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Log files
+logs/
+*.log
+
+# Compiled binaries and libraries
+*.o
+*.obj
+*.a
+*.so
+*.so.*
+*.dylib
+*.dll
+*.exe
+*.bin
+*.DEBUG
+*.RELEASE
+
+# Editor and OS metadata
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Generated launcher created by setup-repo.sh
+/main.sh

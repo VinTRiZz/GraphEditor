@@ -1,0 +1,19 @@
+# Check-secrets rules: usernames and logins.
+#
+# These rules are intentionally limited to staged content: commit messages
+# often contain words such as "login" in ordinary prose.
+#
+# See tokens.rules for the rule-file format.
+
+[username-assignment]
+type = regex
+pattern = (?i)(?:^|[^\w.-])["']?(?:(?:[A-Za-z0-9]+[_-])?(?:username|user_name|user_login|login|userid|user_id|account_name|user)|(?-i:(?:[a-z][A-Za-z0-9]*)?(?:UserName|UserLogin|UserId|UserID)|userName|userID|userId|dbUser|smtpUser|ftpUser|dbUsername|smtpUsername|ftpUsername))["']?\s*[:=]\s*(?P<value>"(?:\\.|[^"\\]){3,64}"|'(?:\\.|[^'\\]){3,64}'|[^\s#;,]{3,64})
+description = Username or login value
+scope = staged
+
+[ssh-user-at-host]
+type = regex
+enabled = false
+pattern = \b(?:[a-z][a-z0-9._-]{1,31})@(?:[a-z0-9-]+\.)+[a-z]{2,}\b
+description = Username in a user@host address
+scope = staged

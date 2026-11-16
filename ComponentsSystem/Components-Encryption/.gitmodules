@@ -1,0 +1,3 @@
+[submodule "depends/Components-Filework"]
+	path = depends/Components-Filework
+	url = git@github.com:VinTRiZz/Components-Filework.git

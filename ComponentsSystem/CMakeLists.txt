@@ -1,0 +1,15 @@
+set_property(GLOBAL PROPERTY COMPONENTS_COMPONENT_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set_property(GLOBAL PROPERTY COMPONENTS_INSTALL_PATH ${INSTALL_DESTINATION_PREFIX})
+
+set( COMPONENTS_SW_encryption_rsa ON CACHE BOOL "Components-Encryption RSA using" FORCE)
+set( COMPONENTS_SW_qtcustom_secure ON CACHE BOOL "Components-Qt-Custom secure tools using" FORCE)
+set( COMPONENTS_SW_qtcustom_graphicscene ON CACHE BOOL "Components-Qt-Custom graphic scene using" FORCE)
+
+add_subdirectory(Components-CMake)
+add_subdirectory(Components-Logger)
+add_subdirectory(Components-Common)
+add_subdirectory(Components-ExtraClasses)
+add_subdirectory(Components-Filework)
+add_subdirectory(Components-Encryption)
+add_subdirectory(Components-Maths)
+add_subdirectory(Components-Qt-Custom)

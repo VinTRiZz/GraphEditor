@@ -1,0 +1,69 @@
+# Local apps configuration
+
+# ================================================== #
+# Example of expected application structure:
+# MyApp
+#   | --> CMakeLists.txt
+#   | --> resources
+#           | --> my_resources.qrc
+#   | --> src
+#           | --> myclass.hpp
+#           | --> myclass.cpp
+#           | --> myclass.ui
+#           | --> my_c_lib_interface.h
+#           | --> my_c_lib_interface.c
+# ================================================== #
+
+
+# Common app configuration function
+# CCR_APP_NAME      --> Executable binary name (target name)
+# CCR_APP_ROOT_DIR  --> Root directory of an application
+function(COMPONENTS_CCR_CONFIGURE_APP CCR_APP_NAME CCR_APP_ROOT_DIR)
+    # Files
+    file(GLOB_RECURSE RESOURCES "${CCR_APP_ROOT_DIR}/resources/*.qrc")
+    file(GLOB_RECURSE HEADERS "${CCR_APP_ROOT_DIR}/src/*.hpp" "${CCR_APP_ROOT_DIR}/src/*.h")
+    file(GLOB_RECURSE SOURCES "${CCR_APP_ROOT_DIR}/src/*.cpp" "${CCR_APP_ROOT_DIR}/src/*.c")
+    file(GLOB_RECURSE UIFILES "${CCR_APP_ROOT_DIR}/src/*.ui")
+    source_group("Ui Files" FILES ${UIFILES})
+
+    # Library target. Adding sources here just for older CMake versions
+    add_executable(${CCR_APP_NAME}
+        ${HEADERS} ${SOURCES} ${UIFILES} ${RESOURCES}
+    )
+    target_link_libraries(${CCR_APP_NAME} PRIVATE ${ARGN})
+    target_compile_definitions(${CCR_APP_NAME} PRIVATE CCR_APP_TARGET_NAME="${CCR_APP_NAME}")
+
+    # For Qt UI forms
+    target_include_directories(${CCR_APP_NAME} PRIVATE "${CCR_APP_ROOT_DIR}/src")
+
+    # Installation
+    install(TARGETS ${CCR_APP_NAME}
+        RUNTIME     DESTINATION ${INSTALL_DESTINATION_PREFIX}
+        LIBRARY     DESTINATION ${INSTALL_DESTINATION_PREFIX}/lib
+        ARCHIVE     DESTINATION ${INSTALL_DESTINATION_PREFIX}/lib/static
+        INCLUDES    DESTINATION ${INSTALL_DESTINATION_PREFIX}/include
+    )
+
+    # Build flag configuring
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        add_compile_definitions(BUILD_MODE_DEBUG)
+        target_compile_options(${CCR_APP_NAME} PRIVATE -g)
+        set_target_properties(${CCR_APP_NAME} PROPERTIES SUFFIX "_${PROJECT_VERSION}.bin.DEBUG")
+    elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+        if(MSVC)
+            # For MSVC
+            target_compile_options(${CCR_APP_NAME} PRIVATE /O2 /Gy)
+            # /OPT:REF — remove unused functions and data
+            # /OPT:ICF — remove function dublicates
+            target_link_options(${CCR_APP_NAME} PRIVATE /OPT:REF /OPT:ICF)
+        else()
+            # For GCC и Clang (Linux, macOS, MinGW)
+            target_compile_options(${CCR_APP_NAME} PRIVATE -O2 -ffunction-sections -fdata-sections)
+            target_link_options(${CCR_APP_NAME} PRIVATE -Wl,--gc-sections)
+        endif()
+        set_target_properties(${CCR_APP_NAME} PROPERTIES SUFFIX "_${PROJECT_VERSION}.bin")
+    endif()
+
+    # Includes
+    message(STATUS "[COMPONENTS] Configured application " ${CCR_APP_NAME})
+endfunction()

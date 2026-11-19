@@ -1,5 +1,5 @@
-COMPONENTS_CCR_ADD_QT(5 Gui Network Sql Widgets TextToSpeech)
-COMPONENTS_CONFIGURE_COMPONENT(Qt-Custom "1.0.0")
+COMPONENTS_CCR_ADD_QT(5 Gui Network Sql Widgets)
+COMPONENTS_CONFIGURE_COMPONENT(Qt-Custom "1.01.0000")
 option(COMPONENTS_SW_qtcustom_models "" ON)
 option(COMPONENTS_SW_qtcustom_qt_charts "" OFF)
 option(COMPONENTS_SW_qtcustom_graphicscene "" OFF)

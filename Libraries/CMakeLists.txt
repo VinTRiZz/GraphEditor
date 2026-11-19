@@ -1,0 +1,3 @@
+add_subdirectory(GECommon)
+add_subdirectory(FileSubsystem)
+add_subdirectory(GraphicalScene)

@@ -1,10 +1,12 @@
-COMPONENTS_CCR_ADD_QT(5 Core Widgets Concurrent)
+COMPONENTS_CCR_ADD_QT(5 Core Widgets Concurrent Quick QuickWidgets)
 
 set(APP_TARGET_NAME ${PROJECT_NAME})
 
 COMPONENTS_CCR_CONFIGURE_APP(${APP_TARGET_NAME} ${CMAKE_CURRENT_LIST_DIR}
     Qt5::Widgets
     Qt5::Concurrent
+    Qt5::Quick
+    Qt5::QuickWidgets
 )
 
 COMPONENTS_LINK_COMPONENT(${APP_TARGET_NAME} Logger)

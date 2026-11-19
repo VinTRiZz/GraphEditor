@@ -1,5 +1,4 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
 
 #include <QMainWindow>
 
@@ -8,6 +7,10 @@ namespace Ui {
 class MainWindow;
 }
 QT_END_NAMESPACE
+
+namespace QtCustom::Widgets {
+class SidebarWidget;
+}
 
 /**
  * @brief The MainWindow class Главное окно приложения
@@ -21,5 +24,8 @@ public:
 
 private:
     Ui::MainWindow* ui;
+
+    QtCustom::Widgets::SidebarWidget* m_pSidebarSettings {};
+    QtCustom::Widgets::SidebarWidget* m_pSidebarFile {};
+    QtCustom::Widgets::SidebarWidget* m_pSidebarItems {};
 };
-#endif  // MAINWINDOW_H
